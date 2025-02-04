@@ -100,6 +100,7 @@ public class PathManager : MonoBehaviour
         }
 
         path.Reverse();
+
         return path;
     }
 
@@ -151,6 +152,8 @@ public class PathManager : MonoBehaviour
     private bool IsWalkable(Vector3Int position, Tilemap tilemap)
     {
         TileBase tile = tilemap.GetTile(position);
+
+        
         return tile != null; // 타일이 존재하면 이동 가능, 없으면 불가
     }
 }
