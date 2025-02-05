@@ -12,11 +12,11 @@ public class CGame : AutoSingleton<CGame>
 
     // [SerializeField] private Tilemap tilemap;
     public Tilemap tilemap;
-    [SerializeField] private GameObject player;
-    [SerializeField] private GameObject cursor;
-    public Sprite unwalkableSprite;
-    private Camera mainCamera;
-    private bool ClickOn = false;
+    [SerializeField] private GameObject player; //플레이어
+    [SerializeField] private GameObject cursor; //커서 오브젝트
+    public Sprite unwalkableSprite; //이동 불가 스프라이트
+    private Camera mainCamera; //메인 카메라
+    private bool ClickOn = false; //마우스로 이동한 좌표에 플레이어가 이동가능한 좌표일때, 해당 불대수가 활성화됨
     private List<Vector3> path; //a* 알고리즘으로 검색한 좌표들 저장하는 리스트
     void Start()
     {
@@ -54,10 +54,11 @@ public class CGame : AutoSingleton<CGame>
             // }
             if (path != null)
             {
-                foreach (Vector3 step in path)
-                {
-                    Debug.Log($"Path Step: {step}");
-                }
+                // foreach (Vector3 step in path)
+                // {
+                //     Debug.Log($"Path Step: {step}");
+                // }
+                GB.Presenter.Send("Player","Move",path);
             }
         }
         
@@ -77,7 +78,7 @@ public class CGame : AutoSingleton<CGame>
                     ClickOn = true;
     
                     path = PathManager.I.FindPath(player.transform.position, cursor.transform.position, tilemap);
-                    Debug.Log(path.Count);
+                    // Debug.Log(path.Count);
                 }
                 cursor.SetActive(ClickOn);
             }
