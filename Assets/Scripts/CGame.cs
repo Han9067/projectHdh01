@@ -1,87 +1,37 @@
-using UnityEngine;
-using GB;
-using UnityEngine.Tilemaps;
-using DG.Tweening;
-using UnityEngine.UI.Extensions;
-using UnityEngine.UIElements;
+using System.Collections;
 using System.Collections.Generic;
-using System;
+using GB;
+using UnityEngine;
 
 public class CGame : AutoSingleton<CGame>
 {
-
-    // [SerializeField] private Tilemap tilemap;
-    public Tilemap tilemap;
-    [SerializeField] private GameObject player; //플레이어
-    [SerializeField] private GameObject cursor; //커서 오브젝트
-    public Sprite unwalkableSprite; //이동 불가 스프라이트
-    private Camera mainCamera; //메인 카메라
-    private bool ClickOn = false; //마우스로 이동한 좌표에 플레이어가 이동가능한 좌표일때, 해당 불대수가 활성화됨
-    private List<Vector3> path; //a* 알고리즘으로 검색한 좌표들 저장하는 리스트
+    private float moveSpeed = 20f; // 카메라 이동 속도
+    private float zoomSpeed = 10f; // 줌 속도
+    private float minZoom = 5f;   // 최소 줌 (가까운 거리)
+    private float maxZoom = 10f;  // 최대 줌 (멀리 보기)
+    private Camera cam;
+    // Start is called before the first frame update
     void Start()
     {
-        // UIManager.I.Init();
+        cam = Camera.main;
+        GB.Presenter.Send("Map","worldMap");
 
-        GameStart();
     }
-    private void GameStart(){
-        mainCamera = Camera.main;
-        // Vector3Int tilePosition = new Vector3Int(0, 0, 0);
-        // GB.Presenter.Send("Test2Script","A",1);
-        // GB.Presenter.Send("Player","Init");
-    }
-    private bool IsMouseOverTile(out Vector3Int tilePosition)
-    {
-        Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        tilePosition = tilemap.WorldToCell(mouseWorldPos);
-        return tilemap.HasTile(tilePosition);
-    }
+
+    // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            //Vector3 startPos = new Vector3Int(cursor.x,cursor.y)
 
-            //Vector3Int pPos = tilemap.WorldToCell(player.transform.position);
-            //tilePosition
-            // List<Vector3> path = PathManager.I.FindPath(player.transform.position, cursor.transform.position, tilemap);
-            // if (path != null)
-            // {
-            //     foreach (Vector3 step in path)
-            //     {
-            //         Debug.Log($"Path Step: {step}");
-            //     }
-            // }
-            if (path != null)
-            {
-                // foreach (Vector3 step in path)
-                // {
-                //     Debug.Log($"Path Step: {step}");
-                // }
-                GB.Presenter.Send("Player","Move",path);
-            }
-        }
-        
-        if (IsMouseOverTile(out Vector3Int tilePosition)){
-            if(cursor.transform.position.x == tilePosition.x + 0.5f && cursor.transform.position.y == tilePosition.y + 0.5f)return;
+        Vector3 moveDirection = Vector3.zero;
+        if (Input.GetKey(KeyCode.W)) moveDirection.y += 1; // 위로 이동
+        if (Input.GetKey(KeyCode.S)) moveDirection.y -= 1; // 아래로 이동
+        if (Input.GetKey(KeyCode.A)) moveDirection.x -= 1; // 왼쪽 이동
+        if (Input.GetKey(KeyCode.D)) moveDirection.x += 1; // 오른쪽 이동
+        cam.transform.position += moveDirection * moveSpeed * Time.deltaTime;
 
-            cursor.transform.position = new Vector3(tilePosition.x + 0.5f,tilePosition.y + 0.5f, 0);
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        cam.orthographicSize -= scroll * zoomSpeed;
+        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
 
-            TileBase tile = tilemap.GetTile(tilePosition);
-            if (tile != null && tile is Tile currentTile)
-            {
-                if (currentTile.sprite == unwalkableSprite){
-                    // Debug.Log("이동 불가 타일");
-                    ClickOn = false;
-                    
-                }else{
-                    ClickOn = true;
-    
-                    path = PathManager.I.FindPath(player.transform.position, cursor.transform.position, tilemap);
-                    // Debug.Log(path.Count);
-                }
-                cursor.SetActive(ClickOn);
-            }
-        }
     }
 }
