@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class wPlayer : MonoBehaviour
 {
     private float speed = 10f;
     private Vector2 targetPosition;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GB;
 using UnityEngine;
 
-public class CGame : AutoSingleton<CGame>
+public class WorldCore : AutoSingleton<WorldCore>
 {
     private float moveSpeed = 20f; // 카메라 이동 속도
     private float zoomSpeed = 10f; // 줌 속도
@@ -21,7 +21,6 @@ public class CGame : AutoSingleton<CGame>
     // Update is called once per frame
     void Update()
     {
-
         Vector3 moveDirection = Vector3.zero;
         if (Input.GetKey(KeyCode.W)) moveDirection.y += 1; // 위로 이동
         if (Input.GetKey(KeyCode.S)) moveDirection.y -= 1; // 아래로 이동
