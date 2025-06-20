@@ -8,12 +8,7 @@ public class wPlayer : MonoBehaviour
     private float speed = 10f;
     private Vector2 targetPosition;
     private bool isMoving = false;
-    private Rigidbody2D rb;
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-    }
- void Update()
+    void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {

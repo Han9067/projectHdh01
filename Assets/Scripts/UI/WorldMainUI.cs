@@ -36,23 +36,38 @@ public class WorldMainUI : UIScreen
 
     public void OnButtonClick(string key)
     {
+        GameObject go = null;
+        string str = "";
         switch (key)
         {
-            case "stateCharPop":
-                GameObject go = GameObject.Find("CharInfoPop");
-                if (go == null)
+            case "stateChar":
+                go = GameObject.Find("CharInfoPop");
+                str = "CharInfoPop";
+                break;
+            case "stateInven":
+                go = GameObject.Find("InvenPop");
+                str = "InvenPop";
+                break;
+            case "stateQuest":
+                go = GameObject.Find("QuestPop");
+                str = "QuestPop";
+                break;
+            case "stateSkill":
+                go = GameObject.Find("SkillPop");
+                str = "SkillPop";
+                break;
+        }
+        if (go == null)
                 {
-                    UIManager.ShowPopup("CharInfoPop");
+                    UIManager.ShowPopup(str);
                 }
                 else
                 {
                     if (go.gameObject.activeSelf)
-                        UIManager.ClosePopup("CharInfoPop");
+                        UIManager.ClosePopup(str);
                     else
-                        UIManager.ShowPopup("CharInfoPop");
+                        UIManager.ShowPopup(str);
                 }
-                break;
-        }
     }
     public override void ViewQuick(string key, IOData data)
     {
