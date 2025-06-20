@@ -14,8 +14,10 @@ public class WorldCore : AutoSingleton<WorldCore>
     void Start()
     {
         cam = Camera.main;
-        GB.Presenter.Send("Map","worldMap");
+        // GB.Presenter.Send("Map", "worldMap");
 
+
+        // UIManager.ShowPopup("CharInfoPop");
     }
 
     // Update is called once per frame

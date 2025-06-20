@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class wPlayer : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class wPlayer : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            
             targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             isMoving = true;
         }

@@ -1,7 +1,7 @@
 using GB;
 
 
-public class WorldScene : UIScreen
+public class CharInfoPop : UIScreen
 {
 
     
@@ -14,12 +14,12 @@ public class WorldScene : UIScreen
 
     private void OnEnable()
     {
-        Presenter.Bind("WorldScene",this);
+        Presenter.Bind("CharInfoPop",this);
     }
 
     private void OnDisable() 
     {
-        Presenter.UnBind("WorldScene", this);
+        Presenter.UnBind("CharInfoPop", this);
 
     }
 
@@ -32,10 +32,12 @@ public class WorldScene : UIScreen
 
     public void OnButtonClick(string key)
     {
-        // switch(key)
-        // {
-
-        // }
+        switch (key)
+        {
+            case "closePop":
+                UIManager.ClosePopup("CharInfoPop");
+                break;
+        }
     }
     public override void ViewQuick(string key, IOData data)
     {
