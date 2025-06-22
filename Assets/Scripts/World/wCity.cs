@@ -12,7 +12,8 @@ public class wCity : MonoBehaviour
     {
         if (other.CompareTag("Player")){
             isPlayerInside = true;
-            Time.timeScale = 0f;
+            WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
+            worldMainUI.stateGameSpd("x0");
             UIManager.ShowPopup("CityEnterPop");
         }
     }
