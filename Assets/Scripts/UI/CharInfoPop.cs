@@ -15,6 +15,7 @@ public class CharInfoPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("CharInfoPop",this);
+        UnityEngine.Debug.Log("?");
     }
 
     private void OnDisable() 
@@ -34,7 +35,7 @@ public class CharInfoPop : UIScreen
     {
         switch (key)
         {
-            case "closePop":
+            case "Close":
                 UIManager.ClosePopup("CharInfoPop");
                 break;
         }

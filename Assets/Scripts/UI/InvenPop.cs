@@ -34,8 +34,8 @@ public class InvenPop : UIScreen
     {
         switch (key)
         {
-            case "closePop":
-                UIManager.ClosePopup("InvenPop");
+            case "Close":
+                Close();
                 break;
         }
     }

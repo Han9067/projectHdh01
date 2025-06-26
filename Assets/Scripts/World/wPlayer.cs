@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class wPlayer : MonoBehaviour
 {
+
     private float speed = 10f;
     private Vector2 targetPosition;
     private bool isMoving = false;
@@ -13,9 +14,13 @@ public class wPlayer : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
-            
+            // Debug.Log("CityEnterPop.IsActive: " + CityEnterPop.IsActive);
+            if(CityEnterPop.IsActive)return;
             targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             isMoving = true;
+
+            WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
+            worldMainUI.stateGameSpd("x1");
         }
 
         if (isMoving)
@@ -24,8 +29,14 @@ public class wPlayer : MonoBehaviour
             if (Vector2.Distance(transform.position, targetPosition) < 0.01f)
             {
                 transform.position = targetPosition;
-                isMoving = false;
+                stopPlayer();
             }
         }
+    }
+    public void stopPlayer()
+    {
+        isMoving = false;
+        WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
+        worldMainUI.stateGameSpd("x0");
     }
 }

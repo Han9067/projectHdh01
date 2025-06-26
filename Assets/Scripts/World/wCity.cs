@@ -14,7 +14,14 @@ public class wCity : MonoBehaviour
             isPlayerInside = true;
             WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
             worldMainUI.stateGameSpd("x0");
+            
+            // 플레이어 스크립트의 stopPlayer() 호출
+            wPlayer player = other.GetComponent<wPlayer>();
+            if (player != null)
+                player.stopPlayer();
+
             UIManager.ShowPopup("CityEnterPop");
+            GB.Presenter.Send("CityEnterPop","EnterCity", id.ToString());
         }
     }
 

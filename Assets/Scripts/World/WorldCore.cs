@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.WebSockets;
 using GB;
 using UnityEngine;
 
@@ -13,11 +14,16 @@ public class WorldCore : AutoSingleton<WorldCore>
     // Start is called before the first frame update
     void Start()
     {
+        //월드맵 시작
         cam = Camera.main;
         // GB.Presenter.Send("Map", "worldMap");
-
-
         // UIManager.ShowPopup("CharInfoPop");
+        WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
+        worldMainUI.stateGameSpd("x0");
+
+        var table = GameDataManager.GetTable<CityTable>();
+        Debug.Log(table["1"].Name);
+
     }
 
     // Update is called once per frame
