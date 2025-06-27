@@ -4,18 +4,18 @@ using Newtonsoft.Json;
 
 
 [Serializable]
-public class CityTable  : GameData
+public class ShopTable  : GameData
 {	
-	 [JsonProperty] public CityTableProb[] Datas{get; private set;}
-	 IReadOnlyDictionary<string, CityTableProb> _DicDatas;
+	 [JsonProperty] public ShopTableProb[] Datas{get; private set;}
+	 IReadOnlyDictionary<string, ShopTableProb> _DicDatas;
 
 	public void SetJson(string json)
     {
-        var data = JsonConvert.DeserializeObject <CityTable> (json);
-        CityTableProb[] arr = data.Datas;
+        var data = JsonConvert.DeserializeObject <ShopTable> (json);
+        ShopTableProb[] arr = data.Datas;
         Datas = arr;
 
-		var dic = new Dictionary<string, CityTableProb>();
+		var dic = new Dictionary<string, ShopTableProb>();
 
         for (int i = 0; i < Datas.Length; ++i)
             dic[Datas[i].ID.ToString()] = Datas[i];
@@ -29,11 +29,13 @@ public class CityTable  : GameData
         switch (name)
         {
 				case "ID": return true;
+				case "Type": return true;
 				case "Name": return true;
-				case "Res": return true;
+				case "Gender": return true;
+				case "Age": return true;
+				case "CItyID": return true;
 				case "KR": return true;
 				case "EN": return true;
-				case "Desc": return true;
 				case "Note": return true;
 
 		  default: return false;
@@ -56,15 +58,17 @@ public class CityTable  : GameData
     {
         get
         {
-            CityTableProb data = this[row];
+            ShopTableProb data = this[row];
             switch (col)
             {
 				case "ID": return data.ID;
+				case "Type": return data.Type;
 				case "Name": return data.Name;
-				case "Res": return data.Res;
+				case "Gender": return data.Gender;
+				case "Age": return data.Age;
+				case "CItyID": return data.CItyID;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
-				case "Desc": return data.Desc;
 				case "Note": return data.Note;
 
 
@@ -78,15 +82,17 @@ public class CityTable  : GameData
     {
         get
         {
-             CityTableProb data = this[row];
+             ShopTableProb data = this[row];
             switch (col)
             {
 				case "ID": return data.ID;
+				case "Type": return data.Type;
 				case "Name": return data.Name;
-				case "Res": return data.Res;
+				case "Gender": return data.Gender;
+				case "Age": return data.Age;
+				case "CItyID": return data.CItyID;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
-				case "Desc": return data.Desc;
 				case "Note": return data.Note;
 
 
@@ -100,24 +106,26 @@ public class CityTable  : GameData
     {
         get
         {
-            CityTableProb data = Datas[row];
+            ShopTableProb data = Datas[row];
 
             switch (col)
             {
 				case 0: return data.ID;
-				case 1: return data.Name;
-				case 2: return data.Res;
-				case 3: return data.KR;
-				case 4: return data.EN;
-				case 5: return data.Desc;
-				case 6: return data.Note;
+				case 1: return data.Type;
+				case 2: return data.Name;
+				case 3: return data.Gender;
+				case 4: return data.Age;
+				case 5: return data.CItyID;
+				case 6: return data.KR;
+				case 7: return data.EN;
+				case 8: return data.Note;
 
                 default: return null;
             }
         }
     }
 
-    public CityTableProb this[string name]
+    public ShopTableProb this[string name]
     {
         get
         {
@@ -126,7 +134,7 @@ public class CityTable  : GameData
     }
 
 
-    public CityTableProb this[int index]
+    public ShopTableProb this[int index]
     {
         get
         {
@@ -151,14 +159,16 @@ public class CityTable  : GameData
 }
 
 [Serializable]
-public class CityTableProb : GameDataProb
+public class ShopTableProb : GameDataProb
 {
 		[JsonProperty] public readonly string ID;
+	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly string Name;
-	[JsonProperty] public readonly string Res;
+	[JsonProperty] public readonly int Gender;
+	[JsonProperty] public readonly int Age;
+	[JsonProperty] public readonly string CItyID;
 	[JsonProperty] public readonly string KR;
-	[JsonProperty] public readonly  string EN;
-	[JsonProperty] public readonly string Desc;
+	[JsonProperty] public readonly string EN;
 	[JsonProperty] public readonly string Note;
 
 }

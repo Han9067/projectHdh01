@@ -16,29 +16,28 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         //월드맵 시작
         cam = Camera.main;
-        // GB.Presenter.Send("Map", "worldMap");
-        // UIManager.ShowPopup("CharInfoPop");
         WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
         worldMainUI.stateGameSpd("x0");
-
-        var table = GameDataManager.GetTable<CityTable>();
-        Debug.Log(table["1"].Name);
+        
 
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {   
+        // if(CityEnterPop.IsActive)return;
+        // 일시정지 상태에서도 카메라 이동이 가능하도록 Input 처리
         Vector3 moveDirection = Vector3.zero;
         if (Input.GetKey(KeyCode.W)) moveDirection.y += 1; // 위로 이동
         if (Input.GetKey(KeyCode.S)) moveDirection.y -= 1; // 아래로 이동
         if (Input.GetKey(KeyCode.A)) moveDirection.x -= 1; // 왼쪽 이동
         if (Input.GetKey(KeyCode.D)) moveDirection.x += 1; // 오른쪽 이동
-        cam.transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        
+        // Time.unscaledDeltaTime을 사용하여 일시정지 상태에서도 일정한 속도로 이동
+        cam.transform.position += moveDirection * moveSpeed * Time.unscaledDeltaTime;
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         cam.orthographicSize -= scroll * zoomSpeed;
         cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
-
     }
 }

@@ -38,6 +38,10 @@ public class GameDataManager : AutoSingleton<GameDataManager>
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<WpTable>(WpTabledata,(result)=>{ I._Tables[TABLE.WpTable] = result;}));
                 string ItemTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/ItemTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<ItemTable>(ItemTabledata,(result)=>{ I._Tables[TABLE.ItemTable] = result;}));
+                string ShopTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/ShopTable").text);
+            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<ShopTable>(ShopTabledata,(result)=>{ I._Tables[TABLE.ShopTable] = result;}));
+                string ShopItemTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/ShopItemTable").text);
+            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<ShopItemTable>(ShopItemTabledata,(result)=>{ I._Tables[TABLE.ShopItemTable] = result;}));
                 
 
         gbCoroutine.OnComplete(()=>{complete?.Invoke();}).Play();
@@ -117,6 +121,16 @@ case TABLE.ItemTable:
         ItemTable d_ItemTable = new ItemTable();
         d_ItemTable.SetJson(data);
         obj  = d_ItemTable;
+        break;
+case TABLE.ShopTable:
+        ShopTable d_ShopTable = new ShopTable();
+        d_ShopTable.SetJson(data);
+        obj  = d_ShopTable;
+        break;
+case TABLE.ShopItemTable:
+        ShopItemTable d_ShopItemTable = new ShopItemTable();
+        d_ShopItemTable.SetJson(data);
+        obj  = d_ShopItemTable;
         break;
         }
 
@@ -222,5 +236,7 @@ public enum TABLE
 	EqTable,
 	WpTable,
 	ItemTable,
+	ShopTable,
+	ShopItemTable,
 
 }

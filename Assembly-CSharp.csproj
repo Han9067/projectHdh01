@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\World\WorldCore.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\WpTable.cs" />
+    <Compile Include="Assets\GB\GSheet\GameData\ShopTable.cs" />
     <Compile Include="Assets\Scripts\UI\CityEnterPop.cs" />
     <Compile Include="Assets\Scripts\UI\ShopInvenPop.cs" />
     <Compile Include="Assets\Scripts\UI\POPUP.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Assets\GB\GSheet\GameData\ItemTable.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\GameDataManager.cs" />
     <Compile Include="Assets\Scripts\UI\InvenPop.cs" />
+    <Compile Include="Assets\GB\GSheet\GameData\ShopItemTable.cs" />
     <Compile Include="Assets\Scripts\UI\CharInfoPop.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +92,7 @@
     <None Include="Assets\GB\GSheet\GameData\O.txt" />
     <None Include="Assets\GB\Version\Resources.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Resources\Json\ShopItemTable.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
@@ -99,6 +102,7 @@
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\Resources\Json\WpTable.txt" />
+    <None Include="Assets\Resources\Json\ShopTable.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />

@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uBB3C\uC57D\uC810"
+  m_Text: "\uC57D\uC7AC\uC0C1"
 --- !u!1 &1366631348409622809
 GameObject:
   m_ObjectHideFlags: 0
@@ -737,7 +737,7 @@ GameObject:
   - component: {fileID: 7549286315416392866}
   - component: {fileID: 6366644498648763955}
   m_Layer: 5
-  m_Name: Btn_PotionShop
+  m_Name: Btn_Apothecary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -857,7 +857,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: Potion
+  Key: Apothecary
 --- !u!1 &2044547661430887170
 GameObject:
   m_ObjectHideFlags: 0
@@ -870,7 +870,7 @@ GameObject:
   - component: {fileID: 4157712069563237550}
   - component: {fileID: 547915175136113460}
   - component: {fileID: 4995535892845922269}
-  - component: {fileID: 48903337845473121}
+  - component: {fileID: 3477525944574338364}
   m_Layer: 5
   m_Name: Btn_Market
   m_TagString: Untagged
@@ -980,7 +980,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &48903337845473121
+--- !u!114 &3477525944574338364
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -992,7 +992,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: Traning
+  Key: Market
 --- !u!1 &2152718229028096020
 GameObject:
   m_ObjectHideFlags: 0
@@ -1162,7 +1162,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -992.5, y: 500}
+  m_AnchoredPosition: {x: -992.5, y: 520}
   m_SizeDelta: {x: 259.5348, y: 51.605}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5158997974026505484
@@ -1200,7 +1200,7 @@ MonoBehaviour:
     m_BestFit: 1
     m_MinSize: 4
     m_MaxSize: 40
-    m_Alignment: 1
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -1400,7 +1400,7 @@ MonoBehaviour:
     - key: Tailor
       value: {fileID: 8700997879345679949}
       duplicatedKey: 0
-    - key: Potion
+    - key: Apothecary
       value: {fileID: 7549286315416392866}
       duplicatedKey: 0
     - key: Variety
@@ -1408,6 +1408,9 @@ MonoBehaviour:
       duplicatedKey: 0
     - key: Traning
       value: {fileID: 8355555376651300451}
+      duplicatedKey: 0
+    - key: Market
+      value: {fileID: 4995535892845922269}
       duplicatedKey: 0
   mGameObject:
     list: []

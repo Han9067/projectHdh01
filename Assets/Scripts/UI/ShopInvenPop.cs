@@ -1,11 +1,13 @@
 using GB;
 
-
 public class ShopInvenPop : UIScreen
 {
-
+    public static bool IsActive { get; private set; } = false;
+    // private ShopTable _shopTable;
+    // private ShopItemTable _shopItemTable;
+    // private ShopTable ShopTable => _shopTable ??= GameDataManager.GetTable<ShopTable>();
+    // private ShopItemTable ShopItemTable => _shopItemTable ??= GameDataManager.GetTable<ShopItemTable>();
     
-
     private void Awake()
     {
         Regist();
@@ -15,12 +17,13 @@ public class ShopInvenPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("ShopInvenPop",this);
+        IsActive = true;
     }
 
     private void OnDisable() 
     {
         Presenter.UnBind("ShopInvenPop", this);
-
+        IsActive = false;
     }
 
     public void RegistButton()
@@ -35,20 +38,36 @@ public class ShopInvenPop : UIScreen
         switch (key)
         {
             case "Close":
+                UIManager.ClosePopup("ShopInvenPop");
                 Close();
                 break;
         }
     }
     public override void ViewQuick(string key, IOData data)
-    {
-         
+    {   
+        string name = "";
+        switch(key)
+        {
+            case "LoadSmith":
+                UnityEngine.Debug.Log("LoadSmith");
+                name = "대장간";
+
+
+                //var wpTable = GameDataManager.GetTable<WpTable>();
+
+                break;
+            case "LoadTailor":
+                name = "재봉사";
+                break;
+            case "LoadApothecary":
+                name = "약제상";
+                break;
+        }
+        mTexts["ShopName"].text = name;
     }
 
     public override void Refresh()
     {
             
     }
-
-
-
 }

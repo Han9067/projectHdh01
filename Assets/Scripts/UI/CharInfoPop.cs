@@ -39,6 +39,7 @@ public class CharInfoPop : UIScreen
                 UIManager.ClosePopup("CharInfoPop");
                 break;
         }
+        
     }
     public override void ViewQuick(string key, IOData data)
     {
