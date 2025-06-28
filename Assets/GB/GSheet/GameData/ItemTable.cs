@@ -35,6 +35,7 @@ public class ItemTable  : GameData
 				case "Val": return true;
 				case "W": return true;
 				case "H": return true;
+				case "Stack": return true;
 				case "Res": return true;
 				case "KR": return true;
 				case "EN": return true;
@@ -69,6 +70,7 @@ public class ItemTable  : GameData
 				case "Val": return data.Val;
 				case "W": return data.W;
 				case "H": return data.H;
+				case "Stack": return data.Stack;
 				case "Res": return data.Res;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
@@ -94,6 +96,7 @@ public class ItemTable  : GameData
 				case "Val": return data.Val;
 				case "W": return data.W;
 				case "H": return data.H;
+				case "Stack": return data.Stack;
 				case "Res": return data.Res;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
@@ -120,9 +123,10 @@ public class ItemTable  : GameData
 				case 4: return data.Val;
 				case 5: return data.W;
 				case 6: return data.H;
-				case 7: return data.Res;
-				case 8: return data.KR;
-				case 9: return data.EN;
+				case 7: return data.Stack;
+				case 8: return data.Res;
+				case 9: return data.KR;
+				case 10: return data.EN;
 
                 default: return null;
             }
@@ -172,6 +176,7 @@ public class ItemTableProb : GameDataProb
 	[JsonProperty] public readonly int Val;
 	[JsonProperty] public readonly int W;
 	[JsonProperty] public readonly int H;
+	[JsonProperty] public readonly int Stack;
 	[JsonProperty] public readonly string Res;
 	[JsonProperty] public readonly string KR;
 	[JsonProperty] public readonly string EN;

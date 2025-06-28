@@ -36,6 +36,7 @@ public class EqTable  : GameData
 				case "W": return true;
 				case "H": return true;
 				case "Dur": return true;
+				case "Stack": return true;
 				case "Res": return true;
 				case "KR": return true;
 				case "EN": return true;
@@ -71,6 +72,7 @@ public class EqTable  : GameData
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Dur": return data.Dur;
+				case "Stack": return data.Stack;
 				case "Res": return data.Res;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
@@ -97,6 +99,7 @@ public class EqTable  : GameData
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Dur": return data.Dur;
+				case "Stack": return data.Stack;
 				case "Res": return data.Res;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
@@ -124,9 +127,10 @@ public class EqTable  : GameData
 				case 5: return data.W;
 				case 6: return data.H;
 				case 7: return data.Dur;
-				case 8: return data.Res;
-				case 9: return data.KR;
-				case 10: return data.EN;
+				case 8: return data.Stack;
+				case 9: return data.Res;
+				case 10: return data.KR;
+				case 11: return data.EN;
 
                 default: return null;
             }
@@ -177,6 +181,7 @@ public class EqTableProb : GameDataProb
 	[JsonProperty] public readonly int W;
 	[JsonProperty] public readonly int H;
 	[JsonProperty] public readonly int Dur;
+	[JsonProperty] public readonly int Stack;
 	[JsonProperty] public readonly string Res;
 	[JsonProperty] public readonly string KR;
 	[JsonProperty] public readonly string EN;

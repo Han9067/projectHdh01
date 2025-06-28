@@ -51,8 +51,8 @@ public class ShopInvenPop : UIScreen
             case "LoadSmith":
                 UnityEngine.Debug.Log("LoadSmith");
                 name = "대장간";
-
-
+                
+                var wpTable = GameDataManager.GetTable<WpTable>();
                 //var wpTable = GameDataManager.GetTable<WpTable>();
 
                 break;
