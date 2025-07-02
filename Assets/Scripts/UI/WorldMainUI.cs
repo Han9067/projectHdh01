@@ -88,7 +88,7 @@ public class WorldMainUI : UIScreen
         }
     }
     public void stateGameSpd(string key){
-        if(CityEnterPop.IsActive)return;
+        if(CityEnterPop.isActive)return;
         string numberStr = key.Replace("x", "");
         int val = int.Parse(numberStr);
         Time.timeScale = val;

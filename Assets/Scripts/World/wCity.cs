@@ -6,12 +6,12 @@ using GB;
 public class wCity : MonoBehaviour
 {
     public int id;
-    private bool isPlayerInside = false;
+    // private bool isPlayerInside = false;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player")){
-            isPlayerInside = true;
+            // isPlayerInside = true;
             WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
             worldMainUI.stateGameSpd("x0");
             
@@ -21,13 +21,13 @@ public class wCity : MonoBehaviour
                 player.stopPlayer();
 
             UIManager.ShowPopup("CityEnterPop");
-            GB.Presenter.Send("CityEnterPop","EnterCity", id.ToString());
+            GB.Presenter.Send("CityEnterPop","EnterCity", id);
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
-            isPlayerInside = false;
+        // if (other.CompareTag("Player"))
+            // isPlayerInside = false;
     }
 }

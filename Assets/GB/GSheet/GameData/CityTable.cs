@@ -30,6 +30,7 @@ public class CityTable  : GameData
         {
 				case "ID": return true;
 				case "Name": return true;
+				case "Place": return true;
 				case "Res": return true;
 				case "KR": return true;
 				case "EN": return true;
@@ -61,6 +62,7 @@ public class CityTable  : GameData
             {
 				case "ID": return data.ID;
 				case "Name": return data.Name;
+				case "Place": return data.Place;
 				case "Res": return data.Res;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
@@ -83,6 +85,7 @@ public class CityTable  : GameData
             {
 				case "ID": return data.ID;
 				case "Name": return data.Name;
+				case "Place": return data.Place;
 				case "Res": return data.Res;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
@@ -106,11 +109,12 @@ public class CityTable  : GameData
             {
 				case 0: return data.ID;
 				case 1: return data.Name;
-				case 2: return data.Res;
-				case 3: return data.KR;
-				case 4: return data.EN;
-				case 5: return data.Desc;
-				case 6: return data.Note;
+				case 2: return data.Place;
+				case 3: return data.Res;
+				case 4: return data.KR;
+				case 5: return data.EN;
+				case 6: return data.Desc;
+				case 7: return data.Note;
 
                 default: return null;
             }
@@ -153,8 +157,9 @@ public class CityTable  : GameData
 [Serializable]
 public class CityTableProb : GameDataProb
 {
-		[JsonProperty] public readonly string ID;
+		[JsonProperty] public readonly int ID;
 	[JsonProperty] public readonly string Name;
+	[JsonProperty] public readonly string Place;
 	[JsonProperty] public readonly string Res;
 	[JsonProperty] public readonly string KR;
 	[JsonProperty] public readonly  string EN;

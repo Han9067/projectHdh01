@@ -173,7 +173,7 @@ public class EqTable  : GameData
 [Serializable]
 public class EqTableProb : GameDataProb
 {
-		[JsonProperty] public readonly string ID;
+		[JsonProperty] public readonly int ID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly int Price;

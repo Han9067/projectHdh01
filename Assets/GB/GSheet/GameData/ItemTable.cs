@@ -169,7 +169,7 @@ public class ItemTable  : GameData
 [Serializable]
 public class ItemTableProb : GameDataProb
 {
-		[JsonProperty] public readonly string ID;
+		[JsonProperty] public readonly int ID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly int Price;

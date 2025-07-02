@@ -18,7 +18,7 @@ public class ShopItemTable  : GameData
 		var dic = new Dictionary<string, ShopItemTableProb>();
 
         for (int i = 0; i < Datas.Length; ++i)
-            dic[Datas[i].ID.ToString()] = Datas[i];
+            dic[Datas[i].ShopID.ToString()] = Datas[i];
 
         _DicDatas = dic;
 
@@ -28,14 +28,10 @@ public class ShopItemTable  : GameData
     {
         switch (name)
         {
-				case "ID": return true;
+				case "ShopID": return true;
+				case "ItemID": return true;
 				case "Type": return true;
-				case "Name": return true;
-				case "Gender": return true;
-				case "Age": return true;
-				case "CItyID": return true;
-				case "KR": return true;
-				case "EN": return true;
+				case "Cnt": return true;
 				case "Note": return true;
 
 		  default: return false;
@@ -61,14 +57,10 @@ public class ShopItemTable  : GameData
             ShopItemTableProb data = this[row];
             switch (col)
             {
-				case "ID": return data.ID;
+				case "ShopID": return data.ShopID;
+				case "ItemID": return data.ItemID;
 				case "Type": return data.Type;
-				case "Name": return data.Name;
-				case "Gender": return data.Gender;
-				case "Age": return data.Age;
-				case "CItyID": return data.CItyID;
-				case "KR": return data.KR;
-				case "EN": return data.EN;
+				case "Cnt": return data.Cnt;
 				case "Note": return data.Note;
 
 
@@ -85,14 +77,10 @@ public class ShopItemTable  : GameData
              ShopItemTableProb data = this[row];
             switch (col)
             {
-				case "ID": return data.ID;
+				case "ShopID": return data.ShopID;
+				case "ItemID": return data.ItemID;
 				case "Type": return data.Type;
-				case "Name": return data.Name;
-				case "Gender": return data.Gender;
-				case "Age": return data.Age;
-				case "CItyID": return data.CItyID;
-				case "KR": return data.KR;
-				case "EN": return data.EN;
+				case "Cnt": return data.Cnt;
 				case "Note": return data.Note;
 
 
@@ -110,15 +98,11 @@ public class ShopItemTable  : GameData
 
             switch (col)
             {
-				case 0: return data.ID;
-				case 1: return data.Type;
-				case 2: return data.Name;
-				case 3: return data.Gender;
-				case 4: return data.Age;
-				case 5: return data.CItyID;
-				case 6: return data.KR;
-				case 7: return data.EN;
-				case 8: return data.Note;
+				case 0: return data.ShopID;
+				case 1: return data.ItemID;
+				case 2: return data.Type;
+				case 3: return data.Cnt;
+				case 4: return data.Note;
 
                 default: return null;
             }
@@ -161,14 +145,10 @@ public class ShopItemTable  : GameData
 [Serializable]
 public class ShopItemTableProb : GameDataProb
 {
-		[JsonProperty] public readonly string ID;
+		[JsonProperty] public readonly int ShopID;
+	[JsonProperty] public readonly int ItemID;
 	[JsonProperty] public readonly int Type;
-	[JsonProperty] public readonly string Name;
-	[JsonProperty] public readonly int Gender;
-	[JsonProperty] public readonly int Age;
-	[JsonProperty] public readonly string CItyID;
-	[JsonProperty] public readonly string KR;
-	[JsonProperty] public readonly string EN;
+	[JsonProperty] public readonly int Cnt;
 	[JsonProperty] public readonly string Note;
 
 }

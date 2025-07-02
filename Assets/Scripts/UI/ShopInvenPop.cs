@@ -1,36 +1,40 @@
 using GB;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class Grid
+{
+    public int x;
+    public int y;
+}
 
 public class ShopInvenPop : UIScreen
 {
-    public static bool IsActive { get; private set; } = false;
-    // private ShopTable _shopTable;
-    // private ShopItemTable _shopItemTable;
-    // private ShopTable ShopTable => _shopTable ??= GameDataManager.GetTable<ShopTable>();
-    // private ShopItemTable ShopItemTable => _shopItemTable ??= GameDataManager.GetTable<ShopItemTable>();
-    
+    public static bool isActive { get; private set; } = false;
+    private int gw = 10; //기본 넓이 10칸
+    private int gh = 12; //기본 높이 12칸
+    private List<List<Grid>> grids;
     private void Awake()
     {
         Regist();
         RegistButton();
     }
-
     private void OnEnable()
     {
         Presenter.Bind("ShopInvenPop",this);
-        IsActive = true;
+        isActive = true;
+        
     }
-
     private void OnDisable() 
     {
         Presenter.UnBind("ShopInvenPop", this);
-        IsActive = false;
+        isActive = false;
     }
 
     public void RegistButton()
     {
         foreach(var v in mButtons)
             v.Value.onClick.AddListener(() => { OnButtonClick(v.Key);});
-        
     }
 
     public void OnButtonClick(string key)
@@ -49,12 +53,9 @@ public class ShopInvenPop : UIScreen
         switch(key)
         {
             case "LoadSmith":
-                UnityEngine.Debug.Log("LoadSmith");
+                // UnityEngine.Debug.Log("LoadSmith");
                 name = "대장간";
-                
-                var wpTable = GameDataManager.GetTable<WpTable>();
-                //var wpTable = GameDataManager.GetTable<WpTable>();
-
+                UnityEngine.Debug.Log($"grids: {grids.Count}");
                 break;
             case "LoadTailor":
                 name = "재봉사";
@@ -64,10 +65,36 @@ public class ShopInvenPop : UIScreen
                 break;
         }
         mTexts["ShopName"].text = name;
+        CreateGrid(data.Get<int>());
+    }
+    public void CreateGrid(int id)
+    {
+        grids = new List<List<Grid>>();
+        for(int y = 0; y < gh; y++)
+        {
+            List<Grid> row = new List<Grid>();
+            for(int x = 0; x < gw; x++)
+            {
+                row.Add(new Grid { x = x, y = y });
+            }
+            grids.Add(row);
+        }
+
+        var shopData = ShopManager.I.shopAllData[id];
+        var items = shopData.items;
+        foreach(var item in items)
+        {
+            // UnityEngine.Debug.Log($"itemId: {item.itemId}, type: {item.type}, cnt: {item.cnt}");
+            ItemInfo itemInfo = (ItemInfo)ItemManager.I.GetItemInfo(item.itemId.ToString(), item.type);
+            ApplyGrid(itemInfo.itemId, itemInfo.W, itemInfo.H);
+        }
+    }
+    public void ApplyGrid(int itemId, int w, int h)
+    {
+       
     }
 
     public override void Refresh()
-    {
-            
+    {           
     }
 }

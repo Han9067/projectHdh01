@@ -25,7 +25,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     // Update is called once per frame
     void Update()
     {   
-        // if(CityEnterPop.IsActive)return;
+        // if(CityEnterPop.isActive)return;
         // 일시정지 상태에서도 카메라 이동이 가능하도록 Input 처리
         Vector3 moveDirection = Vector3.zero;
         if (Input.GetKey(KeyCode.W)) moveDirection.y += 1; // 위로 이동

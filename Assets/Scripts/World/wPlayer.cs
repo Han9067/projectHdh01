@@ -14,8 +14,8 @@ public class wPlayer : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
-            // Debug.Log("CityEnterPop.IsActive: " + CityEnterPop.IsActive);
-            if(CityEnterPop.IsActive)return;
+            // Debug.Log("CityEnterPop.isActive: " + CityEnterPop.isActive);
+            if(CityEnterPop.isActive)return;
             targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             isMoving = true;
 

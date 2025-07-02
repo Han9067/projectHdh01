@@ -36,7 +36,7 @@ public class InvenPop : UIScreen
         switch (key)
         {
             case "Close":
-                if (ShopInvenPop.IsActive)
+                if (ShopInvenPop.isActive)
                 {
                     UnityEngine.Debug.Log("ShopInvenPop이 활성화되어 있어서 InvenPop을 닫을 수 없습니다.");
                     return;
