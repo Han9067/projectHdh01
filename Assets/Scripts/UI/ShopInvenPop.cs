@@ -1,9 +1,18 @@
 using GB;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class Grid
 {
+    public int x;
+    public int y;
+    public int slotId = -1; // -1이면 비어있음
+}
+public class ItemPos
+{
+    public ItemInfo itemInfo;
     public int x;
     public int y;
 }
@@ -14,11 +23,30 @@ public class ShopInvenPop : UIScreen
     private int gw = 10; //기본 넓이 10칸
     private int gh = 12; //기본 높이 12칸
     private List<List<Grid>> grids;
+    public RectTransform content; // ScrollView의 Content 오브젝트
+    public Sprite gridSpr;  // 10칸짜리(640x64) 그리드 이미지
+    public List<ItemInfo> ItemList = new List<ItemInfo>();
     private void Awake()
     {
         Regist();
         RegistButton();
+        InitGrid();
     }
+    
+    private void InitGrid()
+    {
+        grids = new List<List<Grid>>();
+        for(int y = 0; y < gh; y++)
+        {
+            List<Grid> row = new List<Grid>();
+            for(int x = 0; x < gw; x++)
+            {
+                row.Add(new Grid { x = x, y = y, slotId = -1 });
+            }
+            grids.Add(row);
+        }
+    }
+    
     private void OnEnable()
     {
         Presenter.Bind("ShopInvenPop",this);
@@ -53,9 +81,7 @@ public class ShopInvenPop : UIScreen
         switch(key)
         {
             case "LoadSmith":
-                // UnityEngine.Debug.Log("LoadSmith");
                 name = "대장간";
-                UnityEngine.Debug.Log($"grids: {grids.Count}");
                 break;
             case "LoadTailor":
                 name = "재봉사";
@@ -69,31 +95,234 @@ public class ShopInvenPop : UIScreen
     }
     public void CreateGrid(int id)
     {
-        grids = new List<List<Grid>>();
-        for(int y = 0; y < gh; y++)
-        {
-            List<Grid> row = new List<Grid>();
-            for(int x = 0; x < gw; x++)
-            {
-                row.Add(new Grid { x = x, y = y });
-            }
-            grids.Add(row);
-        }
-
+        // 그리드 초기화
+        InitGrid();
+        ItemList.Clear();
+        List<ItemPos> itemPosList = new List<ItemPos>();
         var shopData = ShopManager.I.shopAllData[id];
         var items = shopData.items;
         foreach(var item in items)
         {
-            // UnityEngine.Debug.Log($"itemId: {item.itemId}, type: {item.type}, cnt: {item.cnt}");
             ItemInfo itemInfo = (ItemInfo)ItemManager.I.GetItemInfo(item.itemId.ToString(), item.type);
-            ApplyGrid(itemInfo.itemId, itemInfo.W, itemInfo.H);
+            Vector2Int pos = ApplyGrid(itemInfo.itemId, itemInfo.W, itemInfo.H);
+            ItemPos itemPos = new ItemPos { itemInfo = itemInfo, x = pos.x, y = pos.y };
+            ItemList.Add(itemInfo);
+            itemPosList.Add(itemPos);
+        }
+        
+        // 그리드 상태 출력 (디버그용)
+        TestGrid();
+        // 그리드 배경 행 이미지 생성
+        DrawGrid();
+        // 아이템 오브젝트 생성
+        CreateShopItem(itemPosList);
+        
+    }
+    public Vector2Int ApplyGrid(int slotId, int w, int h)
+    {
+        Vector2Int pos = FindAvailablePosition(w, h);
+        PlaceItem(slotId, pos.x, pos.y, w, h);
+        return pos;
+    }
+    
+    private Vector2Int FindAvailablePosition(int w, int h)
+    {
+        // 항상 왼쪽 위(0,0)부터 오른쪽으로 차례대로 빈 공간 찾기
+        for (int y = 0; y < gh; y++)
+        {
+            for (int x = 0; x < gw; x++)
+            {
+                if (CanPlaceItem(x, y, w, h))
+                {
+                    return new Vector2Int(x, y);
+                }
+            }
+        }
+        // 배치할 공간이 없으면 그리드 확장
+        return ExpandGridAndFindPos(w, h);
+    }
+    
+    private Vector2Int ExpandGridAndFindPos(int w, int h)
+    {
+        // 필요한 만큼 그리드 높이 확장
+        int requiredHeight = gh;
+        while (requiredHeight < gh + h)
+        {
+            requiredHeight++;
+        }
+        
+        // 그리드 확장
+        ExpandGridHeight(requiredHeight - gh);
+        
+        // 확장된 그리드에서 다시 위치 찾기
+        for (int y = gh - h; y < gh; y++)
+        {
+            for (int x = 0; x < gw; x++)
+            {
+                if (CanPlaceItem(x, y, w, h))
+                {
+                    UnityEngine.Debug.Log($"그리드 높이를 {gh}로 확장하여 아이템 배치");
+                    return new Vector2Int(x, y);
+                }
+            }
+        }
+        
+        // 여전히 배치할 수 없다면 (너무 큰 아이템인 경우)
+        return new Vector2Int(-1, -1);
+    }
+    
+    private void ExpandGridHeight(int additionalRows)
+    {
+        // 새로운 행들을 추가
+        for (int i = 0; i < additionalRows; i++)
+        {
+            List<Grid> newRow = new List<Grid>();
+            for (int x = 0; x < gw; x++)
+            {
+                newRow.Add(new Grid { x = x, y = gh + i, slotId = -1 });
+            }
+            grids.Add(newRow);
+        }
+        
+        // 그리드 높이 업데이트
+        gh += additionalRows;
+        UnityEngine.Debug.Log($"그리드 높이가 {gh}로 확장되었습니다.");
+    }
+    
+    /// 지정된 위치에 아이템을 배치할 수 있는지 확인합니다.
+    private bool CanPlaceItem(int startX, int startY, int w, int h)
+    {
+        // 그리드 범위를 벗어나는지 체크
+        if (startX + w > gw || startY + h > gh)
+            return false;
+        // 해당 영역에 이미 다른 아이템이 있는지 체크
+        for (int y = startY; y < startY + h; y++)
+        {
+            for (int x = startX; x < startX + w; x++)
+            {
+                if (grids[y][x].slotId != -1)
+                    return false;
+            }
+        }
+        return true;
+    }
+    
+    /// 지정된 위치에 아이템을 실제로 배치합니다.
+    private void PlaceItem(int slotId, int startX, int startY, int w, int h)
+    {
+        // 아이템이 차지하는 모든 칸에 slotId 설정
+        for (int y = startY; y < startY + h; y++)
+        {
+            for (int x = startX; x < startX + w; x++)
+            {
+                grids[y][x].slotId = slotId;
+            }
         }
     }
-    public void ApplyGrid(int itemId, int w, int h)
+    
+    /// 현재 그리드 상태를 콘솔에 시각적으로 출력합니다.
+    public void TestGrid()
     {
-       
+        string gridStatus = "그리드 상태:\n";
+        
+        // 위에서 아래로 출력 (왼쪽 위가 0,0)
+        for (int y = 0; y < gh; y++)
+        {
+            for (int x = 0; x < gw; x++)
+            {
+                if (grids[y][x].slotId != -1)
+                {
+                    gridStatus += $"[{grids[y][x].slotId:00}]";
+                }
+                else
+                {
+                    gridStatus += "[  ]";
+                }
+            }
+            gridStatus += "\n"; // 줄바꿈
+        }
+        UnityEngine.Debug.Log(gridStatus);
+    }
+    private void DrawGrid()
+    {
+        // 그리드 바탕 그리기
+        for (int i = content.childCount - 1; i >= 0; i--)
+        {
+            Destroy(content.GetChild(i).gameObject);
+        }
+        float startY = -2f;
+        for (int y = 0; y < gh; y++)
+        {
+            GameObject row = new GameObject($"GridRow_{y}", typeof(RectTransform), typeof(Image));
+            row.transform.SetParent(content, false);
+            Image img = row.GetComponent<Image>();
+            img.sprite = gridSpr;
+            img.SetNativeSize(); // 640x64
+            RectTransform rt = row.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0, 1);
+            rt.anchorMax = new Vector2(0, 1);
+            rt.pivot = new Vector2(0, 1);
+            rt.anchoredPosition = new Vector2(0, startY + (y * -64));
+        }
+        // Content 높이 자동 조정
+        content.sizeDelta = new Vector2(content.sizeDelta.x, (gh * 64) + 6);
     }
 
+    public void CreateShopItem(List<ItemPos> itemPosList)
+    {
+        // ShopItem 프리팹 로드
+        GameObject shopItemPrefab = Resources.Load<GameObject>("Prefabs/UI/ShopItem");
+
+        foreach (var info in itemPosList)
+        {
+            // 리소스 경로 결정
+            string path = "";
+            if(info.itemInfo.itemId < 40000)
+            {
+                path = $"Images/Item/Eq/{info.itemInfo.Res}";
+            }
+            else if(info.itemInfo.itemId < 80000)
+            {
+                path = $"Images/Item/Wp/{info.itemInfo.Res}";
+            }
+            else
+            {
+                path = $"Images/Item/Ect/{info.itemInfo.Res}";
+            }
+
+            // 스프라이트 로드
+            Sprite itemSprite = Resources.Load<Sprite>(path);
+            if (itemSprite == null)
+            {
+                Debug.LogWarning($"리소스 로드 실패: {path}");
+                continue;
+            }
+
+            // 프리팹 인스턴스화
+            GameObject shopItem = Instantiate(shopItemPrefab, content);
+            
+            // Image 컴포넌트 찾기 (프리팹에 Image 컴포넌트가 있다고 가정)
+            Image itemImage = shopItem.GetComponent<Image>();
+            if (itemImage != null)
+            {
+                itemImage.sprite = itemSprite;
+                itemImage.SetNativeSize(); // 리소스 크기에 맞춰 크기 조정
+            }
+
+            // RectTransform 설정
+            RectTransform rt = shopItem.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0, 1);
+            rt.anchorMax = new Vector2(0, 1);
+            rt.pivot = new Vector2(0, 1);
+            
+            // 그리드 좌표에 맞게 위치 설정 (64는 한 칸의 픽셀 크기)
+            rt.anchoredPosition = new Vector2(info.x * 64, -(info.y * 64));
+
+            // 아이템 정보 저장 (필요시)
+            shopItem.name = $"ShopItem_{info.itemInfo.itemId}";
+            shopItem.GetComponent<ShopItem>().SetItemInfo(info.itemInfo);
+        }
+    }
     public override void Refresh()
     {           
     }
