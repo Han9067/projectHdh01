@@ -134,7 +134,4 @@ public class CityEnterPop : UIScreen
     {
             
     }
-
-
-
 }

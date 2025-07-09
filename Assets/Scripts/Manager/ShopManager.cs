@@ -5,35 +5,6 @@ using GB;
 
 public class ShopManager : AutoSingleton<ShopManager>
 {
-    // [System.Serializable]
-    public class ShopData
-    {
-        public int id; // 상점ID
-        public string name; // 상점이름
-        public int cityId; // 도시ID
-        public int type; // 상점타입
-        public List<ShopItemData> items; // 상점아이템
-        
-        public ShopData()
-        {
-            items = new List<ShopItemData>();
-        }
-    }
-
-    public class ShopItemData
-    {
-        public int itemId;
-        public int type;
-        public int cnt;
-        
-        public ShopItemData(int iId, int type, int cnt)
-        {
-            this.itemId = iId;
-            this.type = type;
-            this.cnt = cnt;
-        }
-    }
-
     [Header("Shop Data")]
     private ShopTable shopTable;
     private ShopItemTable shopItemTable;
@@ -43,9 +14,9 @@ public class ShopManager : AutoSingleton<ShopManager>
     {
         shopTable = GameDataManager.GetTable<ShopTable>();
         shopItemTable = GameDataManager.GetTable<ShopItemTable>();
-        LoadShopData();
+        InitShopData();
     }
-    public void LoadShopData()
+    public void InitShopData()
     {   
         shopAllData.Clear();
         int len = shopTable.Count;

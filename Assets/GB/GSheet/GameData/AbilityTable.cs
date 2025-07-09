@@ -4,18 +4,18 @@ using Newtonsoft.Json;
 
 
 [Serializable]
-public class WpTable  : GameData
+public class AbilityTable  : GameData
 {	
-	 [JsonProperty] public WpTableProb[] Datas{get; private set;}
-	 IReadOnlyDictionary<string, WpTableProb> _DicDatas;
+	 [JsonProperty] public AbilityTableProb[] Datas{get; private set;}
+	 IReadOnlyDictionary<string, AbilityTableProb> _DicDatas;
 
 	public void SetJson(string json)
     {
-        var data = JsonConvert.DeserializeObject <WpTable> (json);
-        WpTableProb[] arr = data.Datas;
+        var data = JsonConvert.DeserializeObject <AbilityTable> (json);
+        AbilityTableProb[] arr = data.Datas;
         Datas = arr;
 
-		var dic = new Dictionary<string, WpTableProb>();
+		var dic = new Dictionary<string, AbilityTableProb>();
 
         for (int i = 0; i < Datas.Length; ++i)
             dic[Datas[i].ID.ToString()] = Datas[i];
@@ -30,14 +30,6 @@ public class WpTable  : GameData
         {
 				case "ID": return true;
 				case "Name": return true;
-				case "Type": return true;
-				case "Price": return true;
-				case "Grade": return true;
-				case "Val": return true;
-				case "W": return true;
-				case "H": return true;
-				case "Dur": return true;
-				case "Res": return true;
 				case "KR": return true;
 				case "EN": return true;
 
@@ -61,19 +53,11 @@ public class WpTable  : GameData
     {
         get
         {
-            WpTableProb data = this[row];
+            AbilityTableProb data = this[row];
             switch (col)
             {
 				case "ID": return data.ID;
 				case "Name": return data.Name;
-				case "Type": return data.Type;
-				case "Price": return data.Price;
-				case "Grade": return data.Grade;
-				case "Val": return data.Val;
-				case "W": return data.W;
-				case "H": return data.H;
-				case "Dur": return data.Dur;
-				case "Res": return data.Res;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
 
@@ -88,19 +72,11 @@ public class WpTable  : GameData
     {
         get
         {
-             WpTableProb data = this[row];
+             AbilityTableProb data = this[row];
             switch (col)
             {
 				case "ID": return data.ID;
 				case "Name": return data.Name;
-				case "Type": return data.Type;
-				case "Price": return data.Price;
-				case "Grade": return data.Grade;
-				case "Val": return data.Val;
-				case "W": return data.W;
-				case "H": return data.H;
-				case "Dur": return data.Dur;
-				case "Res": return data.Res;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
 
@@ -115,29 +91,21 @@ public class WpTable  : GameData
     {
         get
         {
-            WpTableProb data = Datas[row];
+            AbilityTableProb data = Datas[row];
 
             switch (col)
             {
 				case 0: return data.ID;
 				case 1: return data.Name;
-				case 2: return data.Type;
-				case 3: return data.Price;
-				case 4: return data.Grade;
-				case 5: return data.Val;
-				case 6: return data.W;
-				case 7: return data.H;
-				case 8: return data.Dur;
-				case 9: return data.Res;
-				case 10: return data.KR;
-				case 11: return data.EN;
+				case 2: return data.KR;
+				case 3: return data.EN;
 
                 default: return null;
             }
         }
     }
 
-    public WpTableProb this[string name]
+    public AbilityTableProb this[string name]
     {
         get
         {
@@ -146,7 +114,7 @@ public class WpTable  : GameData
     }
 
 
-    public WpTableProb this[int index]
+    public AbilityTableProb this[int index]
     {
         get
         {
@@ -171,18 +139,10 @@ public class WpTable  : GameData
 }
 
 [Serializable]
-public class WpTableProb : GameDataProb
+public class AbilityTableProb : GameDataProb
 {
 		[JsonProperty] public readonly int ID;
 	[JsonProperty] public readonly string Name;
-	[JsonProperty] public readonly int Type;
-	[JsonProperty] public readonly int Price;
-	[JsonProperty] public readonly int Grade;
-	[JsonProperty] public readonly int Val;
-	[JsonProperty] public readonly int W;
-	[JsonProperty] public readonly int H;
-	[JsonProperty] public readonly int Dur;
-	[JsonProperty] public readonly string Res;
 	[JsonProperty] public readonly string KR;
 	[JsonProperty] public readonly string EN;
 

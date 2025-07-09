@@ -1558,8 +1558,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2052872138}
-  - component: {fileID: 2052872139}
+  - component: {fileID: 2052872142}
+  - component: {fileID: 2052872141}
   - component: {fileID: 2052872140}
+  - component: {fileID: 2052872139}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -1604,6 +1606,49 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3cdf3aa907f01740aa312ad64e5e390, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2052872141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2052872137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f71904243609a104292dca2f4b075e40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pData:
+    Name: "\uC720\uC800"
+    Age: 0
+    Gender: 0
+    Sylin: 0
+    Lv: 0
+    Exp: 0
+    NextExp: 0
+    HP: 0
+    MP: 0
+    SP: 0
+    VIT: 0
+    END: 0
+    STR: 0
+    AGI: 0
+    FOR: 0
+    INT: 0
+    CHA: 0
+    LUK: 0
+--- !u!114 &2052872142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2052872137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4414ce4a9501587468263b7aa4db191d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2082885051

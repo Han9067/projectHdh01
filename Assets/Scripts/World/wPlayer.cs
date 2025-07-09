@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class wPlayer : MonoBehaviour
 {
-
+    
     private float speed = 10f;
     private Vector2 targetPosition;
     private bool isMoving = false;
