@@ -3,6 +3,9 @@ using System;
 using UnityEngine;
 using Unity.Collections;
 
+public enum EquipmentSlot { Hand1, Hand2, Armor, Shoes, Helmet, Gloves, Belt, Cape, Necklace, Ring1, Ring2}
+
+
 [System.Serializable]
 public class PlayerData
 {
@@ -15,10 +18,22 @@ public class PlayerData
     // 상태
     public int HP, MP, SP;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
-    
-    //1번손,2번손,갑옷,신발,투구,장갑,벨트,망토,목걸이,반지1,반지2,무기
-    // 생성자
-    public PlayerData() { }
+    public Dictionary<EquipmentSlot, ItemData> EqSlot = new Dictionary<EquipmentSlot, ItemData>();
+    public List<ItemData> Inven = new List<ItemData>();
+    public PlayerData() 
+    {
+        EqSlot.Add(EquipmentSlot.Hand1, null);
+        EqSlot.Add(EquipmentSlot.Hand2, null);
+        EqSlot.Add(EquipmentSlot.Armor, null);
+        EqSlot.Add(EquipmentSlot.Shoes, null);
+        EqSlot.Add(EquipmentSlot.Helmet, null);
+        EqSlot.Add(EquipmentSlot.Gloves, null);
+        EqSlot.Add(EquipmentSlot.Belt, null);
+        EqSlot.Add(EquipmentSlot.Cape, null);
+        EqSlot.Add(EquipmentSlot.Necklace, null);
+        EqSlot.Add(EquipmentSlot.Ring1, null);
+        EqSlot.Add(EquipmentSlot.Ring2, null);
+    } // 생성자
 }
 
 [System.Serializable]
@@ -45,11 +60,16 @@ public class ShopItemData
     }
 }
 
-public class ItemInfo
+[System.Serializable]
+public class ItemData
 {
-    public string Name, Res;
-    public int itemId, Type, Price, Val, W, H, Dur, x, y;
-    
+    public string Name, Res, Path;
+    public int itemId, Type, Price, Val, W, H, Dur, X, Y, Dir; 
+    //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
+    public ItemData Clone()
+    {
+        return new ItemData { Name = this.Name, Res = this.Res, Path = this.Path, itemId = this.itemId, Type = this.Type, Price = this.Price, Val = this.Val, W = this.W, H = this.H, Dur = this.Dur, X = this.X, Y = this.Y, Dir = this.Dir };
+    }
 }
 
 // 통합 저장 데이터 클래스

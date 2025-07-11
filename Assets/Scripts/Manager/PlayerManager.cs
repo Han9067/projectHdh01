@@ -61,5 +61,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.INT = 10;
         pData.CHA = 10;
         pData.LUK = 10;
+
+        pData.Inven.Add(ItemManager.I.ItemDataList[20001].Clone());
+        pData.Inven.Add(ItemManager.I.ItemDataList[10001].Clone());
     }
 }

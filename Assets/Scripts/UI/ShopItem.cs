@@ -7,7 +7,7 @@ using GB;
 
 public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public ItemInfo itemInfo;
+    public ItemData itemData;
     private Button button;
     
     void Start()
@@ -16,20 +16,16 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         button.onClick.AddListener(OnItemClicked);
     }
     
-    public void SetItemInfo(ItemInfo info)
+    public void SetItemData(ItemData data)
     {
-        itemInfo = info;
-        //Debug.Log(itemInfo.itemId);
+        itemData = data;
     }
 
     void OnItemClicked()
     {
         UIManager.ShowPopup("ItemSelPop");
-        // Vector3 objPos = transform.position;
-        // string str = $"{itemInfo.Price}-{objPos.x}-{objPos.y}";
-        // GB.Presenter.Send("ItemSelPop", "Buy", str);
         Vector3 mousePos = Input.mousePosition;
-        string str = $"{itemInfo.Price}-{mousePos.x}-{mousePos.y}";
+        string str = $"{itemData.Price}-{mousePos.x}-{mousePos.y}";
         GB.Presenter.Send("ItemSelPop", "Buy", str);
     }
 

@@ -12,7 +12,7 @@ public class Grid
 }
 public class ItemPos
 {
-    public ItemInfo itemInfo;
+    public ItemData itemData;
     public int x;
     public int y;
 }
@@ -25,7 +25,7 @@ public class ShopInvenPop : UIScreen
     private List<List<Grid>> grids;
     public RectTransform content; // ScrollView의 Content 오브젝트
     public Sprite gridSpr;  // 10칸짜리(640x64) 그리드 이미지
-    public List<ItemInfo> ItemList = new List<ItemInfo>();
+    public List<ItemData> ItemList = new List<ItemData>();
     private void Awake()
     {
         Regist();
@@ -103,10 +103,10 @@ public class ShopInvenPop : UIScreen
         var items = shopData.items;
         foreach(var item in items)
         {
-            ItemInfo itemInfo = (ItemInfo)ItemManager.I.GetItemInfo(item.itemId.ToString(), item.type);
-            Vector2Int pos = ApplyGrid(itemInfo.itemId, itemInfo.W, itemInfo.H);
-            ItemPos itemPos = new ItemPos { itemInfo = itemInfo, x = pos.x, y = pos.y };
-            ItemList.Add(itemInfo);
+            ItemData data = ItemManager.I.ItemDataList[item.itemId].Clone();
+            Vector2Int pos = ApplyGrid(data.itemId, data.W, data.H);
+            ItemPos itemPos = new ItemPos { itemData = data, x = pos.x, y = pos.y };
+            ItemList.Add(data);
             itemPosList.Add(itemPos);
         }
         
@@ -206,7 +206,6 @@ public class ShopInvenPop : UIScreen
         }
         return true;
     }
-    
     /// 지정된 위치에 아이템을 실제로 배치합니다.
     private void PlaceItem(int slotId, int startX, int startY, int w, int h)
     {
@@ -219,7 +218,6 @@ public class ShopInvenPop : UIScreen
             }
         }
     }
-    
     /// 현재 그리드 상태를 콘솔에 시각적으로 출력합니다.
     public void TestGrid()
     {
@@ -267,34 +265,18 @@ public class ShopInvenPop : UIScreen
         // Content 높이 자동 조정
         content.sizeDelta = new Vector2(content.sizeDelta.x, (gh * 64) + 6);
     }
-
     public void CreateShopItem(List<ItemPos> itemPosList)
     {
         // ShopItem 프리팹 로드
         GameObject shopItemPrefab = Resources.Load<GameObject>("Prefabs/UI/ShopItem");
 
-        foreach (var info in itemPosList)
+        foreach (var data in itemPosList)
         {
-            // 리소스 경로 결정
-            string path = "";
-            if(info.itemInfo.itemId < 40000)
-            {
-                path = $"Images/Item/Eq/{info.itemInfo.Res}";
-            }
-            else if(info.itemInfo.itemId < 80000)
-            {
-                path = $"Images/Item/Wp/{info.itemInfo.Res}";
-            }
-            else
-            {
-                path = $"Images/Item/Ect/{info.itemInfo.Res}";
-            }
-
             // 스프라이트 로드
-            Sprite itemSprite = Resources.Load<Sprite>(path);
+            Sprite itemSprite = Resources.Load<Sprite>(data.itemData.Path);
             if (itemSprite == null)
             {
-                Debug.LogWarning($"리소스 로드 실패: {path}");
+                Debug.LogWarning($"리소스 로드 실패: {data.itemData.Path}");
                 continue;
             }
 
@@ -316,14 +298,12 @@ public class ShopInvenPop : UIScreen
             rt.pivot = new Vector2(0, 1);
             
             // 그리드 좌표에 맞게 위치 설정 (64는 한 칸의 픽셀 크기)
-            rt.anchoredPosition = new Vector2(info.x * 64, -(info.y * 64));
+            rt.anchoredPosition = new Vector2(data.x * 64, -(data.y * 64));
 
             // 아이템 정보 저장 (필요시)
-            shopItem.name = $"ShopItem_{info.itemInfo.itemId}";
-            shopItem.GetComponent<ShopItem>().SetItemInfo(info.itemInfo);
+            shopItem.name = $"ShopItem_{data.itemData.itemId}";
+            shopItem.GetComponent<ShopItem>().SetItemData(data.itemData);
         }
     }
-    public override void Refresh()
-    {           
-    }
+    public override void Refresh(){ }
 }
