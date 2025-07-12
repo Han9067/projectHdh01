@@ -3,29 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[System.Serializable]
-public class Grid
-{
-    public int x;
-    public int y;
-    public int slotId = -1; // -1이면 비어있음
-}
-public class ItemPos
-{
-    public ItemData itemData;
-    public int x;
-    public int y;
-}
-
 public class ShopInvenPop : UIScreen
 {
     public static bool isActive { get; private set; } = false;
     private int gw = 10; //기본 넓이 10칸
     private int gh = 12; //기본 높이 12칸
-    private List<List<Grid>> grids;
+    private List<List<InvenGrid>> grids;
     public RectTransform content; // ScrollView의 Content 오브젝트
     public Sprite gridSpr;  // 10칸짜리(640x64) 그리드 이미지
     public List<ItemData> ItemList = new List<ItemData>();
+    public class ItemPos
+    {
+        public ItemData itemData;
+        public int x;
+        public int y;
+    }
     private void Awake()
     {
         Regist();
@@ -35,13 +27,13 @@ public class ShopInvenPop : UIScreen
     
     private void InitGrid()
     {
-        grids = new List<List<Grid>>();
+        grids = new List<List<InvenGrid>>();
         for(int y = 0; y < gh; y++)
         {
-            List<Grid> row = new List<Grid>();
+            List<InvenGrid> row = new List<InvenGrid>();
             for(int x = 0; x < gw; x++)
             {
-                row.Add(new Grid { x = x, y = y, slotId = -1 });
+                row.Add(new InvenGrid { x = x, y = y, slotId = -1 });
             }
             grids.Add(row);
         }
@@ -109,9 +101,6 @@ public class ShopInvenPop : UIScreen
             ItemList.Add(data);
             itemPosList.Add(itemPos);
         }
-        
-        // 그리드 상태 출력 (디버그용)
-        TestGrid();
         // 그리드 배경 행 이미지 생성
         DrawGrid();
         // 아이템 오브젝트 생성
@@ -176,10 +165,10 @@ public class ShopInvenPop : UIScreen
         // 새로운 행들을 추가
         for (int i = 0; i < additionalRows; i++)
         {
-            List<Grid> newRow = new List<Grid>();
+            List<InvenGrid> newRow = new List<InvenGrid>();
             for (int x = 0; x < gw; x++)
             {
-                newRow.Add(new Grid { x = x, y = gh + i, slotId = -1 });
+                newRow.Add(new InvenGrid { x = x, y = gh + i, slotId = -1 });
             }
             grids.Add(newRow);
         }
@@ -217,29 +206,6 @@ public class ShopInvenPop : UIScreen
                 grids[y][x].slotId = slotId;
             }
         }
-    }
-    /// 현재 그리드 상태를 콘솔에 시각적으로 출력합니다.
-    public void TestGrid()
-    {
-        string gridStatus = "그리드 상태:\n";
-        
-        // 위에서 아래로 출력 (왼쪽 위가 0,0)
-        for (int y = 0; y < gh; y++)
-        {
-            for (int x = 0; x < gw; x++)
-            {
-                if (grids[y][x].slotId != -1)
-                {
-                    gridStatus += $"[{grids[y][x].slotId:00}]";
-                }
-                else
-                {
-                    gridStatus += "[  ]";
-                }
-            }
-            gridStatus += "\n"; // 줄바꿈
-        }
-        UnityEngine.Debug.Log(gridStatus);
     }
     private void DrawGrid()
     {

@@ -1,10 +1,13 @@
 using GB;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PlayerManager : AutoSingleton<PlayerManager>
 {
+
     [Header("플레이어 데이터")]
     public PlayerData pData;
+    private List<List<InvenGrid>> grids;
     protected void Awake()
     {
         if(I != null && I != this)
@@ -13,8 +16,22 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             return;
         }
         DontDestroyOnLoad(this.gameObject);
+        InitGrid();
     }
-    
+    // 인벤토리 그리드 초기화
+    private void InitGrid()
+    {
+        grids = new List<List<InvenGrid>>();
+        for(int y = 0; y < 10; y++)
+        {
+            List<InvenGrid> row = new List<InvenGrid>();
+            for(int x = 0; x < 10; x++)
+            {
+                row.Add(new InvenGrid { x = x, y = y, slotId = -1 });
+            }
+            grids.Add(row);
+        }
+    }
     // 플레이어 데이터 초기화
     public void ApplyPlayerData(PlayerData data)
     {
@@ -37,8 +54,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.INT = data.INT;
         pData.CHA = data.CHA;
         pData.LUK = data.LUK;
+        pData.Inven = data.Inven;
     }
-    
     public void DummyPlayerData()
     {
         if (pData == null)
@@ -63,6 +80,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.LUK = 10;
 
         pData.Inven.Add(ItemManager.I.ItemDataList[20001].Clone());
+        pData.Inven[0].X = 0;
+        pData.Inven[0].Y = 0;
         pData.Inven.Add(ItemManager.I.ItemDataList[10001].Clone());
+        pData.Inven[1].X = 1;
+        pData.Inven[1].Y = 0;
     }
 }
