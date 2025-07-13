@@ -7,7 +7,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
     [Header("플레이어 데이터")]
     public PlayerData pData;
-    private List<List<InvenGrid>> grids;
+    public List<List<InvenGrid>> grids;
     protected void Awake()
     {
         if(I != null && I != this)

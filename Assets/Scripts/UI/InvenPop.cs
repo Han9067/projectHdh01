@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GB;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,9 +6,10 @@ using UnityEngine.UI;
 public class InvenPop : UIScreen
 {
     [SerializeField] private Transform slotParent; // Slot 게임오브젝트
-[SerializeField] private Transform eqParent; // 장비 게임오브젝트
-    private Image[,] gridImages; // 그리드 이미지 배열
-
+    [SerializeField] private Transform eqParent; // 장비 게임오브젝트
+    public GameObject[,] gridObj;
+    private List<List<InvenGrid>> pGrids;
+    public GameObject itemPrefab;
     private void Awake()
     {
         Regist();
@@ -25,7 +27,6 @@ public class InvenPop : UIScreen
     private void OnDisable() 
     {
         Presenter.UnBind("InvenPop", this);
-
     }
     public void RegistButton()
     {
@@ -51,7 +52,7 @@ public class InvenPop : UIScreen
     private void InitGrid()
     {
         // 10x10 배열 초기화
-        gridImages = new Image[10, 10];
+        gridObj = new GameObject[10, 10];
         // grid_0_0부터 grid_9_9까지 찾아서 배열에 할당
         for (int x = 0; x < 10; x++)
         {
@@ -59,14 +60,13 @@ public class InvenPop : UIScreen
             {
                 string gridName = $"grid_{x}_{y}";
                 Transform grid = slotParent.Find(gridName);
-                Image img = grid.GetComponent<Image>(); // 그리드 이미지 가져오기
-                gridImages[x, y] = img; // 그리드 이미지 배열에 할당
+                gridObj[x, y] = grid.gameObject; // 그리드 이미지 배열에 할당
             }
         }
+        pGrids = PlayerManager.I.grids;
     }
     private void LoadPlayerInven()
     {
-        UnityEngine.Debug.Log(PlayerManager.I.pData.Inven.Count);
         for(int i = 0; i < PlayerManager.I.pData.Inven.Count; i++)
         {
             // 현재 아이템의 크기 정보 가져오기 (예시)
@@ -85,52 +85,53 @@ public class InvenPop : UIScreen
                         // 아이템 배치
                         PlaceItem(gx, gy, w, h, PlayerManager.I.pData.Inven[i]);
                         placed = true;
-                    }else{
-                        UnityEngine.Debug.Log("아이템을 배치할 수 없습니다.");
                     }
                 }
             }
         }
     }
-    private bool CanPlaceItem(int startX, int startY, int width, int height)
+    private bool CanPlaceItem(int sx, int sy, int wid, int hei)
     {
         // 그리드 범위 체크
-        if (startX + width > 10 || startY + height > 10)
+        if (sx + wid > 10 || sy + hei > 10)
             return false;
         
         // 해당 영역이 비어있는지 검사
-        for (int y = startY; y < startY + height; y++)
+        for (int y = sy; y < sy + hei; y++)
         {
-            for (int x = startX; x < startX + width; x++)
+            for (int x = sx; x < sx + wid; x++)
             {
-                if (gridImages[x, y].sprite != null)
-                    return false; // 이미 아이템이 있는 경우
+                if(pGrids[y][x].slotId != -1)
+                    return false;
             }
         }
         return true;
     }
-    private void PlaceItem(int startX, int startY, int width, int height, ItemData item)
+    private void PlaceItem(int sx, int sy, int wid, int hei, ItemData item)
     {
-        // 아이템 스프라이트 로드
-        Sprite itemSprite = Resources.Load<Sprite>(item.Path);
-
-        // 아이템 게임오브젝트 생성
-        GameObject itemObj = new GameObject($"Item_{item.Name}");
-        itemObj.transform.SetParent(eqParent); // 장비 부모 아래에 배치
-        
+        // itemPrefab을 인스턴스화
+        GameObject itemObj = Instantiate(itemPrefab, eqParent);
+        // 오브젝트 이름 설정
+        itemObj.name = $"Item_{item.Name}";
+        // InvenItemObj 스크립트 가져오기
+        InvenItemObj invenItemObj = itemObj.GetComponent<InvenItemObj>();
+        invenItemObj.SetItemData(item);
         // RectTransform 설정
-        RectTransform rectTransform = itemObj.AddComponent<RectTransform>();
-        rectTransform.anchorMin = new Vector2(0.5f, 1);
-        rectTransform.anchorMax = new Vector2(0.5f, 1);
+        RectTransform rectTransform = itemObj.GetComponent<RectTransform>();
+        float cx = gridObj[sx, sy].GetComponent<RectTransform>().anchoredPosition.x + ((wid - 1) * 32);
+        float cy = gridObj[sx, sy].GetComponent<RectTransform>().anchoredPosition.y - ((hei - 1) * 32);
 
         // 그리드 크기에 맞춰 위치와 크기 설정
-        rectTransform.anchoredPosition = new Vector2(startX * 64, -startY * 64);
-        rectTransform.sizeDelta = new Vector2(width * 64, height * 64);
+        rectTransform.anchoredPosition = new Vector2(cx, cy);
+        rectTransform.sizeDelta = new Vector2(wid * 64, hei * 64);
         rectTransform.localScale = new Vector3(1, 1, 1);
-        
-        // Image 컴포넌트 추가
-        Image itemImage = itemObj.AddComponent<Image>();
-        itemImage.sprite = itemSprite;
-        itemImage.color = Color.white;
+        // 그리드 영역 체크
+        for(int y = sy; y < sy + hei; y++)
+        {
+            for(int x = sx; x < sx + wid; x++)
+            {
+                pGrids[y][x].slotId = item.itemId;
+            }
+        }
     }
 }
