@@ -82,8 +82,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Inven.Add(ItemManager.I.ItemDataList[20001].Clone());
         pData.Inven[0].X = 0;
         pData.Inven[0].Y = 0;
+        // pData.Inven[0].Uid = ItemManager.I.GetUid();
         pData.Inven.Add(ItemManager.I.ItemDataList[10001].Clone());
         pData.Inven[1].X = 1;
         pData.Inven[1].Y = 0;
+        // pData.Inven[1].Uid = ItemManager.I.GetUid();
     }
 }

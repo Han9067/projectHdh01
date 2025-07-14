@@ -66,9 +66,13 @@ public class ItemData
     public string Name, Res, Path;
     public int itemId, Type, Price, Val, W, H, Dur, X, Y, Dir; 
     //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
+    public long Uid;
     public ItemData Clone()
     {
-        return new ItemData { Name = this.Name, Res = this.Res, Path = this.Path, itemId = this.itemId, Type = this.Type, Price = this.Price, Val = this.Val, W = this.W, H = this.H, Dur = this.Dur, X = this.X, Y = this.Y, Dir = this.Dir };
+        return new ItemData { 
+            Name = this.Name, Res = this.Res, Path = this.Path, itemId = this.itemId, Type = this.Type, 
+            Price = this.Price, Val = this.Val, W = this.W, H = this.H, 
+            Dur = this.Dur, X = this.X, Y = this.Y, Dir = this.Dir };
     }
 }
 

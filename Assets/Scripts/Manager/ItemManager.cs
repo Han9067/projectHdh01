@@ -1,5 +1,6 @@
 using GB;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ItemManager : AutoSingleton<ItemManager>
 {
@@ -43,4 +44,8 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         return new ItemData { itemId = id, Name = name, Type = type, Price = price, Val = val, W = w, H = h, Res = res, Dur = dur, Path = path, X = 0, Y = 0, Dir = 0 };
     }
+    // public int GetUid()
+    // {
+    //     return 1000000000 + Random.Range(0, 899999999);
+    // }
 }
