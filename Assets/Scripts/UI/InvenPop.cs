@@ -5,19 +5,30 @@ using UnityEngine.UI;
 
 public class InvenPop : UIScreen
 {
+    class EdgePos{
+        public float u, d, l, r;
+        public EdgePos(float u, float d, float l, float r){this.u = u;this.d = d;this.l = l;this.r = r;}
+    }
     [SerializeField] private Transform slotParent; // Slot 게임오브젝트
     [SerializeField] private Transform eqParent; // 장비 게임오브젝트
+    [SerializeField] private Transform itemParent; // 아이템 게임오브젝트
     [SerializeField] private GameObject itemPrefab;
+    [SerializeField] private GameObject popPrefab;
     public GameObject[,] gridObj;
     private List<List<InvenGrid>> pGrids;
     private List<GameObject> curItem = new List<GameObject>();
     private bool MoveOn = false;
-    private int curIdx = 0;
-    private int curType = 0;
+    private int curIdx = 0, curState = 0;
+    private int edgeCnt = 0;
+    private string[] curEq;
+    private float[] popEdge = new float[4];
+    private float[] slotEdge = new float[4];
+    private Dictionary<string,EdgePos> eqEdge = new Dictionary<string,EdgePos>();
     private void Awake()
     {
         Regist();
         RegistButton();
+        RegistEqEdge();
     }
     private void Start()
     {
@@ -36,6 +47,16 @@ public class InvenPop : UIScreen
     {
         foreach(var v in mButtons)
             v.Value.onClick.AddListener(() => { OnButtonClick(v.Key);});
+    }
+    public void RegistEqEdge()
+    {
+        string[] str = {"Hand1Box","Hand2Box","ArmorBox","ShoesBox","CapeBox","HelmetBox","GlovesBox","BeltBox","NeckBox","Ring1Box","Ring2Box"};
+        foreach(var v in str)
+        {
+            RectTransform rt = mGameObject[v].transform.GetComponent<RectTransform>();
+            float w = rt.sizeDelta.x / 2, h = rt.sizeDelta.y / 2;
+            eqEdge[v] = new EdgePos(rt.position.y + h, rt.position.y - h, rt.position.x - w, rt.position.x + w);
+        }
     }
     public void OnButtonClick(string key)
     {
@@ -58,8 +79,38 @@ public class InvenPop : UIScreen
                 if(!MoveOn)
                 {
                     string[] str = data.Get<string>().Split('_');
-                    int xx = int.Parse(str[0]);
-                    int yy = int.Parse(str[1]);
+                    int xx = int.Parse(str[0]), yy = int.Parse(str[1]);
+                    int id = int.Parse(str[2]), type = int.Parse(str[3]);
+                    if(id > 40000){
+                        edgeCnt = 0;
+                    }else if(id < 20000){
+                        switch(type){
+                            case 10:
+                                curEq = new string[] {"Hand2"};
+                                edgeCnt = 1;
+                                break;
+                            default:
+                                curEq = new string[] {"Hand1","Hand2"};
+                                edgeCnt = 2;
+                                break;
+                        }
+                    }else{
+                        edgeCnt = 1;
+                        switch(type){
+                            case 1:curEq = new string[] {"Armor"};break;
+                            case 2:curEq = new string[] {"Helmet"};break;
+                            case 3:curEq = new string[] {"Shoes"};break;
+                            case 4:curEq = new string[] {"Gloves"};break;
+                            case 5:curEq = new string[] {"Belt"};break;
+                            case 6:curEq = new string[] {"Cape"};break;
+                            case 7:curEq = new string[] {"Ring1","Ring2"};break;
+                            case 8:curEq = new string[] {"Neck"};break;
+                            case 9:
+                                curEq = new string[] {"Hand1","Hand2"};
+                                edgeCnt = 2;
+                                break; //방패
+                        }
+                    }
                     foreach(var v in curItem)
                     {
                         if(v.GetComponent<InvenItemObj>().x == xx && v.GetComponent<InvenItemObj>().y == yy)
@@ -72,7 +123,9 @@ public class InvenPop : UIScreen
                 }
                 else
                 {
+                    resetAllGrids();
                     MoveOn = false;
+                    // Debug.Log(curState);
                 }
                 break;
         }
@@ -93,6 +146,15 @@ public class InvenPop : UIScreen
             }
         }
         pGrids = PlayerManager.I.grids;
+        RectTransform grid00 = gridObj[0, 0].GetComponent<RectTransform>();
+        RectTransform grid99 = gridObj[9, 9].GetComponent<RectTransform>();
+
+        slotEdge[0] = grid00.position.y + grid00.sizeDelta.y / 2;slotEdge[1] = grid99.position.y - grid99.sizeDelta.y / 2;
+        slotEdge[2] = grid00.position.x - grid00.sizeDelta.x / 2;slotEdge[3] = grid99.position.x + grid99.sizeDelta.x / 2;
+
+        RectTransform pop = popPrefab.GetComponent<RectTransform>();
+        popEdge[0] = pop.position.y + pop.sizeDelta.y / 2;popEdge[1] = pop.position.y - pop.sizeDelta.y / 2;
+        popEdge[2] = pop.position.x - pop.sizeDelta.x / 2;popEdge[3] = pop.position.x + pop.sizeDelta.x / 2;
     }
     private void LoadPlayerInven()
     {
@@ -139,7 +201,7 @@ public class InvenPop : UIScreen
     private void PlaceItem(int sx, int sy, int wid, int hei, ItemData item)
     {
         // itemPrefab을 인스턴스화
-        GameObject itemObj = Instantiate(itemPrefab, eqParent);
+        GameObject itemObj = Instantiate(itemPrefab, itemParent);
         // 오브젝트 이름 설정
         itemObj.name = $"Item_{item.Name}";
         // InvenItemObj 스크립트 가져오기
@@ -161,14 +223,13 @@ public class InvenPop : UIScreen
         {
             for(int x = sx; x < sx + wid; x++)
             {
-                pGrids[y][x].slotId = item.itemId;
+                pGrids[y][x].slotId = item.ItemId;
             }
         }
     }
     private void CheckOverlapWithGrid()
     {
         resetAllGrids();
-
         
         RectTransform itemRect = curItem[curIdx].transform as RectTransform;
         float wid = itemRect.sizeDelta.x - 32, hei = itemRect.sizeDelta.y - 32;
@@ -176,7 +237,7 @@ public class InvenPop : UIScreen
         float maxX = itemRect.position.x + wid/2, maxY = itemRect.position.y + hei/2;
 
         InvenItemObj itemObj = curItem[curIdx].GetComponent<InvenItemObj>();
-        int myId = itemObj.itemData.itemId, maxCnt = itemObj.itemData.W * itemObj.itemData.H;
+        int myId = itemObj.itemData.ItemId, maxCnt = itemObj.itemData.W * itemObj.itemData.H;
         int gx = 0, gy = 0;
         int[] gridX = new int[maxCnt], gridY = new int[maxCnt];
         List<int> gridItemId = new List<int>();
@@ -205,7 +266,9 @@ public class InvenPop : UIScreen
                 gridX[cnt] = gx + w;
                 gridY[cnt] = gy + h;
                 cnt++;
-                
+
+                if(gx + w > 9 || gy + h > 9)return; // 그리드 범위 초과시 리턴
+
                 if(gridItemId.IndexOf(PlayerManager.I.grids[gy + h][gx + w].slotId) == -1 && 
                 PlayerManager.I.grids[gy + h][gx + w].slotId != -1 &&
                 PlayerManager.I.grids[gy + h][gx + w].slotId != myId)
@@ -215,7 +278,7 @@ public class InvenPop : UIScreen
             }
         }
         // 색상 결정
-        curType = gridItemId.Count == 0 ? 0 : (gridItemId.Count > 1 ? 2 : 1);
+        curState = gridItemId.Count == 0 ? 0 : (gridItemId.Count > 1 ? 2 : 1);
         // 색상 변경 함수
         void ChangeGridColor(int x, int y, int type)
         {
@@ -229,7 +292,7 @@ public class InvenPop : UIScreen
         }
         // 겹치는 그리드 색상 변경
         for(int i = 0; i < maxCnt; i++)
-            ChangeGridColor(gridX[i], gridY[i], curType);
+            ChangeGridColor(gridX[i], gridY[i], curState);
     }
     private void resetAllGrids()
     {
@@ -239,12 +302,44 @@ public class InvenPop : UIScreen
                 gridObj[y, x].GetComponent<GridObj>().ChangeToWhite();
         }
     }
+    private void resetAllEq()
+    {
+        foreach(var v in curEq)
+        {
+            
+        }
+    }
     private void Update()
     {
         if(MoveOn)
         {
-            curItem[curIdx].transform.position = Input.mousePosition;
-            CheckOverlapWithGrid();
+            curItem[curIdx].transform.position = Input.mousePosition; // 아이템 위치 업데이트
+
+            if(curItem[curIdx].transform.position.x <= popEdge[2] || curItem[curIdx].transform.position.x >= popEdge[3] ||
+            curItem[curIdx].transform.position.y <= popEdge[1] || curItem[curIdx].transform.position.y >= popEdge[0])
+            {
+                Debug.Log("outside pop");
+            }else{
+                float x = curItem[curIdx].transform.position.x, y = curItem[curIdx].transform.position.y;
+                if(y <= slotEdge[0] && y >= slotEdge[1] && x >= slotEdge[2] && x <= slotEdge[3])
+                {
+                    CheckOverlapWithGrid();
+                }else{
+                    bool on = false;
+                    for(int i = 0; i < edgeCnt; i++)
+                    {
+                        if(curItem[curIdx].transform.position.y >= eqEdge[curEq[i]].d && curItem[curIdx].transform.position.y <= eqEdge[curEq[i]].u &&
+                        curItem[curIdx].transform.position.x >= eqEdge[curEq[i]].l && curItem[curIdx].transform.position.x <= eqEdge[curEq[i]].r)
+                        {
+                            on = true;
+                            Debug.Log("on");
+                            break;
+                        }
+                    }
+                    if(!on)
+                        resetAllGrids();
+                }
+            }
         }
     }
 }

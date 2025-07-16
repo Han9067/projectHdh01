@@ -42,7 +42,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     }
     private ItemData CreateItemData(int id, string name, int type, int price, int val, int w, int h, string res, int dur, string path)
     {
-        return new ItemData { itemId = id, Name = name, Type = type, Price = price, Val = val, W = w, H = h, Res = res, Dur = dur, Path = path, X = 0, Y = 0, Dir = 0 };
+        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Val = val, W = w, H = h, Res = res, Dur = dur, Path = path, X = 0, Y = 0, Dir = 0 };
     }
     // public int GetUid()
     // {

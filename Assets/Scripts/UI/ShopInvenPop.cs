@@ -96,7 +96,7 @@ public class ShopInvenPop : UIScreen
         foreach(var item in items)
         {
             ItemData data = ItemManager.I.ItemDataList[item.itemId].Clone();
-            Vector2Int pos = ApplyGrid(data.itemId, data.W, data.H);
+            Vector2Int pos = ApplyGrid(data.ItemId, data.W, data.H);
             ItemPos itemPos = new ItemPos { itemData = data, x = pos.x, y = pos.y };
             ItemList.Add(data);
             itemPosList.Add(itemPos);
@@ -267,7 +267,7 @@ public class ShopInvenPop : UIScreen
             rt.anchoredPosition = new Vector2(data.x * 64, -(data.y * 64));
 
             // 아이템 정보 저장 (필요시)
-            shopItem.name = $"ShopItem_{data.itemData.itemId}";
+            shopItem.name = $"ShopItem_{data.itemData.ItemId}";
             shopItem.GetComponent<ShopItem>().SetItemData(data.itemData);
         }
     }
