@@ -1,39 +1,44 @@
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using GB;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class InvenPop : UIScreen
 {
     class EdgePos{
         public float u, d, l, r;
         public EdgePos(float u, float d, float l, float r){this.u = u;this.d = d;this.l = l;this.r = r;}
     }
-    [SerializeField] private Transform slotParent; // Slot 게임오브젝트
-    [SerializeField] private Transform eqParent; // 장비 게임오브젝트
-    [SerializeField] private Transform itemParent; // 아이템 게임오브젝트
-    [SerializeField] private GameObject itemPrefab;
-    [SerializeField] private GameObject popPrefab;
-    public GameObject[,] gridObj;
-    private List<List<InvenGrid>> pGrids;
-    private List<GameObject> curItem = new List<GameObject>();
-    private bool MoveOn = false;
-    private int curIdx = 0, curState = 0;
-    private int edgeCnt = 0;
-    private string[] curEq;
-    private float[] popEdge = new float[4];
-    private float[] slotEdge = new float[4];
-    private Dictionary<string,EdgePos> eqEdge = new Dictionary<string,EdgePos>();
+    [SerializeField] private Transform slotParent; // 슬롯 부모
+    [SerializeField] private Transform eqParent; // 장비 부모
+    [SerializeField] private Transform itemParent; // 아이템 부모
+    [SerializeField] private GameObject itemPrefab; // 아이템 프리팹
+    [SerializeField] private GameObject popPrefab; // 팝업 프리팹
+    public Image[,] gridObj; // 그리드 게임오브젝트
+    private List<List<InvenGrid>> pGrids; // 플레이어 그리드
+    private List<GameObject> curItem = new List<GameObject>(); // 현재 선택된 아이템
+    private bool moveOn = false; // 이동 중인지 체크
+    private int curIdx = 0, curState = 0; // 현재 선택된 아이템 인덱스, 상태
+    private InvenItemObj curItemObj; // 현재 선택된 아이템의 오브젝트 스크립트
+    private string[] curEq; // 현재 선택된 장비
+    private int curItemX, curItemY; // 현재 선택된 아이템의 위치
+    private float[] popEdge = new float[4]; // 팝업 경계
+    private float[] slotEdge = new float[4]; // 슬롯 경계
+    private Dictionary<string,EdgePos> eqEdge = new Dictionary<string,EdgePos>(); // 장비 경계
+    private Sprite whiteGrid; // 클래스 멤버 변수로 캐싱
+    private Sprite grayGrid; // 클래스 멤버 변수로 캐싱
     private void Awake()
     {
         Regist();
         RegistButton();
         RegistEqEdge();
+        whiteGrid = ResManager.GetSprite("ui_grid_white");
+        grayGrid = ResManager.GetSprite("ui_grid_gray");
     }
     private void Start()
     {
         InitGrid();
-        LoadPlayerInven();
+        LoadInven();
     }
     private void OnEnable()
     {
@@ -41,6 +46,14 @@ public class InvenPop : UIScreen
     }
     private void OnDisable() 
     {
+        ResetAllEq();
+        ResetAllGrids();
+        if(moveOn){
+            //강제 팝업 종료시 대응
+            moveOn = false;
+            ReturnItem();
+        }
+        InitCurData();
         Presenter.UnBind("InvenPop", this);
     }
     public void RegistButton()
@@ -50,12 +63,11 @@ public class InvenPop : UIScreen
     }
     public void RegistEqEdge()
     {
-        string[] str = {"Hand1Box","Hand2Box","ArmorBox","ShoesBox","CapeBox","HelmetBox","GlovesBox","BeltBox","NeckBox","Ring1Box","Ring2Box"};
-        foreach(var v in str)
+        foreach(var v in mImages)
         {
-            RectTransform rt = mGameObject[v].transform.GetComponent<RectTransform>();
+            RectTransform rt = v.Value.rectTransform;
             float w = rt.sizeDelta.x / 2, h = rt.sizeDelta.y / 2;
-            eqEdge[v] = new EdgePos(rt.position.y + h, rt.position.y - h, rt.position.x - w, rt.position.x + w);
+            eqEdge[v.Key] = new EdgePos(rt.position.y + h, rt.position.y - h, rt.position.x - w, rt.position.x + w);
         }
     }
     public void OnButtonClick(string key)
@@ -76,65 +88,68 @@ public class InvenPop : UIScreen
         switch(key)
         {
             case "ClickObj":
-                if(!MoveOn)
+                if(!moveOn)
                 {
+                    if(curItemObj != null) curItemObj = null;
                     string[] str = data.Get<string>().Split('_');
-                    int xx = int.Parse(str[0]), yy = int.Parse(str[1]);
-                    int id = int.Parse(str[2]), type = int.Parse(str[3]);
-                    if(id > 40000){
-                        edgeCnt = 0;
-                    }else if(id < 20000){
-                        switch(type){
-                            case 10:
-                                curEq = new string[] {"Hand2"};
-                                edgeCnt = 1;
-                                break;
-                            default:
-                                curEq = new string[] {"Hand1","Hand2"};
-                                edgeCnt = 2;
-                                break;
-                        }
-                    }else{
-                        edgeCnt = 1;
-                        switch(type){
-                            case 1:curEq = new string[] {"Armor"};break;
-                            case 2:curEq = new string[] {"Helmet"};break;
-                            case 3:curEq = new string[] {"Shoes"};break;
-                            case 4:curEq = new string[] {"Gloves"};break;
-                            case 5:curEq = new string[] {"Belt"};break;
-                            case 6:curEq = new string[] {"Cape"};break;
-                            case 7:curEq = new string[] {"Ring1","Ring2"};break;
-                            case 8:curEq = new string[] {"Neck"};break;
-                            case 9:
-                                curEq = new string[] {"Hand1","Hand2"};
-                                edgeCnt = 2;
-                                break; //방패
-                        }
-                    }
+                    int uid = int.Parse(str[0]), id = int.Parse(str[1]), type = int.Parse(str[2]);
+                    CheckCurEq(id, type);
                     foreach(var v in curItem)
                     {
-                        if(v.GetComponent<InvenItemObj>().x == xx && v.GetComponent<InvenItemObj>().y == yy)
+                        InvenItemObj iObj = v.GetComponent<InvenItemObj>();
+                        if(iObj.uid == uid)
                         {
                             curIdx = curItem.IndexOf(v);
+                            curItemObj = iObj;
                             break;
                         }
                     }
-                    MoveOn = true;
+                    StateItems(0, curIdx);
+                    moveOn = true;
                 }
                 else
-                {
-                    resetAllGrids();
-                    MoveOn = false;
-                    // Debug.Log(curState);
+                {   
+                    ResetAllGrids();
+                    ResetAllEq();
+                    moveOn = false;
+                    switch(curState)
+                    {
+                        case 0:
+                            MoveItem(curItemObj.x, curItemObj.y, curItemObj.itemData.W, curItemObj.itemData.H, curItemX, curItemY);
+                            InitCurData();
+                            break;
+                        case 1:
+                            ChangeItem(curItemObj.x, curItemObj.y, curItemObj.itemData.W, curItemObj.itemData.H, curItemX, curItemY);
+                            break;
+                        case 2:
+                            InitCurData();
+                            return; // 겹치는 아이템이 여러 개이며 이동이 불가능
+                        case 3:
+                            bool on = false;
+                            for(int i = 0; i < curEq.Length; i++)
+                            {
+                            }
+                            if(!on) ReturnItem();
+                            InitCurData();
+                            break; // 아이템 그리드 영역 밖에 있을때 또는 장비 칸 영역에 있을때
+                    }
+                    // if(!UIManager.I.canClose) UIManager.I.canClose = true;
                 }
                 break;
         }
     }
     public override void Refresh(){}
+    private void InitCurData()
+    {
+        curEq = new string[] {}; curIdx = -1;
+        curItemX = -1; curItemY = -1; curState = 0;
+        curItemObj = null;
+        StateItems(1, 0);
+    }
     private void InitGrid()
     {
         // 10x10 배열 초기화
-        gridObj = new GameObject[10, 10];
+        gridObj = new Image[10, 10];
         // grid_0_0부터 grid_9_9까지 찾아서 배열에 할당
         for (int y = 0; y < 10; y++)
         {
@@ -142,12 +157,12 @@ public class InvenPop : UIScreen
             {
                 string gridName = $"grid_{y}_{x}";
                 Transform grid = slotParent.Find(gridName);
-                gridObj[y, x] = grid.gameObject; // 그리드 이미지 배열에 할당
+                gridObj[y, x] = grid.GetComponent<Image>(); // 그리드 이미지 배열에 할당
             }
         }
         pGrids = PlayerManager.I.grids;
-        RectTransform grid00 = gridObj[0, 0].GetComponent<RectTransform>();
-        RectTransform grid99 = gridObj[9, 9].GetComponent<RectTransform>();
+        RectTransform grid00 = gridObj[0, 0].rectTransform;
+        RectTransform grid99 = gridObj[9, 9].rectTransform;
 
         slotEdge[0] = grid00.position.y + grid00.sizeDelta.y / 2;slotEdge[1] = grid99.position.y - grid99.sizeDelta.y / 2;
         slotEdge[2] = grid00.position.x - grid00.sizeDelta.x / 2;slotEdge[3] = grid99.position.x + grid99.sizeDelta.x / 2;
@@ -156,29 +171,15 @@ public class InvenPop : UIScreen
         popEdge[0] = pop.position.y + pop.sizeDelta.y / 2;popEdge[1] = pop.position.y - pop.sizeDelta.y / 2;
         popEdge[2] = pop.position.x - pop.sizeDelta.x / 2;popEdge[3] = pop.position.x + pop.sizeDelta.x / 2;
     }
-    private void LoadPlayerInven()
+    private void LoadInven()
     {
         for(int i = 0; i < PlayerManager.I.pData.Inven.Count; i++)
         {
             // 현재 아이템의 크기 정보 가져오기 (예시)
             int w = PlayerManager.I.pData.Inven[i].W;  // 아이템 가로 크기
             int h = PlayerManager.I.pData.Inven[i].H; // 아이템 세로 크기
-            
-            // 아이템을 배치할 수 있는 위치 찾기
-            bool placed = false;
-            for (int gy = 0; gy < 10 && !placed; gy++)
-            {
-                for (int gx = 0; gx < 10 && !placed; gx++)
-                {
-                    // 현재 위치에서 아이템이 들어갈 수 있는지 검사
-                    if (CanPlaceItem(gx, gy, w, h))
-                    {
-                        // 아이템 배치
-                        PlaceItem(gx, gy, w, h, PlayerManager.I.pData.Inven[i]);
-                        placed = true;
-                    }
-                }
-            }
+            PlaceItem(PlayerManager.I.pData.Inven[i].X, PlayerManager.I.pData.Inven[i].Y, w, h, PlayerManager.I.pData.Inven[i]);
+            //추후 아이템 중복에 대한 검사가 필요할것같음
         }
     }
     private bool CanPlaceItem(int sx, int sy, int wid, int hei)
@@ -198,6 +199,14 @@ public class InvenPop : UIScreen
         }
         return true;
     }
+    private void SetGridPos(RectTransform rect, int type, int x, int y, int w, int h)
+    {
+        float cx = gridObj[y, x].rectTransform.anchoredPosition.x + ((w - 1) * 32);
+        float cy = gridObj[y, x].rectTransform.anchoredPosition.y - ((h - 1) * 32);
+        rect.anchoredPosition = new Vector2(cx, cy);
+        rect.sizeDelta = new Vector2(w * 64, h * 64);
+        if(type == 0)rect.localScale = new Vector3(1, 1, 1);
+    }
     private void PlaceItem(int sx, int sy, int wid, int hei, ItemData item)
     {
         // itemPrefab을 인스턴스화
@@ -208,14 +217,8 @@ public class InvenPop : UIScreen
         InvenItemObj invenItemObj = itemObj.GetComponent<InvenItemObj>();
         invenItemObj.SetItemData(item, sx, sy);
         // RectTransform 설정
-        RectTransform rectTransform = itemObj.GetComponent<RectTransform>();
-        float cx = gridObj[sy, sx].GetComponent<RectTransform>().anchoredPosition.x + ((wid - 1) * 32);
-        float cy = gridObj[sy, sx].GetComponent<RectTransform>().anchoredPosition.y - ((hei - 1) * 32);
-        // 그리드 크기에 맞춰 위치와 크기 설정
-        rectTransform.anchoredPosition = new Vector2(cx, cy);
-        rectTransform.sizeDelta = new Vector2(wid * 64, hei * 64);
-        rectTransform.localScale = new Vector3(1, 1, 1);
-
+        RectTransform rectTransform = itemObj.transform as RectTransform;
+        SetGridPos(rectTransform, 0, sx, sy, wid, hei);
         curItem.Add(itemObj);
 
         // 그리드 영역 체크
@@ -223,24 +226,23 @@ public class InvenPop : UIScreen
         {
             for(int x = sx; x < sx + wid; x++)
             {
-                pGrids[y][x].slotId = item.ItemId;
+                pGrids[y][x].slotId = item.Uid;
             }
         }
     }
     private void CheckOverlapWithGrid()
     {
-        resetAllGrids();
+        ResetAllGrids(); // 그리드 초기화
         
         RectTransform itemRect = curItem[curIdx].transform as RectTransform;
         float wid = itemRect.sizeDelta.x - 32, hei = itemRect.sizeDelta.y - 32;
         float minX = itemRect.position.x - wid/2, minY = itemRect.position.y - hei/2;
         float maxX = itemRect.position.x + wid/2, maxY = itemRect.position.y + hei/2;
 
-        InvenItemObj itemObj = curItem[curIdx].GetComponent<InvenItemObj>();
-        int myId = itemObj.itemData.ItemId, maxCnt = itemObj.itemData.W * itemObj.itemData.H;
+        int myUid = curItemObj.itemData.Uid, maxCnt = curItemObj.itemData.W * curItemObj.itemData.H;
         int gx = 0, gy = 0;
         int[] gridX = new int[maxCnt], gridY = new int[maxCnt];
-        List<int> gridItemId = new List<int>();
+        List<int> gridUid = new List<int>();
         for (int y = 0; y < 10; y++)
         {
             bool isOverlapping = false;
@@ -259,9 +261,9 @@ public class InvenPop : UIScreen
             if (isOverlapping) break;
         }
         int cnt = 0;
-        for(int h = 0; h < itemObj.itemData.H; h++)
+        for(int h = 0; h < curItemObj.itemData.H; h++)
         {
-            for(int w = 0; w < itemObj.itemData.W; w++)
+            for(int w = 0; w < curItemObj.itemData.W; w++)
             {
                 gridX[cnt] = gx + w;
                 gridY[cnt] = gy + h;
@@ -269,75 +271,143 @@ public class InvenPop : UIScreen
 
                 if(gx + w > 9 || gy + h > 9)return; // 그리드 범위 초과시 리턴
 
-                if(gridItemId.IndexOf(PlayerManager.I.grids[gy + h][gx + w].slotId) == -1 && 
+                if(gridUid.IndexOf(PlayerManager.I.grids[gy + h][gx + w].slotId) == -1 && 
                 PlayerManager.I.grids[gy + h][gx + w].slotId != -1 &&
-                PlayerManager.I.grids[gy + h][gx + w].slotId != myId)
+                PlayerManager.I.grids[gy + h][gx + w].slotId != myUid)
                 {
-                    gridItemId.Add(PlayerManager.I.grids[gy + h][gx + w].slotId);
+                    gridUid.Add(PlayerManager.I.grids[gy + h][gx + w].slotId);
                 }
             }
         }
-        // 색상 결정
-        curState = gridItemId.Count == 0 ? 0 : (gridItemId.Count > 1 ? 2 : 1);
-        // 색상 변경 함수
+        curItemX = gx; curItemY = gy; // 현재 선택된 아이템의 위치 설정
+        curState = gridUid.Count == 0 ? 0 : (gridUid.Count > 1 ? 2 : 1); // 상태 설정
         void ChangeGridColor(int x, int y, int type)
         {
-            var grid = gridObj[y, x].GetComponent<GridObj>();
-            switch (type)
+            switch(type)
             {
-                case 0: grid.ChangeToGreen(); break;
-                case 1: grid.ChangeToYellow(); break;
-                case 2: grid.ChangeToRed(); break;
+                case 0: gridObj[y, x].sprite = ResManager.GetSprite("ui_grid_green"); break;
+                case 1: gridObj[y, x].sprite = ResManager.GetSprite("ui_grid_yellow"); break;
+                case 2: gridObj[y, x].sprite = ResManager.GetSprite("ui_grid_red"); break;
             }
         }
         // 겹치는 그리드 색상 변경
         for(int i = 0; i < maxCnt; i++)
             ChangeGridColor(gridX[i], gridY[i], curState);
     }
-    private void resetAllGrids()
+    private void ResetAllGrids()
     {
         for(int y = 0; y < 10; y++)
         {
-            for(int x = 0; x < 10; x++)
-                gridObj[y, x].GetComponent<GridObj>().ChangeToWhite();
+            for(int x = 0; x < 10; x++){
+                if(gridObj[y, x].sprite != whiteGrid)
+                    gridObj[y, x].sprite = whiteGrid;
+            }
         }
     }
-    private void resetAllEq()
+    private void ResetAllEq()
     {
-        foreach(var v in curEq)
+        foreach(var v in mImages)
         {
-            
+            if(v.Value.sprite != grayGrid)
+                v.Value.sprite = grayGrid;
         }
+    }
+    private void CheckCurEq(int id, int type)
+    {
+        if (id > 40000) {
+            curEq = new string[] {};
+        } else if (id > 20000) {
+            curEq = (type == 10) ? new string[] { "Hand2Box" } : new string[] { "Hand1Box", "Hand2Box" };
+        } else {
+            switch (type) {
+                case 1:  curEq = new string[] { "ArmorBox" }; break;
+                case 2:  curEq = new string[] { "HelmetBox" }; break;
+                case 3:  curEq = new string[] { "ShoesBox" }; break;
+                case 4:  curEq = new string[] { "GlovesBox" }; break;
+                case 5:  curEq = new string[] { "BeltBox" }; break;
+                case 6:  curEq = new string[] { "CapeBox" }; break;
+                case 7:  curEq = new string[] { "Ring1Box", "Ring2Box" }; break;
+                case 8:  curEq = new string[] { "NeckBox" }; break;
+                case 9:  curEq = new string[] { "Hand1Box", "Hand2Box" }; break; //방패
+            }
+        }
+        foreach(var v in curEq)
+            mImages[v].sprite = ResManager.GetSprite("ui_grid_green");
+    }
+    private void StateItems(int type, int n)
+    {
+        //type 0 : 블럭, 1 : 언블럭
+        for(int i = 0; i < curItem.Count; i++)
+            curItem[i].GetComponent<Image>().raycastTarget = type == 0 ? false : true;
+        if(type == 0)
+            curItem[n].GetComponent<Image>().raycastTarget = true;
+    }
+    private void MoveItem(int sx, int sy, int w, int h, int ex, int ey)
+    {
+        for(int y = sy; y < sy + h; y++)
+        {
+            for(int x = sx; x < sx + w; x++)
+                pGrids[y][x].slotId = -1;
+        }
+        RectTransform rect = curItem[curIdx].transform as RectTransform;
+        SetGridPos(rect, 1, ex, ey, w, h);
+
+        int uid = curItemObj.itemData.Uid;
+        for(int y = ey; y < ey + h; y++)
+        {
+            for(int x = ex; x < ex + w; x++)
+                pGrids[y][x].slotId = uid;
+        }
+        InvenItemObj iObj = curItem[curIdx].GetComponent<InvenItemObj>();
+        iObj.x = ex; iObj.y = ey;
+    }
+
+    private void ChangeItem(int sx, int sy, int w, int h, int ex, int ey)
+    {
+        int uid = pGrids[ey][ex].slotId;
+        MoveItem(sx, sy, w, h, ex, ey);
+        foreach(var v in curItem)
+        {
+            InvenItemObj iObj = v.GetComponent<InvenItemObj>();
+            if(iObj.uid == uid)
+            {
+                iObj.DelaySendItemObj();
+            }
+        }
+        // foreach(var v in curItem)
+        // {
+        //     InvenItemObj iObj = v.GetComponent<InvenItemObj>();
+        //     if(iObj.uid == uid)
+        //     {
+        //         CheckCurEq(iObj.itemData.ItemId, iObj.itemData.Type);
+        //         curIdx = curItem.IndexOf(v);
+        //         curItemObj = iObj;
+        //         break;
+        //     }
+        // }
+        // StateItems(0, curIdx);  
+    }
+    private void ReturnItem()
+    {
+        RectTransform rect = curItem[curIdx].transform as RectTransform;
+        SetGridPos(rect, 1, curItemObj.itemData.X, curItemObj.itemData.Y, curItemObj.itemData.W, curItemObj.itemData.H);
     }
     private void Update()
     {
-        if(MoveOn)
+        if(moveOn)
         {
             curItem[curIdx].transform.position = Input.mousePosition; // 아이템 위치 업데이트
-
-            if(curItem[curIdx].transform.position.x <= popEdge[2] || curItem[curIdx].transform.position.x >= popEdge[3] ||
-            curItem[curIdx].transform.position.y <= popEdge[1] || curItem[curIdx].transform.position.y >= popEdge[0])
+            float x = curItem[curIdx].transform.position.x, y = curItem[curIdx].transform.position.y;
+            if(x <= popEdge[2] || x >= popEdge[3] || y <= popEdge[1] || y >= popEdge[0])
             {
-                Debug.Log("outside pop");
+                curState = 3;
             }else{
-                float x = curItem[curIdx].transform.position.x, y = curItem[curIdx].transform.position.y;
                 if(y <= slotEdge[0] && y >= slotEdge[1] && x >= slotEdge[2] && x <= slotEdge[3])
                 {
                     CheckOverlapWithGrid();
                 }else{
-                    bool on = false;
-                    for(int i = 0; i < edgeCnt; i++)
-                    {
-                        if(curItem[curIdx].transform.position.y >= eqEdge[curEq[i]].d && curItem[curIdx].transform.position.y <= eqEdge[curEq[i]].u &&
-                        curItem[curIdx].transform.position.x >= eqEdge[curEq[i]].l && curItem[curIdx].transform.position.x <= eqEdge[curEq[i]].r)
-                        {
-                            on = true;
-                            Debug.Log("on");
-                            break;
-                        }
-                    }
-                    if(!on)
-                        resetAllGrids();
+                    curState = 3;
+                    ResetAllGrids();
                 }
             }
         }

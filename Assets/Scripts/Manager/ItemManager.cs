@@ -1,5 +1,6 @@
 using GB;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public class ItemManager : AutoSingleton<ItemManager>
@@ -44,8 +45,16 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Val = val, W = w, H = h, Res = res, Dur = dur, Path = path, X = 0, Y = 0, Dir = 0 };
     }
-    // public int GetUid()
-    // {
-    //     return 1000000000 + Random.Range(0, 899999999);
-    // }
+    public void CreateItem(int id, int x, int y)
+    {
+        ItemData item = ItemDataList[id].Clone();
+        item.X = x;
+        item.Y = y;
+        item.Uid = GetUid();
+        PlayerManager.I.pData.Inven.Add(item);
+    }
+    public int GetUid()
+    {
+        return 10000000 + Random.Range(0, 89999999);
+    }
 }

@@ -64,9 +64,8 @@ public class ShopItemData
 public class ItemData
 {
     public string Name, Res, Path;
-    public int ItemId, Type, Price, Val, W, H, Dur, X, Y, Dir; 
+    public int ItemId, Type, Price, Val, W, H, Dur, X, Y, Dir, Uid; 
     //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
-    public long Uid;
     public ItemData Clone()
     {
         return new ItemData { 
