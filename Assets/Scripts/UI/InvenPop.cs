@@ -101,6 +101,7 @@ public class InvenPop : UIScreen
                         {
                             curIdx = curItem.IndexOf(v);
                             curItemObj = iObj;
+                            curItemObj.transform.SetAsLastSibling();
                             break;
                         }
                     }
@@ -116,24 +117,20 @@ public class InvenPop : UIScreen
                     {
                         case 0:
                             MoveItem(curItemObj.x, curItemObj.y, curItemObj.itemData.W, curItemObj.itemData.H, curItemX, curItemY);
-                            InitCurData();
                             break;
                         case 1:
                             ChangeItem(curItemObj.x, curItemObj.y, curItemObj.itemData.W, curItemObj.itemData.H, curItemX, curItemY);
-                            break;
+                            return;
                         case 2:
-                            InitCurData();
                             return; // 겹치는 아이템이 여러 개이며 이동이 불가능
                         case 3:
                             bool on = false;
-                            for(int i = 0; i < curEq.Length; i++)
-                            {
+                            for(int i = 0; i < curEq.Length; i++){
                             }
                             if(!on) ReturnItem();
-                            InitCurData();
                             break; // 아이템 그리드 영역 밖에 있을때 또는 장비 칸 영역에 있을때
                     }
-                    // if(!UIManager.I.canClose) UIManager.I.canClose = true;
+                    InitCurData();
                 }
                 break;
         }
@@ -361,31 +358,30 @@ public class InvenPop : UIScreen
         InvenItemObj iObj = curItem[curIdx].GetComponent<InvenItemObj>();
         iObj.x = ex; iObj.y = ey;
     }
-
     private void ChangeItem(int sx, int sy, int w, int h, int ex, int ey)
     {
-        int uid = pGrids[ey][ex].slotId;
-        MoveItem(sx, sy, w, h, ex, ey);
+        int uId = pGrids[ex][ey].slotId;
+        string str = "";
+        InvenItemObj otherItem = null;
         foreach(var v in curItem)
         {
             InvenItemObj iObj = v.GetComponent<InvenItemObj>();
-            if(iObj.uid == uid)
+            if(iObj.uid == uId)
             {
-                iObj.DelaySendItemObj();
+                otherItem = iObj;
+                otherItem.x = sx; otherItem.y = sy; // 원래 위치에 있던 아이템을 이동한 아이템의 위치로 설정
+                str = $"{otherItem.uid}_{otherItem.itemData.ItemId}_{otherItem.itemData.Type}";
+                break;
             }
         }
-        // foreach(var v in curItem)
-        // {
-        //     InvenItemObj iObj = v.GetComponent<InvenItemObj>();
-        //     if(iObj.uid == uid)
-        //     {
-        //         CheckCurEq(iObj.itemData.ItemId, iObj.itemData.Type);
-        //         curIdx = curItem.IndexOf(v);
-        //         curItemObj = iObj;
-        //         break;
-        //     }
-        // }
-        // StateItems(0, curIdx);  
+        MoveItem(sx, sy, w, h, ex, ey); // 이동 예정인 아이템을 이동
+        int w2 = otherItem.itemData.W, h2 = otherItem.itemData.H;
+        for(int y = sy; y < sy + h2; y++)
+        {
+            for(int x = sx; x < sx + w2; x++)
+                pGrids[y][x].slotId = uId;
+        }
+        Presenter.Send("InvenPop", "ClickObj", str); //send 하여 원래 위치한 아이템을 움직이도록 전달
     }
     private void ReturnItem()
     {

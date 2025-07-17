@@ -19,22 +19,10 @@ public class InvenItemObj : MonoBehaviour, IPointerClickHandler
     {
         SendItemObj();
     }
-
     public void SendItemObj()
     {
         string str = $"{itemData.Uid}_{itemData.ItemId}_{itemData.Type}";
         Presenter.Send("InvenPop","ClickObj", str);
-        transform.SetAsLastSibling();
-    }
-
-    public void DelaySendItemObj()
-    {
-        StartCoroutine(test(1f));
-    }
-
-    private IEnumerator test(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        Debug.Log("test");
+        // transform.SetAsLastSibling();
     }
 }
