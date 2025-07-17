@@ -3,9 +3,6 @@ using System;
 using UnityEngine;
 using Unity.Collections;
 
-public enum EquipmentSlot { Hand1, Hand2, Armor, Shoes, Helmet, Gloves, Belt, Cape, Necklace, Ring1, Ring2}
-
-
 [System.Serializable]
 public class PlayerData
 {
@@ -18,21 +15,21 @@ public class PlayerData
     // 상태
     public int HP, MP, SP;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
-    public Dictionary<EquipmentSlot, ItemData> EqSlot = new Dictionary<EquipmentSlot, ItemData>();
+    public Dictionary<string, ItemData> EqSlot = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
     public PlayerData() 
     {
-        EqSlot.Add(EquipmentSlot.Hand1, null);
-        EqSlot.Add(EquipmentSlot.Hand2, null);
-        EqSlot.Add(EquipmentSlot.Armor, null);
-        EqSlot.Add(EquipmentSlot.Shoes, null);
-        EqSlot.Add(EquipmentSlot.Helmet, null);
-        EqSlot.Add(EquipmentSlot.Gloves, null);
-        EqSlot.Add(EquipmentSlot.Belt, null);
-        EqSlot.Add(EquipmentSlot.Cape, null);
-        EqSlot.Add(EquipmentSlot.Necklace, null);
-        EqSlot.Add(EquipmentSlot.Ring1, null);
-        EqSlot.Add(EquipmentSlot.Ring2, null);
+        EqSlot.Add("Hand1", null);
+        EqSlot.Add("Hand2", null);
+        EqSlot.Add("Armor", null);
+        EqSlot.Add("Shoes", null);
+        EqSlot.Add("Helmet", null);
+        EqSlot.Add("Gloves", null);
+        EqSlot.Add("Belt", null);
+        EqSlot.Add("Cape", null);
+        EqSlot.Add("Necklace", null);
+        EqSlot.Add("Ring1", null);
+        EqSlot.Add("Ring2", null);
     } // 생성자
 }
 

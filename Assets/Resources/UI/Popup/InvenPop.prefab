@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8121239074379151874}
   - component: {fileID: 6964577066392395941}
   - component: {fileID: 8520318764772737065}
-  - component: {fileID: 6584256395606126455}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -76,19 +75,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6584256395606126455
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9744600124634525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: NeckBox
 --- !u!1 &56139367709320768
 GameObject:
   m_ObjectHideFlags: 0
@@ -173,6 +159,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8410731976474073348}
+  - component: {fileID: 5178289417949051082}
   m_Layer: 0
   m_Name: Ring2
   m_TagString: Untagged
@@ -197,6 +184,19 @@ Transform:
   - {fileID: 4917202637139928367}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5178289417949051082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 61996906570969418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Ring2
 --- !u!1 &127121758757579482
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,6 +431,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3814031285191142466}
+  - component: {fileID: 2522214688680418874}
   m_Layer: 0
   m_Name: Shoes
   m_TagString: Untagged
@@ -455,6 +456,19 @@ Transform:
   - {fileID: 8712114331189869543}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2522214688680418874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221594270884384030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Shoes
 --- !u!1 &255057517854900485
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,6 +853,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2250228225660519707}
+  - component: {fileID: 5486728549381648182}
   m_Layer: 0
   m_Name: Cape
   m_TagString: Untagged
@@ -863,6 +878,19 @@ Transform:
   - {fileID: 5618572046961715664}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5486728549381648182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399226806087669770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Cape
 --- !u!1 &474187482902697576
 GameObject:
   m_ObjectHideFlags: 0
@@ -1699,7 +1727,6 @@ GameObject:
   - component: {fileID: 5080284576240955782}
   - component: {fileID: 6351918055517459182}
   - component: {fileID: 944972288826984366}
-  - component: {fileID: 5023826189861438258}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -1764,19 +1791,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5023826189861438258
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1307106803375006488}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: Hand2Box
 --- !u!1 &1316656986445861915
 GameObject:
   m_ObjectHideFlags: 0
@@ -1861,6 +1875,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2900759186900224122}
+  - component: {fileID: 1324624347681832683}
   m_Layer: 0
   m_Name: Helmet
   m_TagString: Untagged
@@ -1885,6 +1900,19 @@ Transform:
   - {fileID: 5499202781682232336}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1324624347681832683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322398324794999458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Helmet
 --- !u!1 &1338924957823548832
 GameObject:
   m_ObjectHideFlags: 0
@@ -2077,7 +2105,6 @@ GameObject:
   - component: {fileID: 8832905975444601916}
   - component: {fileID: 4813344399154934938}
   - component: {fileID: 5314118518917931700}
-  - component: {fileID: 8582538541706240487}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -2142,19 +2169,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8582538541706240487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1821831691717037647}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: CapeBox
 --- !u!1 &1840001941976511963
 GameObject:
   m_ObjectHideFlags: 0
@@ -2314,6 +2328,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5713554182696503214}
+  - component: {fileID: 4455117439540248322}
   m_Layer: 0
   m_Name: Belt
   m_TagString: Untagged
@@ -2338,6 +2353,19 @@ Transform:
   - {fileID: 4796453237940675653}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4455117439540248322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104480785830963967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Belt
 --- !u!1 &2157374310268970742
 GameObject:
   m_ObjectHideFlags: 0
@@ -2574,7 +2602,6 @@ GameObject:
   - component: {fileID: 3301188365802362564}
   - component: {fileID: 4585370343611360083}
   - component: {fileID: 5910652732789709994}
-  - component: {fileID: 6271807612362899787}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -2639,19 +2666,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6271807612362899787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2392200061600322858}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: ShoesBox
 --- !u!1 &2512823961789506515
 GameObject:
   m_ObjectHideFlags: 0
@@ -2661,6 +2675,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4329347638150475024}
+  - component: {fileID: 2881677160020652182}
   m_Layer: 0
   m_Name: Hand1
   m_TagString: Untagged
@@ -2685,6 +2700,19 @@ Transform:
   - {fileID: 3718739015582585727}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2881677160020652182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2512823961789506515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Hand1
 --- !u!1 &2657327513240238818
 GameObject:
   m_ObjectHideFlags: 0
@@ -2769,6 +2797,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1103798827586287804}
+  - component: {fileID: 225168265057204443}
   m_Layer: 0
   m_Name: Neck
   m_TagString: Untagged
@@ -2793,6 +2822,19 @@ Transform:
   - {fileID: 4688991280427973408}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &225168265057204443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2667482364724111675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Neck
 --- !u!1 &2676821642104379419
 GameObject:
   m_ObjectHideFlags: 0
@@ -4517,7 +4559,6 @@ GameObject:
   - component: {fileID: 6914602456093385218}
   - component: {fileID: 1841658407495497114}
   - component: {fileID: 1996683566771448102}
-  - component: {fileID: 3827946186132990773}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -4582,19 +4623,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3827946186132990773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4056312592091288225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: Ring1Box
 --- !u!1 &4126886324312316252
 GameObject:
   m_ObjectHideFlags: 0
@@ -5356,7 +5384,6 @@ GameObject:
   - component: {fileID: 4459102462742005930}
   - component: {fileID: 2365485133129090172}
   - component: {fileID: 3144458336193747508}
-  - component: {fileID: 1366472604345104616}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -5421,19 +5448,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1366472604345104616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4545087793134431978}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: BeltBox
 --- !u!1 &4642914668715929065
 GameObject:
   m_ObjectHideFlags: 0
@@ -5443,6 +5457,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1079496021414908407}
+  - component: {fileID: 3935372238651544261}
   m_Layer: 0
   m_Name: Hand2
   m_TagString: Untagged
@@ -5467,6 +5482,19 @@ Transform:
   - {fileID: 4288972152542871723}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3935372238651544261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4642914668715929065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Hand2
 --- !u!1 &4651166847008371703
 GameObject:
   m_ObjectHideFlags: 0
@@ -5918,40 +5946,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _UIType: 1
   mImages:
-    list:
-    - key: Hand1Box
-      value: {fileID: 8521698465870915789}
-      duplicatedKey: 0
-    - key: Hand2Box
-      value: {fileID: 944972288826984366}
-      duplicatedKey: 0
-    - key: ArmorBox
-      value: {fileID: 6917459579440200851}
-      duplicatedKey: 0
-    - key: ShoesBox
-      value: {fileID: 5910652732789709994}
-      duplicatedKey: 0
-    - key: CapeBox
-      value: {fileID: 5314118518917931700}
-      duplicatedKey: 0
-    - key: HelmetBox
-      value: {fileID: 4565480997607436579}
-      duplicatedKey: 0
-    - key: GlovesBox
-      value: {fileID: 4069789927946392677}
-      duplicatedKey: 0
-    - key: BeltBox
-      value: {fileID: 3144458336193747508}
-      duplicatedKey: 0
-    - key: NeckBox
-      value: {fileID: 8520318764772737065}
-      duplicatedKey: 0
-    - key: Ring1Box
-      value: {fileID: 1996683566771448102}
-      duplicatedKey: 0
-    - key: Ring2Box
-      value: {fileID: 1644412116848579542}
-      duplicatedKey: 0
+    list: []
   mTexts:
     list: []
   mButtons:
@@ -5960,7 +5955,40 @@ MonoBehaviour:
       value: {fileID: 5254891987878721620}
       duplicatedKey: 0
   mGameObject:
-    list: []
+    list:
+    - key: Hand1
+      value: {fileID: 2512823961789506515}
+      duplicatedKey: 0
+    - key: Hand2
+      value: {fileID: 4642914668715929065}
+      duplicatedKey: 0
+    - key: Armor
+      value: {fileID: 7275852039992930314}
+      duplicatedKey: 0
+    - key: Shoes
+      value: {fileID: 221594270884384030}
+      duplicatedKey: 0
+    - key: Cape
+      value: {fileID: 399226806087669770}
+      duplicatedKey: 0
+    - key: Helmet
+      value: {fileID: 1322398324794999458}
+      duplicatedKey: 0
+    - key: Gloves
+      value: {fileID: 7162658283110954905}
+      duplicatedKey: 0
+    - key: Belt
+      value: {fileID: 2104480785830963967}
+      duplicatedKey: 0
+    - key: Neck
+      value: {fileID: 2667482364724111675}
+      duplicatedKey: 0
+    - key: Ring1
+      value: {fileID: 6414984676445055041}
+      duplicatedKey: 0
+    - key: Ring2
+      value: {fileID: 61996906570969418}
+      duplicatedKey: 0
   mSkinner:
     list: []
   mTMPText:
@@ -5981,7 +6009,6 @@ GameObject:
   - component: {fileID: 2964335360671319118}
   - component: {fileID: 2436187919788313381}
   - component: {fileID: 6917459579440200851}
-  - component: {fileID: 8870360090558838952}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -6046,19 +6073,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8870360090558838952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5232550244229813377}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: ArmorBox
 --- !u!1 &5282108094478278390
 GameObject:
   m_ObjectHideFlags: 0
@@ -6220,7 +6234,6 @@ GameObject:
   - component: {fileID: 1753585877843508036}
   - component: {fileID: 7835085709194690526}
   - component: {fileID: 8521698465870915789}
-  - component: {fileID: 7521019998204562013}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -6285,19 +6298,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7521019998204562013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5481035194199793092}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: Hand1Box
 --- !u!1 &5533229809997805000
 GameObject:
   m_ObjectHideFlags: 0
@@ -6309,7 +6309,6 @@ GameObject:
   - component: {fileID: 2291371004720441200}
   - component: {fileID: 7200833827618128566}
   - component: {fileID: 1644412116848579542}
-  - component: {fileID: 5146946460602152644}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -6374,19 +6373,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5146946460602152644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5533229809997805000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: Ring2Box
 --- !u!1 &5597452754163457520
 GameObject:
   m_ObjectHideFlags: 0
@@ -6829,7 +6815,6 @@ GameObject:
   - component: {fileID: 4993978870089215529}
   - component: {fileID: 3296082309023486033}
   - component: {fileID: 4565480997607436579}
-  - component: {fileID: 4724340557528783572}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -6894,19 +6879,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4724340557528783572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5834787769581039372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: HelmetBox
 --- !u!1 &5835752234228283524
 GameObject:
   m_ObjectHideFlags: 0
@@ -7666,6 +7638,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5997327246756980500}
+  - component: {fileID: 3895980546183232965}
   m_Layer: 0
   m_Name: Ring1
   m_TagString: Untagged
@@ -7690,6 +7663,19 @@ Transform:
   - {fileID: 7211088822199576336}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3895980546183232965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6414984676445055041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Ring1
 --- !u!1 &6565461720294259061
 GameObject:
   m_ObjectHideFlags: 0
@@ -7851,7 +7837,6 @@ GameObject:
   - component: {fileID: 8285770067747595607}
   - component: {fileID: 3392279279829822744}
   - component: {fileID: 4069789927946392677}
-  - component: {fileID: 8369338761606294264}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -7916,19 +7901,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8369338761606294264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6606734732136026427}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: GlovesBox
 --- !u!1 &6758462437423852775
 GameObject:
   m_ObjectHideFlags: 0
@@ -8238,6 +8210,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8323986659379047068}
+  - component: {fileID: 1302173558379984920}
   m_Layer: 0
   m_Name: Gloves
   m_TagString: Untagged
@@ -8262,6 +8235,19 @@ Transform:
   - {fileID: 1345775211023742213}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1302173558379984920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7162658283110954905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Gloves
 --- !u!1 &7239960007713673222
 GameObject:
   m_ObjectHideFlags: 0
@@ -8346,6 +8332,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6584708193178077570}
+  - component: {fileID: 2181584146424459238}
   m_Layer: 0
   m_Name: Armor
   m_TagString: Untagged
@@ -8370,6 +8357,19 @@ Transform:
   - {fileID: 3587649937245030828}
   m_Father: {fileID: 5347827804063897242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2181584146424459238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7275852039992930314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Armor
 --- !u!1 &7279157584139777582
 GameObject:
   m_ObjectHideFlags: 0

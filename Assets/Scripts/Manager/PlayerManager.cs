@@ -32,6 +32,15 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             grids.Add(row);
         }
     }
+    public void ApplyEqSlot(string eq, ItemData data)
+    {
+        pData.EqSlot[eq] = data;
+        Debug.Log(eq + " " + data.Name);
+        //아이템의 능력치를 캐릭터에 부여 또는 계산하여 적용
+
+        //또한 캐릭터의 무기, 갑옷, 투구 착용시 캐릭터의 외형이 변경되는것을 구현해야함
+    }
+    
     // 플레이어 데이터 초기화
     public void ApplyPlayerData(PlayerData data)
     {
