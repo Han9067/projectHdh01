@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using GB;
 
 
@@ -44,6 +45,16 @@ public class CharInfoPop : UIScreen
         mTexts["ExpVal"].text = pData.Exp.ToString();
         mTexts["NextExpVal"].text = pData.NextExp.ToString();
 
+        mTexts["HpVal"].text = pData.HP.ToString() + "/" + pData.MaxHP.ToString();
+        mTexts["MpVal"].text = pData.MP.ToString() + "/" + pData.MaxMP.ToString();
+        mTexts["SpVal"].text = pData.SP.ToString() + "/" + pData.MaxSP.ToString();
+        mTexts["AttVal"].text = pData.Att.ToString();
+        mTexts["DefVal"].text = pData.Def.ToString();
+        mTexts["CrtVal"].text = pData.Crt.ToString() + "%";
+        mTexts["CrtRateVal"].text = pData.CrtRate.ToString() + "%";
+        mTexts["AccVal"].text = pData.Acc.ToString() + "%";
+        mTexts["DodVal"].text = pData.Dod.ToString() + "%";
+
         UpdateVitText(pData.VIT);
         UpdateEndText(pData.END);
         UpdateStrText(pData.STR);
@@ -52,6 +63,13 @@ public class CharInfoPop : UIScreen
         UpdateIntText(pData.INT);
         UpdateChaText(pData.CHA);
         UpdateLukText(pData.LUK);
+
+        UpdateAppearance(pData);
+    }
+    public void UpdateAppearance(PlayerData pData)
+    {
+        UnityEngine.Debug.Log(pData.Skin + " " + pData.Face + " " + pData.Eyebrow + " " + pData.Eye + " " + pData.EyeColor + " " + pData.Ear + " " + pData.Nose + " " + pData.Mouth + " " + pData.Hair + " " + pData.HairColor);
+
     }
     private void UpdateVitText(int v)  => mTexts["VitVal"].text = v.ToString();
     private void UpdateEndText(int v)  => mTexts["EndVal"].text = v.ToString();

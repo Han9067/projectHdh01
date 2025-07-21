@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Unity.Collections;
+using System.Security.Cryptography.X509Certificates;
 
 [System.Serializable]
 public class PlayerData
@@ -9,14 +10,18 @@ public class PlayerData
     // 기본 정보
     public string Name = "유저";
     public int Age, Gender; // 0: 남성, 1: 여성
-    public int Sylin; // 게임 재화
+    public int Silver; // 게임 재화
     // 레벨 및 경험치
     public int Lv, Exp, NextExp;
     // 상태
-    public int HP, MP, SP;
+    public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
+    public int Att, Def;
+    public int Crt, CrtRate, Acc, Dod;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public Dictionary<string, ItemData> EqSlot = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
+    //외형 데이터
+    public int Skin, Face, Eyebrow, Eye, EyeColor, Ear, Nose, Mouth, Hair, HairColor;
     public PlayerData() 
     {
         EqSlot.Add("Hand1", null);

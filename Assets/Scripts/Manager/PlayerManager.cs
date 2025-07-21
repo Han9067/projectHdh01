@@ -48,22 +48,29 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Name = data.Name;
         pData.Age = data.Age;
         pData.Gender = data.Gender;
-        pData.Sylin = data.Sylin;
+        pData.Silver = data.Silver;
         pData.Lv = data.Lv;
         pData.Exp = data.Exp;
         pData.NextExp = data.NextExp;
-        pData.HP = data.HP;
-        pData.MP = data.MP;
-        pData.SP = data.SP;
-        pData.VIT = data.VIT;
-        pData.END = data.END;
-        pData.STR = data.STR;
-        pData.AGI = data.AGI;
-        pData.FOR = data.FOR;
-        pData.INT = data.INT;
-        pData.CHA = data.CHA;
-        pData.LUK = data.LUK;
+        pData.HP = data.HP;pData.MP = data.MP;pData.SP = data.SP;
+        pData.AddHP = data.AddHP;pData.AddMP = data.AddMP;pData.AddSP = data.AddSP;
+
+        pData.VIT = data.VIT;pData.END = data.END;pData.STR = data.STR;pData.AGI = data.AGI;pData.FOR = data.FOR;pData.INT = data.INT;pData.CHA = data.CHA;pData.LUK = data.LUK;
+        
         pData.Inven = data.Inven;
+
+        pData.Skin = data.Skin;
+        pData.Face = data.Face;
+        pData.Eyebrow = data.Eyebrow;
+        pData.Eye = data.Eye;
+        pData.EyeColor = data.EyeColor;
+        pData.Ear = data.Ear;
+        pData.Nose = data.Nose;
+        pData.Mouth = data.Mouth;
+        pData.Hair = data.Hair;
+        pData.HairColor = data.HairColor;
+
+        CalcPlayerStat();
     }
     public void DummyPlayerData()
     {
@@ -72,23 +79,44 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Name = "앨런";
         pData.Age = 17;
         pData.Gender = 0;
-        pData.Sylin = 1000;
+        pData.Silver = 1000;
         pData.Lv = 1;
         pData.Exp = 0;
         pData.NextExp = 100;
-        pData.HP = 50;
-        pData.MP = 50;
-        pData.SP = 50;
-        pData.VIT = 10;
-        pData.END = 10;
-        pData.STR = 10;
-        pData.AGI = 10;
-        pData.FOR = 10;
-        pData.INT = 10;
-        pData.CHA = 10;
-        pData.LUK = 10;
+        pData.HP = 100;pData.MP = 100;pData.SP = 100;
+        pData.AddHP = 0;pData.AddMP = 0;pData.AddSP = 0;
+        pData.VIT = 10;pData.END = 10;pData.STR = 10;pData.AGI = 10;pData.FOR = 10;pData.INT = 10;pData.CHA = 10;pData.LUK = 10;
+
+        pData.Skin = 2;
+        pData.Face = 1;
+        pData.Eyebrow = 1;
+        pData.Eye = 1;
+        pData.EyeColor = 1;
+        pData.Ear = 1;
+        pData.Nose = 1;
+        pData.Mouth = 1;
+        pData.Hair = 1;
+        pData.HairColor = 1;
 
         ItemManager.I.CreateItem(20001, 0, 0);
         ItemManager.I.CreateItem(10001, 3, 0);
+
+        CalcPlayerStat();
+    }
+    private void CalcPlayerStat()
+    {
+        pData.MaxHP = pData.VIT * 10 + pData.AddHP;
+        pData.MaxMP = pData.INT * 10 + pData.AddMP;
+        pData.MaxSP = pData.END * 10 + pData.AddSP;
+        if(pData.HP > pData.MaxHP)pData.HP = pData.MaxHP;
+        if(pData.MP > pData.MaxMP)pData.MP = pData.MaxMP;
+        if(pData.SP > pData.MaxSP)pData.SP = pData.MaxSP;
+
+        pData.Att = pData.STR * 2;
+        pData.Def = pData.VIT;
+        pData.Crt = 50 + (pData.LUK * 2);
+        pData.CrtRate = pData.LUK;
+        pData.Acc = 80 + pData.AGI;
+        pData.Dod = 10 + pData.AGI;
     }
 }
