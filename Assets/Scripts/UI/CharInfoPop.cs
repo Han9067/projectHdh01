@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CharInfoPop : UIScreen
 {
-
+    public bool isActive { get; private set; } = false;
     private void Awake()
     {
         Regist();
@@ -19,11 +19,13 @@ public class CharInfoPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("CharInfoPop",this);
-        UpdateAllStatTexts();
+        UpdateCharInfo();
+        isActive = true;
     }
     private void OnDisable() 
     {
         Presenter.UnBind("CharInfoPop", this);
+        isActive = false;
     }
     public void RegistButton()
     {
@@ -59,8 +61,14 @@ public class CharInfoPop : UIScreen
             case 4:arr = new float[] {199f, 165f, 137f};break;
             case 5:arr = new float[] {92f, 73f, 57f};break;default:arr = new float[] {0, 0, 0};break;
         }
-        mGameObject["Face"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
-        mGameObject["Ear"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+        arr = new float[] {arr[0] / 255f, arr[1] / 255f, arr[2] / 255f};
+        mGameObject["Face"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
+        mGameObject["Ear"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
+        mGameObject["BaseBody"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
+        mGameObject["BaseHand1A"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
+        mGameObject["BaseHand1B"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
+        mGameObject["BaseHand2"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
+        mGameObject["BaseBoth"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
 
         switch(pData.HairColor){
             case 1:arr = new float[] {30f, 30f, 30f};break;
@@ -95,7 +103,7 @@ public class CharInfoPop : UIScreen
                 break;
         }
     }
-    public void UpdateAllStatTexts()
+    public void UpdateCharInfo()
     {
         var pData = PlayerManager.I.pData;
         mTexts["NameVal"].text = pData.Name;
@@ -123,12 +131,15 @@ public class CharInfoPop : UIScreen
         UpdateChaText(pData.CHA);
         UpdateLukText(pData.LUK);
 
-        // UpdateAppearance(pData);
+        UpdateEq(pData);
     }
     public void UpdateEq(PlayerData pData)
     {
-        // var eq = pData.EqSlot;
+        var eq = pData.EqSlot;
         
+        // UnityEngine.Debug.Log(eq["Hand1"] != null);
+        // UnityEngine.Debug.Log(eq["Hand2"] != null);
+        // UnityEngine.Debug.Log(eq["Armor"] != null);
 
 
 

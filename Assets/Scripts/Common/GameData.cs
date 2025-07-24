@@ -20,7 +20,6 @@ public class PlayerData
     public List<ItemData> Inven = new List<ItemData>();
     //외형 데이터
     public int Skin, Face, Eyebrow, Eye, EyeColor, Ear, Nose, Mouth, Hair, HairColor;
-    //public int WpState; // 0: 무기 없음, 1: 손1에만 무기, 2: 손2에만 무기, 3: 손1,손2 각각 다른 무기 착용, 4: 양손
     public PlayerData() 
     {
         EqSlot.Add("Hand1", null);EqSlot.Add("Hand2", null);EqSlot.Add("Armor", null);EqSlot.Add("Shoes", null);EqSlot.Add("Helmet", null);EqSlot.Add("Gloves", null);EqSlot.Add("Belt", null);EqSlot.Add("Cape", null);EqSlot.Add("Necklace", null);EqSlot.Add("Ring1", null);EqSlot.Add("Ring2", null);

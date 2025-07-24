@@ -8,7 +8,7 @@ using GB;
 public class InvenItemObj : MonoBehaviour, IPointerClickHandler
 {
     public ItemData itemData;
-    public int x, y, uid, state; //state : 0 인벤토리 존재, 1 인벤토리 존재 안함
+    public int x, y, uid;
     public string eq = "";
     public void SetItemData(ItemData data, int xx, int yy)
     {
@@ -22,8 +22,6 @@ public class InvenItemObj : MonoBehaviour, IPointerClickHandler
     }
     public void SendItemObj()
     {
-        Debug.Log(uid);
-        if(eq != "") PlayerManager.I.TakeoffEq(eq);
         string str = $"{itemData.Uid}_{itemData.ItemId}_{itemData.Type}";
         Presenter.Send("InvenPop","ClickObj", str);
     }

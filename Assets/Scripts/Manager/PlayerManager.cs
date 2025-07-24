@@ -34,59 +34,23 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     }
     public void ApplyEqSlot(string eq, ItemData data)
     {
+        // UnityEngine.Debug.Log(eq + " 장착");
         pData.EqSlot[eq] = data;
-        // Debug.Log(eq + " " + data.Name);
-        //아이템의 능력치를 캐릭터에 부여 또는 계산하여 적용
-
-        //또한 캐릭터의 무기, 갑옷, 투구 착용시 캐릭터의 외형이 변경되는것을 구현해야함
-        // pData.WpState = 0;
-        // if(eq == "Hand1" || eq == "Hand2")
-        // {   
-        //     // //1,3,5,9 한손 || 2,4,6,7,8 양손
-        //     // switch(data.Type)
-        //     // {
-        //     //     case 1:
-        //     //     case 3:
-        //     //     case 5:
-        //     //     case 9:
-        //     //         pData.WpState = 1;
-        //     //         break;
-        //     //     case 2:
-        //     //     case 4:
-        //     //     case 6:
-        //     //     case 7:
-        //     //     case 8:
-        //     //         break;
-        //     // }
-        // }
-        //WpState; // 0: 무기 없음, 1: 손1에만 무기, 2: 손2에만 무기, 3: 손1,손2 각각 다른 무기 착용, 4: 양손
+        CalcPlayerStat();
+        CheckCharInfoPop();
     }
     public void TakeoffEq(string eq)
     {
+        // UnityEngine.Debug.Log(eq + " 해제");
         pData.EqSlot[eq] = null;
-        // if(eq == "Hand1" || eq == "Hand2")
-        //     CheckPlayerHands();
+        CalcPlayerStat();
+        CheckCharInfoPop();
     }
-    private void CheckPlayerHands(string hand, ItemData data)
+    private void CheckCharInfoPop()
     {
-        
-        // switch(data.Type)
-            // {
-            //     case 1:
-            //     case 3:
-            //     case 5:
-            //     case 9:
-            //         pData.WpState = 1;
-            //         break;
-            //     case 2:
-            //     case 4:
-            //     case 6:
-            //     case 7:
-            //     case 8:
-            //         break;
-            // }
+        if(GameObject.Find("CharInfoPop") && GameObject.Find("CharInfoPop").GetComponent<CharInfoPop>().isActive)
+            GameObject.Find("CharInfoPop").GetComponent<CharInfoPop>().UpdateCharInfo();
     }
-    
     // 플레이어 데이터 초기화
     public void ApplyPlayerData(PlayerData data)
     {
@@ -160,5 +124,28 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.CrtRate = pData.LUK;
         pData.Acc = 80 + pData.AGI;
         pData.Dod = 10 + pData.AGI;
+        //////
+        string[] eq = new string[] {"Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2"};
+        foreach(string e in eq)
+        {
+            if(pData.EqSlot[e] != null)
+            {
+                switch(e)
+                {
+                    case "Hand1":
+                    case "Hand2":
+                        // Debug.Log(pData.EqSlot[e].Val);
+                        pData.Att += pData.EqSlot[e].Val;
+                        break;
+                    case "Necklace":
+                    case "Ring1":
+                    case "Ring2":
+                        break;
+                    default:
+                        pData.Def += pData.EqSlot[e].Val;
+                        break;
+                }
+            }
+        }
     }
 }

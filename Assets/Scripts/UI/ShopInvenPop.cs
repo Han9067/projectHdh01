@@ -43,7 +43,6 @@ public class ShopInvenPop : UIScreen
     {
         Presenter.Bind("ShopInvenPop",this);
         isActive = true;
-        
     }
     private void OnDisable() 
     {
