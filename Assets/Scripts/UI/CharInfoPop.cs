@@ -2,11 +2,13 @@ using System.Diagnostics;
 using GB;
 using UnityEngine.UI;
 using UnityEngine;
+using System.Collections.Generic;
 
 
 public class CharInfoPop : UIScreen
 {
     public bool isActive { get; private set; } = false;
+    private string curBodyKey = "";
     private void Awake()
     {
         Regist();
@@ -136,13 +138,38 @@ public class CharInfoPop : UIScreen
     public void UpdateEq(PlayerData pData)
     {
         var eq = pData.EqSlot;
-        
-        // UnityEngine.Debug.Log(eq["Hand1"] != null);
-        // UnityEngine.Debug.Log(eq["Hand2"] != null);
-        // UnityEngine.Debug.Log(eq["Armor"] != null);
 
+        if (eq["Armor"] != null) {
+            string idStr = eq["Armor"].ItemId.ToString();
+            if(curBodyKey != idStr + "_body"){
+                curBodyKey = idStr + "_body";
+                mGameObject["EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(curBodyKey);
+                mGameObject["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(idStr + "_hand1A");
+                mGameObject["EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(idStr + "_hand1B");
+                mGameObject["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(idStr + "_hand2");
+                mGameObject["EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(idStr + "_both");
+            }
 
-
+            List<string> body;
+            if (eq["Hand1"] == null && eq["Hand2"] == null) {
+                body = new List<string> { "EqBody", "EqHand1A", "EqHand2" };
+            } else {
+                if (eq["Hand1"].Both == 1 || eq["Hand2"].Both == 1) {
+                    body = new List<string> { "EqBody", "EqBoth" };
+                } else if (eq["Hand1"].Both == 2 || eq["Hand2"].Both == 2) {
+                    body = new List<string> { "EqBody", "EqHand1A", "EqHand2" };
+                } else {
+                    body = new List<string> { "EqBody", "EqHand1B", "EqHand2" };
+                }
+            }
+            foreach(var v in body)
+                mGameObject[v].SetActive(true);
+        }else{
+            string[] body = {"EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth"};
+            foreach(var v in body)
+                mGameObject[v].SetActive(false);
+            curBodyKey = "";
+        }
     }
     private void UpdateVitText(int v)  => mTexts["VitVal"].text = v.ToString();
     private void UpdateEndText(int v)  => mTexts["EndVal"].text = v.ToString();

@@ -228,42 +228,58 @@ namespace GB
 
         public static UnityDictionary<string, T> TryGetAsset<T>(string folderPath, string optionalName = "") where T : UnityEngine.Object
         {
-            
-            // Gets all files with the Directory System.IO class
-            string[] files = Directory.GetFiles(Application.dataPath+"/" + folderPath, "*.*", SearchOption.AllDirectories);
-
+            string[] files = Directory.GetFiles(Application.dataPath + "/" + folderPath, "*.*", SearchOption.AllDirectories);
 
             UnityDictionary<string, T> dict = new UnityDictionary<string, T>();
+            string[] excludeFolders = { "WorldMap", "World", "TileMap", "UI" };
 
-            // move through all files
+            // UI/Common의 grid_xxx 이미지만 예외적으로 포함
+            string[] specialNames = { "grid_gray", "grid_green", "grid_red", "grid_white", "grid_yellow" };
+            string specialFolder = "/UI/Common/";
+
             foreach (var file in files)
             {
+                string normalizedFile = file.Replace("\\", "/");
+
+                bool isExcluded = false;
+                foreach (var exclude in excludeFolders)
+                {
+                    if (normalizedFile.Contains("/" + exclude + "/"))
+                    {
+                        isExcluded = true;
+                        break;
+                    }
+                }
+
+                // UI/Common의 grid_xxx 이미지는 예외적으로 포함
+                bool isSpecial = false;
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                if (normalizedFile.Contains(specialFolder))
+                {
+                    foreach (var name in specialNames)
+                    {
+                        if (fileName == name)
+                        {
+                            isSpecial = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (isExcluded && !isSpecial) continue;
 
                 string path = FixFilePath(file);
-
-                // Then I try and load the asset at the current path.
                 T asset = AssetDatabase.LoadAssetAtPath<T>(path);
-
-                // check the asset to see if it's not null
                 if (asset)
                 {
-                    var sprits = folderPath.Split("/");
-                    var fName = sprits[sprits.Length - 1];
-
-                    int idx = file.IndexOf(fName);
-                    idx += fName.Length + 1;
-                    string paserName = file.Substring(idx, file.Length - idx);
-
-                    sprits = paserName.Split(".");
-
-
-                    dict[sprits[0].Replace("\\", "/")] = asset;
-
+                    if (isSpecial)
+                        dict["ui_" + fileName] = asset;
+                    else
+                        dict[fileName] = asset;
                 }
             }
 
             Debug.Log("files :" + dict.Count);
-
 
             return dict;
         }

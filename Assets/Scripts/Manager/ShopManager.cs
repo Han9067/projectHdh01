@@ -28,7 +28,7 @@ public class ShopManager : AutoSingleton<ShopManager>
         for(int j = 0; j < len2; j++)
         {   
             var shopItem = shopItemTable[j];
-            shopAllData[shopItem.ShopID].items.Add(new ShopItemData(shopItem.ItemID, shopItem.Type, shopItem.Cnt));
+            shopAllData[shopItem.ShopID].items.Add(new ShopItemData(shopItem.ItemID, shopItem.Type));
         }
     }
 } 

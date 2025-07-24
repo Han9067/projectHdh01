@@ -33,6 +33,10 @@ public class ItemManager : AutoSingleton<ItemManager>
         {
             ItemDataList[wp.ID] = CreateItemData(wp.ID, wp.Name, wp.Type, wp.Price, wp.Val, wp.W, wp.H, wp.Res, wp.Dur, $"Images/Item/Wp/{wp.Res}");
             ItemDataList[wp.ID].Both = wp.Both;
+            ItemDataList[wp.ID].H1AX = wp.H1AX; ItemDataList[wp.ID].H1AY = wp.H1AY; //hand1A의 x,y 좌표
+            ItemDataList[wp.ID].H1BX = wp.H1BX; ItemDataList[wp.ID].H1BY = wp.H1BY; //hand1B의 x,y 좌표
+            ItemDataList[wp.ID].H2X = wp.H2X; ItemDataList[wp.ID].H2Y = wp.H2Y; //hand2의 x,y 좌표
+            ItemDataList[wp.ID].BX = wp.BX; ItemDataList[wp.ID].BY = wp.BY; //both의 x,y 좌표
         }
     }
     private void LoadItemData()

@@ -41,12 +41,11 @@ public class ShopData
 [System.Serializable]
 public class ShopItemData
 {
-    public int itemId, type, cnt;
-    public ShopItemData(int iId, int type, int cnt)
+    public int itemId, type;
+    public ShopItemData(int iId, int type)
     {
         this.itemId = iId;
         this.type = type;
-        this.cnt = cnt;
     }
 }
 
@@ -54,9 +53,10 @@ public class ShopItemData
 public class ItemData
 {
     public string Name, Res, Path;
-    public int ItemId, Type, Price, Val, W, H, Dur, X, Y, Dir, Uid;
+    public int ItemId, Type, Price, Val, W, H, Dur, X, Y;
+    public int Dir, Uid; //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
     public int Both; // 0: 한손무기, 1: 양손무기 // 무기에만 적용
-    //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
+    public float H1AX, H1AY, H1BX, H1BY, H2X, H2Y, BX, BY; // 무기 좌표
     public ItemData Clone()
     {
         return new ItemData { 
