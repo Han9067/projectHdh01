@@ -37,6 +37,7 @@ public class WpTable  : GameData
 				case "W": return true;
 				case "H": return true;
 				case "Dur": return true;
+				case "Both": return true;
 				case "Res": return true;
 				case "KR": return true;
 				case "EN": return true;
@@ -73,6 +74,7 @@ public class WpTable  : GameData
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Dur": return data.Dur;
+				case "Both": return data.Both;
 				case "Res": return data.Res;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
@@ -100,6 +102,7 @@ public class WpTable  : GameData
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Dur": return data.Dur;
+				case "Both": return data.Both;
 				case "Res": return data.Res;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
@@ -128,9 +131,10 @@ public class WpTable  : GameData
 				case 6: return data.W;
 				case 7: return data.H;
 				case 8: return data.Dur;
-				case 9: return data.Res;
-				case 10: return data.KR;
-				case 11: return data.EN;
+				case 9: return data.Both;
+				case 10: return data.Res;
+				case 11: return data.KR;
+				case 12: return data.EN;
 
                 default: return null;
             }
@@ -182,6 +186,7 @@ public class WpTableProb : GameDataProb
 	[JsonProperty] public readonly int W;
 	[JsonProperty] public readonly int H;
 	[JsonProperty] public readonly int Dur;
+	[JsonProperty] public readonly int Both;
 	[JsonProperty] public readonly string Res;
 	[JsonProperty] public readonly string KR;
 	[JsonProperty] public readonly string EN;

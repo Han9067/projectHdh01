@@ -1249,7 +1249,7 @@ SpriteRenderer:
   m_SortingLayerID: 1618969855
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 9b00ef78e4ef55947958623ff8debe79, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8ec4b11262482c34bbfd169290f3415b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1624,13 +1624,25 @@ MonoBehaviour:
     Name: "\uC720\uC800"
     Age: 0
     Gender: 0
-    Sylin: 0
+    Silver: 0
     Lv: 0
     Exp: 0
     NextExp: 0
     HP: 0
     MP: 0
     SP: 0
+    AddHP: 0
+    AddMP: 0
+    AddSP: 0
+    MaxHP: 0
+    MaxMP: 0
+    MaxSP: 0
+    Att: 0
+    Def: 0
+    Crt: 0
+    CrtRate: 0
+    Acc: 0
+    Dod: 0
     VIT: 0
     END: 0
     STR: 0
@@ -1640,6 +1652,16 @@ MonoBehaviour:
     CHA: 0
     LUK: 0
     Inven: []
+    Skin: 0
+    Face: 0
+    Eyebrow: 0
+    Eye: 0
+    EyeColor: 0
+    Ear: 0
+    Nose: 0
+    Mouth: 0
+    Hair: 0
+    HairColor: 0
 --- !u!114 &2052872142
 MonoBehaviour:
   m_ObjectHideFlags: 0

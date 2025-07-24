@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using GB;
+using UnityEngine.UI;
+using UnityEngine;
 
 
 public class CharInfoPop : UIScreen
@@ -9,6 +11,10 @@ public class CharInfoPop : UIScreen
     {
         Regist();
         RegistButton();
+    }
+    private void Start()
+    {
+        LoadBaseCharAppearance(); //최초 1번 로드
     }
     private void OnEnable()
     {
@@ -36,6 +42,59 @@ public class CharInfoPop : UIScreen
     }
     public override void ViewQuick(string key, IOData data){}
     public override void Refresh(){}
+    private void LoadBaseCharAppearance(){
+        var pData = PlayerManager.I.pData;
+        mGameObject["Face"].GetComponent<Image>().sprite = ResManager.GetSprite("Face_" + pData.Face);
+        mGameObject["Eyebrow"].GetComponent<Image>().sprite = ResManager.GetSprite("Eyebrow_" + pData.Eyebrow);
+        mGameObject["Eye"].GetComponent<Image>().sprite = ResManager.GetSprite("Eye_" + pData.Eye);
+        mGameObject["Ear"].GetComponent<Image>().sprite = ResManager.GetSprite("Ear_" + pData.Ear);
+        mGameObject["Nose"].GetComponent<Image>().sprite = ResManager.GetSprite("Nose_" + pData.Nose);
+        mGameObject["Mouth"].GetComponent<Image>().sprite = ResManager.GetSprite("Mouth_" + pData.Mouth);
+
+        float[] arr = {0, 0, 0};
+        switch(pData.Skin){
+            case 1:arr = new float[] {255f, 235f, 210f};break;
+            case 2:arr = new float[] {236f, 204f, 169f};break;
+            case 3:arr = new float[] {251f, 206f, 177f};break;
+            case 4:arr = new float[] {199f, 165f, 137f};break;
+            case 5:arr = new float[] {92f, 73f, 57f};break;default:arr = new float[] {0, 0, 0};break;
+        }
+        mGameObject["Face"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+        mGameObject["Ear"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+
+        switch(pData.HairColor){
+            case 1:arr = new float[] {30f, 30f, 30f};break;
+            case 2:arr = new float[] {57f, 41f, 28f};break;
+            case 3:arr = new float[] {104f, 69f, 35f};break;
+            case 4:arr = new float[] {138f, 97f, 69f};break;
+            case 5:arr = new float[] {219f, 169f, 93f};break;
+            case 6:arr = new float[] {245f, 238f, 286f};break;
+            case 7:arr = new float[] {170f, 255f, 216f};break;
+        }
+
+        switch(pData.Hair){
+            case 1:
+                mGameObject["Hair1A"].SetActive(true);mGameObject["Hair1B"].SetActive(false);mGameObject["Hair2"].SetActive(true);
+                mGameObject["Hair1A"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                mGameObject["Hair2"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
+                mGameObject["Hair1A"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+                mGameObject["Hair2"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+                break;
+            case 2:
+            case 3:
+                mGameObject["Hair1A"].SetActive(true);mGameObject["Hair1B"].SetActive(false);mGameObject["Hair2"].SetActive(false);
+                mGameObject["Hair1A"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                mGameObject["Hair1A"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+                break;
+            case 100:
+                mGameObject["Hair1A"].SetActive(false);mGameObject["Hair1B"].SetActive(true);mGameObject["Hair2"].SetActive(true);
+                mGameObject["Hair1B"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                mGameObject["Hair2"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
+                mGameObject["Hair1B"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+                mGameObject["Hair2"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+                break;
+        }
+    }
     public void UpdateAllStatTexts()
     {
         var pData = PlayerManager.I.pData;
@@ -64,11 +123,14 @@ public class CharInfoPop : UIScreen
         UpdateChaText(pData.CHA);
         UpdateLukText(pData.LUK);
 
-        UpdateAppearance(pData);
+        // UpdateAppearance(pData);
     }
-    public void UpdateAppearance(PlayerData pData)
+    public void UpdateEq(PlayerData pData)
     {
-        UnityEngine.Debug.Log(pData.Skin + " " + pData.Face + " " + pData.Eyebrow + " " + pData.Eye + " " + pData.EyeColor + " " + pData.Ear + " " + pData.Nose + " " + pData.Mouth + " " + pData.Hair + " " + pData.HairColor);
+        // var eq = pData.EqSlot;
+        
+
+
 
     }
     private void UpdateVitText(int v)  => mTexts["VitVal"].text = v.ToString();

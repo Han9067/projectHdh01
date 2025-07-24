@@ -32,6 +32,7 @@ public class ItemManager : AutoSingleton<ItemManager>
         foreach (var wp in WpTable.Datas)
         {
             ItemDataList[wp.ID] = CreateItemData(wp.ID, wp.Name, wp.Type, wp.Price, wp.Val, wp.W, wp.H, wp.Res, wp.Dur, $"Images/Item/Wp/{wp.Res}");
+            ItemDataList[wp.ID].Both = wp.Both;
         }
     }
     private void LoadItemData()

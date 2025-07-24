@@ -22,8 +22,9 @@ public class InvenItemObj : MonoBehaviour, IPointerClickHandler
     }
     public void SendItemObj()
     {
+        Debug.Log(uid);
+        if(eq != "") PlayerManager.I.TakeoffEq(eq);
         string str = $"{itemData.Uid}_{itemData.ItemId}_{itemData.Type}";
         Presenter.Send("InvenPop","ClickObj", str);
-        // transform.SetAsLastSibling();
     }
 }
