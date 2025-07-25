@@ -50,13 +50,15 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Val = val, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0 };
     }
-    public void CreateItem(int id, int x, int y)
+    public void CreateInvenItem(int id, int x, int y)
     {
         ItemData item = ItemDataList[id].Clone();
         item.X = x;
         item.Y = y;
         item.Uid = GetUid();
         PlayerManager.I.pData.Inven.Add(item);
+        //추후에는 특수능력 또는 추가 능력치 붙는 아이템에 대한 대응도 해야함.
+        //고민중인건 매개변수에 배열을 두개 넣어서 한개는 능력치 값 id를 넣고 다른 하나는 능력치의 값을 적용할까함
     }
     public int GetUid()
     {

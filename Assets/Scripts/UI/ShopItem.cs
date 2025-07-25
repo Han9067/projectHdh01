@@ -26,8 +26,9 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         UIManager.ShowPopup("ItemSelPop");
         Vector3 mousePos = Input.mousePosition;
-        string str = $"{itemData.Price}-{mousePos.x}-{mousePos.y}";
-        GB.Presenter.Send("ItemSelPop", "ItemBuy", str);
+        string str = $"{mousePos.x}-{mousePos.y}";
+        GB.Presenter.Send("ItemSelPop", "SendItemData", itemData);
+        GB.Presenter.Send("ItemSelPop", "StateItemBuy", str);
     }
 
     // 마우스가 버튼 위에 올라갔을 때 호출

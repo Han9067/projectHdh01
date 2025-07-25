@@ -1,13 +1,13 @@
 using UnityEngine;
 using GB;
+using Unity.VisualScripting;
 
 
 public class ItemSelPop : UIScreen
 {
     public GameObject mainObj;
     public GameObject popObj;
-    private int price;
-
+    private ItemData selItem;
     private void Awake()
     {
         Regist();
@@ -16,6 +16,7 @@ public class ItemSelPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("ItemSelPop",this);
+        selItem = null;
     }
     private void OnDisable() 
     {
@@ -33,14 +34,28 @@ public class ItemSelPop : UIScreen
     {
         switch(key)
         {
-            case "ItemSelPopClose":
+            case "ClickItemSelPopPannel":
+            case "ClickItemBack":
                 Close();
                 break;
-            case "ItemBuy":
-                // 구매 로직
-                UnityEngine.Debug.Log("ItemBuy");
+            case "ClickItemBuy":
+                if(PlayerManager.I.pData.Silver < selItem.Price)
+                {
+                    Debug.Log("돈이 부족합니다.");
+                    return;
+                }
+                Vector2 pos = PlayerManager.I.CanAddItem(selItem.W, selItem.H);
+                if(pos.x == -1 || pos.y == -1)
+                {
+                    Debug.Log("인벤토리가 꽉 찼습니다.");
+                    return;
+                }
+                PlayerManager.I.pData.Silver -= selItem.Price;
+                Presenter.Send("WorldMainUI", "UpdateGoldTxt", PlayerManager.I.pData.Silver.ToString());
+                ItemManager.I.CreateInvenItem(selItem.ItemId, (int)pos.x, (int)pos.y);
+                Presenter.Send("InvenPop", "AddItem", PlayerManager.I.pData.Inven[PlayerManager.I.pData.Inven.Count - 1]);
                 break;
-            case "ItemSell":
+            case "ClickItemSell":
                 // 판매 로직
                 UnityEngine.Debug.Log("ItemSell");
                 break;
@@ -48,19 +63,33 @@ public class ItemSelPop : UIScreen
     }
     public override void ViewQuick(string key, IOData data)
     {
-        string[] str = {"ItemBuy", "ItemSell", "ItemThrow"};
-        for(int i = 0; i < str.Length; i++)
-            mButtons[str[i]].gameObject.SetActive(false);
+        string[] btnArr = {"ClickItemBuy", "ClickItemSell", "ClickItemThrow" ,"ClickItemBack"};
+        for(int i = 0; i < btnArr.Length; i++)
+            mButtons[btnArr[i]].gameObject.SetActive(false);
+        string[] objArr = {"NameBox" , "GoldBox"};
+        for(int i = 0; i < objArr.Length; i++)
+            mGameObject[objArr[i]].SetActive(false);
         switch(key)
         {
-            case "ItemBuy":
+            case "SendItemData":
+                selItem = data.Get<ItemData>();
+                break;
+            case "StateItemBuy":
                 string[] strArr = data.Get<string>().Split('-'); 
-                price = int.Parse(strArr[0]);
-                float x = float.Parse(strArr[1]);
-                float y = float.Parse(strArr[2]);
+                float x = float.Parse(strArr[0]);
+                float y = float.Parse(strArr[1]);
                 mainObj.transform.position = new Vector3(x, y, 0);
-                mButtons["ItemBuy"].gameObject.SetActive(true);
-                // popObj.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 100);
+                mButtons["ClickItemBuy"].gameObject.SetActive(true);
+                mButtons["ClickItemBack"].gameObject.SetActive(true);
+                float cx = mainObj.transform.position.x,cy = mainObj.transform.position.y;
+                mButtons["ClickItemBuy"].gameObject.transform.position = new Vector3(cx, cy - 50, 0);
+                mButtons["ClickItemBack"].gameObject.transform.position = new Vector3(cx, cy - 130, 0);
+                mGameObject["NameBox"].SetActive(true);
+                mGameObject["GoldBox"].SetActive(true);
+                mGameObject["NameBox"].gameObject.transform.position = new Vector3(cx, cy + 165, 0);
+                mGameObject["GoldBox"].gameObject.transform.position = new Vector3(cx, cy + 50, 0);
+                mTexts["NameBoxText"].text = selItem.Name;
+                mTexts["GoldBoxText"].text = selItem.Price.ToString();
                 break;
         }
     }
@@ -69,7 +98,4 @@ public class ItemSelPop : UIScreen
     {
             
     }
-
-
-
 }

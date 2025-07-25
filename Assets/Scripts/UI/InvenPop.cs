@@ -144,6 +144,10 @@ public class InvenPop : UIScreen
                     }
                 }
                 break;
+            case "AddItem":
+                ItemData addItem = data.Get<ItemData>();
+                PlaceInvenItem(addItem.X, addItem.Y, addItem.W, addItem.H, addItem);
+                break;
         }
     }
     public override void Refresh(){}
@@ -191,11 +195,8 @@ public class InvenPop : UIScreen
     {
         for(int i = 0; i < PlayerManager.I.pData.Inven.Count; i++)
         {
-            // 현재 아이템의 크기 정보 가져오기 (예시)
-            int w = PlayerManager.I.pData.Inven[i].W;  // 아이템 가로 크기
-            int h = PlayerManager.I.pData.Inven[i].H; // 아이템 세로 크기
-            PlaceInvenItem(PlayerManager.I.pData.Inven[i].X, PlayerManager.I.pData.Inven[i].Y, w, h, PlayerManager.I.pData.Inven[i]);
-            //추후 아이템 중복에 대한 검사가 필요할것같음
+            ItemData item = PlayerManager.I.pData.Inven[i];
+            PlaceInvenItem(item.X, item.Y, item.W, item.H, item);
         }
     }
     private bool CanPlaceItem(int sx, int sy, int wid, int hei)
@@ -217,7 +218,7 @@ public class InvenPop : UIScreen
     private void SetGridPos(RectTransform rect, int type, int x, int y, int w, int h)
     {
         float cx = gridObj[y, x].rectTransform.anchoredPosition.x + ((w - 1) * 32);
-        float cy = gridObj[y, x].rectTransform.anchoredPosition.y - ((h - 1) * 32);
+        float cy = gridObj[y, x].rectTransform.anchoredPosition.y - ((h - 1) * 32) + slotParent.localPosition.y;
         rect.anchoredPosition = new Vector2(cx, cy);
         rect.sizeDelta = new Vector2(w * 64, h * 64);
         if(type == 0)rect.localScale = new Vector3(1, 1, 1);

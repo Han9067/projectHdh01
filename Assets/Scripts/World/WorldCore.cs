@@ -17,7 +17,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         //월드맵 시작
         cam = Camera.main;
         WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
-        worldMainUI.stateGameSpd("x0");
+        worldMainUI.stateGameSpd("X0");
         
 
     }

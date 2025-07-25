@@ -20,7 +20,7 @@ public class wPlayer : MonoBehaviour
             isMoving = true;
 
             WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
-            worldMainUI.stateGameSpd("x1");
+            worldMainUI.stateGameSpd("X1");
         }
 
         if (isMoving)
@@ -37,6 +37,6 @@ public class wPlayer : MonoBehaviour
     {
         isMoving = false;
         WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
-        worldMainUI.stateGameSpd("x0");
+        worldMainUI.stateGameSpd("X0");
     }
 }

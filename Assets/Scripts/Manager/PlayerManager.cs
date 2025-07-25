@@ -81,6 +81,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.HairColor = data.HairColor;
 
         CalcPlayerStat();
+        Presenter.Send("WorldMainUI", "UpdateGoldTxt", pData.Silver.ToString());
     }
     public void DummyPlayerData()
     {
@@ -89,7 +90,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Name = "앨런";
         pData.Age = 17;
         pData.Gender = 0;
-        pData.Silver = 1000;
+        pData.Silver = 20000;
         pData.Lv = 1;
         pData.Exp = 0;
         pData.NextExp = 100;
@@ -103,11 +104,12 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Nose = 1; pData.Mouth = 1;
         pData.Hair = 1; pData.HairColor = 1;
 
-        ItemManager.I.CreateItem(20001, 0, 0);
-        ItemManager.I.CreateItem(10001, 3, 0);
-        ItemManager.I.CreateItem(20002, 1, 0);
+        ItemManager.I.CreateInvenItem(20001, 0, 0);
+        ItemManager.I.CreateInvenItem(10001, 3, 0);
+        ItemManager.I.CreateInvenItem(20002, 1, 0);
 
         CalcPlayerStat();
+        Presenter.Send("WorldMainUI", "UpdateGoldTxt", pData.Silver.ToString());
     }
     private void CalcPlayerStat()
     {
@@ -147,5 +149,27 @@ public class PlayerManager : AutoSingleton<PlayerManager>
                 }
             }
         }
+    }
+    public Vector2 CanAddItem(int w, int h){
+        // Debug.Log(w + "   " + h);
+        for(int y = 0; y < 10; y++){
+            if(y + h > 10)break;
+            for(int x = 0; x < 10; x++){
+                if(x + w > 10)break;
+                bool isAdd = true;
+                for(int i = y; i < y + h; i++){
+                    for(int j = x; j < x + w; j++){
+                        if(grids[i][j].slotId != -1){
+                            isAdd = false;
+                            break;
+                        }
+                    }
+                }
+                if(isAdd)return new Vector2(x, y);
+            }
+        }
+        return new Vector2(-1, -1);
+        //현재 버그있음
+        //추후에는 빈칸일때 회전된 상태로도 검색하는 기능도 추가해야함
     }
 }

@@ -46,26 +46,26 @@ public class WorldMainUI : UIScreen
 
     public void OnButtonClick(string key)
     {
-        if (key.Contains("state"))
+        if (key.Contains("State"))
         {
             GameObject go = null;
             string str = "";
             
             switch (key)
             {
-                case "stateChar":
+                case "StateCharInfoPop":
                     go = GameObject.Find("CharInfoPop");
                     str = "CharInfoPop";
                     break;
-                case "stateInven":
+                case "StateInvenPop":
                     go = GameObject.Find("InvenPop");
                     str = "InvenPop";
                     break;
-                case "stateQuest":
+                case "StateQuestPop":
                     go = GameObject.Find("QuestPop");
                     str = "QuestPop";
                     break;
-                case "stateSkill":
+                case "StateSkillPop":
                     go = GameObject.Find("SkillPop");
                     str = "SkillPop";
                     break;
@@ -89,7 +89,7 @@ public class WorldMainUI : UIScreen
     }
     public void stateGameSpd(string key){
         if(CityEnterPop.isActive)return;
-        string numberStr = key.Replace("x", "");
+        string numberStr = key.Replace("X", "");
         int val = int.Parse(numberStr);
         Time.timeScale = val;
         currentSpeed = val;
@@ -103,7 +103,7 @@ public class WorldMainUI : UIScreen
         // 모든 속도 버튼을 기본 이미지로 초기화
         foreach (var button in mButtons)
         {
-            if (button.Key.StartsWith("x"))
+            if (button.Key.StartsWith("X"))
             {
                 Image buttonImage = button.Value.GetComponent<Image>();
                 if (buttonImage != null)
@@ -114,7 +114,7 @@ public class WorldMainUI : UIScreen
         }
         
         // 현재 활성화된 속도 버튼만 노란색 이미지로 변경
-        string curSpdKey = "x" + currentSpeed.ToString();
+        string curSpdKey = "X" + currentSpeed.ToString();
         if (mButtons.ContainsKey(curSpdKey))
         {
             Image curBtnImg = mButtons[curSpdKey].GetComponent<Image>();
@@ -127,6 +127,11 @@ public class WorldMainUI : UIScreen
     
     public override void ViewQuick(string key, IOData data)
     {
+        switch(key){
+            case "UpdateGoldTxt":
+                mTexts["GoldTxt"].text = data.Get<string>();
+                break;
+        }
     }
 
     public override void Refresh()
