@@ -38,7 +38,7 @@ public class CharInfoPop : UIScreen
     {
         switch (key)
         {
-            case "Close":
+            case "CharInfoPopClose":
                 UIManager.ClosePopup("CharInfoPop");
                 break;
         }

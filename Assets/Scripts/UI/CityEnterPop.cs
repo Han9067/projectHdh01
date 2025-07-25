@@ -51,7 +51,7 @@ public class CityEnterPop : UIScreen
     {
         switch (key)
         {
-            case "Close":
+            case "CityEnterPopClose":
                 Close();
                 UIManager.ClosePopup("InvenPop");
                 break;

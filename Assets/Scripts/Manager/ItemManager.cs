@@ -24,14 +24,14 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var eq in EqTable.Datas)
         {
-            ItemDataList[eq.ID] = CreateItemData(eq.ID, eq.Name, eq.Type, eq.Price, eq.Val, eq.W, eq.H, eq.Res, eq.Dur, $"Images/Item/Eq/{eq.Res}");
+            ItemDataList[eq.ID] = CreateItemData(eq.ID, eq.Name, eq.Type, eq.Price, eq.Val, eq.W, eq.H, eq.Res, eq.Dur);
         }
     }
     private void LoadWpData()
     {
         foreach (var wp in WpTable.Datas)
         {
-            ItemDataList[wp.ID] = CreateItemData(wp.ID, wp.Name, wp.Type, wp.Price, wp.Val, wp.W, wp.H, wp.Res, wp.Dur, $"Images/Item/Wp/{wp.Res}");
+            ItemDataList[wp.ID] = CreateItemData(wp.ID, wp.Name, wp.Type, wp.Price, wp.Val, wp.W, wp.H, wp.Res, wp.Dur);
             ItemDataList[wp.ID].Both = wp.Both;
             ItemDataList[wp.ID].H1AX = wp.H1AX; ItemDataList[wp.ID].H1AY = wp.H1AY; //hand1A의 x,y 좌표
             ItemDataList[wp.ID].H1BX = wp.H1BX; ItemDataList[wp.ID].H1BY = wp.H1BY; //hand1B의 x,y 좌표
@@ -43,12 +43,12 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var item in ItemTable.Datas)
         {
-            ItemDataList[item.ID] = CreateItemData(item.ID, item.Name, item.Type, item.Price, item.Val, item.W, item.H, item.Res, 0, $"Images/Item/Ect/{item.Res}");
+            ItemDataList[item.ID] = CreateItemData(item.ID, item.Name, item.Type, item.Price, item.Val, item.W, item.H, item.Res, 0);
         }
     }
-    private ItemData CreateItemData(int id, string name, int type, int price, int val, int w, int h, string res, int dur, string path)
+    private ItemData CreateItemData(int id, string name, int type, int price, int val, int w, int h, string res, int dur)
     {
-        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Val = val, W = w, H = h, Res = res, Dur = dur, Path = path, X = 0, Y = 0, Dir = 0 };
+        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Val = val, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0 };
     }
     public void CreateItem(int id, int x, int y)
     {

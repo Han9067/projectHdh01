@@ -87,7 +87,7 @@ MonoBehaviour:
       duplicatedKey: 0
   mButtons:
     list:
-    - key: Close
+    - key: ShopInvenPopClose
       value: {fileID: 8400063535482474688}
       duplicatedKey: 0
   mGameObject:
@@ -96,8 +96,10 @@ MonoBehaviour:
     list: []
   mTMPText:
     list: []
+  shopItemPrefab: {fileID: 3487592399715023880, guid: 99e6705a37136844192da36b25251c91, type: 3}
   content: {fileID: 730509983124086171}
   gridSpr: {fileID: 21300000, guid: d7512422d56b73e4399482330521f112, type: 3}
+  ItemList: []
 --- !u!1 &1219687457447819662
 GameObject:
   m_ObjectHideFlags: 0
@@ -738,7 +740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: Close
+  Key: ShopInvenPopClose
 --- !u!1 &3089777397338025775
 GameObject:
   m_ObjectHideFlags: 0
@@ -1404,7 +1406,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 4999383936608467869}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99993044
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

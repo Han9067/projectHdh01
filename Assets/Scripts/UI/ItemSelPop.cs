@@ -24,45 +24,43 @@ public class ItemSelPop : UIScreen
     }
     public void RegistButton()
     {
+        // Debug.Log("RegistButton 호출");
         foreach(var v in mButtons)
             v.Value.onClick.AddListener(() => { OnButtonClick(v.Key);});
     }
 
     public void OnButtonClick(string key)
     {
-        UnityEngine.Debug.Log(key);
         switch(key)
         {
-            case "Close":
+            case "ItemSelPopClose":
                 Close();
                 break;
-            case "Buy":
+            case "ItemBuy":
                 // 구매 로직
-                UnityEngine.Debug.Log("Buy");
+                UnityEngine.Debug.Log("ItemBuy");
                 break;
-            case "Sell":
+            case "ItemSell":
                 // 판매 로직
-                UnityEngine.Debug.Log("Sell");
+                UnityEngine.Debug.Log("ItemSell");
                 break;
         }
     }
     public override void ViewQuick(string key, IOData data)
     {
-        string[] str = {"Buy", "Sell", "Throw","Steal"};
+        string[] str = {"ItemBuy", "ItemSell", "ItemThrow"};
         for(int i = 0; i < str.Length; i++)
-        {
             mButtons[str[i]].gameObject.SetActive(false);
-        }
         switch(key)
         {
-            case "Buy":
+            case "ItemBuy":
                 string[] strArr = data.Get<string>().Split('-'); 
                 price = int.Parse(strArr[0]);
                 float x = float.Parse(strArr[1]);
                 float y = float.Parse(strArr[2]);
                 mainObj.transform.position = new Vector3(x, y, 0);
-                mButtons["Buy"].gameObject.SetActive(true);
-                popObj.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 100);
+                mButtons["ItemBuy"].gameObject.SetActive(true);
+                // popObj.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 100);
                 break;
         }
     }

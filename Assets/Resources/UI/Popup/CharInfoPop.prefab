@@ -2359,7 +2359,7 @@ MonoBehaviour:
       duplicatedKey: 0
   mButtons:
     list:
-    - key: Close
+    - key: CharInfoPopClose
       value: {fileID: 5833372905055475914}
       duplicatedKey: 0
   mGameObject:
@@ -2388,12 +2388,6 @@ MonoBehaviour:
     - key: EqHand2
       value: {fileID: 5200403832003806368}
       duplicatedKey: 0
-    - key: BaseBoth
-      value: {fileID: 6000548731131967574}
-      duplicatedKey: 0
-    - key: EqBoth
-      value: {fileID: 2378939344891050075}
-      duplicatedKey: 0
     - key: Face
       value: {fileID: 8430889919668766376}
       duplicatedKey: 0
@@ -2420,6 +2414,12 @@ MonoBehaviour:
       duplicatedKey: 0
     - key: Hair2
       value: {fileID: 8618242932095028130}
+      duplicatedKey: 0
+    - key: BaseBoth
+      value: {fileID: 6000548731131967574}
+      duplicatedKey: 0
+    - key: EqBoth
+      value: {fileID: 2378939344891050075}
       duplicatedKey: 0
   mSkinner:
     list: []
@@ -7252,7 +7252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: Close
+  Key: CharInfoPopClose
 --- !u!1 &7143331993293039440
 GameObject:
   m_ObjectHideFlags: 0

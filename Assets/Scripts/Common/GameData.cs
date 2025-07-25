@@ -52,7 +52,7 @@ public class ShopItemData
 [System.Serializable]
 public class ItemData
 {
-    public string Name, Res, Path;
+    public string Name, Res;
     public int ItemId, Type, Price, Val, W, H, Dur, X, Y;
     public int Dir, Uid; //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
     public int Both; // 0: 한손무기, 1: 양손무기 // 무기에만 적용
@@ -60,7 +60,7 @@ public class ItemData
     public ItemData Clone()
     {
         return new ItemData { 
-            Name = this.Name, Res = this.Res, Path = this.Path, ItemId = this.ItemId, Type = this.Type, 
+            Name = this.Name, Res = this.Res, ItemId = this.ItemId, Type = this.Type, 
             Price = this.Price, Val = this.Val, W = this.W, H = this.H, 
             Dur = this.Dur, X = this.X, Y = this.Y, Dir = this.Dir};
     }

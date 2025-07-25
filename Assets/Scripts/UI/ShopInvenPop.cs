@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class ShopInvenPop : UIScreen
 {
+    public GameObject shopItemPrefab;
     public static bool isActive { get; private set; } = false;
     private int gw = 10; //기본 넓이 10칸
     private int gh = 12; //기본 높이 12칸
@@ -60,7 +61,7 @@ public class ShopInvenPop : UIScreen
     {
         switch (key)
         {
-            case "Close":
+            case "ShopInvenPopClose":
                 UIManager.ClosePopup("ShopInvenPop");
                 Close();
                 break;
@@ -232,35 +233,19 @@ public class ShopInvenPop : UIScreen
     }
     public void CreateShopItem(List<ItemPos> itemPosList)
     {
-        // ShopItem 프리팹 로드
-        GameObject shopItemPrefab = Resources.Load<GameObject>("Prefabs/UI/ShopItem");
-
         foreach (var data in itemPosList)
         {
-            // 스프라이트 로드
-            Sprite itemSprite = Resources.Load<Sprite>(data.itemData.Path);
-            if (itemSprite == null)
-            {
-                Debug.LogWarning($"리소스 로드 실패: {data.itemData.Path}");
-                continue;
-            }
-
+            Sprite iSpr = ResManager.GetSprite(data.itemData.Res);
             // 프리팹 인스턴스화
             GameObject shopItem = Instantiate(shopItemPrefab, content);
             
-            // Image 컴포넌트 찾기 (프리팹에 Image 컴포넌트가 있다고 가정)
-            Image itemImage = shopItem.GetComponent<Image>();
-            if (itemImage != null)
-            {
-                itemImage.sprite = itemSprite;
-                itemImage.SetNativeSize(); // 리소스 크기에 맞춰 크기 조정
-            }
-
+            int w = data.itemData.W * 64, h = data.itemData.H * 64;
             // RectTransform 설정
             RectTransform rt = shopItem.GetComponent<RectTransform>();
             rt.anchorMin = new Vector2(0, 1);
             rt.anchorMax = new Vector2(0, 1);
             rt.pivot = new Vector2(0, 1);
+            rt.sizeDelta = new Vector2(w, h);
             
             // 그리드 좌표에 맞게 위치 설정 (64는 한 칸의 픽셀 크기)
             rt.anchoredPosition = new Vector2(data.x * 64, -(data.y * 64));
@@ -268,6 +253,7 @@ public class ShopInvenPop : UIScreen
             // 아이템 정보 저장 (필요시)
             shopItem.name = $"ShopItem_{data.itemData.ItemId}";
             shopItem.GetComponent<ShopItem>().SetItemData(data.itemData);
+            shopItem.GetComponent<ShopItem>().SetItemImage(iSpr);
         }
     }
     public override void Refresh(){ }

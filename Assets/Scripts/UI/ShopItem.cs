@@ -9,6 +9,7 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public ItemData itemData;
     private Button button;
+    public Image itemImage;
     
     void Start()
     {
@@ -26,7 +27,7 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         UIManager.ShowPopup("ItemSelPop");
         Vector3 mousePos = Input.mousePosition;
         string str = $"{itemData.Price}-{mousePos.x}-{mousePos.y}";
-        GB.Presenter.Send("ItemSelPop", "Buy", str);
+        GB.Presenter.Send("ItemSelPop", "ItemBuy", str);
     }
 
     // 마우스가 버튼 위에 올라갔을 때 호출
@@ -39,5 +40,11 @@ public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerExit(PointerEventData eventData)
     {
         // Debug.Log("마우스가 버튼에서 벗어났습니다!");
+    }
+
+    public void SetItemImage(Sprite spr)
+    {
+        itemImage.sprite = spr;
+        itemImage.SetNativeSize();
     }
 }
