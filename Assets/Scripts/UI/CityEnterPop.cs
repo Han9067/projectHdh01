@@ -84,9 +84,8 @@ public class CityEnterPop : UIScreen
         {
             case "EnterCity":
                 curId = data.Get<int>();
-                var table = GameDataManager.GetTable<CityTable>();
-                mTexts["Name"].text = table[curId].Name;
-                string[] strArr = table[curId].Place.Split('_');
+                mTexts["Name"].text = CityManager.I.CityDataList[curId].Name;
+                string[] strArr = CityManager.I.CityDataList[curId].Place.Split('_');
                 splitData = strArr.Select(int.Parse).ToList();
                 LoadPlace();
                 break;
@@ -124,10 +123,10 @@ public class CityEnterPop : UIScreen
             }
             // shopAllData에서 조건에 맞는 데이터 찾기
             var result = ShopManager.I.shopAllData.Values
-                .Where(data => data.cityId == curId && data.type == v)
+                .Where(data => data.CityId == curId && data.Type == v)
                 .ToList();
             foreach(var shop in result)
-                shopList[v] = shop.id;
+                shopList[v] = shop.Id;
         }
     }
     public override void Refresh()

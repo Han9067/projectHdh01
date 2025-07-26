@@ -233,10 +233,6 @@ namespace GB
             UnityDictionary<string, T> dict = new UnityDictionary<string, T>();
             string[] excludeFolders = { "WorldMap", "World", "TileMap", "UI" };
 
-            // UI/Common의 grid_xxx 이미지만 예외적으로 포함
-            string[] specialNames = { "grid_gray", "grid_green", "grid_red", "grid_white", "grid_yellow" };
-            string specialFolder = "/UI/Common/";
-
             foreach (var file in files)
             {
                 string normalizedFile = file.Replace("\\", "/");
@@ -251,31 +247,14 @@ namespace GB
                     }
                 }
 
-                // UI/Common의 grid_xxx 이미지는 예외적으로 포함
-                bool isSpecial = false;
+                if (isExcluded) continue;
+
                 string fileName = Path.GetFileNameWithoutExtension(file);
-                if (normalizedFile.Contains(specialFolder))
-                {
-                    foreach (var name in specialNames)
-                    {
-                        if (fileName == name)
-                        {
-                            isSpecial = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (isExcluded && !isSpecial) continue;
-
                 string path = FixFilePath(file);
                 T asset = AssetDatabase.LoadAssetAtPath<T>(path);
                 if (asset)
                 {
-                    if (isSpecial)
-                        dict["ui_" + fileName] = asset;
-                    else
-                        dict[fileName] = asset;
+                    dict[fileName] = asset;
                 }
             }
 

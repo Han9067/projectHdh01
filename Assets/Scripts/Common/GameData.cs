@@ -27,10 +27,23 @@ public class PlayerData
 }
 
 [System.Serializable]
+public class CityData
+{
+    public int CityId;
+    public string Name, Place;
+    public CityData(int id, string name, string place)
+    {
+        this.CityId = id;
+        this.Name = name;
+        this.Place = place;
+    }
+}
+
+[System.Serializable]
 public class ShopData
 {
-    public string name; // 상점이름
-    public int id, cityId, type; // 상점ID, 도시ID, 상점타입
+    public string Name; // 상점이름
+    public int Id, CityId, Type; // 상점ID, 도시ID, 상점타입
     public List<ShopItemData> items; // 상점아이템
     public ShopData()
     {
@@ -41,11 +54,11 @@ public class ShopData
 [System.Serializable]
 public class ShopItemData
 {
-    public int itemId, type;
-    public ShopItemData(int iId, int type)
+    public int ItemId, Type;
+    public ShopItemData(int itemId, int type)
     {
-        this.itemId = iId;
-        this.type = type;
+        this.ItemId = itemId;
+        this.Type = type;
     }
 }
 

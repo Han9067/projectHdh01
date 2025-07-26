@@ -95,7 +95,7 @@ public class ShopInvenPop : UIScreen
         var items = shopData.items;
         foreach(var item in items)
         {
-            ItemData data = ItemManager.I.ItemDataList[item.itemId].Clone();
+            ItemData data = ItemManager.I.ItemDataList[item.ItemId].Clone();
             Vector2Int pos = ApplyGrid(data.ItemId, data.W, data.H);
             ItemPos itemPos = new ItemPos { itemData = data, x = pos.x, y = pos.y };
             ItemList.Add(data);

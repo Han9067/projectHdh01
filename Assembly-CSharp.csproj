@@ -83,7 +83,6 @@
     <Compile Include="Assets\GB\GSheet\GameData\EqTable.cs" />
     <Compile Include="Assets\Scripts\World\wPlayer.cs" />
     <Compile Include="Assets\Scripts\Manager\SaveFileManager.cs" />
-    <Compile Include="Assets\GB\GSheet\GameData\WpOffsetTable.cs" />
     <Compile Include="Assets\Scripts\Manager\ItemManager.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\CityTable.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\AbilityTable.cs" />
@@ -97,7 +96,7 @@
     <Compile Include="Assets\GB\GSheet\GameData\ShopItemTable.cs" />
     <Compile Include="Assets\Scripts\UI\InvenGrid.cs" />
     <Compile Include="Assets\Scripts\UI\CharInfoPop.cs" />
-    <Compile Include="Assets\Scripts\UI\GridObj.cs" />
+    <Compile Include="Assets\Scripts\Manager\CityManager.cs" />
     <Compile Include="Assets\GB\ResManager\ObjectPooling\ObjectPooling.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -112,7 +111,6 @@
     <None Include="Assets\GB\GSheet\GameData\O.txt" />
     <None Include="Assets\GB\Version\Resources.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
-    <None Include="Assets\Resources\Json\WpOffsetTable.txt" />
     <None Include="Assets\Resources\Json\ShopItemTable.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />

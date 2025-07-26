@@ -29,8 +29,7 @@ public class InvenPop : UIScreen
     private Dictionary<string,EdgePos> eqEdge = new Dictionary<string,EdgePos>(); // 장비 경계
     private Dictionary<string,Image> eqBox = new Dictionary<string,Image>(); // 장비 슬롯 박스 이미지
     private Dictionary<string,GameObject> eqMain = new Dictionary<string,GameObject>(); // 장비 슬롯 메인 이미지
-    private Sprite whiteGrid; // 클래스 멤버 변수로 캐싱
-    private Sprite grayGrid; // 클래스 멤버 변수로 캐싱
+    public Sprite gridSprite; // 클래스 멤버 변수로 캐싱
     private void Awake()
     {
         Regist();
@@ -38,8 +37,6 @@ public class InvenPop : UIScreen
     }
     private void Start()
     {
-        whiteGrid = ResManager.GetSprite("ui_grid_white");
-        grayGrid = ResManager.GetSprite("ui_grid_gray");
         InitGrid();
         LoadInven();
     }
@@ -301,9 +298,9 @@ public class InvenPop : UIScreen
         {
             switch(type)
             {
-                case 0: gridObj[y, x].sprite = ResManager.GetSprite("ui_grid_green"); break;
-                case 1: gridObj[y, x].sprite = ResManager.GetSprite("ui_grid_yellow"); break;
-                case 2: gridObj[y, x].sprite = ResManager.GetSprite("ui_grid_red"); break;
+                case 0: gridObj[y, x].color = new Color(129/255f, 183/255f, 127/255f, 1); break; // 초록색
+                case 1: gridObj[y, x].color = new Color(255/255f, 250/255f, 101/255f, 1); break; // 노란색
+                case 2: gridObj[y, x].color = new Color(255/255f, 105/255f, 101/255f, 1); break; // 빨간색
             }
         }
         // 겹치는 그리드 색상 변경
@@ -312,20 +309,22 @@ public class InvenPop : UIScreen
     }
     private void ResetAllGrids()
     {
+        Color whiteColor = Color.white;
         for(int y = 0; y < 10; y++)
         {
             for(int x = 0; x < 10; x++){
-                if(gridObj[y, x].sprite != whiteGrid)
-                    gridObj[y, x].sprite = whiteGrid;
+                if (gridObj[y, x].color != whiteColor)
+                    gridObj[y, x].color = whiteColor;
             }
         }
     }
     private void ResetAllEq()
     {
+        Color grayColor = new Color(192/255f, 192/255f, 192/255f, 1);
         foreach(var v in eqBox)
         {
-            if(v.Value.sprite != grayGrid)
-                v.Value.sprite = grayGrid;
+            if (v.Value.color != grayColor)
+                v.Value.color = grayColor;
         }
     }
     private void CheckCurEq(int id, int type)
@@ -349,7 +348,7 @@ public class InvenPop : UIScreen
         }
         
         foreach(var v in curEq)
-            eqBox[v].sprite = ResManager.GetSprite("ui_grid_green");
+            eqBox[v].color = new Color(129/255f, 183/255f, 127/255f, 1);
     }
     private void MoveItem(int sx, int sy, int w, int h, int ex, int ey)
     {
