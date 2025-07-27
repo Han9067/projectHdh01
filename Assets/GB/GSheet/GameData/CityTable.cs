@@ -18,7 +18,7 @@ public class CityTable  : GameData
 		var dic = new Dictionary<string, CityTableProb>();
 
         for (int i = 0; i < Datas.Length; ++i)
-            dic[Datas[i].ID.ToString()] = Datas[i];
+            dic[Datas[i].CityID.ToString()] = Datas[i];
 
         _DicDatas = dic;
 
@@ -28,7 +28,7 @@ public class CityTable  : GameData
     {
         switch (name)
         {
-				case "ID": return true;
+				case "CityID": return true;
 				case "Name": return true;
 				case "Place": return true;
 				case "Res": return true;
@@ -60,7 +60,7 @@ public class CityTable  : GameData
             CityTableProb data = this[row];
             switch (col)
             {
-				case "ID": return data.ID;
+				case "CityID": return data.CityID;
 				case "Name": return data.Name;
 				case "Place": return data.Place;
 				case "Res": return data.Res;
@@ -83,7 +83,7 @@ public class CityTable  : GameData
              CityTableProb data = this[row];
             switch (col)
             {
-				case "ID": return data.ID;
+				case "CityID": return data.CityID;
 				case "Name": return data.Name;
 				case "Place": return data.Place;
 				case "Res": return data.Res;
@@ -107,7 +107,7 @@ public class CityTable  : GameData
 
             switch (col)
             {
-				case 0: return data.ID;
+				case 0: return data.CityID;
 				case 1: return data.Name;
 				case 2: return data.Place;
 				case 3: return data.Res;
@@ -157,7 +157,7 @@ public class CityTable  : GameData
 [Serializable]
 public class CityTableProb : GameDataProb
 {
-		[JsonProperty] public readonly int ID;
+		[JsonProperty] public readonly int CityID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly string Place;
 	[JsonProperty] public readonly string Res;

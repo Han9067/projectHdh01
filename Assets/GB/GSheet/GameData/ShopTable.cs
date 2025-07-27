@@ -18,7 +18,7 @@ public class ShopTable  : GameData
 		var dic = new Dictionary<string, ShopTableProb>();
 
         for (int i = 0; i < Datas.Length; ++i)
-            dic[Datas[i].ID.ToString()] = Datas[i];
+            dic[Datas[i].ShopID.ToString()] = Datas[i];
 
         _DicDatas = dic;
 
@@ -28,7 +28,7 @@ public class ShopTable  : GameData
     {
         switch (name)
         {
-				case "ID": return true;
+				case "ShopID": return true;
 				case "Type": return true;
 				case "Name": return true;
 				case "Gender": return true;
@@ -61,7 +61,7 @@ public class ShopTable  : GameData
             ShopTableProb data = this[row];
             switch (col)
             {
-				case "ID": return data.ID;
+				case "ShopID": return data.ShopID;
 				case "Type": return data.Type;
 				case "Name": return data.Name;
 				case "Gender": return data.Gender;
@@ -85,7 +85,7 @@ public class ShopTable  : GameData
              ShopTableProb data = this[row];
             switch (col)
             {
-				case "ID": return data.ID;
+				case "ShopID": return data.ShopID;
 				case "Type": return data.Type;
 				case "Name": return data.Name;
 				case "Gender": return data.Gender;
@@ -110,7 +110,7 @@ public class ShopTable  : GameData
 
             switch (col)
             {
-				case 0: return data.ID;
+				case 0: return data.ShopID;
 				case 1: return data.Type;
 				case 2: return data.Name;
 				case 3: return data.Gender;
@@ -161,7 +161,7 @@ public class ShopTable  : GameData
 [Serializable]
 public class ShopTableProb : GameDataProb
 {
-		[JsonProperty] public readonly int ID;
+		[JsonProperty] public readonly int ShopID;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Gender;

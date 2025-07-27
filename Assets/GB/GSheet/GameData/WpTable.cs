@@ -18,7 +18,7 @@ public class WpTable  : GameData
 		var dic = new Dictionary<string, WpTableProb>();
 
         for (int i = 0; i < Datas.Length; ++i)
-            dic[Datas[i].ID.ToString()] = Datas[i];
+            dic[Datas[i].ItemID.ToString()] = Datas[i];
 
         _DicDatas = dic;
 
@@ -28,7 +28,7 @@ public class WpTable  : GameData
     {
         switch (name)
         {
-				case "ID": return true;
+				case "ItemID": return true;
 				case "Name": return true;
 				case "Type": return true;
 				case "Price": return true;
@@ -73,7 +73,7 @@ public class WpTable  : GameData
             WpTableProb data = this[row];
             switch (col)
             {
-				case "ID": return data.ID;
+				case "ItemID": return data.ItemID;
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Price": return data.Price;
@@ -109,7 +109,7 @@ public class WpTable  : GameData
              WpTableProb data = this[row];
             switch (col)
             {
-				case "ID": return data.ID;
+				case "ItemID": return data.ItemID;
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Price": return data.Price;
@@ -146,7 +146,7 @@ public class WpTable  : GameData
 
             switch (col)
             {
-				case 0: return data.ID;
+				case 0: return data.ItemID;
 				case 1: return data.Name;
 				case 2: return data.Type;
 				case 3: return data.Price;
@@ -209,7 +209,7 @@ public class WpTable  : GameData
 [Serializable]
 public class WpTableProb : GameDataProb
 {
-		[JsonProperty] public readonly int ID;
+		[JsonProperty] public readonly int ItemID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly int Price;

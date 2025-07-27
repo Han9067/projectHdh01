@@ -329,9 +329,9 @@ public class InvenPop : UIScreen
     }
     private void CheckCurEq(int id, int type)
     {
-        if (id > 40000) {
+        if (id > 60000) {
             curEq = new string[] {};
-        } else if (id > 20000) {
+        } else if (id > 30000) {
             curEq = (type == 10) ? new string[] { "Hand2" } : new string[] { "Hand1", "Hand2" };
         } else {
             switch (type) {

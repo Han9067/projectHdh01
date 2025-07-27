@@ -104,9 +104,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Nose = 1; pData.Mouth = 1;
         pData.Hair = 1; pData.HairColor = 1;
 
-        ItemManager.I.CreateInvenItem(20001, 0, 0);
+        ItemManager.I.CreateInvenItem(30001, 0, 0);
+        ItemManager.I.CreateInvenItem(30002, 1, 0);
         ItemManager.I.CreateInvenItem(10001, 3, 0);
-        ItemManager.I.CreateInvenItem(20002, 1, 0);
 
         CalcPlayerStat();
         Presenter.Send("WorldMainUI", "UpdateGoldTxt", pData.Silver.ToString());
