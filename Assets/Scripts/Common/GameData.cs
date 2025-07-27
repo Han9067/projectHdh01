@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using System.Security.Cryptography.X509Certificates;
 
 [System.Serializable]
 public class PlayerData
@@ -24,6 +25,16 @@ public class PlayerData
     {
         EqSlot.Add("Hand1", null);EqSlot.Add("Hand2", null);EqSlot.Add("Armor", null);EqSlot.Add("Shoes", null);EqSlot.Add("Helmet", null);EqSlot.Add("Gloves", null);EqSlot.Add("Belt", null);EqSlot.Add("Cape", null);EqSlot.Add("Necklace", null);EqSlot.Add("Ring1", null);EqSlot.Add("Ring2", null);
     } // 생성자
+}
+[System.Serializable]
+public class NpcData
+{
+
+}
+[System.Serializable]
+public class MonData
+{
+
 }
 
 [System.Serializable]

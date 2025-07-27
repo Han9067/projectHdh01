@@ -6,17 +6,12 @@ using UnityEngine.UI;
 
 public class WorldMainUI : UIScreen
 {
-    [Header("Speed Button Images")]
-    [SerializeField] private Sprite btnSpdWhite;
-    [SerializeField] private Sprite btnSpdYellow;
-    
     private int currentSpeed = 1; // 현재 활성화된 속도 (기본값 1)
     
     private void Awake()
     {
         Regist();
         RegistButton();
-        LoadSpdBtnImg();
     }
 
     private void OnEnable()
@@ -28,16 +23,6 @@ public class WorldMainUI : UIScreen
     {
         Presenter.UnBind("WorldMainUI", this);
     }
-
-    private void LoadSpdBtnImg()
-    {
-        // Resources 폴더에서 이미지 로드
-        if (btnSpdWhite == null)
-            btnSpdWhite = Resources.Load<Sprite>("Images/World/UI/btn_spd_white");
-        if (btnSpdYellow == null)
-            btnSpdYellow = Resources.Load<Sprite>("Images/World/UI/btn_spd_yellow");
-    }
-
     public void RegistButton()
     {
         foreach (var v in mButtons)
@@ -108,7 +93,7 @@ public class WorldMainUI : UIScreen
                 Image buttonImage = button.Value.GetComponent<Image>();
                 if (buttonImage != null)
                 {
-                    buttonImage.sprite = btnSpdWhite;
+                    buttonImage.color = Color.white;
                 }
             }
         }
@@ -120,7 +105,7 @@ public class WorldMainUI : UIScreen
             Image curBtnImg = mButtons[curSpdKey].GetComponent<Image>();
             if (curBtnImg != null)
             {
-                curBtnImg.sprite = btnSpdYellow;
+                curBtnImg.color = Color.yellow;
             }
         }
     }
