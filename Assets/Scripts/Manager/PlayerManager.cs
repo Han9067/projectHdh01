@@ -6,6 +6,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 {
 
     [Header("플레이어 데이터")]
+    public int currentCity = 0;
     public PlayerData pData;
     public List<List<InvenGrid>> grids;
     protected void Awake()

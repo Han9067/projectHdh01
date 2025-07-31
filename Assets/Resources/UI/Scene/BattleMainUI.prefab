@@ -852,6 +852,9 @@ MonoBehaviour:
     - key: StateInvenPop
       value: {fileID: 983543825727900812}
       duplicatedKey: 0
+    - key: GoToWorld
+      value: {fileID: 3144835379924141504}
+      duplicatedKey: 0
   mGameObject:
     list: []
   mSkinner:
@@ -942,6 +945,7 @@ GameObject:
   - component: {fileID: 3561226457664053313}
   - component: {fileID: 4744988001321168902}
   - component: {fileID: 3144835379924141504}
+  - component: {fileID: 4042855258303861714}
   m_Layer: 5
   m_Name: Btn
   m_TagString: Untagged
@@ -1051,6 +1055,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4042855258303861714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4945888621650217799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: GoToWorld
 --- !u!1 &6467370384078068479
 GameObject:
   m_ObjectHideFlags: 0

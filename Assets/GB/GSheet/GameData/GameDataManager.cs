@@ -48,6 +48,8 @@ public class GameDataManager : AutoSingleton<GameDataManager>
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<NpcTable>(NpcTabledata,(result)=>{ I._Tables[TABLE.NpcTable] = result;}));
                 string MonTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/MonTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<MonTable>(MonTabledata,(result)=>{ I._Tables[TABLE.MonTable] = result;}));
+                string ExpTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/ExpTable").text);
+            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<ExpTable>(ExpTabledata,(result)=>{ I._Tables[TABLE.ExpTable] = result;}));
                 
 
         gbCoroutine.OnComplete(()=>{complete?.Invoke();}).Play();
@@ -152,6 +154,11 @@ case TABLE.MonTable:
         MonTable d_MonTable = new MonTable();
         d_MonTable.SetJson(data);
         obj  = d_MonTable;
+        break;
+case TABLE.ExpTable:
+        ExpTable d_ExpTable = new ExpTable();
+        d_ExpTable.SetJson(data);
+        obj  = d_ExpTable;
         break;
         }
 
@@ -262,5 +269,6 @@ public enum TABLE
 	AbilityTable,
 	NpcTable,
 	MonTable,
+	ExpTable,
 
 }

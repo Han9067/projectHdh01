@@ -67,8 +67,10 @@
     <Compile Include="Assets\Scripts\World\WorldCore.cs" />
     <Compile Include="Assets\GB\ResManager\ObjectPooling\PoolingType.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\WpTable.cs" />
+    <Compile Include="Assets\GB\GSheet\GameData\ExpTable.cs" />
     <Compile Include="Assets\GB\ResManager\SoundManager.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\ShopTable.cs" />
+    <Compile Include="Assets\Scripts\Manager\NpcManager.cs" />
     <Compile Include="Assets\Scripts\UI\InvenItemObj.cs" />
     <Compile Include="Assets\Scripts\Manager\ShopManager.cs" />
     <Compile Include="Assets\Scripts\UI\ItemSelPop.cs" />
@@ -89,9 +91,13 @@
     <Compile Include="Assets\GB\GSheet\GameData\AbilityTable.cs" />
     <Compile Include="Assets\Scripts\Common\GameData.cs" />
     <Compile Include="Assets\Scripts\World\wCity.cs" />
+    <Compile Include="Assets\Scripts\World\wMon.cs" />
     <Compile Include="Assets\Scripts\UI\WorldMainUI.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\ItemTable.cs" />
+    <Compile Include="Assets\Scripts\UI\BattleMainUI.cs" />
+    <Compile Include="Assets\Scripts\Manager\MonManager.cs" />
     <Compile Include="Assets\GB\ResManager\ResourcesData.cs" />
+    <Compile Include="Assets\Scripts\UI\BattleInfoPop.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\GameDataManager.cs" />
     <Compile Include="Assets\Scripts\UI\InvenPop.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\ShopItemTable.cs" />
@@ -126,6 +132,7 @@
     <None Include="Assets\Resources\Json\WpTable.txt" />
     <None Include="Assets\Resources\Json\ShopTable.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Resources\Json\ExpTable.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />

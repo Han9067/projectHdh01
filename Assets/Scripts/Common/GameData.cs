@@ -29,12 +29,27 @@ public class PlayerData
 [System.Serializable]
 public class NpcData
 {
-
+    public int NpcId, Lv, Exp, NextExp, Hp, Mp, Sp, MaxHP, MaxMP, MaxSP;
+    public int Att, Def, Crt, CrtRate, Acc, Dod;
+    public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
 }
 [System.Serializable]
 public class MonData
 {
-
+    public int MonId, Lv, Exp, NextExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;
+    public string Name;
+    public int Att, Def, Crt, CrtRate, Acc, Dod;
+    public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
+    public MonData Clone()
+    {
+        return new MonData { 
+            MonId = this.MonId, Name = this.Name,
+             VIT = this.VIT, END = this.END, STR = this.STR, AGI = this.AGI, FOR = this.FOR, 
+             INT = this.INT, CHA = this.CHA, LUK = this.LUK,
+             Att = this.Att, Def = this.Def, Crt = this.Crt, CrtRate = this.CrtRate, Acc = this.Acc, Dod = this.Dod,
+             Lv = this.Lv, Exp = this.Exp, NextExp = this.NextExp, 
+             HP = this.HP, MP = this.MP, SP = this.SP, MaxHP = this.MaxHP, MaxMP = this.MaxMP, MaxSP = this.MaxSP };
+    }
 }
 
 [System.Serializable]
