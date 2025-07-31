@@ -53,7 +53,6 @@ public class CityData
 [System.Serializable]
 public class ShopData
 {
-    public string Name; // 상점이름
     public int Id, CityId, Type; // 상점ID, 도시ID, 상점타입
     public List<ShopItemData> items; // 상점아이템
     public ShopData()

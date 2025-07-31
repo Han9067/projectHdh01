@@ -30,7 +30,7 @@ public class ShopTable  : GameData
         {
 				case "ShopID": return true;
 				case "Type": return true;
-				case "Name": return true;
+				case "NpcID": return true;
 				case "Gender": return true;
 				case "Age": return true;
 				case "CityID": return true;
@@ -63,7 +63,7 @@ public class ShopTable  : GameData
             {
 				case "ShopID": return data.ShopID;
 				case "Type": return data.Type;
-				case "Name": return data.Name;
+				case "NpcID": return data.NpcID;
 				case "Gender": return data.Gender;
 				case "Age": return data.Age;
 				case "CityID": return data.CityID;
@@ -87,7 +87,7 @@ public class ShopTable  : GameData
             {
 				case "ShopID": return data.ShopID;
 				case "Type": return data.Type;
-				case "Name": return data.Name;
+				case "NpcID": return data.NpcID;
 				case "Gender": return data.Gender;
 				case "Age": return data.Age;
 				case "CityID": return data.CityID;
@@ -112,7 +112,7 @@ public class ShopTable  : GameData
             {
 				case 0: return data.ShopID;
 				case 1: return data.Type;
-				case 2: return data.Name;
+				case 2: return data.NpcID;
 				case 3: return data.Gender;
 				case 4: return data.Age;
 				case 5: return data.CityID;
@@ -163,7 +163,7 @@ public class ShopTableProb : GameDataProb
 {
 		[JsonProperty] public readonly int ShopID;
 	[JsonProperty] public readonly int Type;
-	[JsonProperty] public readonly string Name;
+	[JsonProperty] public readonly string NpcID;
 	[JsonProperty] public readonly int Gender;
 	[JsonProperty] public readonly int Age;
 	[JsonProperty] public readonly int CityID;

@@ -4,21 +4,21 @@ using Newtonsoft.Json;
 
 
 [Serializable]
-public class EqTable  : GameData
+public class NpcTable  : GameData
 {	
-	 [JsonProperty] public EqTableProb[] Datas{get; private set;}
-	 IReadOnlyDictionary<string, EqTableProb> _DicDatas;
+	 [JsonProperty] public NpcTableProb[] Datas{get; private set;}
+	 IReadOnlyDictionary<string, NpcTableProb> _DicDatas;
 
 	public void SetJson(string json)
     {
-        var data = JsonConvert.DeserializeObject <EqTable> (json);
-        EqTableProb[] arr = data.Datas;
+        var data = JsonConvert.DeserializeObject <NpcTable> (json);
+        NpcTableProb[] arr = data.Datas;
         Datas = arr;
 
-		var dic = new Dictionary<string, EqTableProb>();
+		var dic = new Dictionary<string, NpcTableProb>();
 
         for (int i = 0; i < Datas.Length; ++i)
-            dic[Datas[i].ItemID.ToString()] = Datas[i];
+            dic[Datas[i].NpcID.ToString()] = Datas[i];
 
         _DicDatas = dic;
 
@@ -28,17 +28,15 @@ public class EqTable  : GameData
     {
         switch (name)
         {
-				case "ItemID": return true;
+				case "NpcID": return true;
 				case "Name": return true;
-				case "Type": return true;
-				case "Price": return true;
-				case "Grade": return true;
-				case "Val": return true;
-				case "W": return true;
-				case "H": return true;
-				case "Dur": return true;
 				case "Gen": return true;
-				case "Res": return true;
+				case "Fame": return true;
+				case "Personality": return true;
+				case "Lv": return true;
+				case "Stat": return true;
+				case "Eq": return true;
+				case "Wp": return true;
 				case "KR": return true;
 				case "EN": return true;
 
@@ -62,20 +60,18 @@ public class EqTable  : GameData
     {
         get
         {
-            EqTableProb data = this[row];
+            NpcTableProb data = this[row];
             switch (col)
             {
-				case "ItemID": return data.ItemID;
+				case "NpcID": return data.NpcID;
 				case "Name": return data.Name;
-				case "Type": return data.Type;
-				case "Price": return data.Price;
-				case "Grade": return data.Grade;
-				case "Val": return data.Val;
-				case "W": return data.W;
-				case "H": return data.H;
-				case "Dur": return data.Dur;
 				case "Gen": return data.Gen;
-				case "Res": return data.Res;
+				case "Fame": return data.Fame;
+				case "Personality": return data.Personality;
+				case "Lv": return data.Lv;
+				case "Stat": return data.Stat;
+				case "Eq": return data.Eq;
+				case "Wp": return data.Wp;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
 
@@ -90,20 +86,18 @@ public class EqTable  : GameData
     {
         get
         {
-             EqTableProb data = this[row];
+             NpcTableProb data = this[row];
             switch (col)
             {
-				case "ItemID": return data.ItemID;
+				case "NpcID": return data.NpcID;
 				case "Name": return data.Name;
-				case "Type": return data.Type;
-				case "Price": return data.Price;
-				case "Grade": return data.Grade;
-				case "Val": return data.Val;
-				case "W": return data.W;
-				case "H": return data.H;
-				case "Dur": return data.Dur;
 				case "Gen": return data.Gen;
-				case "Res": return data.Res;
+				case "Fame": return data.Fame;
+				case "Personality": return data.Personality;
+				case "Lv": return data.Lv;
+				case "Stat": return data.Stat;
+				case "Eq": return data.Eq;
+				case "Wp": return data.Wp;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
 
@@ -118,30 +112,28 @@ public class EqTable  : GameData
     {
         get
         {
-            EqTableProb data = Datas[row];
+            NpcTableProb data = Datas[row];
 
             switch (col)
             {
-				case 0: return data.ItemID;
+				case 0: return data.NpcID;
 				case 1: return data.Name;
-				case 2: return data.Type;
-				case 3: return data.Price;
-				case 4: return data.Grade;
-				case 5: return data.Val;
-				case 6: return data.W;
-				case 7: return data.H;
-				case 8: return data.Dur;
-				case 9: return data.Gen;
-				case 10: return data.Res;
-				case 11: return data.KR;
-				case 12: return data.EN;
+				case 2: return data.Gen;
+				case 3: return data.Fame;
+				case 4: return data.Personality;
+				case 5: return data.Lv;
+				case 6: return data.Stat;
+				case 7: return data.Eq;
+				case 8: return data.Wp;
+				case 9: return data.KR;
+				case 10: return data.EN;
 
                 default: return null;
             }
         }
     }
 
-    public EqTableProb this[string name]
+    public NpcTableProb this[string name]
     {
         get
         {
@@ -150,7 +142,7 @@ public class EqTable  : GameData
     }
 
 
-    public EqTableProb this[int index]
+    public NpcTableProb this[int index]
     {
         get
         {
@@ -175,19 +167,17 @@ public class EqTable  : GameData
 }
 
 [Serializable]
-public class EqTableProb : GameDataProb
+public class NpcTableProb : GameDataProb
 {
-		[JsonProperty] public readonly int ItemID;
+		[JsonProperty] public readonly int NpcID;
 	[JsonProperty] public readonly string Name;
-	[JsonProperty] public readonly int Type;
-	[JsonProperty] public readonly int Price;
-	[JsonProperty] public readonly int Grade;
-	[JsonProperty] public readonly int Val;
-	[JsonProperty] public readonly int W;
-	[JsonProperty] public readonly int H;
-	[JsonProperty] public readonly int Dur;
 	[JsonProperty] public readonly int Gen;
-	[JsonProperty] public readonly string Res;
+	[JsonProperty] public readonly int Fame;
+	[JsonProperty] public readonly int Personality;
+	[JsonProperty] public readonly int Lv;
+	[JsonProperty] public readonly string Stat;
+	[JsonProperty] public readonly string Eq;
+	[JsonProperty] public readonly string Wp;
 	[JsonProperty] public readonly string KR;
 	[JsonProperty] public readonly string EN;
 
