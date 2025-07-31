@@ -12,8 +12,8 @@ public class wCity : MonoBehaviour
     {
         if (other.CompareTag("Player")){
             // isPlayerInside = true;
-            InGameMainUI inGameMainUI = FindObjectOfType<InGameMainUI>();
-            inGameMainUI.stateGameSpd("X0");
+            WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
+            worldMainUI.stateGameSpd("X0");
             
             // 플레이어 스크립트의 stopPlayer() 호출
             wPlayer player = other.GetComponent<wPlayer>();

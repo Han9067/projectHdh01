@@ -4,10 +4,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class InGameMainUI : UIScreen
+public class WorldMainUI : UIScreen
 {
- private int currentSpeed = 1; // 현재 활성화된 속도 (기본값 1)
+    private int currentSpeed = 1; // 현재 활성화된 속도 (기본값 1)
     
     private void Awake()
     {
@@ -24,6 +23,7 @@ public class InGameMainUI : UIScreen
     {
         Presenter.UnBind("WorldMainUI", this);
     }
+
     public void RegistButton()
     {
         foreach (var v in mButtons)
@@ -69,12 +69,15 @@ public class InGameMainUI : UIScreen
                     UIManager.ShowPopup(str);
             }
         }
-        else{
+        else
+        {
             stateGameSpd(key);
         }
     }
-    public void stateGameSpd(string key){
-        if(CityEnterPop.isActive)return;
+
+    public void stateGameSpd(string key)
+    {
+        if(CityEnterPop.isActive) return;
         string numberStr = key.Replace("X", "");
         int val = int.Parse(numberStr);
         Time.timeScale = val;
@@ -113,7 +116,8 @@ public class InGameMainUI : UIScreen
     
     public override void ViewQuick(string key, IOData data)
     {
-        switch(key){
+        switch(key)
+        {
             case "UpdateGoldTxt":
                 mTexts["GoldTxt"].text = data.Get<string>();
                 break;

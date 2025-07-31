@@ -27,8 +27,8 @@ public class wPlayer : MonoBehaviour
             targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             isMoving = true;
 
-            InGameMainUI inGameMainUI = FindObjectOfType<InGameMainUI>();
-            inGameMainUI.stateGameSpd("X1");
+            WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
+            worldMainUI.stateGameSpd("X1");
         }
 
         if (isMoving)
@@ -44,7 +44,7 @@ public class wPlayer : MonoBehaviour
     public void stopPlayer()
     {
         isMoving = false;
-        InGameMainUI inGameMainUI = FindObjectOfType<InGameMainUI>();
-        inGameMainUI.stateGameSpd("X0");
+        WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
+        worldMainUI.stateGameSpd("X0");
     }
 }

@@ -1,8 +1,11 @@
 using GB;
 
 
-public class ItemInfoPop : UIScreen
+public class BattleMainUI : UIScreen
 {
+
+    
+
     private void Awake()
     {
         Regist();
@@ -11,12 +14,12 @@ public class ItemInfoPop : UIScreen
 
     private void OnEnable()
     {
-        Presenter.Bind("ItemInfoPop",this);
+        Presenter.Bind("BattleMainUI",this);
     }
 
     private void OnDisable() 
     {
-        Presenter.UnBind("ItemInfoPop", this);
+        Presenter.UnBind("BattleMainUI", this);
 
     }
 
@@ -29,9 +32,10 @@ public class ItemInfoPop : UIScreen
 
     public void OnButtonClick(string key)
     {
-        // switch(key)
-        // {
-        // }
+        switch(key)
+        {
+
+        }
     }
     public override void ViewQuick(string key, IOData data)
     {
