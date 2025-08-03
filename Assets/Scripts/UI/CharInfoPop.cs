@@ -121,8 +121,8 @@ public class CharInfoPop : UIScreen
         mTexts["DefVal"].text = pData.Def.ToString();
         mTexts["CrtVal"].text = pData.Crt.ToString() + "%";
         mTexts["CrtRateVal"].text = pData.CrtRate.ToString() + "%";
-        mTexts["AccVal"].text = pData.Acc.ToString() + "%";
-        mTexts["DodVal"].text = pData.Dod.ToString() + "%";
+        mTexts["HitVal"].text = pData.Hit.ToString() + "%";
+        mTexts["EvaVal"].text = pData.Eva.ToString() + "%";
 
         UpdateVitText(pData.VIT);
         UpdateEndText(pData.END);

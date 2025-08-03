@@ -15,7 +15,7 @@ public class PlayerData
     // 상태
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def;
-    public int Crt, CrtRate, Acc, Dod;
+    public int Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public Dictionary<string, ItemData> EqSlot = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
@@ -30,7 +30,7 @@ public class PlayerData
 public class NpcData
 {
     public int NpcId, Lv, Exp, NextExp, Hp, Mp, Sp, MaxHP, MaxMP, MaxSP;
-    public int Att, Def, Crt, CrtRate, Acc, Dod;
+    public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
 }
 [System.Serializable]
@@ -38,7 +38,7 @@ public class MonData
 {
     public int MonId, Lv, Exp, NextExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;
     public string Name;
-    public int Att, Def, Crt, CrtRate, Acc, Dod;
+    public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public MonData Clone()
     {
@@ -46,7 +46,7 @@ public class MonData
             MonId = this.MonId, Name = this.Name,
              VIT = this.VIT, END = this.END, STR = this.STR, AGI = this.AGI, FOR = this.FOR, 
              INT = this.INT, CHA = this.CHA, LUK = this.LUK,
-             Att = this.Att, Def = this.Def, Crt = this.Crt, CrtRate = this.CrtRate, Acc = this.Acc, Dod = this.Dod,
+             Att = this.Att, Def = this.Def, Crt = this.Crt, CrtRate = this.CrtRate, Hit = this.Hit, Eva = this.Eva,
              Lv = this.Lv, Exp = this.Exp, NextExp = this.NextExp, 
              HP = this.HP, MP = this.MP, SP = this.SP, MaxHP = this.MaxHP, MaxMP = this.MaxMP, MaxSP = this.MaxSP };
     }

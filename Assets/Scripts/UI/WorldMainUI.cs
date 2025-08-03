@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class WorldMainUI : UIScreen
 {
     private int currentSpeed = 1; // 현재 활성화된 속도 (기본값 1)
-    
     private void Awake()
     {
         Regist();

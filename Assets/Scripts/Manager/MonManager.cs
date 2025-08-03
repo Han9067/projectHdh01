@@ -5,10 +5,16 @@ using UnityEngine.UI.Extensions;
 
 public class MonManager : AutoSingleton<MonManager>
 {
+    // class MonGrpInfo
+    // {
+    //     public int MonId;
+    //     public List<int> Party;
+    //     public float x, y;
+    // }
     private MonTable _monTable;
     public MonTable MonTable => _monTable ?? (_monTable = GameDataManager.GetTable<MonTable>());
     public Dictionary<int, MonData> MonDataList = new Dictionary<int, MonData>();
-    public List<GameObject> MonGrpList = new List<GameObject>();
+    public List<int> BattleMonList = new List<int>();
     private void Awake()
     {
         LoadMonData();
@@ -18,25 +24,24 @@ public class MonManager : AutoSingleton<MonManager>
         foreach(var mon in MonTable.Datas)
         {
             string[] stat = mon.Stat.Split('_');
-            int id = mon.MonID;
-            MonDataList[id] = CreateMonData(id, mon.Name, 
+            int id = mon.MonID; 
+            MonData mData = CreateMonData(id, mon.Name, 
             int.Parse(stat[0]), int.Parse(stat[1]), int.Parse(stat[2]), int.Parse(stat[3]), int.Parse(stat[4]), int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]));
-            MonDataList[id].Lv = 1;
-            MonDataList[id].Exp = 0;
-            MonDataList[id].NextExp = 100;
-            MonDataList[id].HP = MonDataList[id].VIT * 10;
-            MonDataList[id].MP = MonDataList[id].INT * 10;
-            MonDataList[id].SP = MonDataList[id].END * 10;
-            MonDataList[id].MaxHP = MonDataList[id].HP;
-            MonDataList[id].MaxMP = MonDataList[id].MP;
-            MonDataList[id].MaxSP = MonDataList[id].SP;
+            
+            mData.Lv = 1; mData.Exp = 0; mData.NextExp = 100;
+            mData.HP = mData.VIT * 10; mData.MaxHP = mData.HP;
+            mData.MP = mData.INT * 10; mData.MaxMP = mData.MP;
+            mData.SP = mData.END * 10; mData.MaxSP = mData.SP;
 
-            MonDataList[id].Att = MonDataList[id].STR * 2;
-            MonDataList[id].Def = MonDataList[id].VIT;
-            MonDataList[id].Crt = 50 + (MonDataList[id].LUK * 2);
-            MonDataList[id].CrtRate = MonDataList[id].LUK;
-            MonDataList[id].Acc = 80 + MonDataList[id].AGI;
-            MonDataList[id].Dod = 10 + MonDataList[id].AGI;
+            mData.Att = mData.STR * 2;
+            mData.Def = mData.VIT;
+            mData.Crt = 50 + (mData.LUK * 2);
+            mData.CrtRate = mData.LUK;
+            int agi = mData.AGI / 4; //mData.AGI / 4 * 2
+            mData.Hit = 60 + agi;
+            mData.Eva = 10 + agi;
+
+            MonDataList[id] = mData;
         }
     }
     //VIT_END_STR_AGI_FOR_INT_CHA_LUK
@@ -45,24 +50,29 @@ public class MonManager : AutoSingleton<MonManager>
         return new MonData { MonId = id, Name = name, VIT = VIT, END = END, STR = STR, AGI = AGI, FOR = FOR, INT = INT, CHA = CHA, LUK = LUK };
     }
 
-    public List<int> GetAroundMon(float x, float y, int n, List<int> grp)
+    public string GetAroundMon(float x, float y, int n, List<int> grp)
     {
-        List<int> monGrp = new List<int>();
+        BattleMonList.Clear();
+        string str = "";
         foreach(var mon in grp)
-            monGrp.Add(mon);
-        // float radius = 5f;
-        for(int i = 0; i < MonGrpList.Count; i++)
+        {
+            BattleMonList.Add(mon);
+            str += mon + "_";
+        }
+        GameObject[] allMon = GameObject.FindGameObjectsWithTag("Monster");
+        for(int i = 0; i < allMon.Length; i++)
         {
             if(n == i)continue;
-            if(Vector2.Distance(MonGrpList[i].transform.position, new Vector2(x, y)) < 10f)
+            if(Vector2.Distance(allMon[i].transform.position, new Vector2(x, y)) < 10f)
             {
-                wMon mon = MonGrpList[i].GetComponent<wMon>();
+                wMon mon = allMon[i].GetComponent<wMon>();
                 foreach(var m in mon.monGrp)
                 {
-                    monGrp.Add(m);
+                    BattleMonList.Add(m);
+                    str += m + "_";
                 }
             }
         }
-        return monGrp;
+        return str;
     }
 }

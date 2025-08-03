@@ -2351,10 +2351,10 @@ MonoBehaviour:
     - key: CrtRateVal
       value: {fileID: 5081893294640197410}
       duplicatedKey: 0
-    - key: AccVal
+    - key: HitVal
       value: {fileID: 5887176350918756264}
       duplicatedKey: 0
-    - key: DodVal
+    - key: EvaVal
       value: {fileID: 5765275039718318967}
       duplicatedKey: 0
   mButtons:
@@ -2435,7 +2435,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8666940576231600912}
   m_Layer: 0
-  m_Name: Dod
+  m_Name: Eva
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3681,7 +3681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b050ba3305f74cfab96b1d9944c9a94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: DodVal
+  Key: EvaVal
 --- !u!1 &3111109660646443018
 GameObject:
   m_ObjectHideFlags: 0
@@ -4076,7 +4076,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b050ba3305f74cfab96b1d9944c9a94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: AccVal
+  Key: HitVal
 --- !u!1 &4123176404417288176
 GameObject:
   m_ObjectHideFlags: 0
@@ -8435,7 +8435,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5230119949921656924}
   m_Layer: 0
-  m_Name: Acc
+  m_Name: Hit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

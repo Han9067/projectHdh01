@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Net.WebSockets;
 using GB;
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class WorldCore : AutoSingleton<WorldCore>
 {
@@ -11,6 +14,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     private float minZoom = 5f;   // 최소 줌 (가까운 거리)
     private float maxZoom = 10f;  // 최대 줌 (멀리 보기)
     private Camera cam;
+    public Image blackImg;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,8 +22,18 @@ public class WorldCore : AutoSingleton<WorldCore>
         cam = Camera.main;
         WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
         worldMainUI.stateGameSpd("X0");
-        
 
+        if(blackImg.gameObject.activeSelf)
+            blackImg.gameObject.SetActive(false);
+    }
+    public void SceneFadeOut()
+    {
+        SceneManager.LoadScene("Battle");
+        // blackImg.gameObject.SetActive(true);
+        // blackImg.color = new Color(0, 0, 0, 0f);
+        // blackImg.DOFade(1f, 0.5f).SetUpdate(true).OnComplete(() => {
+        //     SceneManager.LoadScene("Battle");
+        // });
     }
 
     // Update is called once per frame

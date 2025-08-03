@@ -25,19 +25,13 @@ public class wMon : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player")){
-            // Debug.Log("Monster");
             wPlayer player = other.GetComponent<wPlayer>();
             player.stopPlayer();
-            //몬스터 매니저를 통해 주변 몬스터 그룹을 찾고 해당 그룹에 존재하는 몬스터 리스트들을 모두 한 리스트에 저장한다음 전투 정보 팝업에 전달하고 그대로 정보를 소유한다.
-            //소유한 리스트는 전투 씬으로 넘어가면 해당 데이터를 참고하여 몬스터들을 배치하고 초기화한다.
-            // List<int> result = MonManager.I.GetAroundMon(other.transform.position.x, other.transform.position.y, monIdx, monGrp);
-            // Debug.Log(result.Count);
-            // foreach(var m in result)
-            // {
-            //     Debug.Log(m);
-            // }
-            // UIManager.ShowPopup("BattleInfoPop");
-            // GB.Presenter.Send("BattleInfoPop","MonInfo", monParty);
+            string result = MonManager.I.GetAroundMon(other.transform.position.x, other.transform.position.y, monIdx, monGrp);
+            Debug.Log(result);
+
+            UIManager.ShowPopup("BattleInfoPop");
+            GB.Presenter.Send("BattleInfoPop","MonInfo", result);
         }
     }
 }

@@ -125,8 +125,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Def = pData.VIT;
         pData.Crt = 50 + (pData.LUK * 2);
         pData.CrtRate = pData.LUK;
-        pData.Acc = 80 + pData.AGI;
-        pData.Dod = 10 + pData.AGI;
+        int agi = pData.AGI / 4;
+        pData.Hit = 60 + agi;
+        pData.Eva = 10 + agi;
         //////
         string[] eq = new string[] {"Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2"};
         foreach(string e in eq)
