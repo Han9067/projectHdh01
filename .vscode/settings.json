@@ -56,5 +56,18 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "projectHdh01.sln"
+    "dotnet.defaultSolution": "projectHdh01.sln",
+    "omnisharp.useModernNet": true,
+    "omnisharp.enableRoslynAnalyzers": true,
+    "omnisharp.enableEditorConfigSupport": true,
+    "csharp.semanticHighlighting.enabled": true,
+    "csharp.format.enable": true,
+    "files.associations": {
+        "*.cs": "csharp"
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.suggestSelection": "first",
+    "editor.acceptSuggestionOnCommitCharacter": true,
+    "editor.acceptSuggestionOnEnter": "on"
 }
