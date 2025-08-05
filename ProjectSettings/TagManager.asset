@@ -6,6 +6,7 @@ TagManager:
   tags:
   - City
   - Monster
+  - TileMapObj
   layers:
   - Default
   - TransparentFX
@@ -13,7 +14,7 @@ TagManager:
   - Field
   - Water
   - UI
-  - 
+  - TIleMap
   - 
   - 
   - 
@@ -43,18 +44,27 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: map
+  - name: w_map
     uniqueID: 4028513959
     locked: 0
-  - name: place
+  - name: w_place
     uniqueID: 3316307969
     locked: 0
-  - name: obj
+  - name: w_obj
     uniqueID: 1618969855
     locked: 0
-  - name: mon
+  - name: w_mon
     uniqueID: 3932976601
     locked: 0
-  - name: player
+  - name: w_player
     uniqueID: 1507411059
+    locked: 0
+  - name: b_ground
+    uniqueID: 2822585129
+    locked: 0
+  - name: b_prop
+    uniqueID: 2425638817
+    locked: 0
+  - name: b_obj
+    uniqueID: 3348289143
     locked: 0

@@ -26,7 +26,7 @@ namespace GB
 
             Load();
 
-            
+
 
 
         }
@@ -41,7 +41,7 @@ namespace GB
         {
             resourcesData = Resources.Load<ResourcesData>("ResourcesData");
 
-            if (resourcesData == null) 
+            if (resourcesData == null)
             {
                 Debug.Log("ResourcesData : null");
                 resourcesData = new ResourcesData();
@@ -98,7 +98,7 @@ namespace GB
 
         }
 
-       
+
 
 
 
@@ -144,9 +144,9 @@ namespace GB
             {
                 string path = EditorUtility.OpenFolderPanel("Select Folder", "", "");
                 // _iconPath = EditorUtility.OpenFolderPanel("Select Folder", "", "");
-                if(!string.IsNullOrEmpty(path)) 
+                if (!string.IsNullOrEmpty(path))
                 {
-                    _iconPath = path.Replace(Application.dataPath+"/","");
+                    _iconPath = path.Replace(Application.dataPath + "/", "");
                     Save();
                 }
 
@@ -231,7 +231,7 @@ namespace GB
             string[] files = Directory.GetFiles(Application.dataPath + "/" + folderPath, "*.*", SearchOption.AllDirectories);
 
             UnityDictionary<string, T> dict = new UnityDictionary<string, T>();
-            string[] excludeFolders = { "WorldMap", "UI" };
+            string[] excludeFolders = { "WorldMap", "UI", "Tile" };
 
             foreach (var file in files)
             {
