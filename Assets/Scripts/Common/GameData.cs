@@ -4,6 +4,16 @@ using UnityEngine;
 using System.Security.Cryptography.X509Certificates;
 
 [System.Serializable]
+public enum PtType
+{
+    Face, Eyebrow, Eye, Ear, Nose, Mouth,
+    BaseBody, BaseHand1A, BaseHand1A2, BaseHand1B, BaseHand2, BaseBoth,
+    FrontHair1, FrontHair2, BackHair,
+    EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth,
+    OneWp1, OneWp2, TwoWp1, TwoWp2
+}
+
+[System.Serializable]
 public class PlayerData
 {
     // 기본 정보
@@ -21,9 +31,9 @@ public class PlayerData
     public List<ItemData> Inven = new List<ItemData>();
     //외형 데이터
     public int Skin, Face, Eyebrow, Eye, EyeColor, Ear, Nose, Mouth, Hair, HairColor;
-    public PlayerData() 
+    public PlayerData()
     {
-        EqSlot.Add("Hand1", null);EqSlot.Add("Hand2", null);EqSlot.Add("Armor", null);EqSlot.Add("Shoes", null);EqSlot.Add("Helmet", null);EqSlot.Add("Gloves", null);EqSlot.Add("Belt", null);EqSlot.Add("Cape", null);EqSlot.Add("Necklace", null);EqSlot.Add("Ring1", null);EqSlot.Add("Ring2", null);
+        EqSlot.Add("Hand1", null); EqSlot.Add("Hand2", null); EqSlot.Add("Armor", null); EqSlot.Add("Shoes", null); EqSlot.Add("Helmet", null); EqSlot.Add("Gloves", null); EqSlot.Add("Belt", null); EqSlot.Add("Cape", null); EqSlot.Add("Necklace", null); EqSlot.Add("Ring1", null); EqSlot.Add("Ring2", null);
     } // 생성자
 }
 [System.Serializable]
@@ -42,13 +52,34 @@ public class MonData
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public MonData Clone()
     {
-        return new MonData { 
-            MonId = this.MonId, Name = this.Name,
-             VIT = this.VIT, END = this.END, STR = this.STR, AGI = this.AGI, FOR = this.FOR, 
-             INT = this.INT, CHA = this.CHA, LUK = this.LUK,
-             Att = this.Att, Def = this.Def, Crt = this.Crt, CrtRate = this.CrtRate, Hit = this.Hit, Eva = this.Eva,
-             Lv = this.Lv, Exp = this.Exp, NextExp = this.NextExp, 
-             HP = this.HP, MP = this.MP, SP = this.SP, MaxHP = this.MaxHP, MaxMP = this.MaxMP, MaxSP = this.MaxSP };
+        return new MonData
+        {
+            MonId = this.MonId,
+            Name = this.Name,
+            VIT = this.VIT,
+            END = this.END,
+            STR = this.STR,
+            AGI = this.AGI,
+            FOR = this.FOR,
+            INT = this.INT,
+            CHA = this.CHA,
+            LUK = this.LUK,
+            Att = this.Att,
+            Def = this.Def,
+            Crt = this.Crt,
+            CrtRate = this.CrtRate,
+            Hit = this.Hit,
+            Eva = this.Eva,
+            Lv = this.Lv,
+            Exp = this.Exp,
+            NextExp = this.NextExp,
+            HP = this.HP,
+            MP = this.MP,
+            SP = this.SP,
+            MaxHP = this.MaxHP,
+            MaxMP = this.MaxMP,
+            MaxSP = this.MaxSP
+        };
     }
 }
 
@@ -97,10 +128,56 @@ public class ItemData
     public float H1AX, H1AY, H1BX, H1BY, H2X, H2Y, BX, BY; // 무기 좌표
     public ItemData Clone()
     {
-        return new ItemData { 
-            Name = this.Name, Res = this.Res, ItemId = this.ItemId, Type = this.Type, 
-            Price = this.Price, Val = this.Val, W = this.W, H = this.H, 
-            Dur = this.Dur, X = this.X, Y = this.Y, Dir = this.Dir};
+        return new ItemData
+        {
+            Name = this.Name,
+            Res = this.Res,
+            ItemId = this.ItemId,
+            Type = this.Type,
+            Price = this.Price,
+            Val = this.Val,
+            W = this.W,
+            H = this.H,
+            Dur = this.Dur,
+            X = this.X,
+            Y = this.Y,
+            Dir = this.Dir
+        };
+    }
+}
+
+//외형 색상
+public static class CharColor
+{
+    // 스킨 컬러
+    private static readonly Dictionary<int, Color> skinColor = new Dictionary<int, Color>()
+    {
+        { 1, new Color(255f/255f, 235f/255f, 210f/255f) },
+        { 2, new Color(236f/255f, 204f/255f, 169f/255f) },
+        { 3, new Color(251f/255f, 206f/255f, 177f/255f) },
+        { 4, new Color(199f/255f, 165f/255f, 137f/255f) },
+        { 5, new Color(92f/255f, 73f/255f, 57f/255f) }
+    };
+    // 헤어 컬러
+    private static readonly Dictionary<int, Color> hairColor = new Dictionary<int, Color>()
+    {
+        { 1, new Color(30f/255f, 30f/255f, 30f/255f) },    // 어두운 회색
+        { 2, new Color(57f/255f, 41f/255f, 28f/255f) },    // 어두운 갈색
+        { 3, new Color(104f/255f, 69f/255f, 35f/255f) },   // 중간 갈색
+        { 4, new Color(138f/255f, 97f/255f, 69f/255f) },   // 밝은 갈색
+        { 5, new Color(219f/255f, 169f/255f, 93f/255f) },  // 금발
+        { 6, new Color(245f/255f, 238f/255f, 216f/255f) }, // 플래티넘 블론드
+        { 7, new Color(170f/255f, 255f/255f, 216f/255f) }  // 민트색 (특이한 색상)
+    };
+
+    public static Color GetSkinColor(int skinId)
+    {
+        return skinColor.TryGetValue(skinId, out Color color) ? color : new Color(236f / 255f, 204f / 255f, 169f / 255f);
+    }
+
+    public static Color GetHairColor(int hairId)
+    {
+        return hairColor.TryGetValue(hairId, out Color color) ? color : new Color(30f / 255f, 30f / 255f, 30f / 255f);
     }
 }
 

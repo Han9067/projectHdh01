@@ -148,7 +148,8 @@ public class BattleCore : AutoSingleton<BattleCore>
         player.transform.position = new Vector3(-0.6f, -0.6f, 0);
         int[] arr = GetPlayerPos();
         cpX = arr[0]; cpY = arr[1];
-        Debug.Log("cpX: " + cpX + ", cpY: " + cpY);
+        // Presenter.Send("bPlayer", "DrawPlayer");
+        //Debug.Log("cpX: " + cpX + ", cpY: " + cpY);
     }
     int[] GetPlayerPos()
     {
@@ -237,7 +238,6 @@ public class BattleCore : AutoSingleton<BattleCore>
             obj.AddComponent<ItemManager>();
             obj.AddComponent<SaveFileManager>();
             obj.AddComponent<BattlePathManager>();
-            Debug.Log("Manager 초기화 완료");
         }
     }
 }
@@ -247,5 +247,5 @@ public class BattleCore : AutoSingleton<BattleCore>
 // {
 //     pathUpdateTimer = 0;
 //     Vector2Int[] path = BattlePathManager.I.GetPath(cpX, cpY, t.x, t.y, gGrid);
-//     Debug.Log("path: " + path.Length);
+//     
 // }

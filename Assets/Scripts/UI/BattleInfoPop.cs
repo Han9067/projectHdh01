@@ -13,10 +13,10 @@ public class BattleInfoPop : UIScreen
 
     private void OnEnable()
     {
-        Presenter.Bind("BattleInfoPop",this);
+        Presenter.Bind("BattleInfoPop", this);
     }
 
-    private void OnDisable() 
+    private void OnDisable()
     {
         Presenter.UnBind("BattleInfoPop", this);
 
@@ -24,13 +24,13 @@ public class BattleInfoPop : UIScreen
 
     public void RegistButton()
     {
-        foreach(var v in mButtons)
-            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key);});
+        foreach (var v in mButtons)
+            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key); });
     }
 
     public void OnButtonClick(string key)
     {
-        switch(key)
+        switch (key)
         {
             case "ClickBattleStart":
                 WorldCore.I.SceneFadeOut(); //페이드
@@ -41,7 +41,7 @@ public class BattleInfoPop : UIScreen
     }
     public override void ViewQuick(string key, IOData data)
     {
-        switch(key)
+        switch (key)
         {
             case "MonInfo":
                 // string str = data.Get<string>();
@@ -53,7 +53,7 @@ public class BattleInfoPop : UIScreen
 
     public override void Refresh()
     {
-            
+
     }
 
 

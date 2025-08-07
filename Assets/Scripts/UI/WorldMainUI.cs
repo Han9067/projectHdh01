@@ -35,7 +35,7 @@ public class WorldMainUI : UIScreen
         {
             GameObject go = null;
             string str = "";
-            
+
             switch (key)
             {
                 case "StateCharInfoPop":
@@ -55,7 +55,7 @@ public class WorldMainUI : UIScreen
                     str = "SkillPop";
                     break;
             }
-            
+
             if (go == null)
             {
                 UIManager.ShowPopup(str);
@@ -76,16 +76,16 @@ public class WorldMainUI : UIScreen
 
     public void stateGameSpd(string key)
     {
-        if(CityEnterPop.isActive) return;
+        if (CityEnterPop.isActive) return;
         string numberStr = key.Replace("X", "");
         int val = int.Parse(numberStr);
         Time.timeScale = val;
         currentSpeed = val;
-        
+
         // 버튼 이미지 업데이트
         UpdateSpdBtnImg();
     }
-    
+
     private void UpdateSpdBtnImg()
     {
         // 모든 속도 버튼을 기본 이미지로 초기화
@@ -100,7 +100,7 @@ public class WorldMainUI : UIScreen
                 }
             }
         }
-        
+
         // 현재 활성화된 속도 버튼만 노란색 이미지로 변경
         string curSpdKey = "X" + currentSpeed.ToString();
         if (mButtons.ContainsKey(curSpdKey))
@@ -112,10 +112,10 @@ public class WorldMainUI : UIScreen
             }
         }
     }
-    
+
     public override void ViewQuick(string key, IOData data)
     {
-        switch(key)
+        switch (key)
         {
             case "UpdateGoldTxt":
                 mTexts["GoldTxt"].text = data.Get<string>();

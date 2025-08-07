@@ -20,19 +20,19 @@ public class CharInfoPop : UIScreen
     }
     private void OnEnable()
     {
-        Presenter.Bind("CharInfoPop",this);
+        Presenter.Bind("CharInfoPop", this);
         UpdateCharInfo();
         isActive = true;
     }
-    private void OnDisable() 
+    private void OnDisable()
     {
         Presenter.UnBind("CharInfoPop", this);
         isActive = false;
     }
     public void RegistButton()
     {
-        foreach(var v in mButtons)
-            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key);});
+        foreach (var v in mButtons)
+            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key); });
     }
     public void OnButtonClick(string key)
     {
@@ -42,11 +42,12 @@ public class CharInfoPop : UIScreen
                 UIManager.ClosePopup("CharInfoPop");
                 break;
         }
-        
+
     }
-    public override void ViewQuick(string key, IOData data){}
-    public override void Refresh(){}
-    private void LoadBaseCharAppearance(){
+    public override void ViewQuick(string key, IOData data) { }
+    public override void Refresh() { }
+    private void LoadBaseCharAppearance()
+    {
         var pData = PlayerManager.I.pData;
         mGameObject["Face"].GetComponent<Image>().sprite = ResManager.GetSprite("Face_" + pData.Face);
         mGameObject["Eyebrow"].GetComponent<Image>().sprite = ResManager.GetSprite("Eyebrow_" + pData.Eyebrow);
@@ -55,53 +56,34 @@ public class CharInfoPop : UIScreen
         mGameObject["Nose"].GetComponent<Image>().sprite = ResManager.GetSprite("Nose_" + pData.Nose);
         mGameObject["Mouth"].GetComponent<Image>().sprite = ResManager.GetSprite("Mouth_" + pData.Mouth);
 
-        float[] arr = {0, 0, 0};
-        switch(pData.Skin){
-            case 1:arr = new float[] {255f, 235f, 210f};break;
-            case 2:arr = new float[] {236f, 204f, 169f};break;
-            case 3:arr = new float[] {251f, 206f, 177f};break;
-            case 4:arr = new float[] {199f, 165f, 137f};break;
-            case 5:arr = new float[] {92f, 73f, 57f};break;default:arr = new float[] {0, 0, 0};break;
-        }
-        arr = new float[] {arr[0] / 255f, arr[1] / 255f, arr[2] / 255f};
-        mGameObject["Face"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
-        mGameObject["Ear"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
-        mGameObject["BaseBody"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
-        mGameObject["BaseHand1A"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
-        mGameObject["BaseHand1B"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
-        mGameObject["BaseHand2"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
-        mGameObject["BaseBoth"].GetComponent<Image>().color = new Color(arr[0], arr[1], arr[2], 1f);
+        Color skinColor = CharColor.GetSkinColor(pData.Skin);
+        Color hairColor = CharColor.GetHairColor(pData.HairColor);
 
-        switch(pData.HairColor){
-            case 1:arr = new float[] {30f, 30f, 30f};break;
-            case 2:arr = new float[] {57f, 41f, 28f};break;
-            case 3:arr = new float[] {104f, 69f, 35f};break;
-            case 4:arr = new float[] {138f, 97f, 69f};break;
-            case 5:arr = new float[] {219f, 169f, 93f};break;
-            case 6:arr = new float[] {245f, 238f, 286f};break;
-            case 7:arr = new float[] {170f, 255f, 216f};break;
-        }
+        string[] parts = new string[] { "Face", "Ear", "BaseBody", "BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth" };
+        foreach (var v in parts)
+            mGameObject[v].GetComponent<Image>().color = skinColor;
 
-        switch(pData.Hair){
+        switch (pData.Hair)
+        {
             case 1:
-                mGameObject["Hair1A"].SetActive(true);mGameObject["Hair1B"].SetActive(false);mGameObject["Hair2"].SetActive(true);
+                mGameObject["Hair1A"].SetActive(true); mGameObject["Hair1B"].SetActive(false); mGameObject["Hair2"].SetActive(true);
                 mGameObject["Hair1A"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
                 mGameObject["Hair2"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
-                mGameObject["Hair1A"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
-                mGameObject["Hair2"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+                mGameObject["Hair1A"].GetComponent<Image>().color = hairColor;
+                mGameObject["Hair2"].GetComponent<Image>().color = hairColor;
                 break;
             case 2:
             case 3:
-                mGameObject["Hair1A"].SetActive(true);mGameObject["Hair1B"].SetActive(false);mGameObject["Hair2"].SetActive(false);
+                mGameObject["Hair1A"].SetActive(true); mGameObject["Hair1B"].SetActive(false); mGameObject["Hair2"].SetActive(false);
                 mGameObject["Hair1A"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
-                mGameObject["Hair1A"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+                mGameObject["Hair1A"].GetComponent<Image>().color = hairColor;
                 break;
             case 100:
-                mGameObject["Hair1A"].SetActive(false);mGameObject["Hair1B"].SetActive(true);mGameObject["Hair2"].SetActive(true);
+                mGameObject["Hair1A"].SetActive(false); mGameObject["Hair1B"].SetActive(true); mGameObject["Hair2"].SetActive(true);
                 mGameObject["Hair1B"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
                 mGameObject["Hair2"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
-                mGameObject["Hair1B"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
-                mGameObject["Hair2"].GetComponent<Image>().color = new Color(arr[0] / 255f, arr[1] / 255f, arr[2] / 255f, 1f);
+                mGameObject["Hair1B"].GetComponent<Image>().color = hairColor;
+                mGameObject["Hair2"].GetComponent<Image>().color = hairColor;
                 break;
         }
     }
@@ -138,45 +120,95 @@ public class CharInfoPop : UIScreen
     public void UpdateEq(PlayerData pData)
     {
         var eq = pData.EqSlot;
+        string[] allParts = {"BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth",
+            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "TwoWp1", "TwoWp2"};
+        foreach (var v in allParts)
+            mGameObject[v].SetActive(false);
+        curBodyKey = "";
 
-        if (eq["Armor"] != null) {
-            string idStr = eq["Armor"].ItemId.ToString();
-            if(curBodyKey != idStr + "_body"){
-                curBodyKey = idStr + "_body";
+        if (eq["Armor"] != null)
+        {
+            string eqStr = eq["Armor"].ItemId.ToString();
+            if (curBodyKey != eqStr + "_body")
+            {
+                curBodyKey = eqStr + "_body";
                 mGameObject["EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(curBodyKey);
-                mGameObject["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(idStr + "_hand1A");
-                mGameObject["EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(idStr + "_hand1B");
-                mGameObject["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(idStr + "_hand2");
-                mGameObject["EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(idStr + "_both");
+                mGameObject["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
+                mGameObject["EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1B");
+                mGameObject["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
+                mGameObject["EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_both");
             }
+            mGameObject["EqBody"].SetActive(true);
 
-            List<string> body;
-            if (eq["Hand1"] == null && eq["Hand2"] == null) {
-                body = new List<string> { "EqBody", "EqHand1A", "EqHand2" };
-            } else {
-                if (eq["Hand1"].Both == 1 || eq["Hand2"].Both == 1) {
-                    body = new List<string> { "EqBody", "EqBoth" };
-                } else if (eq["Hand1"].Both == 2 || eq["Hand2"].Both == 2) {
-                    body = new List<string> { "EqBody", "EqHand1A", "EqHand2" };
-                } else {
-                    body = new List<string> { "EqBody", "EqHand1B", "EqHand2" };
+            List<string> parts = new List<string>();
+            if (eq["Hand1"] == null && eq["Hand2"] == null)
+                parts = new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" };
+            else
+            {
+                string[] eqHand = { "Hand1", "Hand2" };
+                foreach (var v in eqHand)
+                {
+                    if (eq[v] != null)
+                    {
+                        switch (eq[v].Both)
+                        {
+                            case 1: parts = new List<string> { "BaseBoth", "EqBoth" }; break;
+                            case 2: parts = new List<string> { "BaseHand1A", "BaseHand1A2", "BaseHand2", "EqHand1A", "EqHand2" }; break;
+                        }
+                    }
+                }
+                if (parts.Count == 0)
+                {
+                    parts = new List<string> { "BaseHand2", "EqHand2" };
+                    if (eq["Hand1"] != null)
+                    {
+                        parts.Add("BaseHand1B"); parts.Add("EqHand1B");
+                    }
+                    else
+                    {
+                        parts.Add("BaseHand1A"); parts.Add("EqHand1A");
+                    }
                 }
             }
-            foreach(var v in body)
+            foreach (var v in parts)
                 mGameObject[v].SetActive(true);
-        }else{
-            string[] body = {"EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth"};
-            foreach(var v in body)
-                mGameObject[v].SetActive(false);
-            curBodyKey = "";
+        }
+        else
+        {
+            mGameObject["BaseHand1A"].SetActive(true);
+            mGameObject["BaseHand2"].SetActive(true);
+        }
+
+        string[] hKey = { "Hand1", "Hand2" };
+        foreach (var v in hKey)
+        {
+            if (eq[v] != null)
+            {
+                switch (eq[v].Both)
+                {
+                    case 0:
+                        string one = v == "Hand1" ? "OneWp1" : "OneWp2";
+                        mGameObject[one].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq[v].ItemId.ToString());
+                        mGameObject[one].SetActive(true);
+                        break;
+                    case 1:
+                        mGameObject["TwoWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                        mGameObject["TwoWp1"].SetActive(true);
+                        break;
+                    case 2:
+                        mGameObject["TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                        mGameObject["TwoWp2"].SetActive(true);
+                        break;
+                }
+            }
         }
     }
-    private void UpdateVitText(int v)  => mTexts["VitVal"].text = v.ToString();
-    private void UpdateEndText(int v)  => mTexts["EndVal"].text = v.ToString();
-    private void UpdateStrText(int v)  => mTexts["StrVal"].text = v.ToString();
-    private void UpdateAgiText(int v)  => mTexts["AgiVal"].text = v.ToString();
-    private void UpdateForText(int v)  => mTexts["ForVal"].text = v.ToString();
-    private void UpdateIntText(int v)  => mTexts["IntVal"].text = v.ToString();
-    private void UpdateChaText(int v)  => mTexts["ChaVal"].text = v.ToString();
-    private void UpdateLukText(int v)  => mTexts["LukVal"].text = v.ToString();
+    private void UpdateVitText(int v) => mTexts["VitVal"].text = v.ToString();
+    private void UpdateEndText(int v) => mTexts["EndVal"].text = v.ToString();
+    private void UpdateStrText(int v) => mTexts["StrVal"].text = v.ToString();
+    private void UpdateAgiText(int v) => mTexts["AgiVal"].text = v.ToString();
+    private void UpdateForText(int v) => mTexts["ForVal"].text = v.ToString();
+    private void UpdateIntText(int v) => mTexts["IntVal"].text = v.ToString();
+    private void UpdateChaText(int v) => mTexts["ChaVal"].text = v.ToString();
+    private void UpdateLukText(int v) => mTexts["LukVal"].text = v.ToString();
 }

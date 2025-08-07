@@ -82,7 +82,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     {
         if (pData == null)
             pData = new PlayerData();
-        pData.Name = "앨런";
+        pData.Name = "주인공";
         pData.Age = 17;
         pData.Gender = 0;
         pData.Silver = 20000;
