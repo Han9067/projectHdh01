@@ -11,22 +11,16 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public List<List<InvenGrid>> grids;
     protected void Awake()
     {
-        if(I != null && I != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        DontDestroyOnLoad(this.gameObject);
         InitGrid();
     }
     // 인벤토리 그리드 초기화
     private void InitGrid()
     {
         grids = new List<List<InvenGrid>>();
-        for(int y = 0; y < 10; y++)
+        for (int y = 0; y < 10; y++)
         {
             List<InvenGrid> row = new List<InvenGrid>();
-            for(int x = 0; x < 10; x++)
+            for (int x = 0; x < 10; x++)
             {
                 row.Add(new InvenGrid { x = x, y = y, slotId = -1 });
             }
@@ -49,7 +43,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     }
     private void CheckCharInfoPop()
     {
-        if(GameObject.Find("CharInfoPop") && GameObject.Find("CharInfoPop").GetComponent<CharInfoPop>().isActive)
+        if (GameObject.Find("CharInfoPop") && GameObject.Find("CharInfoPop").GetComponent<CharInfoPop>().isActive)
             GameObject.Find("CharInfoPop").GetComponent<CharInfoPop>().UpdateCharInfo();
     }
     // 플레이어 데이터 초기화
@@ -63,11 +57,11 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Lv = data.Lv;
         pData.Exp = data.Exp;
         pData.NextExp = data.NextExp;
-        pData.HP = data.HP;pData.MP = data.MP;pData.SP = data.SP;
-        pData.AddHP = data.AddHP;pData.AddMP = data.AddMP;pData.AddSP = data.AddSP;
+        pData.HP = data.HP; pData.MP = data.MP; pData.SP = data.SP;
+        pData.AddHP = data.AddHP; pData.AddMP = data.AddMP; pData.AddSP = data.AddSP;
 
-        pData.VIT = data.VIT;pData.END = data.END;pData.STR = data.STR;pData.AGI = data.AGI;pData.FOR = data.FOR;pData.INT = data.INT;pData.CHA = data.CHA;pData.LUK = data.LUK;
-        
+        pData.VIT = data.VIT; pData.END = data.END; pData.STR = data.STR; pData.AGI = data.AGI; pData.FOR = data.FOR; pData.INT = data.INT; pData.CHA = data.CHA; pData.LUK = data.LUK;
+
         pData.Inven = data.Inven;
 
         pData.Skin = data.Skin;
@@ -95,9 +89,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Lv = 1;
         pData.Exp = 0;
         pData.NextExp = 100;
-        pData.HP = 100;pData.MP = 100;pData.SP = 100;
-        pData.AddHP = 0;pData.AddMP = 0;pData.AddSP = 0;
-        pData.VIT = 10;pData.END = 10;pData.STR = 10;pData.AGI = 10;pData.FOR = 10;pData.INT = 10;pData.CHA = 10;pData.LUK = 10;
+        pData.HP = 100; pData.MP = 100; pData.SP = 100;
+        pData.AddHP = 0; pData.AddMP = 0; pData.AddSP = 0;
+        pData.VIT = 10; pData.END = 10; pData.STR = 10; pData.AGI = 10; pData.FOR = 10; pData.INT = 10; pData.CHA = 10; pData.LUK = 10;
 
         pData.Skin = 2; pData.Face = 1;
         pData.Eyebrow = 1; pData.Eye = 1;
@@ -117,9 +111,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.MaxHP = pData.VIT * 10 + pData.AddHP;
         pData.MaxMP = pData.INT * 10 + pData.AddMP;
         pData.MaxSP = pData.END * 10 + pData.AddSP;
-        if(pData.HP > pData.MaxHP)pData.HP = pData.MaxHP;
-        if(pData.MP > pData.MaxMP)pData.MP = pData.MaxMP;
-        if(pData.SP > pData.MaxSP)pData.SP = pData.MaxSP;
+        if (pData.HP > pData.MaxHP) pData.HP = pData.MaxHP;
+        if (pData.MP > pData.MaxMP) pData.MP = pData.MaxMP;
+        if (pData.SP > pData.MaxSP) pData.SP = pData.MaxSP;
 
         pData.Att = pData.STR * 2;
         pData.Def = pData.VIT;
@@ -129,12 +123,12 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Hit = 60 + agi;
         pData.Eva = 10 + agi;
         //////
-        string[] eq = new string[] {"Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2"};
-        foreach(string e in eq)
+        string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
+        foreach (string e in eq)
         {
-            if(pData.EqSlot[e] != null)
+            if (pData.EqSlot[e] != null)
             {
-                switch(e)
+                switch (e)
                 {
                     case "Hand1":
                     case "Hand2":
@@ -152,22 +146,28 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             }
         }
     }
-    public Vector2 CanAddItem(int w, int h){
+    public Vector2 CanAddItem(int w, int h)
+    {
         // Debug.Log(w + "   " + h);
-        for(int y = 0; y < 10; y++){
-            if(y + h > 10)break;
-            for(int x = 0; x < 10; x++){
-                if(x + w > 10)break;
+        for (int y = 0; y < 10; y++)
+        {
+            if (y + h > 10) break;
+            for (int x = 0; x < 10; x++)
+            {
+                if (x + w > 10) break;
                 bool isAdd = true;
-                for(int i = y; i < y + h; i++){
-                    for(int j = x; j < x + w; j++){
-                        if(grids[i][j].slotId != -1){
+                for (int i = y; i < y + h; i++)
+                {
+                    for (int j = x; j < x + w; j++)
+                    {
+                        if (grids[i][j].slotId != -1)
+                        {
                             isAdd = false;
                             break;
                         }
                     }
                 }
-                if(isAdd)return new Vector2(x, y);
+                if (isAdd) return new Vector2(x, y);
             }
         }
         return new Vector2(-1, -1);

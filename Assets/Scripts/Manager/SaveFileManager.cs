@@ -9,6 +9,13 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
     private static bool isFirstLoad = true;
     private void Awake()
     {
+        if (I != null && I != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        DontDestroyOnLoad(this.gameObject);
+
         if (isFirstLoad)
         {
             LoadGameFile();
@@ -53,7 +60,7 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
             PlayerManager.I.DummyPlayerData();
         }
     }
-    
+
     // 저장 파일 삭제
     public void DelSaveFile()
     {
@@ -68,7 +75,7 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
             Debug.Log("삭제할 저장 파일이 없습니다.");
         }
     }
-    
+
     // 저장 파일 존재 여부 확인
     public bool HasSaveFile()
     {
@@ -86,31 +93,31 @@ public class SaveFileManagerEditor : Editor
         DrawDefaultInspector();
 
         SaveFileManager myScript = (SaveFileManager)target;
-        
+
         GUILayout.Space(10);
         GUILayout.Label("게임 저장/로드 테스트", EditorStyles.boldLabel);
-        
+
         if (GUILayout.Button("게임 데이터 저장"))
         {
             myScript.SaveGameFile();
         }
-        
+
         if (GUILayout.Button("게임 데이터 로드"))
         {
             myScript.LoadGameFile();
         }
-        
+
         GUILayout.Space(5);
-        
+
         if (GUILayout.Button("저장 파일 삭제"))
         {
-            if (EditorUtility.DisplayDialog("저장 파일 삭제", 
+            if (EditorUtility.DisplayDialog("저장 파일 삭제",
                 "정말로 저장 파일을 삭제하시겠습니까?", "삭제", "취소"))
             {
                 myScript.DelSaveFile();
             }
         }
-        
+
         GUILayout.Space(5);
         GUILayout.Label($"저장 파일 존재: {(myScript.HasSaveFile() ? "있음" : "없음")}", EditorStyles.miniLabel);
     }

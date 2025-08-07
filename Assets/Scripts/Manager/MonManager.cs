@@ -21,13 +21,13 @@ public class MonManager : AutoSingleton<MonManager>
     }
     private void LoadMonData()
     {
-        foreach(var mon in MonTable.Datas)
+        foreach (var mon in MonTable.Datas)
         {
             string[] stat = mon.Stat.Split('_');
-            int id = mon.MonID; 
-            MonData mData = CreateMonData(id, mon.Name, 
+            int id = mon.MonID;
+            MonData mData = CreateMonData(id, mon.Name,
             int.Parse(stat[0]), int.Parse(stat[1]), int.Parse(stat[2]), int.Parse(stat[3]), int.Parse(stat[4]), int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]));
-            
+
             mData.Lv = 1; mData.Exp = 0; mData.NextExp = 100;
             mData.HP = mData.VIT * 10; mData.MaxHP = mData.HP;
             mData.MP = mData.INT * 10; mData.MaxMP = mData.MP;
@@ -54,19 +54,19 @@ public class MonManager : AutoSingleton<MonManager>
     {
         BattleMonList.Clear();
         string str = "";
-        foreach(var mon in grp)
+        foreach (var mon in grp)
         {
             BattleMonList.Add(mon);
             str += mon + "_";
         }
         GameObject[] allMon = GameObject.FindGameObjectsWithTag("Monster");
-        for(int i = 0; i < allMon.Length; i++)
+        for (int i = 0; i < allMon.Length; i++)
         {
-            if(n == i)continue;
-            if(Vector2.Distance(allMon[i].transform.position, new Vector2(x, y)) < 10f)
+            if (n == i) continue;
+            if (Vector2.Distance(allMon[i].transform.position, new Vector2(x, y)) < 10f)
             {
                 wMon mon = allMon[i].GetComponent<wMon>();
-                foreach(var m in mon.monGrp)
+                foreach (var m in mon.monGrp)
                 {
                     BattleMonList.Add(m);
                     str += m + "_";
