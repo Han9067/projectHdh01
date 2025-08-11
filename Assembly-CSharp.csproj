@@ -64,6 +64,7 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.61f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Battle\bMonster.cs" />
     <Compile Include="Assets\Scripts\World\WorldCore.cs" />
     <Compile Include="Assets\Scripts\Battle\BattleCore.cs" />
     <Compile Include="Assets\Scripts\Manager\BattlePathManager.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Assets\Scripts\World\wPlayer.cs" />
     <Compile Include="Assets\Scripts\Manager\SaveFileManager.cs" />
     <Compile Include="Assets\Scripts\Manager\ItemManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\BattleAiManager.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\CityTable.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\AbilityTable.cs" />
     <Compile Include="Assets\Scripts\Common\GameData.cs" />

@@ -15,23 +15,25 @@ public class wMon : MonoBehaviour
     void Start()
     {
         FrmSpr.sprite = ResManager.GetSprite(monId < 1000 ? "icon_mon" : "icon_boss");
-        MainSpr.sprite = ResManager.GetSprite("mIcon_" + monId);
+        MainSpr.sprite = ResManager.GetSprite("mon_" + monId);
         monData = new MonData[monGrp.Count];
-        for(int i = 0; i < monGrp.Count; i++){
+        for (int i = 0; i < monGrp.Count; i++)
+        {
             monData[i] = MonManager.I.MonDataList[monGrp[i]].Clone();
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player")){
+        if (other.CompareTag("Player"))
+        {
             wPlayer player = other.GetComponent<wPlayer>();
             player.stopPlayer();
             string result = MonManager.I.GetAroundMon(other.transform.position.x, other.transform.position.y, monIdx, monGrp);
             Debug.Log(result);
 
             UIManager.ShowPopup("BattleInfoPop");
-            GB.Presenter.Send("BattleInfoPop","MonInfo", result);
+            GB.Presenter.Send("BattleInfoPop", "MonInfo", result);
         }
     }
 }

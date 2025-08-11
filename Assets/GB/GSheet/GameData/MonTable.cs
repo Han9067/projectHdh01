@@ -30,7 +30,11 @@ public class MonTable  : GameData
         {
 				case "MonID": return true;
 				case "Name": return true;
+				case "Type": return true;
 				case "Stat": return true;
+				case "OffY": return true;
+				case "SdwScr": return true;
+				case "SdwY": return true;
 				case "KR": return true;
 				case "EN": return true;
 
@@ -59,7 +63,11 @@ public class MonTable  : GameData
             {
 				case "MonID": return data.MonID;
 				case "Name": return data.Name;
+				case "Type": return data.Type;
 				case "Stat": return data.Stat;
+				case "OffY": return data.OffY;
+				case "SdwScr": return data.SdwScr;
+				case "SdwY": return data.SdwY;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
 
@@ -79,7 +87,11 @@ public class MonTable  : GameData
             {
 				case "MonID": return data.MonID;
 				case "Name": return data.Name;
+				case "Type": return data.Type;
 				case "Stat": return data.Stat;
+				case "OffY": return data.OffY;
+				case "SdwScr": return data.SdwScr;
+				case "SdwY": return data.SdwY;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
 
@@ -100,9 +112,13 @@ public class MonTable  : GameData
             {
 				case 0: return data.MonID;
 				case 1: return data.Name;
-				case 2: return data.Stat;
-				case 3: return data.KR;
-				case 4: return data.EN;
+				case 2: return data.Type;
+				case 3: return data.Stat;
+				case 4: return data.OffY;
+				case 5: return data.SdwScr;
+				case 6: return data.SdwY;
+				case 7: return data.KR;
+				case 8: return data.EN;
 
                 default: return null;
             }
@@ -147,7 +163,11 @@ public class MonTableProb : GameDataProb
 {
 		[JsonProperty] public readonly int MonID;
 	[JsonProperty] public readonly string Name;
+	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly string Stat;
+	[JsonProperty] public readonly float OffY;
+	[JsonProperty] public readonly float SdwScr;
+	[JsonProperty] public readonly float SdwY;
 	[JsonProperty] public readonly string KR;
 	[JsonProperty] public readonly string EN;
 

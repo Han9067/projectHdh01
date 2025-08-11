@@ -39,14 +39,6 @@ public class WpTable  : GameData
 				case "Dur": return true;
 				case "Both": return true;
 				case "Res": return true;
-				case "H1AX": return true;
-				case "H1AY": return true;
-				case "H1BX": return true;
-				case "H1BY": return true;
-				case "H2X": return true;
-				case "H2Y": return true;
-				case "BX": return true;
-				case "BY": return true;
 				case "KR": return true;
 				case "EN": return true;
 
@@ -84,14 +76,6 @@ public class WpTable  : GameData
 				case "Dur": return data.Dur;
 				case "Both": return data.Both;
 				case "Res": return data.Res;
-				case "H1AX": return data.H1AX;
-				case "H1AY": return data.H1AY;
-				case "H1BX": return data.H1BX;
-				case "H1BY": return data.H1BY;
-				case "H2X": return data.H2X;
-				case "H2Y": return data.H2Y;
-				case "BX": return data.BX;
-				case "BY": return data.BY;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
 
@@ -120,14 +104,6 @@ public class WpTable  : GameData
 				case "Dur": return data.Dur;
 				case "Both": return data.Both;
 				case "Res": return data.Res;
-				case "H1AX": return data.H1AX;
-				case "H1AY": return data.H1AY;
-				case "H1BX": return data.H1BX;
-				case "H1BY": return data.H1BY;
-				case "H2X": return data.H2X;
-				case "H2Y": return data.H2Y;
-				case "BX": return data.BX;
-				case "BY": return data.BY;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
 
@@ -157,16 +133,8 @@ public class WpTable  : GameData
 				case 8: return data.Dur;
 				case 9: return data.Both;
 				case 10: return data.Res;
-				case 11: return data.H1AX;
-				case 12: return data.H1AY;
-				case 13: return data.H1BX;
-				case 14: return data.H1BY;
-				case 15: return data.H2X;
-				case 16: return data.H2Y;
-				case 17: return data.BX;
-				case 18: return data.BY;
-				case 19: return data.KR;
-				case 20: return data.EN;
+				case 11: return data.KR;
+				case 12: return data.EN;
 
                 default: return null;
             }
@@ -220,14 +188,6 @@ public class WpTableProb : GameDataProb
 	[JsonProperty] public readonly int Dur;
 	[JsonProperty] public readonly int Both;
 	[JsonProperty] public readonly string Res;
-	[JsonProperty] public readonly float H1AX;
-	[JsonProperty] public readonly float H1AY;
-	[JsonProperty] public readonly float H1BX;
-	[JsonProperty] public readonly float H1BY;
-	[JsonProperty] public readonly float H2X;
-	[JsonProperty] public readonly float H2Y;
-	[JsonProperty] public readonly float BX;
-	[JsonProperty] public readonly float BY;
 	[JsonProperty] public readonly string KR;
 	[JsonProperty] public readonly string EN;
 

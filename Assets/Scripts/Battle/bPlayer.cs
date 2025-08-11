@@ -63,5 +63,88 @@ public class bPlayer : MonoBehaviour
                 ptSpr[PtType.BackHair].color = hairColor;
                 break;
         }
+
+        PtType[] bParts = new PtType[] {PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth,
+            PtType.EqBody, PtType.EqHand1A, PtType.EqHand1B, PtType.EqHand2, PtType.EqBoth, PtType.OneWp1, PtType.OneWp2, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3 };
+        foreach (PtType bbb in bParts)
+            ptSpr[bbb].gameObject.SetActive(false);
+
+        int[] handState = new int[2] { -1, -1 };
+        string[] handKeys = new string[] { "Hand1", "Hand2" };
+        for (int i = 0; i < 2; i++)
+        {
+            if (pData.EqSlot[handKeys[i]] != null)
+            {
+                handState[i] = pData.EqSlot[handKeys[i]].Both;
+                SetHandSprite(pData.EqSlot[handKeys[i]], handState[i]);
+            }
+        }
+
+        if (pData.EqSlot["Armor"] != null)
+        {
+            string eqStr = pData.EqSlot["Armor"].ItemId.ToString();
+            ptSpr[PtType.EqBody].sprite = ResManager.GetSprite(eqStr + "_body");
+            ptSpr[PtType.EqHand1A].sprite = ResManager.GetSprite(eqStr + "_hand1A");
+            ptSpr[PtType.EqHand1B].sprite = ResManager.GetSprite(eqStr + "_hand1B");
+            ptSpr[PtType.EqHand2].sprite = ResManager.GetSprite(eqStr + "_hand2");
+            ptSpr[PtType.EqBoth].sprite = ResManager.GetSprite(eqStr + "_both");
+
+            ptSpr[PtType.EqBody].gameObject.SetActive(true);
+            switch (handState[0])
+            {
+                case -1: ptSpr[PtType.BaseHand1A].gameObject.SetActive(true); ptSpr[PtType.EqHand1A].gameObject.SetActive(true); break;
+                case 0: ptSpr[PtType.BaseHand1B].gameObject.SetActive(true); ptSpr[PtType.EqHand1B].gameObject.SetActive(true); break;
+                case 1: ptSpr[PtType.BaseBoth].gameObject.SetActive(true); ptSpr[PtType.EqBoth].gameObject.SetActive(true); break;
+                case 2: ptSpr[PtType.BaseHand1A].gameObject.SetActive(true); ptSpr[PtType.BaseHand1A2].gameObject.SetActive(true); ptSpr[PtType.EqHand1A].gameObject.SetActive(true); break;
+            }
+            if (handState[1] != 1)
+            {
+                ptSpr[PtType.BaseHand2].gameObject.SetActive(true);
+                ptSpr[PtType.EqHand2].gameObject.SetActive(true);
+            }
+        }
     }
+    private void SetHandSprite(ItemData data, int handIndex)
+    {
+        var sprType = data.Both switch
+        {
+            0 => handIndex == 0 ? PtType.OneWp1 : PtType.OneWp2,
+            1 => (handIndex == 0 && data.Type == 2) ? PtType.TwoWp1 : PtType.TwoWp2,
+            _ => PtType.TwoWp3
+        };
+
+        ptSpr[sprType].gameObject.SetActive(true);
+        ptSpr[sprType].sprite = ResManager.GetSprite("wp" + data.ItemId.ToString());
+    }
+
+    #region ==== 🎨 ORDERING IN LAYER ====
+    public void SetObjLayer(int y)
+    {
+        int layer = y * 100;
+
+        int childCount = ptMain.transform.childCount;
+        PtType[] layerOrder = new PtType[childCount];
+
+        for (int i = 0; i < childCount; i++)
+        {
+            Transform child = ptMain.transform.GetChild(i);
+            string childName = child.name;
+
+            // 자식 오브젝트 이름을 PtType으로 파싱
+            if (System.Enum.TryParse<PtType>(childName, out PtType ptType))
+            {
+                layerOrder[i] = ptType;
+            }
+        }
+
+        // 순서대로 레이어 설정
+        for (int i = 0; i < layerOrder.Length; i++)
+        {
+            if (ptSpr.ContainsKey(layerOrder[i]))
+            {
+                ptSpr[layerOrder[i]].sortingOrder = layer + i;
+            }
+        }
+    }
+    #endregion
 }

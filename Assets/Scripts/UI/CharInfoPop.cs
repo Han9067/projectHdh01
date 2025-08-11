@@ -121,7 +121,7 @@ public class CharInfoPop : UIScreen
     {
         var eq = pData.EqSlot;
         string[] allParts = {"BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth",
-            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "TwoWp1", "TwoWp2"};
+            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "TwoWp1", "TwoWp2", "TwoWp3"};
         foreach (var v in allParts)
             mGameObject[v].SetActive(false);
         curBodyKey = "";

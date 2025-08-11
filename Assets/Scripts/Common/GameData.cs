@@ -10,7 +10,7 @@ public enum PtType
     BaseBody, BaseHand1A, BaseHand1A2, BaseHand1B, BaseHand2, BaseBoth,
     FrontHair1, FrontHair2, BackHair,
     EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth,
-    OneWp1, OneWp2, TwoWp1, TwoWp2
+    OneWp1, OneWp2, TwoWp1, TwoWp2, TwoWp3
 }
 
 [System.Serializable]
@@ -19,13 +19,13 @@ public class PlayerData
     // 기본 정보
     public string Name = "이름";
     public int Age, Gender; // 0: 남성, 1: 여성
-    public long Silver; // 게임 재화
+    public long Crown; // 게임 재화
     // 레벨 및 경험치
     public int Lv, Exp, NextExp;
     // 상태
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def;
-    public int Crt, CrtRate, Hit, Eva;
+    public int Crt, CrtRate, Hit, Eva; // 치명타율, 치명타확률, 명중, 회피
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public Dictionary<string, ItemData> EqSlot = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
@@ -46,15 +46,17 @@ public class NpcData
 [System.Serializable]
 public class MonData
 {
-    public int MonId, Lv, Exp, NextExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;
+    public int MonId, MonType, Lv, Exp, NextExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;
     public string Name;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
+    public float OffY, SdwScr, SdwY; // 몬스터 오브젝트 Y 좌표, 몬스터 그림자 스케일, 몬스터 그림자 Y 좌표
     public MonData Clone()
     {
         return new MonData
         {
             MonId = this.MonId,
+            MonType = this.MonType,
             Name = this.Name,
             VIT = this.VIT,
             END = this.END,
@@ -78,7 +80,10 @@ public class MonData
             SP = this.SP,
             MaxHP = this.MaxHP,
             MaxMP = this.MaxMP,
-            MaxSP = this.MaxSP
+            MaxSP = this.MaxSP,
+            OffY = this.OffY,
+            SdwScr = this.SdwScr,
+            SdwY = this.SdwY
         };
     }
 }
@@ -125,7 +130,6 @@ public class ItemData
     public int ItemId, Type, Price, Val, W, H, Dur, X, Y;
     public int Dir, Uid; //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
     public int Both; // 0: 한손무기, 1: 양손무기 // 무기에만 적용
-    public float H1AX, H1AY, H1BX, H1BY, H2X, H2Y, BX, BY; // 무기 좌표
     public ItemData Clone()
     {
         return new ItemData

@@ -53,7 +53,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Name = data.Name;
         pData.Age = data.Age;
         pData.Gender = data.Gender;
-        pData.Silver = data.Silver;
+        pData.Crown = data.Crown;
         pData.Lv = data.Lv;
         pData.Exp = data.Exp;
         pData.NextExp = data.NextExp;
@@ -76,7 +76,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.HairColor = data.HairColor;
 
         CalcPlayerStat();
-        Presenter.Send("WorldMainUI", "UpdateGoldTxt", pData.Silver.ToString());
+        Presenter.Send("WorldMainUI", "UpdateGoldTxt", pData.Crown.ToString());
     }
     public void DummyPlayerData()
     {
@@ -85,7 +85,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Name = "주인공";
         pData.Age = 17;
         pData.Gender = 0;
-        pData.Silver = 20000;
+        pData.Crown = 20000;
         pData.Lv = 1;
         pData.Exp = 0;
         pData.NextExp = 100;
@@ -103,8 +103,11 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         ItemManager.I.CreateInvenItem(30002, 1, 0);
         ItemManager.I.CreateInvenItem(10001, 3, 0);
 
+        pData.EqSlot["Hand1"] = ItemManager.I.ItemDataList[30001];
+        pData.EqSlot["Armor"] = ItemManager.I.ItemDataList[10001];
+
         CalcPlayerStat();
-        Presenter.Send("WorldMainUI", "UpdateGoldTxt", pData.Silver.ToString());
+        Presenter.Send("WorldMainUI", "UpdateGoldTxt", pData.Crown.ToString());
     }
     private void CalcPlayerStat()
     {

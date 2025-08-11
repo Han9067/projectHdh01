@@ -16,7 +16,7 @@ public class BattleCore : AutoSingleton<BattleCore>
 {
     [Header("====Camera====")]
     public Camera cmr; // 전투씬 메인 카메라
-
+    private Vector3 velocity = Vector3.zero; //카메라 속도
     [Header("====Map====")]
     [SerializeField] private GameObject tileMapObj; // 맵 타일 오브젝트
     public int mapSeed, pDir; // [맵 시드], [플레이어 방향 상,하,좌,우]
@@ -28,8 +28,15 @@ public class BattleCore : AutoSingleton<BattleCore>
 
     [Header("====Player====")]
     [SerializeField] private Sprite focusSprite; // 포커스 스프라이트
-    public GameObject player, focus, propParent, propPrefab; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
+    public GameObject pObj, focus, propParent, propPrefab; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
     private bool isActionable = true, isMove = false; //플레이어 행동 가능 여부
+
+    [Header("====Monster====")]
+    public GameObject monPrefab;
+    List<GameObject> mObj = new List<GameObject>();
+    public Transform monsterParent;
+
+
     // float pathUpdateTimer = 0;
     void Awake()
     {
@@ -38,12 +45,13 @@ public class BattleCore : AutoSingleton<BattleCore>
         //맵 타일 로드
         LoadFieldMap(); // 맵 타일 로드
         LoadPlayer(); // 플레이어 배치
+        // LoadMonster(); // 몬스터 배치
         //ps. 여기에서는 아니지만 나중에 맵이 변경 또는 이동되는 특수 지형 및 던전도 대응해야함....ㅠㅠ
     }
     void Start()
     {
         if (cmr == null) cmr = Camera.main;
-        cmr.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -10f);
+        cmr.transform.position = new Vector3(pObj.transform.position.x, pObj.transform.position.y, -10f);
         focusSprite = focus.GetComponent<SpriteRenderer>().sprite;
         // FadeIn(); // 페이드인 효과
     }
@@ -78,7 +86,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (isMove)
             MoveCamera();
     }
-
+    #region ==== 🎨 LOAD BATTLE SCENE ====
     void LoadFieldMap()
     {
         if (gGrid != null)
@@ -142,18 +150,31 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void LoadPlayer()
     {
-        if (player == null)
-            player = GameObject.FindGameObjectWithTag("Player");
-
-        player.transform.position = new Vector3(-0.6f, -0.6f, 0);
+        if (pObj == null)
+            pObj = GameObject.FindGameObjectWithTag("Player");
+        pObj.transform.position = new Vector3(-0.6f, -0.6f, 0);
         int[] arr = GetPlayerPos();
         cpX = arr[0]; cpY = arr[1];
-        // Presenter.Send("bPlayer", "DrawPlayer");
-        //Debug.Log("cpX: " + cpX + ", cpY: " + cpY);
+        pObj.GetComponent<bPlayer>().SetObjLayer(arr[1]);
+    }
+    void LoadMonster()
+    {
+        MonManager.I.TestCreateMon();
+
+        if (MonManager.I.BattleMonList.Count > 0)
+        {
+            foreach (int monId in MonManager.I.BattleMonList)
+            {
+                GameObject mon = Instantiate(monPrefab, monsterParent);
+                mon.GetComponent<bMonster>().monsterId = monId;
+                // mon.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
+                mObj.Add(mon);
+            }
+        }
     }
     int[] GetPlayerPos()
     {
-        float px = player.transform.position.x, py = player.transform.position.y;
+        float px = pObj.transform.position.x, py = pObj.transform.position.y;
         for (int x = 0; x < mapW; x++)
         {
             for (int y = 0; y < mapH; y++)
@@ -166,6 +187,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return new int[] { 0, 0 };
     }
+    #endregion
     Vector2Int FindTilePos(Vector3 worldPos)
     {
         float minDistance = float.MaxValue;
@@ -187,7 +209,6 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return result;
     }
-
     private IEnumerator MovePlayer(Vector2Int[] path)
     {
         isActionable = false;
@@ -196,9 +217,9 @@ public class BattleCore : AutoSingleton<BattleCore>
         {
             Vector2Int t = path[i]; //target pos
             Vector3 pos = new Vector3(gGrid[t.x, t.y].x, gGrid[t.x, t.y].y, 0);
-            float dir = cpX == t.x ? player.transform.localScale.x : (cpX > t.x ? 1f : -1f); //캐릭터 방향 설정
-            player.transform.localScale = new Vector3(dir, 1, 1);
-            player.transform.DOMove(pos, 0.3f); //트윈으로 이동
+            float dir = cpX == t.x ? pObj.transform.localScale.x : (cpX > t.x ? 1f : -1f); //캐릭터 방향 설정
+            pObj.transform.localScale = new Vector3(dir, 1, 1);
+            pObj.transform.DOMove(pos, 0.3f); //트윈으로 이동
 
             yield return new WaitForSeconds(0.3f); // 이동 완료까지 대기
 
@@ -211,9 +232,18 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void MoveCamera()
     {
-        Vector3 targetPosition = new Vector3(player.transform.position.x, player.transform.position.y, -10f);
-        cmr.transform.DOMove(targetPosition, 0.5f);
+        Vector3 targetPosition = new Vector3(pObj.transform.position.x, pObj.transform.position.y, -10f);
+        cmr.transform.position = Vector3.SmoothDamp(cmr.transform.position, targetPosition, ref velocity, 0.1f);
     }
+
+    #region ==== 🎨 ORDERING IN LAYER ====
+    void SetObjLayer()
+    {
+
+    }
+    #endregion
+
+
     void FadeIn()
     {
         // 전투 씬 시작시 페이드인용 암막 이미지

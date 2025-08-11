@@ -204,8 +204,9 @@ public class InvenPop : UIScreen
         string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Helmet", "Shoes", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
         foreach (var v in eq)
         {
-            ItemData item = PlayerManager.I.pData.EqSlot[v];
-            PlaceInvenItem(item.X, item.Y, item.W, item.H, item);
+            ItemData eqItem = PlayerManager.I.pData.EqSlot[v];
+            if (eqItem != null)
+                PlaceEqItem(eqItem, v);
         }
     }
     private bool CanPlaceItem(int sx, int sy, int wid, int hei)
@@ -254,6 +255,16 @@ public class InvenPop : UIScreen
                 pGrids[y][x].slotId = item.Uid;
             }
         }
+    }
+    private void PlaceEqItem(ItemData item, string eq)
+    {
+        GameObject itemObj = Instantiate(itemPrefab, itemParent);
+        itemObj.name = $"Item_{item.Name}";
+        InvenItemObj invenItemObj = itemObj.GetComponent<InvenItemObj>();
+        invenItemObj.SetItemData(item, -1, -1);
+        PlayerManager.I.pData.EqSlot[eq] = null;
+        curItemObj = invenItemObj;
+        EquipItem(eq, item.X, item.Y, item.W, item.H);
     }
     private void CheckOverlapWithGrid()
     {
