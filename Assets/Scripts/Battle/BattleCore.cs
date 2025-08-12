@@ -25,15 +25,16 @@ public class BattleCore : AutoSingleton<BattleCore>
     // ========================================
     // 🎮 gGrid 내부 tId 관련 내용 => 0~99 -> 타일종류, 3자리 숫자 -> 환경 오브젝트, 4자리 숫자 -> 플레이어(1000 고정), NPC, 몬스터
     // ========================================
-    public int[] mapLimit = new int[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
     private Tilemap gMap; // 땅 타일 맵
     private int mapW, mapH, cpX, cpY; // 맵 너비, 맵 높이, 플레이어 x,y좌표
     private float tileOffset = 0.6f, tileItv = 1.2f; // 타일 오프셋, 타일 간격
+    float[] mapLimit = new float[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
+    public GameObject[,] guide; // 길찾기 가이드 오브젝트
 
     [Header("====Player====")]
     [SerializeField] private Sprite focusSprite; // 포커스 스프라이트
     public GameObject pObj, focus, propParent, propPrefab; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
-    private bool isActionable = true, isMove = false; //플레이어 행동 가능 여부
+    private bool isActionable = true, isMove = false; // 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부
 
     [Header("====Monster====")]
     public GameObject monPrefab;
@@ -43,18 +44,18 @@ public class BattleCore : AutoSingleton<BattleCore>
 
     [Header("====Common====")]
     public int objId;
+    // float dTime = 0;
 
-    // float pathUpdateTimer = 0;
     void Awake()
     {
-        CheckManager();
+        CheckMainManager();
         //맵 타일 로드
         LoadFieldMap(); // 맵 타일 로드
 
         objId = 1000;
         LoadPlayerGrp(); // 플레이어 및 플레이어편의 NPC 생성 후 전원 배치
+        objId = 2000;
         LoadEnemyGrp(); // 몬스터, 적 NPC 생성 후 전원 배치
-
 
         //ps. 여기에서는 아니지만 나중에 맵이 변경 또는 이동되는 특수 지형 및 던전도 대응해야함....ㅠㅠ
     }
@@ -72,22 +73,40 @@ public class BattleCore : AutoSingleton<BattleCore>
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPos.z = 0;
             Vector2Int t = FindTilePos(mouseWorldPos);
-            focus.transform.position = new Vector3(gGrid[t.x, t.y].x, gGrid[t.x, t.y].y, 0);
-            string fName = "";
-            //
-            switch (gGrid[t.x, t.y].tId)
+            if (t.x == -1 && t.y == -1)
             {
-                case 0: fName = "focus"; break;
-                default: fName = "notMove"; break;
+                if (focusSprite.name != "empty")
+                {
+                    focusSprite = ResManager.GetSprite("empty");
+                    focus.GetComponent<SpriteRenderer>().sprite = focusSprite;
+                }
+                return;
             }
+            focus.transform.position = new Vector3(gGrid[t.x, t.y].x, gGrid[t.x, t.y].y, 0);
+
+            string fName = "";
+            if (gGrid[t.x, t.y].tId == 0)
+            {
+                fName = "focus";
+                //길찾기 추가
+                //Vector2Int[] path = BattlePathManager.I.GetPath(cpX, cpY, t.x, t.y, gGrid);
+            }
+            else if (gGrid[t.x, t.y].tId > 2000)
+                fName = "attack";
+            else if (gGrid[t.x, t.y].tId >= 1000)
+                fName = "empty";
+            else fName = "notMove";
+
             if (focusSprite.name != fName)
             {
                 focusSprite = ResManager.GetSprite(fName);
                 focus.GetComponent<SpriteRenderer>().sprite = focusSprite;
             }
+
             if (Input.GetMouseButtonDown(0))
             {
                 if (EventSystem.current.IsPointerOverGameObject()) return;
+                if (fName == "empty") return;
                 Vector2Int[] path = BattlePathManager.I.GetPath(cpX, cpY, t.x, t.y, gGrid);
                 if (path.Length > 0)
                     StartCoroutine(MovePlayer(path));
@@ -117,13 +136,9 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (gMap != null)
         {
             BoundsInt bounds = gMap.cellBounds;
-            mapLimit[0] = bounds.yMax; mapLimit[1] = bounds.yMin;
-            mapLimit[2] = bounds.xMin; mapLimit[3] = bounds.xMax;
-            Debug.Log(mapLimit[0] + " " + mapLimit[1] + " " + mapLimit[2] + " " + mapLimit[3]);
             // 실제 타일이 배치된 최소/최대 좌표 찾기
             int minX = int.MaxValue, maxX = int.MinValue;
             int minY = int.MaxValue, maxY = int.MinValue;
-
             for (int x = bounds.xMin; x < bounds.xMax; x++)
             {
                 for (int y = bounds.yMin; y < bounds.yMax; y++)
@@ -157,6 +172,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                     }
                 }
             }
+            mapLimit[0] = (mapW / 2) * -1.2f; mapLimit[1] = (mapW / 2) * 1.2f;
+            mapLimit[2] = (mapH / 2) * -1.2f; mapLimit[3] = (mapH / 2) * 1.2f;
+            Debug.Log(mapLimit[0] + " " + mapLimit[1] + " " + mapLimit[2] + " " + mapLimit[3]);
         }
         pMap.gameObject.SetActive(false);
     }
@@ -245,6 +263,9 @@ public class BattleCore : AutoSingleton<BattleCore>
         float minDistance = float.MaxValue;
         Vector2Int result = new Vector2Int(0, 0);
 
+        if (worldPos.x < mapLimit[0] || worldPos.x > mapLimit[1] || worldPos.y < mapLimit[2] || worldPos.y > mapLimit[3])
+            return new Vector2Int(-1, -1);
+
         for (int x = 0; x < mapW; x++)
         {
             for (int y = 0; y < mapH; y++)
@@ -261,6 +282,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return result;
     }
+    #region ==== Object Action ====
     private IEnumerator MovePlayer(Vector2Int[] path)
     {
         isActionable = false;
@@ -275,25 +297,39 @@ public class BattleCore : AutoSingleton<BattleCore>
 
             yield return new WaitForSeconds(0.3f); // 이동 완료까지 대기
             pObj.GetComponent<bPlayer>().SetObjLayer(t.y);
+            UpdateGrid(cpX, cpY, t.x, t.y, 1, 1, 1000);
             cpX = t.x; cpY = t.y; // 플레이어 위치 업데이트
-
             //추후에 몬스터 & NPC 이동 또는 행동 추가 예정
         }
         isActionable = true;
         isMove = false;
+        MoveCamera(false);
     }
+    void UpdateGrid(int sx, int sy, int tx, int ty, int w, int h, int id)
+    {
+        if (w == 1 && h == 1)
+        {
+            gGrid[sx, sy].tId = 0;
+            gGrid[tx, ty].tId = id;
+        }
+        else
+        {
+            for (int x = sx; x < sx + w; x++)
+                for (int y = sy; y < sy + h; y++) gGrid[x, y].tId = 0;
+
+            for (int x = tx; x < tx + w; x++)
+                for (int y = ty; y < ty + h; y++) gGrid[x, y].tId = id;
+        }
+    }
+    #endregion
     void MoveCamera(bool isInit)
     {
-        //mapLimit
-        //맵 끝자리를 체크하여 카메라 이동 범위 제한
-
         Vector3 targetPosition = new Vector3(pObj.transform.position.x, pObj.transform.position.y, -10f);
         if (isInit)
             cmr.transform.position = targetPosition;
         else
             cmr.transform.position = Vector3.SmoothDamp(cmr.transform.position, targetPosition, ref velocity, 0.1f);
     }
-
     void FadeIn()
     {
         // 전투 씬 시작시 페이드인용 암막 이미지
@@ -308,7 +344,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         });
     }
 
-    void CheckManager()
+    void CheckMainManager()
     {
         if (GameObject.Find("Manager") == null)
         {
@@ -321,11 +357,3 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
     }
 }
-
-// pathUpdateTimer += Time.deltaTime;
-// if (pathUpdateTimer >= 0.2f)
-// {
-//     pathUpdateTimer = 0;
-//     Vector2Int[] path = BattlePathManager.I.GetPath(cpX, cpY, t.x, t.y, gGrid);
-//     
-// }
