@@ -32,6 +32,9 @@ public class MonTable  : GameData
 				case "Name": return true;
 				case "Type": return true;
 				case "Stat": return true;
+				case "W": return true;
+				case "H": return true;
+				case "OffX": return true;
 				case "OffY": return true;
 				case "SdwScr": return true;
 				case "SdwY": return true;
@@ -65,6 +68,9 @@ public class MonTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Stat": return data.Stat;
+				case "W": return data.W;
+				case "H": return data.H;
+				case "OffX": return data.OffX;
 				case "OffY": return data.OffY;
 				case "SdwScr": return data.SdwScr;
 				case "SdwY": return data.SdwY;
@@ -89,6 +95,9 @@ public class MonTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Stat": return data.Stat;
+				case "W": return data.W;
+				case "H": return data.H;
+				case "OffX": return data.OffX;
 				case "OffY": return data.OffY;
 				case "SdwScr": return data.SdwScr;
 				case "SdwY": return data.SdwY;
@@ -114,11 +123,14 @@ public class MonTable  : GameData
 				case 1: return data.Name;
 				case 2: return data.Type;
 				case 3: return data.Stat;
-				case 4: return data.OffY;
-				case 5: return data.SdwScr;
-				case 6: return data.SdwY;
-				case 7: return data.KR;
-				case 8: return data.EN;
+				case 4: return data.W;
+				case 5: return data.H;
+				case 6: return data.OffX;
+				case 7: return data.OffY;
+				case 8: return data.SdwScr;
+				case 9: return data.SdwY;
+				case 10: return data.KR;
+				case 11: return data.EN;
 
                 default: return null;
             }
@@ -165,6 +177,9 @@ public class MonTableProb : GameDataProb
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly string Stat;
+	[JsonProperty] public readonly int W;
+	[JsonProperty] public readonly int H;
+	[JsonProperty] public readonly float OffX;
 	[JsonProperty] public readonly float OffY;
 	[JsonProperty] public readonly float SdwScr;
 	[JsonProperty] public readonly float SdwY;

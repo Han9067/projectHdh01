@@ -6,11 +6,12 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+using UnityEngine.EventSystems;
 
 public class tileGrid
 {
     public float x, y;
-    public int type;
+    public int tId;
 }
 public class BattleCore : AutoSingleton<BattleCore>
 {
@@ -21,6 +22,9 @@ public class BattleCore : AutoSingleton<BattleCore>
     [SerializeField] private GameObject tileMapObj; // 맵 타일 오브젝트
     public int mapSeed, pDir; // [맵 시드], [플레이어 방향 상,하,좌,우]
     public tileGrid[,] gGrid; // 땅타일 그리드
+    // ========================================
+    // 🎮 gGrid 내부 tId 관련 내용 => 0~99 -> 타일종류, 3자리 숫자 -> 환경 오브젝트, 4자리 숫자 -> 플레이어(1000 고정), NPC, 몬스터
+    // ========================================
     public int[] mapLimit = new int[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
     private Tilemap gMap; // 땅 타일 맵
     private int mapW, mapH, cpX, cpY; // 맵 너비, 맵 높이, 플레이어 x,y좌표
@@ -34,24 +38,30 @@ public class BattleCore : AutoSingleton<BattleCore>
     [Header("====Monster====")]
     public GameObject monPrefab;
     List<GameObject> mObj = new List<GameObject>();
+    List<bMonster> mData = new List<bMonster>();
     public Transform monsterParent;
 
+    [Header("====Common====")]
+    public int objId;
 
     // float pathUpdateTimer = 0;
     void Awake()
     {
         CheckManager();
-        // pDir = 3;//임시
         //맵 타일 로드
         LoadFieldMap(); // 맵 타일 로드
-        LoadPlayer(); // 플레이어 배치
-        // LoadMonster(); // 몬스터 배치
+
+        objId = 1000;
+        LoadPlayerGrp(); // 플레이어 및 플레이어편의 NPC 생성 후 전원 배치
+        LoadEnemyGrp(); // 몬스터, 적 NPC 생성 후 전원 배치
+
+
         //ps. 여기에서는 아니지만 나중에 맵이 변경 또는 이동되는 특수 지형 및 던전도 대응해야함....ㅠㅠ
     }
     void Start()
     {
         if (cmr == null) cmr = Camera.main;
-        cmr.transform.position = new Vector3(pObj.transform.position.x, pObj.transform.position.y, -10f);
+        MoveCamera(true);
         focusSprite = focus.GetComponent<SpriteRenderer>().sprite;
         // FadeIn(); // 페이드인 효과
     }
@@ -64,7 +74,8 @@ public class BattleCore : AutoSingleton<BattleCore>
             Vector2Int t = FindTilePos(mouseWorldPos);
             focus.transform.position = new Vector3(gGrid[t.x, t.y].x, gGrid[t.x, t.y].y, 0);
             string fName = "";
-            switch (gGrid[t.x, t.y].type)
+            //
+            switch (gGrid[t.x, t.y].tId)
             {
                 case 0: fName = "focus"; break;
                 default: fName = "notMove"; break;
@@ -76,15 +87,14 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
             if (Input.GetMouseButtonDown(0))
             {
+                if (EventSystem.current.IsPointerOverGameObject()) return;
                 Vector2Int[] path = BattlePathManager.I.GetPath(cpX, cpY, t.x, t.y, gGrid);
                 if (path.Length > 0)
-                {
                     StartCoroutine(MovePlayer(path));
-                }
             }
         }
         if (isMove)
-            MoveCamera();
+            MoveCamera(false);
     }
     #region ==== 🎨 LOAD BATTLE SCENE ====
     void LoadFieldMap()
@@ -107,7 +117,9 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (gMap != null)
         {
             BoundsInt bounds = gMap.cellBounds;
-
+            mapLimit[0] = bounds.yMax; mapLimit[1] = bounds.yMin;
+            mapLimit[2] = bounds.xMin; mapLimit[3] = bounds.xMax;
+            Debug.Log(mapLimit[0] + " " + mapLimit[1] + " " + mapLimit[2] + " " + mapLimit[3]);
             // 실제 타일이 배치된 최소/최대 좌표 찾기
             int minX = int.MaxValue, maxX = int.MinValue;
             int minY = int.MaxValue, maxY = int.MinValue;
@@ -132,12 +144,12 @@ public class BattleCore : AutoSingleton<BattleCore>
                 for (int y = 0; y < mapH; y++)
                 {
                     Vector3Int tilePos = new Vector3Int(minX + x, minY + y, 0);
-                    TileBase gTile = gMap.GetTile(tilePos), pTile = pMap.GetTile(tilePos);
-                    gGrid[x, y] = new tileGrid() { x = tilePos.x * tileItv + tileOffset, y = tilePos.y * tileItv + tileOffset, type = 0 };
-                    //gGrid[x, y] = new tileGrid() { x = tilePos.x * tileItv + tileOffset, y = tilePos.y * tileItv + tileOffset, type = int.Parse(gTile.name.Split('_')[2]) };
+                    // TileBase gTile = gMap.GetTile(tilePos), pTile = pMap.GetTile(tilePos);
+                    TileBase pTile = pMap.GetTile(tilePos);
+                    gGrid[x, y] = new tileGrid() { x = tilePos.x * tileItv + tileOffset, y = tilePos.y * tileItv + tileOffset, tId = 0 };
                     if (pTile != null)
                     {
-                        gGrid[x, y].type = int.Parse(pTile.name.Split('_')[2]);
+                        gGrid[x, y].tId = int.Parse(pTile.name.Split('_')[2]);
                         GameObject prop = Instantiate(propPrefab, propParent.transform);
                         prop.name = pTile.name;
                         prop.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
@@ -148,27 +160,67 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         pMap.gameObject.SetActive(false);
     }
-    void LoadPlayer()
+    void LoadPlayerGrp()
     {
         if (pObj == null)
             pObj = GameObject.FindGameObjectWithTag("Player");
-        pObj.transform.position = new Vector3(-0.6f, -0.6f, 0);
-        int[] arr = GetPlayerPos();
-        cpX = arr[0]; cpY = arr[1];
-        pObj.GetComponent<bPlayer>().SetObjLayer(arr[1]);
+        //추후 NPC 생성
+        if (mapSeed < 1000) // 맵 시드가 1000 미만이면 일반 필드 1001부터는 특수 장소(던전이나 숲 등)
+        {
+            //추후엔 특정 이벤트(기습, 매복 등) 으로 배치 상황이 특수해질 경우도 대응해야함
+            pDir = Random.Range(0, 4); // 0:상, 1:하, 2:좌, 3:우 -> 파티의 방향 설정
+            int cx = 0, cy = 0;
+            switch (pDir)
+            {
+                case 0: cx = 15; cy = 6; break;
+                case 1: cx = 15; cy = 18; break;
+                case 2: cx = 8; cy = 12; break;
+                case 3: cx = 22; cy = 12; break;
+            }
+            pObj.transform.position = new Vector3(gGrid[cx, cy].x, gGrid[cx, cy].y, 0);
+            cpX = cx; cpY = cy;
+            gGrid[cx, cy].tId = 1000;
+            pObj.GetComponent<bPlayer>().SetObjLayer(cy);
+        }
     }
-    void LoadMonster()
+    void LoadEnemyGrp()
     {
-        MonManager.I.TestCreateMon();
+        MonManager.I.TestCreateMon(); //테스트용
 
         if (MonManager.I.BattleMonList.Count > 0)
         {
-            foreach (int monId in MonManager.I.BattleMonList)
+            int cx = 0, cy = 0;
+            //플레이어와 반대 방향에 배치
+            switch (pDir)
+            {
+                case 0: cx = 15; cy = 18; break;
+                case 1: cx = 15; cy = 6; break;
+                case 2: cx = 22; cy = 12; break;
+                case 3: cx = 8; cy = 12; break;
+            }
+            //추후 핵심 시스템 끝나면 중심점과 rng 값을 조정할 생각 
+            int mCnt = MonManager.I.BattleMonList.Count, rx = (mCnt / 2) + 1, ry = (mCnt / 4) + 1;
+            List<Vector2Int> mPos = new List<Vector2Int>();
+            while (mCnt > 0)
+            {
+                int mx = cx + Random.Range(-rx, rx + 1);
+                int my = cy + Random.Range(-ry, ry + 1);
+                if (mx < 0 || mx >= mapW || my < 0 || my >= mapH)
+                    continue;
+                if (mPos.Contains(new Vector2Int(mx, my)))
+                    continue;
+                mPos.Add(new Vector2Int(mx, my));
+                mCnt--;
+            }
+            foreach (Vector2Int p in mPos)
             {
                 GameObject mon = Instantiate(monPrefab, monsterParent);
-                mon.GetComponent<bMonster>().monsterId = monId;
-                // mon.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
+                bMonster data = mon.GetComponent<bMonster>();
+                data.SetMonData(++objId, MonManager.I.BattleMonList[0], p.x, p.y, gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
                 mObj.Add(mon);
+                mData.Add(data);
+                gGrid[p.x, p.y].tId = objId;
+                //나중에 몬스터가 2x2 또는 3x3 타일 형태로 생성되는데 그때는 왼쪽 상단을 기준으로 좌표가 갱신되도록 함
             }
         }
     }
@@ -222,7 +274,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             pObj.transform.DOMove(pos, 0.3f); //트윈으로 이동
 
             yield return new WaitForSeconds(0.3f); // 이동 완료까지 대기
-
+            pObj.GetComponent<bPlayer>().SetObjLayer(t.y);
             cpX = t.x; cpY = t.y; // 플레이어 위치 업데이트
 
             //추후에 몬스터 & NPC 이동 또는 행동 추가 예정
@@ -230,19 +282,17 @@ public class BattleCore : AutoSingleton<BattleCore>
         isActionable = true;
         isMove = false;
     }
-    void MoveCamera()
+    void MoveCamera(bool isInit)
     {
+        //mapLimit
+        //맵 끝자리를 체크하여 카메라 이동 범위 제한
+
         Vector3 targetPosition = new Vector3(pObj.transform.position.x, pObj.transform.position.y, -10f);
-        cmr.transform.position = Vector3.SmoothDamp(cmr.transform.position, targetPosition, ref velocity, 0.1f);
+        if (isInit)
+            cmr.transform.position = targetPosition;
+        else
+            cmr.transform.position = Vector3.SmoothDamp(cmr.transform.position, targetPosition, ref velocity, 0.1f);
     }
-
-    #region ==== 🎨 ORDERING IN LAYER ====
-    void SetObjLayer()
-    {
-
-    }
-    #endregion
-
 
     void FadeIn()
     {

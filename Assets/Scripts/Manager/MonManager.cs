@@ -22,7 +22,7 @@ public class MonManager : AutoSingleton<MonManager>
             MonData mData = CreateMonData(id, mon.Type, mon.Name,
             int.Parse(stat[0]), int.Parse(stat[1]), int.Parse(stat[2]), int.Parse(stat[3]), int.Parse(stat[4]),
             int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]),
-            mon.OffY, mon.SdwScr, mon.SdwY);
+            mon.W, mon.H, mon.OffX, mon.OffY, mon.SdwScr, mon.SdwY);
 
             mData.Lv = 1; mData.Exp = 0; mData.NextExp = 100;
             mData.HP = mData.VIT * 10; mData.MaxHP = mData.HP;
@@ -41,7 +41,9 @@ public class MonManager : AutoSingleton<MonManager>
         }
     }
     //VIT_END_STR_AGI_FOR_INT_CHA_LUK
-    private MonData CreateMonData(int id, int monType, string name, int VIT, int END, int STR, int AGI, int FOR, int INT, int CHA, int LUK, float offY, float sdwScr, float sdwY)
+    private MonData CreateMonData(int id, int monType, string name,
+    int VIT, int END, int STR, int AGI, int FOR, int INT, int CHA, int LUK,
+    float w, float h, float offX, float offY, float sdwScr, float sdwY)
     {
         return new MonData
         {
@@ -56,6 +58,9 @@ public class MonManager : AutoSingleton<MonManager>
             INT = INT,
             CHA = CHA,
             LUK = LUK,
+            W = w,
+            H = h,
+            OffX = offX,
             OffY = offY,
             SdwScr = sdwScr,
             SdwY = sdwY
@@ -90,17 +95,21 @@ public class MonManager : AutoSingleton<MonManager>
 
     public void TestCreateMon()
     {
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Battle")
-        {
-            BattleMonList.Clear();
-            BattleMonList.Add(1);
-            BattleMonList.Add(1);
-            BattleMonList.Add(1);
-            BattleMonList.Add(1);
-            Debug.Log(BattleMonList.Count);
-        }
-        else
-            Debug.Log("현재 Battle 씬이 아닙니다");
+        BattleMonList.Clear();
+        BattleMonList.Add(1);
+        BattleMonList.Add(1);
+        BattleMonList.Add(1);
+        BattleMonList.Add(1);
+        // if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Battle")
+        // {
+        //     BattleMonList.Clear();
+        //     BattleMonList.Add(1);
+        //     BattleMonList.Add(1);
+        //     BattleMonList.Add(1);
+        //     BattleMonList.Add(1);
+        // }
+        // else
+        //     Debug.Log("현재 Battle 씬이 아닙니다");
     }
 }
 

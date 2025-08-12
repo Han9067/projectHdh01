@@ -1190,6 +1190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7ca4f3b337b75f4a992c9ca73c8c5c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objId: 1000
   ptMain: {fileID: 247822464}
 --- !u!1 &618414934
 GameObject:
@@ -1907,8 +1908,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1048815138}
+  - component: {fileID: 1048815139}
   m_Layer: 0
-  m_Name: SceneManager
+  m_Name: BattleManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1929,6 +1931,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1048815139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1048815137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 287590e2da77a404fa9178d4d7e7b2f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1073055361
 GameObject:
   m_ObjectHideFlags: 0
@@ -2969,6 +2983,7 @@ MonoBehaviour:
   propPrefab: {fileID: 326971662176452226, guid: 4affcf232230b4e409ecb189e0ffd817, type: 3}
   monPrefab: {fileID: 4170379451178667109, guid: 9c6535ee741e3dc449dcb4981419512a, type: 3}
   monsterParent: {fileID: 1351639359}
+  objId: 0
 --- !u!1001 &1827684165
 PrefabInstance:
   m_ObjectHideFlags: 0

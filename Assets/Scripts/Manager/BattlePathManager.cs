@@ -20,7 +20,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
         // 빠른 조기 반환
         if (sPos == ePos) return new Vector2Int[] { sPos };
         if (!IsValidPosition(sPos, gGrid) || !IsValidPosition(ePos, gGrid)) return new Vector2Int[] { };
-        if (gGrid[ePos.x, ePos.y].type >= 1) return new Vector2Int[] { };
+        if (gGrid[ePos.x, ePos.y].tId >= 1) return new Vector2Int[] { };
 
         // BFS용 큐와 방문 체크
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
@@ -37,7 +37,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
             foreach (Vector2Int dir in DIRECTIONS)
             {
                 Vector2Int next = current + dir;
-                if (IsValidPosition(next, gGrid) && !cameFrom.ContainsKey(next) && gGrid[next.x, next.y].type != 1)
+                if (IsValidPosition(next, gGrid) && !cameFrom.ContainsKey(next) && gGrid[next.x, next.y].tId != 1)
                 {
                     queue.Enqueue(next);
                     cameFrom[next] = current;

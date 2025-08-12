@@ -5,6 +5,7 @@ using GB;
 
 public class bPlayer : MonoBehaviour
 {
+    public int objId = 1000;
     Dictionary<PtType, SpriteRenderer> ptSpr = new Dictionary<PtType, SpriteRenderer>();
     public GameObject ptMain;
     void Awake()
@@ -132,18 +133,14 @@ public class bPlayer : MonoBehaviour
 
             // 자식 오브젝트 이름을 PtType으로 파싱
             if (System.Enum.TryParse<PtType>(childName, out PtType ptType))
-            {
                 layerOrder[i] = ptType;
-            }
         }
 
         // 순서대로 레이어 설정
         for (int i = 0; i < layerOrder.Length; i++)
         {
             if (ptSpr.ContainsKey(layerOrder[i]))
-            {
                 ptSpr[layerOrder[i]].sortingOrder = layer + i;
-            }
         }
     }
     #endregion
