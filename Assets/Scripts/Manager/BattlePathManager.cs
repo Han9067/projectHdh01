@@ -20,7 +20,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
         // 빠른 조기 반환
         if (sPos == ePos) return new Vector2Int[] { sPos };
         if (!IsValidPosition(sPos, gGrid) || !IsValidPosition(ePos, gGrid)) return new Vector2Int[] { };
-        if (gGrid[ePos.x, ePos.y].tId >= 1) return new Vector2Int[] { };
+        // if (gGrid[ePos.x, ePos.y].tId >= 1) return new Vector2Int[] { };
 
         // BFS용 큐와 방문 체크
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
@@ -37,7 +37,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
             foreach (Vector2Int dir in DIRECTIONS)
             {
                 Vector2Int next = current + dir;
-                if (IsValidPosition(next, gGrid) && !cameFrom.ContainsKey(next) && gGrid[next.x, next.y].tId != 1)
+                if (IsValidPosition(next, gGrid) && !cameFrom.ContainsKey(next) && (gGrid[next.x, next.y].tId == 0 || next == ePos)) // 목적지라면 어떤 타일이든 통과
                 {
                     queue.Enqueue(next);
                     cameFrom[next] = current;
@@ -46,6 +46,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
         }
         // 경로를 찾지 못한 경우
         return new Vector2Int[] { };
+        //추후에는 최소 값을 가진 경로가 여러개면 그 값들을 저장하고 그 중 하나를 랜덤으로 반환하도록 해야함
     }
 
     // 경로 구성 함수 분리 (재사용 가능)

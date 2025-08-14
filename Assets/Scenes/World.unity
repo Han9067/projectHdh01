@@ -354,7 +354,7 @@ SpriteRenderer:
   m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &422299830
@@ -1088,7 +1088,7 @@ SpriteRenderer:
   m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &983890898
@@ -1172,7 +1172,7 @@ SpriteRenderer:
   m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1070164891
@@ -1973,6 +1973,7 @@ GameObject:
   - component: {fileID: 2052872140}
   - component: {fileID: 2052872139}
   - component: {fileID: 2052872143}
+  - component: {fileID: 2052872144}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -2036,7 +2037,7 @@ MonoBehaviour:
     Name: "\uC720\uC800"
     Age: 0
     Gender: 0
-    Silver: 0
+    Crown: 0
     Lv: 0
     Exp: 0
     NextExp: 0
@@ -2099,6 +2100,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BattleMonList: 
+--- !u!114 &2052872144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2052872137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a2afaa737683cd4e81e148c359642f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2082885051
 GameObject:
   m_ObjectHideFlags: 0
