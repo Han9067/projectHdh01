@@ -86,6 +86,18 @@ public class BattleMainUI : UIScreen
     }
     public override void ViewQuick(string key, IOData data)
     {
+        switch (key)
+        {
+            case "GetPlayerHp":
+                SetHp();
+                break;
+            case "GetPlayerMp":
+                SetMp();
+                break;
+            case "GetPlayerSp":
+                SetSp();
+                break;
+        }
     }
 
     public override void Refresh()

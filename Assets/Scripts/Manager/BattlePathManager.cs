@@ -5,18 +5,11 @@ using GB;
 
 public class BattlePathManager : AutoSingleton<BattlePathManager>
 {
-    // 정적 방향 배열로 메모리 할당 최적화 (8방향)
-    private static readonly Vector2Int[] DIRECTIONS = {
-        Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left,
-        new Vector2Int(1, 1),   new Vector2Int(1, -1),  new Vector2Int(-1, 1),  new Vector2Int(-1, -1)
-    };
-
     // 경로 구성용 리스트 재사용 (가비지 컬렉션 최적화)
     private List<Vector2Int> pathList = new List<Vector2Int>();
 
-    public Vector2Int[] GetPath(int sx, int sy, int ex, int ey, tileGrid[,] gGrid)
+    public Vector2Int[] GetPath(Vector2Int sPos, Vector2Int ePos, tileGrid[,] gGrid)
     {
-        Vector2Int sPos = new Vector2Int(sx, sy), ePos = new Vector2Int(ex, ey);
         // 빠른 조기 반환
         if (sPos == ePos) return new Vector2Int[] { sPos };
         if (!IsValidPosition(sPos, gGrid) || !IsValidPosition(ePos, gGrid)) return new Vector2Int[] { };
@@ -34,7 +27,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
             Vector2Int current = queue.Dequeue();
             if (current == ePos) return BuildPath(sPos, ePos, cameFrom);
             // 8방향 탐색 (정적 배열 사용)
-            foreach (Vector2Int dir in DIRECTIONS)
+            foreach (Vector2Int dir in Directions.Dir8)
             {
                 Vector2Int next = current + dir;
                 if (IsValidPosition(next, gGrid) && !cameFrom.ContainsKey(next) && (gGrid[next.x, next.y].tId == 0 || next == ePos)) // 목적지라면 어떤 타일이든 통과

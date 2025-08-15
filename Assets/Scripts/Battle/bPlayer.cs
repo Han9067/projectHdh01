@@ -117,7 +117,17 @@ public class bPlayer : MonoBehaviour
         ptSpr[sprType].gameObject.SetActive(true);
         ptSpr[sprType].sprite = ResManager.GetSprite("wp" + data.ItemId.ToString());
     }
-
+    public void OnDamaged(int dmg)
+    {
+        //플레이어 피격!
+        PlayerManager.I.pData.HP -= dmg;
+        if (PlayerManager.I.pData.HP <= 0)
+        {
+            PlayerManager.I.pData.HP = 0;
+            Debug.Log("Player Dead");
+        }
+        Presenter.Send("BattleMainUI", "GetPlayerHp");
+    }
     #region ==== 🎨 ORDERING IN LAYER ====
     public void SetObjLayer(int y)
     {

@@ -15,12 +15,39 @@ public class tileGrid
     public float x, y;
     public int tId;
 }
+public enum BtObjState
+{
+    IDLE, MOVE, ATTACK, TRACK, DEAD
+}
+public enum BtObjType
+{
+    PLAYER, MONSTER, NPC
+}
+
+public static class Directions
+{
+    public static readonly Vector2Int[] Dir8 = {
+        Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left,
+        new Vector2Int(1, 1), new Vector2Int(1, -1), new Vector2Int(-1, 1), new Vector2Int(-1, -1)
+    };
+}
+public class turnData
+{
+    public int objId, mIdx = 0, tgId = 0; // 해당 턴 오브젝트 아이디, 이동 인덱스, 타깃 아이디
+    public BtObjState state;
+    public BtObjType type;
+    public Vector2Int[] mPath;
+
+    public turnData(int objId, BtObjState state, BtObjType type)
+    {
+        this.objId = objId;
+        this.state = state;
+        this.type = type;
+    }
+}
+
 public class BattleCore : AutoSingleton<BattleCore>
 {
-    private static readonly Vector2Int[] DIRECTIONS = {
-        Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left,
-        new Vector2Int(1, 1),   new Vector2Int(1, -1),  new Vector2Int(-1, 1),  new Vector2Int(-1, -1)
-    };
     [Header("====Camera====")]
     public Camera cmr; // 전투씬 메인 카메라
     private Vector3 velocity = Vector3.zero; //카메라 속도
@@ -32,7 +59,8 @@ public class BattleCore : AutoSingleton<BattleCore>
     // 🎮 gGrid 내부 tId 관련 내용 => 0~99 -> 타일종류, 3자리 숫자 -> 환경 오브젝트, 4자리 숫자 -> 플레이어(1000 고정), NPC, 몬스터
     // ========================================
     private Tilemap gMap; // 땅 타일 맵
-    private int mapW, mapH, cpX, cpY; // 맵 너비, 맵 높이, 플레이어 x,y좌표
+    private int mapW, mapH; // 맵 너비, 맵 높이, 플레이어 x,y좌표
+    Vector2Int cpPos = new Vector2Int(0, 0); //현재 플레이어 위치 좌표
     private float tileOffset = 0.6f, tileItv = 1.2f; // 타일 오프셋, 타일 간격
     float[] mapLimit = new float[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
     public GameObject[,] guide; // 길찾기 가이드 오브젝트
@@ -46,13 +74,13 @@ public class BattleCore : AutoSingleton<BattleCore>
 
     [Header("====Monster====")]
     public GameObject monPrefab;
-    List<GameObject> mObj = new List<GameObject>();
-    List<bMonster> mData = new List<bMonster>();
+    Dictionary<int, GameObject> mObj = new Dictionary<int, GameObject>();
+    Dictionary<int, bMonster> mData = new Dictionary<int, bMonster>();
     public Transform monsterParent;
 
     [Header("====Common====")]
     public int objId;
-    private List<int> objTurn = new List<int>();
+    private List<turnData> objTurn = new List<turnData>();
     int tIdx = 0; // 턴 인덱스
     // float dTime = 0;
 
@@ -137,17 +165,31 @@ public class BattleCore : AutoSingleton<BattleCore>
                     case "attack":
                         if (GetAttackTarget(gGrid[t.x, t.y].tId))
                         {
-                            AttackPlayer(GetTargetMonster(t.x, t.y));
+                            //플레이어 공격
+                            AttackObj(BtObjType.PLAYER, gGrid[t.x, t.y].tId, PlayerManager.I.pData.Att);
                         }
                         else
-                            StartCoroutine(AutoMovePlayer(GetTargetMonster(t.x, t.y)));
+                        {
+                            // StartCoroutine(AutoMovePlayer(GetTargetMonster(t.x, t.y)));
+                        }
                         break;
                     case "default":
                         if (!focus.activeSelf) return;
-                        Vector2Int[] allPath = BattlePathManager.I.GetPath(cpX, cpY, t.x, t.y, gGrid);
-                        if (allPath.Length > 0)
-                            StartCoroutine(MovePlayer(allPath, () => { isActionable = false; isMove = true; },
-                            () => { isActionable = true; isMove = false; MoveCamera(false); }));
+                        isActionable = false; isMove = true;
+
+                        Vector2Int[] pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
+                        objTurn[tIdx].state = BtObjState.MOVE;
+                        objTurn[tIdx].mPath = pPath;
+                        objTurn[tIdx].mIdx = 0;
+                        StartCoroutine(MoveObj(pObj, cpPos, objTurn[tIdx].mPath[0], () =>
+                        {
+                            pData.SetObjLayer(cpPos.y);
+                            UpdateGrid(cpPos.x, cpPos.y, t.x, t.y, 1, 1, 1000);
+                            objTurn[tIdx].mIdx++;
+                            if (objTurn[tIdx].mIdx >= objTurn[tIdx].mPath.Length)
+                                objTurn[tIdx].state = BtObjState.IDLE;
+                        }));
+                        cpPos = t;
                         break;
                 }
             }
@@ -221,7 +263,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (pObj == null)
             pObj = GameObject.FindGameObjectWithTag("Player");
-        objTurn.Add(1000);
+        objTurn.Add(new turnData(1000, BtObjState.IDLE, BtObjType.PLAYER));
         pData = pObj.GetComponent<bPlayer>();
         //추후 NPC 생성
         if (mapSeed < 1000) // 맵 시드가 1000 미만이면 일반 필드 1001부터는 특수 장소(던전이나 숲 등)
@@ -239,7 +281,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
 
             pObj.transform.position = new Vector3(gGrid[cx, cy].x, gGrid[cx, cy].y, 0);
-            cpX = cx; cpY = cy;
+            cpPos = new Vector2Int(cx, cy);
             gGrid[cx, cy].tId = 1000;
             pData.SetObjLayer(cy);
         }
@@ -278,10 +320,10 @@ public class BattleCore : AutoSingleton<BattleCore>
                 data.SetDirObj(pDir == 0 ? 1 : -1);
                 data.SetMonData(++objId, MonManager.I.BattleMonList[0], p.x, p.y, gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
                 mon.name = "Mon_" + objId;
-                mObj.Add(mon);
-                mData.Add(data);
+                mObj.Add(objId, mon);
+                mData.Add(objId, data);
                 gGrid[p.x, p.y].tId = objId;
-                objTurn.Add(objId);
+                objTurn.Add(new turnData(objId, BtObjState.IDLE, BtObjType.MONSTER));
                 //나중에 몬스터가 2x2 또는 3x3 타일 형태로 생성되는데 그때는 왼쪽 상단을 기준으로 좌표가 갱신되도록 함
             }
         }
@@ -311,12 +353,50 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return result;
     }
-    #region ==== Player Action ====
+    #region ==== Object Action ====
+    void NextTurn()
+    {
+        tIdx++; //다음 턴을 위해 턴 인덱스 증가
+        if (tIdx >= objTurn.Count) tIdx = 0;
+        switch (objTurn[tIdx].type)
+        {
+            case BtObjType.PLAYER:
+                //아마 플레이어는 자동으로 이동하는 무브상태만 체크하면 될듯
+                break;
+            case BtObjType.MONSTER:
+                //몬스터는 일반적으로 플레이어를 공격하기 위해 이동하는 로직이 우선순위
+                switch (objTurn[tIdx].state)
+                {
+                    case BtObjState.IDLE:
+                        //주변에 공격 대상이 없으면 가까운 플레이어, 아군 NPC를 찾도록 해야함 || 있다면 공격 후 IDLE 상태로 변경
+                        //찾은 타깃이 있다면 TRACK 상태로 변경 || 찾지 못했다면 IDLE 상태로 유지
+                        Vector2Int tg = GetAroundAttackTarget(cpPos, objTurn[tIdx].tgId);
+                        if (tg.x != -1 && tg.y != -1)
+                        {
+                            // objTurn[tIdx].state = BtObjState.TRACK;
+                            objTurn[tIdx].tgId = gGrid[tg.x, tg.y].tId;
+                            AttackObj(BtObjType.MONSTER, objTurn[tIdx].tgId, mData[objTurn[tIdx].tgId].att);
+                            //공격
+                        }
+                        else
+                        {
+
+                        }
+                        break;
+                    case BtObjState.TRACK:
+
+                        break;
+                }
+                break;
+            case BtObjType.NPC:
+                break;
+        }
+    }
     bool GetAttackTarget(int tId)
     {
-        for (int i = 0; i < DIRECTIONS.Length; i++)
+        for (int i = 0; i < Directions.Dir8.Length; i++)
         {
-            Vector2Int t = new Vector2Int(cpX, cpY) + DIRECTIONS[i];
+            Vector2Int t = cpPos + Directions.Dir8[i];
             if (t.x < 0 || t.x >= mapW || t.y < 0 || t.y >= mapH)
                 continue;
             if (gGrid[t.x, t.y].tId == tId)
@@ -324,54 +404,91 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return false;
     }
-    IEnumerator MovePlayer(Vector2Int[] path, Action callA = null, Action callB = null)
+    Vector2Int GetAroundAttackTarget(Vector2Int pos, int tId)
     {
-        callA?.Invoke();
-        for (int i = 0; i < path.Length; i++)
+        for (int i = 0; i < Directions.Dir8.Length; i++)
         {
-            Vector2Int t = path[i]; //target pos
-            SetMoveObj(pObj, new Vector2Int(cpX, cpY), t);
-            yield return new WaitForSeconds(0.3f); // 이동 완료까지 대기
-            pData.SetObjLayer(t.y);
-            UpdateGrid(cpX, cpY, t.x, t.y, 1, 1, 1000);
-            cpX = t.x; cpY = t.y; // 플레이어 위치 업데이트
-            //추후에 몬스터 & NPC 이동 또는 행동 추가 예정
+            Vector2Int t = pos + Directions.Dir8[i];
+            if (t.x < 0 || t.x >= mapW || t.y < 0 || t.y >= mapH)
+                continue;
+            if (gGrid[t.x, t.y].tId == tId)
+                return t;
         }
-        callB?.Invoke();
+        return new Vector2Int(-1, -1);
     }
-    IEnumerator AutoMovePlayer(bMonster tg)
-    {
-        isActionable = false;
-        isMove = true;
-        while (true)
-        {
-            Vector2Int[] path = BattlePathManager.I.GetPath(cpX, cpY, tg.x, tg.y, gGrid);
-            Vector2Int[] onePath = new Vector2Int[] { new Vector2Int(path[0].x, path[0].y) };
-            StartCoroutine(MovePlayer(onePath)); //한 칸 이동
-            yield return new WaitForSeconds(0.3f);
-
-            if (GetAttackTarget(tg.objId) || tg == null)
-                break;
-        }
-        isActionable = true;
-        isMove = false;
-        MoveCamera(false);
-    }
-
-    void AttackPlayer(bMonster tg)
-    {
-        Debug.Log("공격 : " + tg.objId);
-        //추후에 공격력과 방어력을 계산해서 데미지가 입도록 하고 또한 더 나중에는 회피,치명타 관련도 대응
-        tg.OnDamaged(PlayerManager.I.pData.Att);
-    }
-
-    void SetMoveObj(GameObject obj, Vector2Int pv, Vector2Int mv)
+    IEnumerator MoveObj(GameObject obj, Vector2Int cv, Vector2Int mv, Action call = null)
     {
         Vector3 pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.x, mv.y].y, 0);
-        float dir = pv.x == mv.x ? obj.transform.localScale.x : (pv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
+        float dir = cv.x == mv.x ? obj.transform.localScale.x : (cv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
         obj.transform.localScale = new Vector3(dir, 1, 1);
         obj.transform.DOMove(pos, 0.3f); //트윈으로 이동
+        yield return new WaitForSeconds(0.3f);
+        call?.Invoke();
+        NextTurn();
+        //다음 턴
     }
+
+    // IEnumerator MovePlayer(Vector2Int[] path, Action callA = null, Action callB = null)
+    // {
+    //     callA?.Invoke();
+    //     for (int i = 0; i < path.Length; i++)
+    //     {
+    //         Vector2Int t = path[i]; //target pos
+    //         SetMoveObj(pObj, new Vector2Int(cpX, cpY), t);
+    //         yield return new WaitForSeconds(0.3f); // 이동 완료까지 대기
+    //         pData.SetObjLayer(t.y);
+    //         UpdateGrid(cpX, cpY, t.x, t.y, 1, 1, 1000);
+    //         cpX = t.x; cpY = t.y; // 플레이어 위치 업데이트
+    //         //추후에 몬스터 & NPC 이동 또는 행동 추가 예정
+    //     }
+    //     callB?.Invoke();
+    // }
+    // IEnumerator AutoMovePlayer(bMonster tg)
+    // {
+    //     isActionable = false;
+    //     isMove = true;
+    //     while (true)
+    //     {
+    //         Vector2Int[] path = BattlePathManager.I.GetPath(cpX, cpY, tg.x, tg.y, gGrid);
+    //         Vector2Int[] onePath = new Vector2Int[] { new Vector2Int(path[0].x, path[0].y) };
+    //         StartCoroutine(MovePlayer(onePath)); //한 칸 이동
+    //         yield return new WaitForSeconds(0.3f);
+
+    //         if (GetAttackTarget(tg.objId) || tg == null)
+    //             break;
+    //     }
+    //     isActionable = true;
+    //     isMove = false;
+    //     MoveCamera(false);
+    // }
+    void AttackObj(BtObjType myType, int tgId, int dmg)
+    {
+        //추후에는 명중률 공식을 사용해서 명중 & 회피 대응
+        switch (myType)
+        {
+            case BtObjType.PLAYER:
+                //플레이어의 공격
+                mData[tgId].OnDamaged(dmg);
+                break;
+            case BtObjType.MONSTER:
+                //몬스터의 공격
+                if (tgId == 1000)
+                    pData.OnDamaged(dmg);
+                else
+                {
+                    //NPC 피격
+                }
+                break;
+        }
+    }
+
+    // void SetMoveObj(GameObject obj, Vector2Int pv, Vector2Int mv)
+    // {
+    //     Vector3 pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.x, mv.y].y, 0);
+    //     float dir = pv.x == mv.x ? obj.transform.localScale.x : (pv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
+    //     obj.transform.localScale = new Vector3(dir, 1, 1);
+    //     obj.transform.DOMove(pos, 0.3f); //트윈으로 이동
+    // }
     void UpdateGrid(int sx, int sy, int tx, int ty, int w, int h, int id)
     {
         if (w == 1 && h == 1)
@@ -388,17 +505,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                 for (int y = ty; y < ty + h; y++) gGrid[x, y].tId = id;
         }
     }
-    bMonster GetTargetMonster(int x, int y)
-    {
-        for (int i = 0; i < mData.Count; i++)
-        {
-            if (mData[i].x == x && mData[i].y == y)
-                return mData[i];
-        }
-        return null;
-    }
-    #endregion
-    #region ==== Enemy Action ====
     public void RemoveGridId(int objId)
     {
         for (int x = 0; x < mapW; x++)
@@ -409,6 +515,15 @@ public class BattleCore : AutoSingleton<BattleCore>
                     gGrid[x, y].tId = 0;
             }
         }
+    }
+    bMonster GetTargetMonster(int x, int y)
+    {
+        for (int i = 0; i < mData.Count; i++)
+        {
+            if (mData[i].x == x && mData[i].y == y)
+                return mData[i];
+        }
+        return null;
     }
     #endregion
     void MoveCamera(bool isInit)

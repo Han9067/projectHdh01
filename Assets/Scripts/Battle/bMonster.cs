@@ -5,12 +5,12 @@ using GB;
 using DG.Tweening;
 public class bMonster : MonoBehaviour
 {
-    public int objId;
-    public int monsterId;
+    public int objId, monsterId;
     public MonData monData;
     public GameObject shdObj, bodyObj, ggParent, ggObj;
     bool isGG = false;
     public float hp, maxHp;
+    public int att, def, crt, crtRate, hit, eva;
     public int x, y;
     void Start()
     {
@@ -22,6 +22,12 @@ public class bMonster : MonoBehaviour
         ggParent.SetActive(false);
         maxHp = monData.HP;
         hp = maxHp;
+        att = monData.Att;
+        def = monData.Def;
+        crt = monData.Crt;
+        crtRate = monData.CrtRate;
+        hit = monData.Hit;
+        eva = monData.Eva;
     }
     public void SetMonData(int objId, int monId, int x, int y, float px, float py)
     {
