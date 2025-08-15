@@ -302,7 +302,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return result;
     }
-    #region ==== Object Action ====
+    #region ==== Player Action ====
     bool GetAttackTarget(int tId)
     {
         for (int i = 0; i < DIRECTIONS.Length; i++)
@@ -387,6 +387,19 @@ public class BattleCore : AutoSingleton<BattleCore>
                 return mData[i];
         }
         return null;
+    }
+    #endregion
+    #region ==== Enemy Action ====
+    public void RemoveGridId(int objId)
+    {
+        for (int x = 0; x < mapW; x++)
+        {
+            for (int y = 0; y < mapH; y++)
+            {
+                if (gGrid[x, y].tId == objId)
+                    gGrid[x, y].tId = 0;
+            }
+        }
     }
     #endregion
     void MoveCamera(bool isInit)
