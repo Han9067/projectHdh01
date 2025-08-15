@@ -56,7 +56,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Crown = data.Crown;
         pData.Lv = data.Lv;
         pData.Exp = data.Exp;
-        pData.NextExp = data.NextExp;
+        pData.NextExp = ExpData.I.GetNextExp(data.Lv);
         pData.HP = data.HP; pData.MP = data.MP; pData.SP = data.SP;
         pData.AddHP = data.AddHP; pData.AddMP = data.AddMP; pData.AddSP = data.AddSP;
 
@@ -88,7 +88,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Crown = 20000;
         pData.Lv = 1;
         pData.Exp = 0;
-        pData.NextExp = 100;
+        pData.NextExp = ExpData.I.GetNextExp(pData.Lv);
         pData.HP = 100; pData.MP = 100; pData.SP = 100;
         pData.AddHP = 0; pData.AddMP = 0; pData.AddSP = 0;
         pData.VIT = 10; pData.END = 10; pData.STR = 10; pData.AGI = 10; pData.FOR = 10; pData.INT = 10; pData.CHA = 10; pData.LUK = 10;

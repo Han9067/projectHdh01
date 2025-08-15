@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using System.Security.Cryptography.X509Certificates;
+using GB;
 
 [System.Serializable]
 public enum PtType
@@ -74,7 +75,7 @@ public class MonData
             Eva = this.Eva,
             Lv = this.Lv,
             Exp = this.Exp,
-            NextExp = this.NextExp,
+            NextExp = ExpData.I.GetNextExp(this.Lv),
             HP = this.HP,
             MP = this.MP,
             SP = this.SP,
@@ -154,6 +155,7 @@ public class ItemData
 }
 
 //외형 색상
+[System.Serializable]
 public static class CharColor
 {
     // 스킨 컬러
@@ -185,6 +187,17 @@ public static class CharColor
     public static Color GetHairColor(int hairId)
     {
         return hairColor.TryGetValue(hairId, out Color color) ? color : new Color(30f / 255f, 30f / 255f, 30f / 255f);
+    }
+}
+
+[System.Serializable]
+public class ExpData : AutoSingleton<ExpData>
+{
+    public int GetNextExp(int Lv, double s = 30.0, double p = 2.8)
+    {
+        double C = 1000.0 / Math.Pow(1.0 + s, p);
+        double raw = C * Math.Pow(Lv + s, p);
+        return (int)(Math.Floor(raw / 10.0 + 0.5) * 10.0);
     }
 }
 
