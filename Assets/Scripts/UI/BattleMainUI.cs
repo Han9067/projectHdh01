@@ -7,28 +7,32 @@ using UnityEngine.UI;
 
 public class BattleMainUI : UIScreen
 {
+    public Slider mSlider_HP, mSlider_MP, mSlider_SP;
     private void Awake()
     {
         Regist();
         RegistButton();
     }
-
+    private void Start()
+    {
+        SetHp();
+        SetMp();
+        SetSp();
+    }
     private void OnEnable()
     {
-        Presenter.Bind("BattleMainUI",this);
+        Presenter.Bind("BattleMainUI", this);
     }
-
-    private void OnDisable() 
+    private void OnDisable()
     {
         Presenter.UnBind("BattleMainUI", this);
 
     }
-
     public void RegistButton()
     {
-        foreach(var v in mButtons)
-            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key);});
-        
+        foreach (var v in mButtons)
+            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key); });
+
     }
 
     public void OnButtonClick(string key)
@@ -37,7 +41,7 @@ public class BattleMainUI : UIScreen
         {
             GameObject go = null;
             string str = "";
-            
+
             switch (key)
             {
                 case "StateCharInfoPop":
@@ -57,7 +61,7 @@ public class BattleMainUI : UIScreen
                     str = "SkillPop";
                     break;
             }
-            
+
             if (go == null)
             {
                 UIManager.ShowPopup(str);
@@ -70,8 +74,10 @@ public class BattleMainUI : UIScreen
                     UIManager.ShowPopup(str);
             }
         }
-        else{
-            switch(key){
+        else
+        {
+            switch (key)
+            {
                 case "GoToWorld":
                     UnityEngine.Debug.Log("GoToWorld");
                     break;
@@ -80,13 +86,26 @@ public class BattleMainUI : UIScreen
     }
     public override void ViewQuick(string key, IOData data)
     {
-         
     }
 
     public override void Refresh()
-    {  
+    {
     }
 
-
+    public void SetHp()
+    {
+        mSlider_HP.value = PlayerManager.I.pData.HP / PlayerManager.I.pData.MaxHP * 100;
+        mTexts["GgHpTxt"].text = PlayerManager.I.pData.HP.ToString() + " / " + PlayerManager.I.pData.MaxHP.ToString();
+    }
+    public void SetMp()
+    {
+        mSlider_MP.value = PlayerManager.I.pData.MP / PlayerManager.I.pData.MaxMP * 100;
+        mTexts["GgMpTxt"].text = PlayerManager.I.pData.MP.ToString() + " / " + PlayerManager.I.pData.MaxMP.ToString();
+    }
+    public void SetSp()
+    {
+        mSlider_SP.value = PlayerManager.I.pData.SP / PlayerManager.I.pData.MaxSP * 100;
+        mTexts["GgSpTxt"].text = PlayerManager.I.pData.SP.ToString() + " / " + PlayerManager.I.pData.MaxSP.ToString();
+    }
 
 }

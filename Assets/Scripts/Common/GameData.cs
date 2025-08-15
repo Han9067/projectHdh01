@@ -67,21 +67,23 @@ public class MonData
             INT = this.INT,
             CHA = this.CHA,
             LUK = this.LUK,
-            Att = this.Att,
-            Def = this.Def,
-            Crt = this.Crt,
-            CrtRate = this.CrtRate,
-            Hit = this.Hit,
-            Eva = this.Eva,
-            Lv = this.Lv,
-            Exp = this.Exp,
-            NextExp = ExpData.I.GetNextExp(this.Lv),
-            HP = this.HP,
-            MP = this.MP,
-            SP = this.SP,
-            MaxHP = this.MaxHP,
-            MaxMP = this.MaxMP,
-            MaxSP = this.MaxSP,
+
+            Att = STR * 2,
+            Def = VIT,
+            Crt = 50 + (LUK * 2),
+            CrtRate = LUK + AGI,
+            Hit = 60 + (AGI / 4),
+            Eva = 10 + (AGI / 4),
+
+            Lv = 1,
+            Exp = 0,
+            NextExp = 1000,
+            HP = VIT * 4,
+            MP = INT * 4,
+            SP = END * 4,
+            MaxHP = HP,
+            MaxMP = MP,
+            MaxSP = SP,
             W = this.W,
             H = this.H,
             OffX = this.OffX,
@@ -191,8 +193,13 @@ public static class CharColor
 }
 
 [System.Serializable]
-public class ExpData : AutoSingleton<ExpData>
+public class LevelData : AutoSingleton<LevelData>
 {
+    public int GetLv(int VIT, int END, int STR, int AGI, int FOR, int INT, int CHA, int LUK)
+    {
+        int total = (VIT + END + STR + AGI + FOR + INT + CHA + LUK) - 80;
+        return total < 1 ? 1 : total;
+    }
     public int GetNextExp(int Lv, double s = 30.0, double p = 2.8)
     {
         double C = 1000.0 / Math.Pow(1.0 + s, p);

@@ -13,7 +13,6 @@ public class InvenItemObj : MonoBehaviour, IPointerClickHandler
     public void SetItemData(ItemData data, int xx, int yy)
     {
         itemData = data;
-        Debug.Log(itemData.Res);
         GetComponent<Image>().sprite = ResManager.GetSprite(itemData.Res);
         x = xx; y = yy; uid = data.Uid;
     }

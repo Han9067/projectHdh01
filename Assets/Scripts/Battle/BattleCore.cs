@@ -52,7 +52,8 @@ public class BattleCore : AutoSingleton<BattleCore>
 
     [Header("====Common====")]
     public int objId;
-    // private List<int> 
+    private List<int> objTurn = new List<int>();
+    int tIdx = 0; // 턴 인덱스
     // float dTime = 0;
 
     void Awake()
@@ -78,6 +79,13 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void Update()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            // UI 오버레이 영역에서는 포커스 커서 비활성화
+            if (!CursorManager.I.IsCursor("default")) CursorManager.I.SetCursor("default");
+            if (focus.activeSelf) focus.SetActive(false);
+            return;
+        }
         if (isActionable)
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -124,7 +132,6 @@ public class BattleCore : AutoSingleton<BattleCore>
 
             if (Input.GetMouseButtonDown(0))
             {
-                if (EventSystem.current.IsPointerOverGameObject()) return;
                 switch (cName)
                 {
                     case "attack":
@@ -214,6 +221,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (pObj == null)
             pObj = GameObject.FindGameObjectWithTag("Player");
+        objTurn.Add(1000);
         pData = pObj.GetComponent<bPlayer>();
         //추후 NPC 생성
         if (mapSeed < 1000) // 맵 시드가 1000 미만이면 일반 필드 1001부터는 특수 장소(던전이나 숲 등)
@@ -273,6 +281,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 mObj.Add(mon);
                 mData.Add(data);
                 gGrid[p.x, p.y].tId = objId;
+                objTurn.Add(objId);
                 //나중에 몬스터가 2x2 또는 3x3 타일 형태로 생성되는데 그때는 왼쪽 상단을 기준으로 좌표가 갱신되도록 함
             }
         }

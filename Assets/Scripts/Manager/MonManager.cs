@@ -24,18 +24,18 @@ public class MonManager : AutoSingleton<MonManager>
             int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]),
             mon.W, mon.H, mon.OffX, mon.OffY, mon.SdwScr, mon.SdwY);
 
-            mData.Lv = 1; mData.Exp = 0; mData.NextExp = 100;
-            mData.HP = mData.VIT * 10; mData.MaxHP = mData.HP;
-            mData.MP = mData.INT * 10; mData.MaxMP = mData.MP;
-            mData.SP = mData.END * 10; mData.MaxSP = mData.SP;
+            // mData.Lv = 1; mData.Exp = 0; mData.NextExp = 100;
+            // mData.HP = mData.VIT * 10; mData.MaxHP = mData.HP;
+            // mData.MP = mData.INT * 10; mData.MaxMP = mData.MP;
+            // mData.SP = mData.END * 10; mData.MaxSP = mData.SP;
 
-            mData.Att = mData.STR * 2;
-            mData.Def = mData.VIT;
-            mData.Crt = 50 + (mData.LUK * 2);
-            mData.CrtRate = mData.LUK;
-            int agi = mData.AGI / 4; //mData.AGI / 4 * 2
-            mData.Hit = 60 + agi;
-            mData.Eva = 10 + agi;
+            // mData.Att = mData.STR * 2;
+            // mData.Def = mData.VIT;
+            // mData.Crt = 50 + (mData.LUK * 2);
+            // mData.CrtRate = mData.LUK;
+            // int agi = mData.AGI / 4; //mData.AGI / 4 * 2
+            // mData.Hit = 60 + agi;
+            // mData.Eva = 10 + agi;
 
             MonDataList[id] = mData;
         }
@@ -100,34 +100,5 @@ public class MonManager : AutoSingleton<MonManager>
         BattleMonList.Add(1);
         BattleMonList.Add(1);
         BattleMonList.Add(1);
-        // if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Battle")
-        // {
-        //     BattleMonList.Clear();
-        //     BattleMonList.Add(1);
-        //     BattleMonList.Add(1);
-        //     BattleMonList.Add(1);
-        //     BattleMonList.Add(1);
-        // }
-        // else
-        //     Debug.Log("현재 Battle 씬이 아닙니다");
     }
 }
-
-// [CustomEditor(typeof(MonManager))]
-// public class MonManagerEditor : Editor
-// {
-//     public override void OnInspectorGUI()
-//     {
-//         DrawDefaultInspector();
-
-//         MonManager myScript = (MonManager)target;
-
-//         GUILayout.Space(10);
-//         GUILayout.Label("전투 씬 몬스터 테스트", EditorStyles.boldLabel);
-
-//         if (GUILayout.Button("몬스터 생성 테스트"))
-//         {
-//             myScript.TestMonster();
-//         }
-//     }
-// }
