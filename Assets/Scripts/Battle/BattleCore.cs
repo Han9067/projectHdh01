@@ -37,7 +37,6 @@ public class turnData
     public BtObjState state;
     public BtObjType type;
     public Vector2Int[] mPath;
-
     public turnData(int objId, BtObjState state, BtObjType type)
     {
         this.objId = objId;
@@ -77,6 +76,12 @@ public class BattleCore : AutoSingleton<BattleCore>
     Dictionary<int, GameObject> mObj = new Dictionary<int, GameObject>();
     Dictionary<int, bMonster> mData = new Dictionary<int, bMonster>();
     public Transform monsterParent;
+
+    // [Header("====NPC====")]
+    // public GameObject npcPrefab;
+    // Dictionary<int, GameObject> nObj = new Dictionary<int, GameObject>();
+    // Dictionary<int, bNPC> nData = new Dictionary<int, bNPC>();
+    // public Transform npcParent;
 
     [Header("====Common====")]
     public int objId;
@@ -185,6 +190,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         {
                             pData.SetObjLayer(cpPos.y);
                             UpdateGrid(cpPos.x, cpPos.y, t.x, t.y, 1, 1, 1000);
+                            cpPos = t;
                             objTurn[tIdx].mIdx++;
                             if (objTurn[tIdx].mIdx >= objTurn[tIdx].mPath.Length)
                                 objTurn[tIdx].state = BtObjState.IDLE;
@@ -213,11 +219,11 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
 
         gMap = tileMapObj.transform.Find("Ground")?.GetComponent<Tilemap>();
-        Tilemap pMap = tileMapObj.transform.Find("Prop")?.GetComponent<Tilemap>();
+        var pMap = tileMapObj.transform.Find("Prop")?.GetComponent<Tilemap>();
 
         if (gMap != null)
         {
-            BoundsInt bounds = gMap.cellBounds;
+            var bounds = gMap.cellBounds;
             // 실제 타일이 배치된 최소/최대 좌표 찾기
             int minX = int.MaxValue, maxX = int.MinValue;
             int minY = int.MaxValue, maxY = int.MinValue;
@@ -225,7 +231,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             {
                 for (int y = bounds.yMin; y < bounds.yMax; y++)
                 {
-                    Vector3Int pos = new Vector3Int(x, y, 0);
+                    var pos = new Vector3Int(x, y, 0);
                     if (gMap.HasTile(pos))
                     {
                         minX = Mathf.Min(minX, x); maxX = Mathf.Max(maxX, x);
@@ -240,14 +246,14 @@ public class BattleCore : AutoSingleton<BattleCore>
             {
                 for (int y = 0; y < mapH; y++)
                 {
-                    Vector3Int tilePos = new Vector3Int(minX + x, minY + y, 0);
+                    var tilePos = new Vector3Int(minX + x, minY + y, 0);
                     // TileBase gTile = gMap.GetTile(tilePos), pTile = pMap.GetTile(tilePos);
-                    TileBase pTile = pMap.GetTile(tilePos);
+                    var pTile = pMap.GetTile(tilePos);
                     gGrid[x, y] = new tileGrid() { x = tilePos.x * tileItv + tileOffset, y = tilePos.y * tileItv + tileOffset, tId = 0 };
                     if (pTile != null)
                     {
                         gGrid[x, y].tId = int.Parse(pTile.name.Split('_')[2]);
-                        GameObject prop = Instantiate(propPrefab, propParent.transform);
+                        var prop = Instantiate(propPrefab, propParent.transform);
                         prop.name = pTile.name;
                         prop.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
                         prop.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite(pTile.name);
@@ -301,7 +307,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
             //추후 핵심 시스템 끝나면 중심점과 rng 값을 조정할 생각 
             int mCnt = MonManager.I.BattleMonList.Count, rx = (mCnt / 2) + 1, ry = (mCnt / 4) + 1;
-            List<Vector2Int> mPos = new List<Vector2Int>();
+            var mPos = new List<Vector2Int>();
             while (mCnt > 0)
             {
                 int mx = cx + Random.Range(-rx, rx + 1);
@@ -313,12 +319,12 @@ public class BattleCore : AutoSingleton<BattleCore>
                 mPos.Add(new Vector2Int(mx, my));
                 mCnt--;
             }
-            foreach (Vector2Int p in mPos)
+            foreach (var p in mPos)
             {
-                GameObject mon = Instantiate(monPrefab, monsterParent);
-                bMonster data = mon.GetComponent<bMonster>();
+                var mon = Instantiate(monPrefab, monsterParent);
+                var data = mon.GetComponent<bMonster>();
                 data.SetDirObj(pDir == 0 ? 1 : -1);
-                data.SetMonData(++objId, MonManager.I.BattleMonList[0], p.x, p.y, gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
+                data.SetMonData(++objId, MonManager.I.BattleMonList[0], p, gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
                 mon.name = "Mon_" + objId;
                 mObj.Add(objId, mon);
                 mData.Add(objId, data);
@@ -332,7 +338,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     Vector2Int FindTilePos(Vector3 worldPos)
     {
         float minDistance = float.MaxValue;
-        Vector2Int result = new Vector2Int(0, 0);
+        var result = new Vector2Int(0, 0);
 
         if (worldPos.x < mapLimit[0] || worldPos.x > mapLimit[1] || worldPos.y < mapLimit[2] || worldPos.y > mapLimit[3])
             return new Vector2Int(-1, -1);
@@ -341,7 +347,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         {
             for (int y = 0; y < mapH; y++)
             {
-                Vector3 tilePos = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
+                var tilePos = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
                 float distance = Vector3.Distance(worldPos, tilePos);
 
                 if (distance < minDistance)
@@ -358,32 +364,58 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         tIdx++; //다음 턴을 위해 턴 인덱스 증가
         if (tIdx >= objTurn.Count) tIdx = 0;
+        int tgId = 0;
         switch (objTurn[tIdx].type)
         {
             case BtObjType.PLAYER:
                 //아마 플레이어는 자동으로 이동하는 무브상태만 체크하면 될듯
                 break;
             case BtObjType.MONSTER:
+                int mId = objTurn[tIdx].objId;
+                if (objTurn[tIdx].tgId == 0)
+                    tgId = SearchNearbyObj(mData[mId].xy, BtObjType.PLAYER);
+                ////////////////////////////// 여기서 부터 작업하는데 위에 서치된 tgId를 이용해서 타겟에 대한 행동 적용하셈
                 //몬스터는 일반적으로 플레이어를 공격하기 위해 이동하는 로직이 우선순위
                 switch (objTurn[tIdx].state)
                 {
                     case BtObjState.IDLE:
                         //주변에 공격 대상이 없으면 가까운 플레이어, 아군 NPC를 찾도록 해야함 || 있다면 공격 후 IDLE 상태로 변경
                         //찾은 타깃이 있다면 TRACK 상태로 변경 || 찾지 못했다면 IDLE 상태로 유지
-                        Vector2Int tg = GetAroundAttackTarget(cpPos, objTurn[tIdx].tgId);
-                        if (tg.x != -1 && tg.y != -1)
-                        {
-                            // objTurn[tIdx].state = BtObjState.TRACK;
-                            objTurn[tIdx].tgId = gGrid[tg.x, tg.y].tId;
-                            AttackObj(BtObjType.MONSTER, objTurn[tIdx].tgId, mData[objTurn[tIdx].tgId].att);
-                            //공격
-                        }
-                        else
-                        {
-
-                        }
+                        //공격도 그냥 이미 tgId 잡아 뒀으니까 바로 공격타겟이 있는지 체크하고 넘어가셈...GetAroundAttackTarget는 필요 없을듯
+                        // Vector2Int tg = GetAroundAttackTarget(cpPos, objTurn[tIdx].tgId);
+                        // if (tg.x != -1 && tg.y != -1)
+                        // {
+                        //     // objTurn[tIdx].state = BtObjState.TRACK;
+                        //     objTurn[tIdx].tgId = gGrid[tg.x, tg.y].tId;
+                        //     AttackObj(BtObjType.MONSTER, objTurn[tIdx].tgId, mData[objTurn[tIdx].tgId].att);
+                        // }
+                        // else
+                        // {
+                        //     // int tgId = SearchNearbyObj(mData[mId].xy, BtObjType.PLAYER);
+                        //     if (tgId != 0)
+                        //     {
+                        //         objTurn[tIdx].tgId = tgId;
+                        //         objTurn[tIdx].state = BtObjState.TRACK;
+                        //         //아직 NPC가 추가되지않아 플레이어로 강제 이식진행
+                        //         // var data = pData;
+                        //         if (tgId == 1000)
+                        //         {
+                        //             Vector2Int[] path = BattlePathManager.I.GetPath(mData[mId].xy, cpPos, gGrid);
+                        //             StartCoroutine(MoveObj(mObj[mId], mData[mId].xy, path[0], () =>
+                        //             {
+                        //                 UpdateGrid(mData[mId].xy.x, mData[mId].xy.y, path[0].x, path[0].y, 1, 1, 1000);
+                        //                 mData[mId].xy = path[0];
+                        //                 if (GetAttackTarget(1000))
+                        //                     objTurn[tIdx].state = BtObjState.IDLE;
+                        //             }));
+                        //         }
+                        //     }
+                        //     else
+                        //         objTurn[tIdx].state = BtObjState.IDLE;
+                        // }
                         break;
                     case BtObjState.TRACK:
+                        Vector2Int[] mtPath = BattlePathManager.I.GetPath(mData[objTurn[tIdx].objId].xy, cpPos, gGrid); //Monster Track Path
 
                         break;
                 }
@@ -418,7 +450,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     IEnumerator MoveObj(GameObject obj, Vector2Int cv, Vector2Int mv, Action call = null)
     {
-        Vector3 pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.x, mv.y].y, 0);
+        var pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.y, mv.y].y, 0);
         float dir = cv.x == mv.x ? obj.transform.localScale.x : (cv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
         obj.transform.localScale = new Vector3(dir, 1, 1);
         obj.transform.DOMove(pos, 0.3f); //트윈으로 이동
@@ -427,40 +459,6 @@ public class BattleCore : AutoSingleton<BattleCore>
         NextTurn();
         //다음 턴
     }
-
-    // IEnumerator MovePlayer(Vector2Int[] path, Action callA = null, Action callB = null)
-    // {
-    //     callA?.Invoke();
-    //     for (int i = 0; i < path.Length; i++)
-    //     {
-    //         Vector2Int t = path[i]; //target pos
-    //         SetMoveObj(pObj, new Vector2Int(cpX, cpY), t);
-    //         yield return new WaitForSeconds(0.3f); // 이동 완료까지 대기
-    //         pData.SetObjLayer(t.y);
-    //         UpdateGrid(cpX, cpY, t.x, t.y, 1, 1, 1000);
-    //         cpX = t.x; cpY = t.y; // 플레이어 위치 업데이트
-    //         //추후에 몬스터 & NPC 이동 또는 행동 추가 예정
-    //     }
-    //     callB?.Invoke();
-    // }
-    // IEnumerator AutoMovePlayer(bMonster tg)
-    // {
-    //     isActionable = false;
-    //     isMove = true;
-    //     while (true)
-    //     {
-    //         Vector2Int[] path = BattlePathManager.I.GetPath(cpX, cpY, tg.x, tg.y, gGrid);
-    //         Vector2Int[] onePath = new Vector2Int[] { new Vector2Int(path[0].x, path[0].y) };
-    //         StartCoroutine(MovePlayer(onePath)); //한 칸 이동
-    //         yield return new WaitForSeconds(0.3f);
-
-    //         if (GetAttackTarget(tg.objId) || tg == null)
-    //             break;
-    //     }
-    //     isActionable = true;
-    //     isMove = false;
-    //     MoveCamera(false);
-    // }
     void AttackObj(BtObjType myType, int tgId, int dmg)
     {
         //추후에는 명중률 공식을 사용해서 명중 & 회피 대응
@@ -482,13 +480,32 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
     }
 
-    // void SetMoveObj(GameObject obj, Vector2Int pv, Vector2Int mv)
-    // {
-    //     Vector3 pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.x, mv.y].y, 0);
-    //     float dir = pv.x == mv.x ? obj.transform.localScale.x : (pv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
-    //     obj.transform.localScale = new Vector3(dir, 1, 1);
-    //     obj.transform.DOMove(pos, 0.3f); //트윈으로 이동
-    // }
+    int SearchNearbyObj(Vector2Int pos, BtObjType type)
+    {
+        int oId = 0;
+        float minDist = float.MaxValue;
+        switch (type)
+        {
+            case BtObjType.MONSTER:
+                foreach (var t in objTurn)
+                {
+                    if (t.type == BtObjType.PLAYER || t.type == BtObjType.NPC)
+                    {
+                        float dist = Vector2.Distance(pos, mData[t.objId].xy);
+                        if (dist < minDist)
+                        {
+                            minDist = dist;
+                            oId = t.objId;
+                        }
+                    }
+                }
+                break;
+            case BtObjType.NPC:
+                break;
+        }
+        return oId;
+    }
+    // void SetPathObj(int)
     void UpdateGrid(int sx, int sy, int tx, int ty, int w, int h, int id)
     {
         if (w == 1 && h == 1)
@@ -516,19 +533,19 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
     }
-    bMonster GetTargetMonster(int x, int y)
-    {
-        for (int i = 0; i < mData.Count; i++)
-        {
-            if (mData[i].x == x && mData[i].y == y)
-                return mData[i];
-        }
-        return null;
-    }
+    // bMonster GetTargetMonster(int x, int y)
+    // {
+    //     for (int i = 0; i < mData.Count; i++)
+    //     {
+    //         if (mData[i].xy.x == x && mData[i].xy.y == y)\
+    //             return mData[i];
+    //     }
+    //     return null;
+    // }
     #endregion
     void MoveCamera(bool isInit)
     {
-        Vector3 targetPosition = new Vector3(pObj.transform.position.x, pObj.transform.position.y, -10f);
+        var targetPosition = new Vector3(pObj.transform.position.x, pObj.transform.position.y, -10f);
         if (isInit)
             cmr.transform.position = targetPosition;
         else
@@ -537,7 +554,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     void FadeIn()
     {
         // 전투 씬 시작시 페이드인용 암막 이미지
-        Image blackImg = GameObject.FindGameObjectWithTag("blackImg").GetComponent<Image>();
+        var blackImg = GameObject.FindGameObjectWithTag("blackImg").GetComponent<Image>();
         if (!blackImg.gameObject.activeSelf)
             blackImg.gameObject.SetActive(true);
         blackImg.color = new Color(0, 0, 0, 1f);
@@ -552,7 +569,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (GameObject.Find("Manager") == null)
         {
-            GameObject obj = new GameObject("Manager");
+            var obj = new GameObject("Manager");
             obj.AddComponent<PlayerManager>();
             obj.AddComponent<MonManager>();
             obj.AddComponent<ItemManager>();
