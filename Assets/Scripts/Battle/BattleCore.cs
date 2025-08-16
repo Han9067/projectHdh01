@@ -31,17 +31,19 @@ public static class Directions
         new Vector2Int(1, 1), new Vector2Int(1, -1), new Vector2Int(-1, 1), new Vector2Int(-1, -1)
     };
 }
-public class turnData
+public class TurnData
 {
     public int objId, mIdx = 0, tgId = 0; // 해당 턴 오브젝트 아이디, 이동 인덱스, 타깃 아이디
+    public Vector2Int pos; // 해당 턴 오브젝트 위치
     public BtObjState state;
     public BtObjType type;
     public Vector2Int[] mPath;
-    public turnData(int objId, BtObjState state, BtObjType type)
+    public TurnData(int objId, BtObjState state, BtObjType type, Vector2Int pos)
     {
         this.objId = objId;
         this.state = state;
         this.type = type;
+        this.pos = pos;
     }
 }
 
@@ -85,7 +87,7 @@ public class BattleCore : AutoSingleton<BattleCore>
 
     [Header("====Common====")]
     public int objId;
-    private List<turnData> objTurn = new List<turnData>();
+    private List<TurnData> objTurn = new List<TurnData>();
     int tIdx = 0; // 턴 인덱스
     // float dTime = 0;
 
@@ -168,7 +170,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 switch (cName)
                 {
                     case "attack":
-                        if (GetAttackTarget(gGrid[t.x, t.y].tId))
+                        if (GetAttackTarget(gGrid[t.x, t.y].tId, cpPos))
                         {
                             //플레이어 공격
                             AttackObj(BtObjType.PLAYER, gGrid[t.x, t.y].tId, PlayerManager.I.pData.Att);
@@ -180,22 +182,23 @@ public class BattleCore : AutoSingleton<BattleCore>
                         break;
                     case "default":
                         if (!focus.activeSelf) return;
+                        focus.SetActive(false);
                         isActionable = false; isMove = true;
-
+                        //추후 포커스, 가이드 라인 초기화 및 비활성화
                         Vector2Int[] pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
                         objTurn[tIdx].state = BtObjState.MOVE;
                         objTurn[tIdx].mPath = pPath;
                         objTurn[tIdx].mIdx = 0;
                         StartCoroutine(MoveObj(pObj, cpPos, objTurn[tIdx].mPath[0], () =>
                         {
-                            pData.SetObjLayer(cpPos.y);
+                            isMove = false;
                             UpdateGrid(cpPos.x, cpPos.y, t.x, t.y, 1, 1, 1000);
                             cpPos = t;
+                            pData.SetObjLayer(cpPos.y);
                             objTurn[tIdx].mIdx++;
                             if (objTurn[tIdx].mIdx >= objTurn[tIdx].mPath.Length)
                                 objTurn[tIdx].state = BtObjState.IDLE;
                         }));
-                        cpPos = t;
                         break;
                 }
             }
@@ -269,7 +272,6 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (pObj == null)
             pObj = GameObject.FindGameObjectWithTag("Player");
-        objTurn.Add(new turnData(1000, BtObjState.IDLE, BtObjType.PLAYER));
         pData = pObj.GetComponent<bPlayer>();
         //추후 NPC 생성
         if (mapSeed < 1000) // 맵 시드가 1000 미만이면 일반 필드 1001부터는 특수 장소(던전이나 숲 등)
@@ -290,7 +292,9 @@ public class BattleCore : AutoSingleton<BattleCore>
             cpPos = new Vector2Int(cx, cy);
             gGrid[cx, cy].tId = 1000;
             pData.SetObjLayer(cy);
+            objTurn.Add(new TurnData(1000, BtObjState.IDLE, BtObjType.PLAYER, cpPos));
         }
+
     }
     void LoadEnemyGrp()
     {
@@ -324,12 +328,13 @@ public class BattleCore : AutoSingleton<BattleCore>
                 var mon = Instantiate(monPrefab, monsterParent);
                 var data = mon.GetComponent<bMonster>();
                 data.SetDirObj(pDir == 0 ? 1 : -1);
-                data.SetMonData(++objId, MonManager.I.BattleMonList[0], p, gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
+                data.SetMonData(++objId, MonManager.I.BattleMonList[0], gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
+                data.SetObjLayer(p.y);
                 mon.name = "Mon_" + objId;
                 mObj.Add(objId, mon);
                 mData.Add(objId, data);
                 gGrid[p.x, p.y].tId = objId;
-                objTurn.Add(new turnData(objId, BtObjState.IDLE, BtObjType.MONSTER));
+                objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, p));
                 //나중에 몬스터가 2x2 또는 3x3 타일 형태로 생성되는데 그때는 왼쪽 상단을 기준으로 좌표가 갱신되도록 함
             }
         }
@@ -365,58 +370,39 @@ public class BattleCore : AutoSingleton<BattleCore>
         tIdx++; //다음 턴을 위해 턴 인덱스 증가
         if (tIdx >= objTurn.Count) tIdx = 0;
         int tgId = 0;
-        switch (objTurn[tIdx].type)
+        var ot = objTurn[tIdx];
+        switch (ot.type)
         {
             case BtObjType.PLAYER:
                 //아마 플레이어는 자동으로 이동하는 무브상태만 체크하면 될듯
+                //추후 포커스, 가이드 라인 초기화 및 활성화
+                focus.SetActive(true);
+                isActionable = true; //플레이어 행동 가능 여부 활성화
                 break;
             case BtObjType.MONSTER:
-                int mId = objTurn[tIdx].objId;
-                if (objTurn[tIdx].tgId == 0)
-                    tgId = SearchNearbyObj(mData[mId].xy, BtObjType.PLAYER);
-                ////////////////////////////// 여기서 부터 작업하는데 위에 서치된 tgId를 이용해서 타겟에 대한 행동 적용하셈
-                //몬스터는 일반적으로 플레이어를 공격하기 위해 이동하는 로직이 우선순위
-                switch (objTurn[tIdx].state)
+                int mId = ot.objId;
+                if (ot.tgId == 0)
+                {
+                    tgId = SearchNearbyObj(ot.pos, BtObjType.MONSTER);
+                    if (tgId != 0)
+                        ot.tgId = tgId;
+                    //추후에 버그 발생을 대응하기 위해 타깃이 없으면 해당 타입을 제외한 다른 타입들을 검색하여 씬을 종료시키든 마무리해야함.
+                }
+                switch (ot.state)
                 {
                     case BtObjState.IDLE:
-                        //주변에 공격 대상이 없으면 가까운 플레이어, 아군 NPC를 찾도록 해야함 || 있다면 공격 후 IDLE 상태로 변경
-                        //찾은 타깃이 있다면 TRACK 상태로 변경 || 찾지 못했다면 IDLE 상태로 유지
-                        //공격도 그냥 이미 tgId 잡아 뒀으니까 바로 공격타겟이 있는지 체크하고 넘어가셈...GetAroundAttackTarget는 필요 없을듯
-                        // Vector2Int tg = GetAroundAttackTarget(cpPos, objTurn[tIdx].tgId);
-                        // if (tg.x != -1 && tg.y != -1)
-                        // {
-                        //     // objTurn[tIdx].state = BtObjState.TRACK;
-                        //     objTurn[tIdx].tgId = gGrid[tg.x, tg.y].tId;
-                        //     AttackObj(BtObjType.MONSTER, objTurn[tIdx].tgId, mData[objTurn[tIdx].tgId].att);
-                        // }
-                        // else
-                        // {
-                        //     // int tgId = SearchNearbyObj(mData[mId].xy, BtObjType.PLAYER);
-                        //     if (tgId != 0)
-                        //     {
-                        //         objTurn[tIdx].tgId = tgId;
-                        //         objTurn[tIdx].state = BtObjState.TRACK;
-                        //         //아직 NPC가 추가되지않아 플레이어로 강제 이식진행
-                        //         // var data = pData;
-                        //         if (tgId == 1000)
-                        //         {
-                        //             Vector2Int[] path = BattlePathManager.I.GetPath(mData[mId].xy, cpPos, gGrid);
-                        //             StartCoroutine(MoveObj(mObj[mId], mData[mId].xy, path[0], () =>
-                        //             {
-                        //                 UpdateGrid(mData[mId].xy.x, mData[mId].xy.y, path[0].x, path[0].y, 1, 1, 1000);
-                        //                 mData[mId].xy = path[0];
-                        //                 if (GetAttackTarget(1000))
-                        //                     objTurn[tIdx].state = BtObjState.IDLE;
-                        //             }));
-                        //         }
-                        //     }
-                        //     else
-                        //         objTurn[tIdx].state = BtObjState.IDLE;
-                        // }
+                        if (GetAttackTarget(ot.tgId, ot.pos))
+                            AttackObj(BtObjType.MONSTER, ot.tgId, mData[ot.tgId].att);
+                        else
+                        {
+                            //추적 시작
+                            ot.state = BtObjState.TRACK;
+                            TrackMon(ot, mId);
+                        }
+
                         break;
                     case BtObjState.TRACK:
-                        Vector2Int[] mtPath = BattlePathManager.I.GetPath(mData[objTurn[tIdx].objId].xy, cpPos, gGrid); //Monster Track Path
-
+                        TrackMon(ot, mId);
                         break;
                 }
                 break;
@@ -424,11 +410,11 @@ public class BattleCore : AutoSingleton<BattleCore>
                 break;
         }
     }
-    bool GetAttackTarget(int tId)
+    bool GetAttackTarget(int tId, Vector2Int pos)
     {
         for (int i = 0; i < Directions.Dir8.Length; i++)
         {
-            Vector2Int t = cpPos + Directions.Dir8[i];
+            Vector2Int t = pos + Directions.Dir8[i];
             if (t.x < 0 || t.x >= mapW || t.y < 0 || t.y >= mapH)
                 continue;
             if (gGrid[t.x, t.y].tId == tId)
@@ -479,7 +465,21 @@ public class BattleCore : AutoSingleton<BattleCore>
                 break;
         }
     }
-
+    void TrackMon(TurnData data, int mId)
+    {
+        if (data.tgId == 1000)
+        {
+            Vector2Int[] path = BattlePathManager.I.GetPath(data.pos, cpPos, gGrid);
+            StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], () =>
+            {
+                UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, 1, 1, mId);
+                data.pos = path[0]; //몬스터 위치 업데이트
+                mData[mId].SetObjLayer(path[0].y); //몬스터 레이어 업데이트
+                if (GetAttackTarget(data.tgId, data.pos))
+                    data.state = BtObjState.IDLE;
+            }));
+        }
+    }
     int SearchNearbyObj(Vector2Int pos, BtObjType type)
     {
         int oId = 0;
@@ -491,7 +491,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 {
                     if (t.type == BtObjType.PLAYER || t.type == BtObjType.NPC)
                     {
-                        float dist = Vector2.Distance(pos, mData[t.objId].xy);
+                        float dist = Vector2.Distance(pos, t.pos);
                         if (dist < minDist)
                         {
                             minDist = dist;
@@ -505,7 +505,6 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return oId;
     }
-    // void SetPathObj(int)
     void UpdateGrid(int sx, int sy, int tx, int ty, int w, int h, int id)
     {
         if (w == 1 && h == 1)
@@ -533,15 +532,6 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
     }
-    // bMonster GetTargetMonster(int x, int y)
-    // {
-    //     for (int i = 0; i < mData.Count; i++)
-    //     {
-    //         if (mData[i].xy.x == x && mData[i].xy.y == y)\
-    //             return mData[i];
-    //     }
-    //     return null;
-    // }
     #endregion
     void MoveCamera(bool isInit)
     {

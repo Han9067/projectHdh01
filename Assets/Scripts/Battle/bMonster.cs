@@ -11,7 +11,6 @@ public class bMonster : MonoBehaviour
     bool isGG = false;
     public float hp, maxHp;
     public int att, def, crt, crtRate, hit, eva;
-    public Vector2Int xy;
     void Start()
     {
         monData = MonManager.I.MonDataList[monsterId].Clone();
@@ -29,13 +28,11 @@ public class bMonster : MonoBehaviour
         hit = monData.Hit;
         eva = monData.Eva;
     }
-    public void SetMonData(int objId, int monId, Vector2Int pos, float px, float py)
+    public void SetMonData(int objId, int monId, float px, float py)
     {
         this.objId = objId;
         this.monsterId = monId;
-        this.xy = pos;
         transform.position = new Vector3(px, py, 0);
-        SetObjLayer(pos.y);
     }
     public void SetDirObj(int dir)
     {
