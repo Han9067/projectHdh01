@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GB;
+using UnityEditor;
 
 public class bPlayer : MonoBehaviour
 {
@@ -154,4 +155,20 @@ public class bPlayer : MonoBehaviour
         }
     }
     #endregion
+}
+
+[CustomEditor(typeof(bPlayer))]
+public class bPlayerEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        bPlayer myScript = (bPlayer)target;
+
+        if (GUILayout.Button("체력 차감"))
+        {
+            myScript.OnDamaged(2);
+        }
+    }
 }

@@ -17,13 +17,16 @@ public class tileGrid
 }
 public enum BtObjState
 {
-    IDLE, MOVE, ATTACK, TRACK, DEAD
+    IDLE, MOVE, ATTACK, TRACK
 }
 public enum BtObjType
 {
     PLAYER, MONSTER, NPC
 }
-
+public enum BtFaction
+{
+    PLAYER, ALLY, ENEMY
+}
 public static class Directions
 {
     public static readonly Vector2Int[] Dir8 = {
@@ -37,12 +40,15 @@ public class TurnData
     public Vector2Int pos; // 해당 턴 오브젝트 위치
     public BtObjState state;
     public BtObjType type;
+    public BtFaction faction;
     public Vector2Int[] mPath;
-    public TurnData(int objId, BtObjState state, BtObjType type, Vector2Int pos)
+    public bool isAction = false;
+    public TurnData(int objId, BtObjState state, BtObjType type, BtFaction faction, Vector2Int pos)
     {
         this.objId = objId;
         this.state = state;
         this.type = type;
+        this.faction = faction;
         this.pos = pos;
     }
 }
@@ -186,19 +192,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                         isActionable = false; isMove = true;
                         //추후 포커스, 가이드 라인 초기화 및 비활성화
                         Vector2Int[] pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
-                        objTurn[tIdx].state = BtObjState.MOVE;
-                        objTurn[tIdx].mPath = pPath;
-                        objTurn[tIdx].mIdx = 0;
-                        StartCoroutine(MoveObj(pObj, cpPos, objTurn[tIdx].mPath[0], () =>
-                        {
-                            isMove = false;
-                            UpdateGrid(cpPos.x, cpPos.y, t.x, t.y, 1, 1, 1000);
-                            cpPos = t;
-                            pData.SetObjLayer(cpPos.y);
-                            objTurn[tIdx].mIdx++;
-                            if (objTurn[tIdx].mIdx >= objTurn[tIdx].mPath.Length)
-                                objTurn[tIdx].state = BtObjState.IDLE;
-                        }));
+                        TurnData pTurn = objTurn[0];
+                        pTurn.state = BtObjState.MOVE; pTurn.mPath = pPath; pTurn.mIdx = 0;
+                        MovePlayer(pTurn.mPath[0], pTurn);
                         break;
                 }
             }
@@ -292,7 +288,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             cpPos = new Vector2Int(cx, cy);
             gGrid[cx, cy].tId = 1000;
             pData.SetObjLayer(cy);
-            objTurn.Add(new TurnData(1000, BtObjState.IDLE, BtObjType.PLAYER, cpPos));
+            objTurn.Add(new TurnData(1000, BtObjState.IDLE, BtObjType.PLAYER, BtFaction.PLAYER, cpPos));
         }
 
     }
@@ -334,7 +330,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 mObj.Add(objId, mon);
                 mData.Add(objId, data);
                 gGrid[p.x, p.y].tId = objId;
-                objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, p));
+                objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p));
                 //나중에 몬스터가 2x2 또는 3x3 타일 형태로 생성되는데 그때는 왼쪽 상단을 기준으로 좌표가 갱신되도록 함
             }
         }
@@ -376,8 +372,20 @@ public class BattleCore : AutoSingleton<BattleCore>
             case BtObjType.PLAYER:
                 //아마 플레이어는 자동으로 이동하는 무브상태만 체크하면 될듯
                 //추후 포커스, 가이드 라인 초기화 및 활성화
-                focus.SetActive(true);
-                isActionable = true; //플레이어 행동 가능 여부 활성화
+                switch (ot.state)
+                {
+                    case BtObjState.IDLE:
+                        if (!ot.isAction)
+                        {
+                            focus.SetActive(true);
+                            isActionable = true; //플레이어 행동 가능 여부 활성화
+                        }
+                        break;
+                    case BtObjState.MOVE:
+                        if (!ot.isAction)
+                            MovePlayer(ot.mPath[ot.mIdx], ot); //플레이어의 행동이 끝난 상태면 플레이어 이동
+                        break;
+                }
                 break;
             case BtObjType.MONSTER:
                 int mId = ot.objId;
@@ -392,14 +400,13 @@ public class BattleCore : AutoSingleton<BattleCore>
                 {
                     case BtObjState.IDLE:
                         if (GetAttackTarget(ot.tgId, ot.pos))
-                            AttackObj(BtObjType.MONSTER, ot.tgId, mData[ot.tgId].att);
+                            AttackObj(BtObjType.MONSTER, ot.tgId, mData[mId].att);
                         else
                         {
                             //추적 시작
                             ot.state = BtObjState.TRACK;
                             TrackMon(ot, mId);
                         }
-
                         break;
                     case BtObjState.TRACK:
                         TrackMon(ot, mId);
@@ -422,25 +429,51 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return false;
     }
-    Vector2Int GetAroundAttackTarget(Vector2Int pos, int tId)
+    bool GetNearbyEnemy()
     {
-        for (int i = 0; i < Directions.Dir8.Length; i++)
+        foreach (var t in objTurn)
         {
-            Vector2Int t = pos + Directions.Dir8[i];
-            if (t.x < 0 || t.x >= mapW || t.y < 0 || t.y >= mapH)
-                continue;
-            if (gGrid[t.x, t.y].tId == tId)
-                return t;
+            if (t.faction == BtFaction.ENEMY)
+            {
+                float dist = Vector2.Distance(cpPos, t.pos);
+                if (dist < 1.5f)
+                    return true;
+            }
         }
-        return new Vector2Int(-1, -1);
+        return false;
     }
-    IEnumerator MoveObj(GameObject obj, Vector2Int cv, Vector2Int mv, Action call = null)
+    void MovePlayer(Vector2Int t, TurnData ot)
+    {
+        ot.isAction = true;
+        StartCoroutine(MoveObj(pObj, cpPos, t, 0.3f, () =>
+        {
+            ot.isAction = false; //행동 종료
+            UpdateGrid(cpPos.x, cpPos.y, t.x, t.y, 1, 1, 1000);
+            cpPos = t;
+            pData.SetObjLayer(cpPos.y);
+            ot.mIdx++;
+            if (ot.mIdx >= ot.mPath.Length || GetNearbyEnemy() || gGrid[ot.mPath[ot.mIdx].x, ot.mPath[ot.mIdx].y].tId != 0)
+            {
+                //추후에는 플레이어의 이동 경로에 적 뿐만 아니라 소품 오브젝트가 생성되면 그 상황에도 아이들 상태로 변경해줘야함
+                ot.state = BtObjState.IDLE;
+                isMove = false;
+                isActionable = true;
+            }
+            else
+            {
+                //플레이어 턴이 왔는지 체크 후 플레이어 이동
+                if (tIdx == 0)
+                    MovePlayer(ot.mPath[ot.mIdx], ot);
+            }
+        }));
+    }
+    IEnumerator MoveObj(GameObject obj, Vector2Int cv, Vector2Int mv, float ct, Action call = null)
     {
         var pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.y, mv.y].y, 0);
         float dir = cv.x == mv.x ? obj.transform.localScale.x : (cv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
         obj.transform.localScale = new Vector3(dir, 1, 1);
         obj.transform.DOMove(pos, 0.3f); //트윈으로 이동
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(ct);
         call?.Invoke();
         NextTurn();
         //다음 턴
@@ -464,18 +497,21 @@ public class BattleCore : AutoSingleton<BattleCore>
                 }
                 break;
         }
+        NextTurn();
     }
     void TrackMon(TurnData data, int mId)
     {
+        data.isAction = true; //행동 시작
         if (data.tgId == 1000)
         {
             Vector2Int[] path = BattlePathManager.I.GetPath(data.pos, cpPos, gGrid);
-            StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], () =>
+            StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], 0, () =>
             {
+                data.isAction = false; //행동 종료
                 UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, 1, 1, mId);
                 data.pos = path[0]; //몬스터 위치 업데이트
                 mData[mId].SetObjLayer(path[0].y); //몬스터 레이어 업데이트
-                if (GetAttackTarget(data.tgId, data.pos))
+                if (GetAttackTarget(data.tgId, data.pos) || gGrid[path[0].x, path[0].y].tId != 0)
                     data.state = BtObjState.IDLE;
             }));
         }
