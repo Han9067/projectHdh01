@@ -55,9 +55,13 @@ public class TurnData
 
 public class BattleCore : AutoSingleton<BattleCore>
 {
+    #region ==== Global Variable ====
     [Header("====Camera====")]
     public Camera cmr; // 전투씬 메인 카메라
     private Vector3 velocity = Vector3.zero; //카메라 속도
+    [Header("====UI====")]
+    public GameObject dmgTxtParent;
+    private List<Text> dmgTxtList = new List<Text>();
     [Header("====Map====")]
     [SerializeField] private GameObject tileMapObj; // 맵 타일 오브젝트
     public int mapSeed, pDir; // [맵 시드], [플레이어 방향 상,하,좌,우]
@@ -67,22 +71,22 @@ public class BattleCore : AutoSingleton<BattleCore>
     // ========================================
     private Tilemap gMap; // 땅 타일 맵
     private int mapW, mapH; // 맵 너비, 맵 높이, 플레이어 x,y좌표
-    Vector2Int cpPos = new Vector2Int(0, 0); //현재 플레이어 위치 좌표
+    private Vector2Int cpPos = new Vector2Int(0, 0); //현재 플레이어 위치 좌표
     private float tileOffset = 0.6f, tileItv = 1.2f; // 타일 오프셋, 타일 간격
     float[] mapLimit = new float[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
     public GameObject[,] guide; // 길찾기 가이드 오브젝트
 
     [Header("====Player====")]
-    // [SerializeField] private Sprite focusSprite; // 포커스 스프라이트
-    public GameObject pObj, focus, propParent, propPrefab; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
+    [SerializeField] private GameObject pObj;
+    public GameObject focus, propParent; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
+
     private SpriteRenderer focusSrp;
-    bPlayer pData;
+    private bPlayer pData;
     private bool isActionable = true, isMove = false; // 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부
 
     [Header("====Monster====")]
-    public GameObject monPrefab;
-    Dictionary<int, GameObject> mObj = new Dictionary<int, GameObject>();
-    Dictionary<int, bMonster> mData = new Dictionary<int, bMonster>();
+    private Dictionary<int, GameObject> mObj = new Dictionary<int, GameObject>();
+    private Dictionary<int, bMonster> mData = new Dictionary<int, bMonster>();
     public Transform monsterParent;
 
     // [Header("====NPC====")]
@@ -92,11 +96,11 @@ public class BattleCore : AutoSingleton<BattleCore>
     // public Transform npcParent;
 
     [Header("====Common====")]
-    public int objId;
+    [SerializeField] private int objId;
     private List<TurnData> objTurn = new List<TurnData>();
-    int tIdx = 0; // 턴 인덱스
+    private int tIdx = 0; // 턴 인덱스
     // float dTime = 0;
-
+    #endregion
     void Awake()
     {
         CheckMainManager();
@@ -252,7 +256,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     if (pTile != null)
                     {
                         gGrid[x, y].tId = int.Parse(pTile.name.Split('_')[2]);
-                        var prop = Instantiate(propPrefab, propParent.transform);
+                        var prop = Instantiate(ResManager.GetGameObject("PropObj"), propParent.transform);
                         prop.name = pTile.name;
                         prop.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
                         prop.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite(pTile.name);
@@ -321,7 +325,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
             foreach (var p in mPos)
             {
-                var mon = Instantiate(monPrefab, monsterParent);
+                var mon = Instantiate(ResManager.GetGameObject("MonObj"), monsterParent);
                 var data = mon.GetComponent<bMonster>();
                 data.SetDirObj(pDir == 0 ? 1 : -1);
                 data.SetMonData(++objId, MonManager.I.BattleMonList[0], gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
@@ -567,6 +571,44 @@ public class BattleCore : AutoSingleton<BattleCore>
                     gGrid[x, y].tId = 0;
             }
         }
+    }
+    #endregion
+    #region ==== UI Action ====
+    public void ShowDmgTxt(int dmg, Vector3 pos)
+    {
+        var txt = GetDmgTxt();
+        if (txt == null)
+        {
+            txt = Instantiate(ResManager.GetGameObject("DmgTxt"), dmgTxtParent.transform).GetComponent<Text>();
+            dmgTxtList.Add(txt);
+        }
+        float yyy = pos.y + 0.6f;
+        txt.transform.position = new Vector3(pos.x, yyy, 0);
+        txt.text = dmg.ToString();
+        var damageSequence = DOTween.Sequence();
+        damageSequence.SetAutoKill(true);
+        damageSequence.Append(txt.transform.DOMoveY(yyy + 0.6f, 0.5f).SetEase(Ease.OutQuad))
+                    .Join(txt.DOFade(0f, 1f))
+                    .Join(txt.transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack))
+                    .Append(txt.transform.DOScale(1f, 0.2f))
+                    .OnComplete(() =>
+                    {
+                        txt.gameObject.SetActive(false);
+                        txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, 1f);
+                        txt.transform.localScale = Vector3.one;
+                    });
+    }
+    Text GetDmgTxt()
+    {
+        foreach (var txt in dmgTxtList)
+        {
+            if (!txt.gameObject.activeSelf)
+            {
+                txt.gameObject.SetActive(true);
+                return txt;
+            }
+        }
+        return null;
     }
     #endregion
     void MoveCamera(bool isInit)

@@ -14,23 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spritePath: Resources/Images
   audioClipPath: 
-  prefabPath: 
+  prefabPath: Resources/Prefabs
   Sprites:
     list:
-    - key: attack
-      value: {fileID: 21300000, guid: 6a667866329cff9469a3b170a08c5b10, type: 3}
-      duplicatedKey: 0
     - key: focus
       value: {fileID: 21300000, guid: ee46ad0b805e4ab46a5567d645678936, type: 3}
       duplicatedKey: 0
     - key: guideBall
       value: {fileID: 21300000, guid: 39aa53821360eba4ba39e7e574b73c01, type: 3}
-      duplicatedKey: 0
-    - key: notMove
-      value: {fileID: 21300000, guid: faf84bbc3d7c6c549a5f3c90d0530975, type: 3}
-      duplicatedKey: 0
-    - key: TestRes
-      value: {fileID: 21300000, guid: 292891d60172e5041b82f2e0178997e7, type: 3}
       duplicatedKey: 0
     - key: empty
       value: {fileID: 21300000, guid: a16d8cfb048f57d458b7bcff79729ecf, type: 3}
@@ -114,13 +105,13 @@ MonoBehaviour:
       value: {fileID: 21300000, guid: 81b75398e7b595642bf812db1b6aabe8, type: 3}
       duplicatedKey: 0
     - key: icon_boss
-      value: {fileID: 21300000, guid: 129753d9df484c54d9b4fbfc973bfb26, type: 3}
+      value: {fileID: 21300000, guid: 03848850bdf95a24ca1e13821ad5f74e, type: 3}
       duplicatedKey: 0
     - key: icon_human
-      value: {fileID: 21300000, guid: 9b00ef78e4ef55947958623ff8debe79, type: 3}
+      value: {fileID: 21300000, guid: 8ec4b11262482c34bbfd169290f3415b, type: 3}
       duplicatedKey: 0
     - key: icon_mon
-      value: {fileID: 21300000, guid: ab06892fbc3e00248981b2421ec59dad, type: 3}
+      value: {fileID: 21300000, guid: 682d5744f8a4eb74b9d0f08e908ab1c5, type: 3}
       duplicatedKey: 0
     - key: city_capital
       value: {fileID: 21300000, guid: 132348add96f5f84b8940052aae3d99a, type: 3}
@@ -272,4 +263,16 @@ MonoBehaviour:
   AudioClips:
     list: []
   Prefabs:
-    list: []
+    list:
+    - key: DmgTxt
+      value: {fileID: 2654319114330761190, guid: 72e543d6b8a5fd44a8e507b294b7423e, type: 3}
+      duplicatedKey: 0
+    - key: MonObj
+      value: {fileID: 4170379451178667109, guid: 9c6535ee741e3dc449dcb4981419512a, type: 3}
+      duplicatedKey: 0
+    - key: PropObj
+      value: {fileID: 326971662176452226, guid: 4affcf232230b4e409ecb189e0ffd817, type: 3}
+      duplicatedKey: 0
+    - key: Tile_1_1
+      value: {fileID: 8337991625621592625, guid: adf8a9d5ba3e1ed4fb5a4278874ec418, type: 3}
+      duplicatedKey: 0

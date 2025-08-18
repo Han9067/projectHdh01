@@ -108,6 +108,7 @@ public class BattleMainUI : UIScreen
     {
         mSlider_HP.value = (float)PlayerManager.I.pData.HP / PlayerManager.I.pData.MaxHP * 100f;
         mTexts["GgHpTxt"].text = PlayerManager.I.pData.HP.ToString() + " / " + PlayerManager.I.pData.MaxHP.ToString();
+
     }
     public void SetMp()
     {

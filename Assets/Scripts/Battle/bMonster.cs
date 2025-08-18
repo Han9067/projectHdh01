@@ -60,6 +60,7 @@ public class bMonster : MonoBehaviour
         else
             ggObj.transform.localScale = new Vector3(hp / maxHp, 1, 1);
         //텍스트 연출
+        BattleCore.I.ShowDmgTxt(dmg, transform.position); // 데미지 텍스트 표시
     }
     private IEnumerator DeathMon()
     {
