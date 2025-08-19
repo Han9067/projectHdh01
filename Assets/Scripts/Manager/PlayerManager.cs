@@ -76,7 +76,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.HairColor = data.HairColor;
 
         CalcPlayerStat();
-        Presenter.Send("WorldMainUI", "UpdateGoldTxt", pData.Crown.ToString());
+        Presenter.Send("WorldMainUI", "UpdateInfo");
     }
     public void DummyPlayerData()
     {
@@ -108,7 +108,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.EqSlot["Armor"] = pData.Inven[3]; // 갑옷
 
         CalcPlayerStat();
-        Presenter.Send("WorldMainUI", "UpdateGoldTxt", pData.Crown.ToString());
+        Presenter.Send("WorldMainUI", "UpdateInfo");
     }
     private void CalcPlayerStat()
     {
