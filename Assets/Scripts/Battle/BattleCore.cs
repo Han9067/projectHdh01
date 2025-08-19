@@ -17,11 +17,11 @@ public class tileGrid
 }
 public enum BtObjState
 {
-    IDLE, MOVE, ATTACK, TRACK
+    IDLE, DEAD, MOVE, ATTACK, TRACK
 }
 public enum BtObjType
 {
-    PLAYER, MONSTER, NPC
+    NONE, PLAYER, MONSTER, NPC
 }
 public enum BtFaction
 {
@@ -182,26 +182,23 @@ public class BattleCore : AutoSingleton<BattleCore>
                     case "attack":
                         if (GetAttackTarget(gGrid[t.x, t.y].tId, cpPos))
                         {
-                            //플레이어 공격
-                            AttackObj(BtObjType.PLAYER, gGrid[t.x, t.y].tId, PlayerManager.I.pData.Att);
+                            // StartCoroutine(PlayNormalAttack(pObj, BtObjType.PLAYER, gGrid[t.x, t.y].tId));
+                            objTurn[0].state = BtObjState.ATTACK;
+                            objTurn[0].tgId = gGrid[t.x, t.y].tId;
+                            TurnAction();
                         }
                         else
                         {
-                            // StartCoroutine(AutoMovePlayer(GetTargetMonster(t.x, t.y)));
+                            OnMovePlayer(t, 1);
                         }
                         break;
                     case "default":
                         if (!focus.activeSelf) return;
-                        focus.SetActive(false);
-                        isActionable = false; isMove = true;
-                        //추후 포커스, 가이드 라인 초기화 및 비활성화
-                        Vector2Int[] pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
-                        TurnData pTurn = objTurn[0];
-                        pTurn.state = BtObjState.MOVE; pTurn.mPath = pPath; pTurn.mIdx = 0;
-                        MovePlayer(pTurn.mPath[0], pTurn);
+                        OnMovePlayer(t);
                         break;
                 }
             }
+
         }
         if (isMove)
             MoveCamera(false);
@@ -291,7 +288,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             pObj.transform.position = new Vector3(gGrid[cx, cy].x, gGrid[cx, cy].y, 0);
             cpPos = new Vector2Int(cx, cy);
             gGrid[cx, cy].tId = 1000;
-            pData.SetObjLayer(cy);
+            pData.SetObjLayer(mapH - cy);
             objTurn.Add(new TurnData(1000, BtObjState.IDLE, BtObjType.PLAYER, BtFaction.PLAYER, cpPos));
         }
 
@@ -329,7 +326,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 var data = mon.GetComponent<bMonster>();
                 data.SetDirObj(pDir == 0 ? 1 : -1);
                 data.SetMonData(++objId, MonManager.I.BattleMonList[0], gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
-                data.SetObjLayer(p.y);
+                data.SetObjLayer(mapH - p.y);
                 mon.name = "Mon_" + objId;
                 mObj.Add(objId, mon);
                 mData.Add(objId, data);
@@ -365,29 +362,57 @@ public class BattleCore : AutoSingleton<BattleCore>
         return result;
     }
     #region ==== Object Action ====
-    void NextTurn()
+    void OnMovePlayer(Vector2Int t, int state = 0)
     {
-        tIdx++; //다음 턴을 위해 턴 인덱스 증가
-        if (tIdx >= objTurn.Count) tIdx = 0;
+        focus.SetActive(false);
+        isActionable = false; isMove = true;
+        //추후 포커스, 가이드 라인 초기화 및 비활성화
+        Vector2Int[] pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
+        if (state == 1)
+            pPath = new Vector2Int[] { pPath[0] };
+        TurnData pTurn = objTurn[0];
+        pTurn.state = BtObjState.MOVE;
+        pTurn.mPath = pPath; pTurn.mIdx = 0;
+        TurnAction();
+    }
+    void TurnAction()
+    {
+        //모든 오브젝트의 턴을 여기서 관리해야할듯...플레이어 떄문에 여기저기 분산으로 제어하니까 코드가 더러워짐
         int tgId = 0;
         var ot = objTurn[tIdx];
         switch (ot.type)
         {
             case BtObjType.PLAYER:
-                //아마 플레이어는 자동으로 이동하는 무브상태만 체크하면 될듯
-                //추후 포커스, 가이드 라인 초기화 및 활성화
                 switch (ot.state)
                 {
                     case BtObjState.IDLE:
-                        if (!ot.isAction)
-                        {
-                            focus.SetActive(true);
-                            isActionable = true; //플레이어 행동 가능 여부 활성화
-                        }
-                        break;
+                        isMove = false;
+                        isActionable = true;
+                        return;
                     case BtObjState.MOVE:
-                        if (!ot.isAction)
-                            MovePlayer(ot.mPath[ot.mIdx], ot); //플레이어의 행동이 끝난 상태면 플레이어 이동
+                        if (ot.mIdx >= ot.mPath.Length || GetNearbyEnemy() || gGrid[ot.mPath[ot.mIdx].x, ot.mPath[ot.mIdx].y].tId != 0)
+                        {
+                            //플레이어 이동 종료
+                            ot.state = BtObjState.IDLE;
+                            isMove = false;
+                            isActionable = true;
+                            return;
+                        }
+                        ot.isAction = true;
+                        StartCoroutine(MoveObj(pObj, cpPos, ot.mPath[ot.mIdx], 0.3f, () =>
+                        {
+                            UpdateGrid(cpPos.x, cpPos.y, ot.mPath[ot.mIdx].x, ot.mPath[ot.mIdx].y, 1, 1, 1000);
+                            cpPos = ot.mPath[ot.mIdx];
+                            pData.SetObjLayer(mapH - cpPos.y);
+                            ot.mIdx++;
+                        }, () =>
+                        {
+                            ot.isAction = false;
+                        }));
+                        break;
+                    case BtObjState.ATTACK:
+                        StartCoroutine(PlayNormalAttack(pObj, BtObjType.PLAYER, 1000, ot.tgId));
+                        ot.state = BtObjState.IDLE;
                         break;
                 }
                 break;
@@ -395,7 +420,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 int mId = ot.objId;
                 if (ot.tgId == 0)
                 {
-                    tgId = SearchNearbyObj(ot.pos, BtObjType.MONSTER);
+                    tgId = SearchNearbyAiObj(ot.pos, BtObjType.MONSTER);
                     if (tgId != 0)
                         ot.tgId = tgId;
                     //추후에 버그 발생을 대응하기 위해 타깃이 없으면 해당 타입을 제외한 다른 타입들을 검색하여 씬을 종료시키든 마무리해야함.
@@ -404,22 +429,24 @@ public class BattleCore : AutoSingleton<BattleCore>
                 {
                     case BtObjState.IDLE:
                         if (GetAttackTarget(ot.tgId, ot.pos))
-                            AttackObj(BtObjType.MONSTER, ot.tgId, mData[mId].att);
+                            StartCoroutine(PlayNormalAttack(mObj[mId], BtObjType.MONSTER, mId, ot.tgId));
                         else
                         {
                             //추적 시작
                             ot.state = BtObjState.TRACK;
-                            TrackMon(ot, mId);
+                            TrackMon(ot, mId, tIdx == 0 ? 0.3f : 0);
                         }
                         break;
                     case BtObjState.TRACK:
-                        TrackMon(ot, mId);
+                        TrackMon(ot, mId, tIdx == 0 ? 0.3f : 0);
                         break;
                 }
                 break;
             case BtObjType.NPC:
                 break;
         }
+        tIdx++; //다음 턴을 위해 턴 인덱스 증가
+        if (tIdx >= objTurn.Count) tIdx = 0;
     }
     bool GetAttackTarget(int tId, Vector2Int pos)
     {
@@ -437,6 +464,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         foreach (var t in objTurn)
         {
+            if (t.state == BtObjState.DEAD) continue;
             if (t.faction == BtFaction.ENEMY)
             {
                 float dist = Vector2.Distance(cpPos, t.pos);
@@ -446,85 +474,115 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return false;
     }
-    void MovePlayer(Vector2Int t, TurnData ot)
-    {
-        ot.isAction = true;
-        StartCoroutine(MoveObj(pObj, cpPos, t, 0.3f, () =>
-        {
-            ot.isAction = false; //행동 종료
-            UpdateGrid(cpPos.x, cpPos.y, t.x, t.y, 1, 1, 1000);
-            cpPos = t;
-            pData.SetObjLayer(cpPos.y);
-            ot.mIdx++;
-            if (ot.mIdx >= ot.mPath.Length || GetNearbyEnemy() || gGrid[ot.mPath[ot.mIdx].x, ot.mPath[ot.mIdx].y].tId != 0)
-            {
-                //추후에는 플레이어의 이동 경로에 적 뿐만 아니라 소품 오브젝트가 생성되면 그 상황에도 아이들 상태로 변경해줘야함
-                ot.state = BtObjState.IDLE;
-                isMove = false;
-                isActionable = true;
-            }
-            else
-            {
-                //플레이어 턴이 왔는지 체크 후 플레이어 이동
-                if (tIdx == 0)
-                    MovePlayer(ot.mPath[ot.mIdx], ot);
-            }
-        }));
-    }
-    IEnumerator MoveObj(GameObject obj, Vector2Int cv, Vector2Int mv, float ct, Action call = null)
+    IEnumerator MoveObj(GameObject obj, Vector2Int cv, Vector2Int mv, float ct, Action callA = null, Action callB = null)
     {
         var pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.y, mv.y].y, 0);
         float dir = cv.x == mv.x ? obj.transform.localScale.x : (cv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
         obj.transform.localScale = new Vector3(dir, 1, 1);
         obj.transform.DOMove(pos, 0.3f); //트윈으로 이동
+        callA?.Invoke();
         yield return new WaitForSeconds(ct);
-        call?.Invoke();
-        NextTurn();
-        //다음 턴
+        callB?.Invoke();
+        TurnAction();
     }
-    void AttackObj(BtObjType myType, int tgId, int dmg)
-    {
-        //추후에는 명중률 공식을 사용해서 명중 & 회피 대응
-        switch (myType)
-        {
-            case BtObjType.PLAYER:
-                //플레이어의 공격
-                mData[tgId].OnDamaged(dmg);
-                break;
-            case BtObjType.MONSTER:
-                //몬스터의 공격
-                if (tgId == 1000)
-                    pData.OnDamaged(dmg);
-                else
-                {
-                    //NPC 피격
-                }
-                break;
-        }
-        NextTurn();
-    }
-    void TrackMon(TurnData data, int mId)
+    void TrackMon(TurnData data, int mId, float ct)
     {
         data.isAction = true; //행동 시작
         if (data.tgId == 1000)
         {
             Vector2Int[] path = BattlePathManager.I.GetPath(data.pos, cpPos, gGrid);
-            StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], 0, () =>
+            StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], ct, () =>
             {
                 data.isAction = false; //행동 종료
                 UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, 1, 1, mId);
                 data.pos = path[0]; //몬스터 위치 업데이트
-                mData[mId].SetObjLayer(path[0].y); //몬스터 레이어 업데이트
+                mData[mId].SetObjLayer(mapH - path[0].y); //몬스터 레이어 업데이트
+            }, () =>
+            {
                 if (GetAttackTarget(data.tgId, data.pos) || gGrid[path[0].x, path[0].y].tId != 0)
                     data.state = BtObjState.IDLE;
             }));
         }
     }
-    int SearchNearbyObj(Vector2Int pos, BtObjType type)
+    IEnumerator PlayNormalAttack(GameObject myObj, BtObjType myType, int myId, int tgId)
+    {
+        var tgType = GetObjType(tgId);
+        if (tgType == BtObjType.NONE) yield break;
+        var myPos = myObj.transform.position;
+        Vector3 tgPos = Vector3.zero;
+        switch (tgType)
+        {
+            case BtObjType.PLAYER:
+                tgPos = pObj.transform.position;
+                break;
+            case BtObjType.MONSTER:
+                tgPos = mObj[tgId].transform.position;
+                break;
+        }
+
+        Vector3 midPoint = GetMidPoint(myPos, tgPos);
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(myObj.transform.DOMove(midPoint, 0.05f)
+            .SetEase(Ease.OutQuad)
+            .OnComplete(() =>
+            {
+                switch (myType)
+                {
+                    case BtObjType.PLAYER:
+                        switch (tgType)
+                        {
+                            case BtObjType.MONSTER:
+                                mData[tgId].OnDamaged(PlayerManager.I.pData.Att);
+                                break;
+                            case BtObjType.NPC:
+                                break;
+                        }
+                        break;
+                    case BtObjType.MONSTER:
+                        switch (tgType)
+                        {
+                            case BtObjType.PLAYER:
+                                pData.OnDamaged(mData[myId].att);
+                                break;
+                            case BtObjType.MONSTER:
+                                break;
+                            case BtObjType.NPC:
+                                break;
+                        }
+                        break;
+                    case BtObjType.NPC:
+                        switch (tgType)
+                        {
+                            case BtObjType.PLAYER:
+                                break;
+                            case BtObjType.MONSTER:
+                                break;
+                            case BtObjType.NPC:
+                                break;
+                        }
+                        break;
+                }
+            }));
+        sequence.Append(myObj.transform.DOMove(myPos, 0.05f)
+            .SetEase(Ease.InQuad));
+        sequence.Play();
+
+        yield return new WaitForSeconds(0.3f);
+        Debug.Log("Attack");
+        TurnAction();
+    }
+    Vector3 GetMidPoint(Vector3 myPos, Vector3 tgPos)
+    {
+        Vector3 dir = (tgPos - myPos).normalized;
+        float dist = Vector3.Distance(myPos, tgPos);
+        return myPos + (dir * (dist * 0.1f));
+    }
+
+    int SearchNearbyAiObj(Vector2Int pos, BtObjType myType)
     {
         int oId = 0;
         float minDist = float.MaxValue;
-        switch (type)
+        switch (myType)
         {
             case BtObjType.MONSTER:
                 foreach (var t in objTurn)
@@ -544,6 +602,25 @@ public class BattleCore : AutoSingleton<BattleCore>
                 break;
         }
         return oId;
+    }
+    BtObjType GetObjType(int objId)
+    {
+        foreach (var t in objTurn)
+        {
+            if (t.objId == objId)
+                return t.type;
+        }
+        return BtObjType.NONE;
+    }
+
+    public void DeathObj(int objId)
+    {
+        foreach (var t in objTurn)
+        {
+            if (t.objId == objId)
+                t.state = BtObjState.DEAD;
+        }
+        RemoveGridId(objId);
     }
     void UpdateGrid(int sx, int sy, int tx, int ty, int w, int h, int id)
     {

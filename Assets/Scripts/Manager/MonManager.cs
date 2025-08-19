@@ -97,8 +97,8 @@ public class MonManager : AutoSingleton<MonManager>
     {
         BattleMonList.Clear();
         BattleMonList.Add(1);
-        BattleMonList.Add(1);
-        BattleMonList.Add(1);
-        BattleMonList.Add(1);
+        // BattleMonList.Add(1);
+        // BattleMonList.Add(1);
+        // BattleMonList.Add(1);
     }
 }

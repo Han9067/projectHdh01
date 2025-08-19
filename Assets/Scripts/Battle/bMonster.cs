@@ -64,7 +64,7 @@ public class bMonster : MonoBehaviour
     }
     private IEnumerator DeathMon()
     {
-        BattleCore.I.RemoveGridId(objId);
+        BattleCore.I.DeathObj(objId);
         //몬스터 죽음 연출
         ggParent.SetActive(false);
         bodyObj.GetComponent<SpriteRenderer>().DOFade(0f, 0.2f);
