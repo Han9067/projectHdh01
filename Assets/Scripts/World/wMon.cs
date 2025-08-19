@@ -30,10 +30,9 @@ public class wMon : MonoBehaviour
             wPlayer player = other.GetComponent<wPlayer>();
             player.stopPlayer();
             string result = MonManager.I.GetAroundMon(other.transform.position.x, other.transform.position.y, monIdx, monGrp);
-            Debug.Log(result);
 
             UIManager.ShowPopup("BattleInfoPop");
-            GB.Presenter.Send("BattleInfoPop", "MonInfo", result);
+            Presenter.Send("BattleInfoPop", "MonInfo", result);
         }
     }
 }

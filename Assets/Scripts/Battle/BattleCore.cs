@@ -17,7 +17,7 @@ public class tileGrid
 }
 public enum BtObjState
 {
-    IDLE, DEAD, MOVE, ATTACK, TRACK
+    IDLE, DEAD, READY, MOVE, ATTACK, TRACK
 }
 public enum BtObjType
 {
@@ -82,7 +82,7 @@ public class BattleCore : AutoSingleton<BattleCore>
 
     private SpriteRenderer focusSrp;
     private bPlayer pData;
-    private bool isActionable = true, isMove = false; // 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부
+    private bool isActionable = false, isMove = false; // 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부
 
     [Header("====Monster====")]
     private Dictionary<int, GameObject> mObj = new Dictionary<int, GameObject>();
@@ -103,6 +103,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     #endregion
     void Awake()
     {
+        if (Time.timeScale == 0) Time.timeScale = 1;
         CheckMainManager();
         //맵 타일 로드
         LoadFieldMap(); // 맵 타일 로드
@@ -121,6 +122,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (cmr == null) cmr = Camera.main;
         MoveCamera(true);
         // FadeIn(); // 페이드인 효과
+        isActionable = true;
     }
     void Update()
     {
@@ -182,7 +184,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                     case "attack":
                         if (GetAttackTarget(gGrid[t.x, t.y].tId, cpPos))
                         {
-                            // StartCoroutine(PlayNormalAttack(pObj, BtObjType.PLAYER, gGrid[t.x, t.y].tId));
                             objTurn[0].state = BtObjState.ATTACK;
                             objTurn[0].tgId = gGrid[t.x, t.y].tId;
                             TurnAction();
@@ -289,13 +290,13 @@ public class BattleCore : AutoSingleton<BattleCore>
             cpPos = new Vector2Int(cx, cy);
             gGrid[cx, cy].tId = 1000;
             pData.SetObjLayer(mapH - cy);
-            objTurn.Add(new TurnData(1000, BtObjState.IDLE, BtObjType.PLAYER, BtFaction.PLAYER, cpPos));
+            objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.PLAYER, cpPos));
         }
 
     }
     void LoadEnemyGrp()
     {
-        MonManager.I.TestCreateMon(); //테스트용
+        // MonManager.I.TestCreateMon(); //테스트용
 
         if (MonManager.I.BattleMonList.Count > 0)
         {
@@ -380,15 +381,23 @@ public class BattleCore : AutoSingleton<BattleCore>
         //모든 오브젝트의 턴을 여기서 관리해야할듯...플레이어 떄문에 여기저기 분산으로 제어하니까 코드가 더러워짐
         int tgId = 0;
         var ot = objTurn[tIdx];
+        if (ot.state == BtObjState.DEAD)
+        {
+            NextTurn();
+            TurnAction();
+            return;
+        }
         switch (ot.type)
         {
             case BtObjType.PLAYER:
                 switch (ot.state)
                 {
-                    case BtObjState.IDLE:
+                    case BtObjState.READY:
                         isMove = false;
                         isActionable = true;
                         return;
+                    case BtObjState.IDLE:
+                        break;
                     case BtObjState.MOVE:
                         if (ot.mIdx >= ot.mPath.Length || GetNearbyEnemy() || gGrid[ot.mPath[ot.mIdx].x, ot.mPath[ot.mIdx].y].tId != 0)
                         {
@@ -412,7 +421,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         break;
                     case BtObjState.ATTACK:
                         StartCoroutine(PlayNormalAttack(pObj, BtObjType.PLAYER, 1000, ot.tgId));
-                        ot.state = BtObjState.IDLE;
+                        ot.state = BtObjState.READY;
                         break;
                 }
                 break;
@@ -445,6 +454,10 @@ public class BattleCore : AutoSingleton<BattleCore>
             case BtObjType.NPC:
                 break;
         }
+        NextTurn();
+    }
+    void NextTurn()
+    {
         tIdx++; //다음 턴을 위해 턴 인덱스 증가
         if (tIdx >= objTurn.Count) tIdx = 0;
     }
@@ -476,7 +489,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     IEnumerator MoveObj(GameObject obj, Vector2Int cv, Vector2Int mv, float ct, Action callA = null, Action callB = null)
     {
-        var pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.y, mv.y].y, 0);
+        var pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.x, mv.y].y, 0);
         float dir = cv.x == mv.x ? obj.transform.localScale.x : (cv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
         obj.transform.localScale = new Vector3(dir, 1, 1);
         obj.transform.DOMove(pos, 0.3f); //트윈으로 이동
@@ -568,7 +581,6 @@ public class BattleCore : AutoSingleton<BattleCore>
         sequence.Play();
 
         yield return new WaitForSeconds(0.3f);
-        Debug.Log("Attack");
         TurnAction();
     }
     Vector3 GetMidPoint(Vector3 myPos, Vector3 tgPos)
@@ -577,7 +589,6 @@ public class BattleCore : AutoSingleton<BattleCore>
         float dist = Vector3.Distance(myPos, tgPos);
         return myPos + (dir * (dist * 0.1f));
     }
-
     int SearchNearbyAiObj(Vector2Int pos, BtObjType myType)
     {
         int oId = 0;
@@ -607,6 +618,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         foreach (var t in objTurn)
         {
+            if (t.state == BtObjState.DEAD) continue;
             if (t.objId == objId)
                 return t.type;
         }
@@ -618,9 +630,24 @@ public class BattleCore : AutoSingleton<BattleCore>
         foreach (var t in objTurn)
         {
             if (t.objId == objId)
+            {
                 t.state = BtObjState.DEAD;
+                break;
+            }
         }
         RemoveGridId(objId);
+        CheckGameClear();
+    }
+    void CheckGameClear()
+    {
+        int aliveCnt = 0;
+        foreach (var t in objTurn)
+        {
+            if (t.objId == 1000) continue;
+            if (t.state != BtObjState.DEAD) aliveCnt++;
+        }
+        if (aliveCnt == 0)
+            Presenter.Send("BattleMainUI", "OnGameClear");
     }
     void UpdateGrid(int sx, int sy, int tx, int ty, int w, int h, int id)
     {
@@ -705,11 +732,13 @@ public class BattleCore : AutoSingleton<BattleCore>
         blackImg.color = new Color(0, 0, 0, 1f);
         blackImg.DOFade(0f, 1f).OnComplete(() =>
         {
-            Debug.Log("BattleCore Start");
             blackImg.gameObject.SetActive(false);
         });
     }
-
+    public void MoveToWorld()
+    {
+        SceneManager.LoadScene("World");
+    }
     void CheckMainManager()
     {
         if (GameObject.Find("Manager") == null)

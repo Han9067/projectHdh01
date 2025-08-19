@@ -18,6 +18,7 @@ public class BattleMainUI : UIScreen
         SetHp();
         SetMp();
         SetSp();
+        mButtons["GoToWorld"].gameObject.SetActive(false);
     }
     private void OnEnable()
     {
@@ -79,7 +80,7 @@ public class BattleMainUI : UIScreen
             switch (key)
             {
                 case "GoToWorld":
-                    UnityEngine.Debug.Log("GoToWorld");
+                    BattleCore.I.MoveToWorld();
                     break;
             }
         }
@@ -96,6 +97,10 @@ public class BattleMainUI : UIScreen
                 break;
             case "GetPlayerSp":
                 SetSp();
+                break;
+            case "OnGameClear":
+                UnityEngine.Debug.Log("GameClear");
+                mButtons["GoToWorld"].gameObject.SetActive(true);
                 break;
         }
     }

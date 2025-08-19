@@ -828,7 +828,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1001 &479241225
+--- !u!1001 &530468124
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -844,10 +844,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1358551360046045687, guid: eb74a614dd0f15f48b9de61a99c9168c, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1710777853762150597, guid: eb74a614dd0f15f48b9de61a99c9168c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -855,10 +851,6 @@ PrefabInstance:
     - target: {fileID: 1710777853762150597, guid: eb74a614dd0f15f48b9de61a99c9168c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3551829748554725067, guid: eb74a614dd0f15f48b9de61a99c9168c, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0.24731445
       objectReference: {fileID: 0}
     - target: {fileID: 4414039878291242944, guid: eb74a614dd0f15f48b9de61a99c9168c, type: 3}
       propertyPath: m_Name
@@ -944,10 +936,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6519480721037086943, guid: eb74a614dd0f15f48b9de61a99c9168c, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 9136280334338278706, guid: eb74a614dd0f15f48b9de61a99c9168c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -956,19 +944,15 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9136280334338278706, guid: eb74a614dd0f15f48b9de61a99c9168c, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb74a614dd0f15f48b9de61a99c9168c, type: 3}
---- !u!224 &479241226 stripped
+--- !u!224 &530468125 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6095536941194952006, guid: eb74a614dd0f15f48b9de61a99c9168c, type: 3}
-  m_PrefabInstance: {fileID: 479241225}
+  m_PrefabInstance: {fileID: 530468124}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &536638964
 GameObject:
@@ -2724,7 +2708,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 479241226}
+  - {fileID: 530468125}
   m_Father: {fileID: 1867351159}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
