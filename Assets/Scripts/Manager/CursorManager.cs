@@ -8,7 +8,7 @@ public class CursorManager : AutoSingleton<CursorManager>
     Dictionary<string, Texture2D> cursorTextures = new Dictionary<string, Texture2D>();
     private void Awake()
     {
-        string[] strArr = { "default", "attack", "notMove" };
+        string[] strArr = { "default", "attack", "notMove", "enter" };
         foreach (string str in strArr)
         {
             Texture2D cursorTexture = Resources.Load<Texture2D>($"Images/UI/Cursor/cursor_{str}");

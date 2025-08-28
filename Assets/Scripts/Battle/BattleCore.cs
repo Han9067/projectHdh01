@@ -10,7 +10,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
 using System;
 
-public class tileGrid
+public class BtGrid
 {
     public float x, y;
     public int tId;
@@ -65,7 +65,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     [Header("====Map====")]
     [SerializeField] private GameObject tileMapObj; // 맵 타일 오브젝트
     public int mapSeed, pDir; // [맵 시드], [플레이어 방향 상,하,좌,우]
-    public tileGrid[,] gGrid; // 땅타일 그리드
+    public BtGrid[,] gGrid; // 땅타일 그리드
     // ========================================
     // 🎮 gGrid 내부 tId 관련 내용 => 0~99 -> 타일종류, 3자리 숫자 -> 환경 오브젝트, 4자리 숫자 -> 플레이어(1000 고정), NPC, 몬스터
     // ========================================
@@ -242,7 +242,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
             // 실제 크기 계산
             mapW = maxX - minX + 1; mapH = maxY - minY + 1;
-            gGrid = new tileGrid[mapW, mapH];
+            gGrid = new BtGrid[mapW, mapH];
             for (int x = 0; x < mapW; x++)
             {
                 for (int y = 0; y < mapH; y++)
@@ -250,7 +250,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     var tilePos = new Vector3Int(minX + x, minY + y, 0);
                     // TileBase gTile = gMap.GetTile(tilePos), pTile = pMap.GetTile(tilePos);
                     var pTile = pMap.GetTile(tilePos);
-                    gGrid[x, y] = new tileGrid() { x = tilePos.x * tileItv + tileOffset, y = tilePos.y * tileItv + tileOffset, tId = 0 };
+                    gGrid[x, y] = new BtGrid() { x = tilePos.x * tileItv + tileOffset, y = tilePos.y * tileItv + tileOffset, tId = 0 };
                     if (pTile != null)
                     {
                         gGrid[x, y].tId = int.Parse(pTile.name.Split('_')[2]);

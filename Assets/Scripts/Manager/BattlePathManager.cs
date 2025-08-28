@@ -8,7 +8,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
     // 경로 구성용 리스트 재사용 (가비지 컬렉션 최적화)
     private List<Vector2Int> pathList = new List<Vector2Int>();
 
-    public Vector2Int[] GetPath(Vector2Int sPos, Vector2Int ePos, tileGrid[,] gGrid)
+    public Vector2Int[] GetPath(Vector2Int sPos, Vector2Int ePos, BtGrid[,] gGrid)
     {
         // 빠른 조기 반환
         if (sPos == ePos) return new Vector2Int[] { sPos };
@@ -61,7 +61,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
         return path;
     }
 
-    private bool IsValidPosition(Vector2Int pos, tileGrid[,] grid)
+    private bool IsValidPosition(Vector2Int pos, BtGrid[,] grid)
     {
         return pos.x >= 0 && pos.x < grid.GetLength(0) &&
                pos.y >= 0 && pos.y < grid.GetLength(1);

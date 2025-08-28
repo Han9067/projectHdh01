@@ -11,7 +11,7 @@ public class CityEnterPop : UIScreen
     private int curId;
     private List<int> splitData = new List<int>();
     public Dictionary<int, int> shopList = new Dictionary<int, int>();
-    
+    private int iId = 0;
     private void Awake()
     {
         Regist();
@@ -27,60 +27,96 @@ public class CityEnterPop : UIScreen
         splitData.Clear();
         shopList.Clear();
     }
-
-    private void OnDisable() 
+    private void OnDisable()
     {
         Presenter.UnBind("CityEnterPop", this);
         isActive = false;
         WorldCore.I.enabled = true; // 월드맵 카메라 이동 활성화
     }
-
     public void RegistButton()
     {
-        foreach(var v in mButtons)
-            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key);});
+        foreach (var v in mButtons)
+            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key); });
     }
-
     public void RegistText()
     {
-        foreach(var v in mTexts)
+        foreach (var v in mTexts)
             v.Value.text = v.Key;
     }
-
     public void OnButtonClick(string key)
     {
-        switch (key)
+        if (key.Contains("GoTo"))
         {
-            case "CityEnterPopClose":
-                Close();
-                UIManager.ClosePopup("InvenPop");
-                break;
-            case "Guild":
-                break;
-            case "Inn":
-                break;
-            case "Smith":
-                OpenShopPop(key, 2);  
-                break;
-            case "Tailor":
-                OpenShopPop(key, 3);
-                break;
-            case "Apothecary":
-                OpenShopPop(key, 4);
-                break;
-            case "Traning":
-                break;
-        };
+            switch (key)
+            {
+                case "GoToGuild":
+                    iId = 0;
+                    break;
+                case "GoToInn":
+                    iId = 1;
+                    break;
+                case "GoToSmith":
+                    iId = 2;
+                    break;
+                case "GoToTailor":
+                    iId = 3;
+                    break;
+                case "GoToApothecary":
+                    iId = 4;
+                    break;
+                case "GoToMarket":
+                    iId = 5;
+                    break;
+                case "GoToTG":
+                    break;
+                case "GoToArena":
+                    break;
+            }
+            StateCity(0);
+        }
+        else if (key.Contains("On"))
+        {
+            switch (key)
+            {
+                case "OnChat":
+                    break;
+                case "OnQuest":
+                    break;
+                case "OnTrade":
+                    OpenTrade(key, iId);
+                    break;
+                case "OnMake":
+                    break;
+                case "OnGetOut":
+                    break;
+            }
+            StateCity(1);
+        }
+        else
+        {
+            switch (key)
+            {
+                case "CityEnterPopClose":
+                    Close();
+                    UIManager.ClosePopup("InvenPop");
+                    break;
+            }
+        }
     }
-    void OpenShopPop(string key, int type)
+    void StateCity(int id)
+    {
+        mGameObject["InList"].SetActive(id == 0);
+        mGameObject["OutList"].SetActive(id == 1);
+    }
+    void OpenTrade(string key, int type)
     {
         UIManager.ShowPopup("ShopInvenPop");
-        UIManager.ShowPopup("InvenPop");    
-        Presenter.Send("ShopInvenPop","Load" + key, shopList[type]);
+        UIManager.ShowPopup("InvenPop");
+        Presenter.Send("ShopInvenPop", "Load" + key, shopList[type]);
     }
     public override void ViewQuick(string key, IOData data)
     {
-        switch(key)
+        switch (key)
         {
             case "EnterCity":
                 curId = data.Get<int>();
@@ -93,21 +129,23 @@ public class CityEnterPop : UIScreen
     }
     private void LoadPlace()
     {
-        string[] keys = { "Guild", "Inn", "Smith", "Tailor", "Apothecary", "Market", "Traning" };
+        string[] keys = { "GoToGuild", "GoToInn", "GoToSmith", "GoToTailor", "GoToApothecary", "GoToMarket", "GoToTG", "GoToArena" };
         foreach (var key in keys)
             mButtons[key].gameObject.SetActive(false);
         int y = 350;
-        foreach(var v in splitData)
+        foreach (var v in splitData)
         {
             string btnKey = null;
-            switch(v)
+            switch (v)
             {
-                case 0: btnKey = "Guild"; break;
-                case 1: btnKey = "Inn"; break;
-                case 2: btnKey = "Smith"; break;
-                case 3: btnKey = "Tailor"; break;
-                case 4: btnKey = "Apothecary"; break;
-                case 5: btnKey = "Traning"; break;
+                case 0: btnKey = "GoToGuild"; break;
+                case 1: btnKey = "GoToInn"; break;
+                case 2: btnKey = "GoToSmith"; break;
+                case 3: btnKey = "GoToTailor"; break;
+                case 4: btnKey = "GoToApothecary"; break;
+                case 5: btnKey = "GoToMarket"; break;
+                case 6: btnKey = "GoToTG"; break;
+                case 7: btnKey = "GoToArena"; break;
             }
 
             if (btnKey != null && mButtons.ContainsKey(btnKey))
@@ -125,12 +163,12 @@ public class CityEnterPop : UIScreen
             var result = ShopManager.I.shopAllData.Values
                 .Where(data => data.CityId == curId && data.Type == v)
                 .ToList();
-            foreach(var shop in result)
+            foreach (var shop in result)
                 shopList[v] = shop.Id;
         }
     }
     public override void Refresh()
     {
-            
+
     }
 }
