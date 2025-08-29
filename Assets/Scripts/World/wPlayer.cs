@@ -6,22 +6,24 @@ using UnityEngine.EventSystems;
 
 public class wPlayer : MonoBehaviour
 {
-    
+
     private float speed = 10f;
     private Vector2 targetPosition;
     private bool isMoving = false;
-    [SerializeField] private GameObject frm;
+    [SerializeField] private GameObject frmBack, frmFront;
     void Start()
     {
-        frm.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("icon_human");
-        //플레이어의 아이콘 오브젝와 캐릭터 파츠를 적용하고 캐릭터 파츠는 아이콘을 벗어나면 안되니 마스크 기능을 적용해야함
+        if (frmBack.GetComponent<SpriteRenderer>().sprite == null)
+            frmBack.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("frm_back");
+        if (frmFront.GetComponent<SpriteRenderer>().sprite == null)
+            frmFront.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("frm_front");
     }
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
-            if(CityEnterPop.isActive)return;
+            if (CityEnterPop.isActive) return;
             targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             isMoving = true;
 
@@ -45,9 +47,10 @@ public class wPlayer : MonoBehaviour
         WorldMainUI worldMainUI = FindObjectOfType<WorldMainUI>();
         worldMainUI.stateGameSpd("X0");
 
-        if(PlayerManager.I.currentCity > 0){
+        if (PlayerManager.I.currentCity > 0)
+        {
             UIManager.ShowPopup("CityEnterPop");
-            GB.Presenter.Send("CityEnterPop","EnterCity", PlayerManager.I.currentCity);
+            GB.Presenter.Send("CityEnterPop", "EnterCity", PlayerManager.I.currentCity);
         }
     }
 }

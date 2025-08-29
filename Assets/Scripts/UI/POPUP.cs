@@ -5,6 +5,7 @@ namespace GB
     {
 	public const string BattleInfoPop =  "BattleInfoPop"; 
 	public const string CharInfoPop =  "CharInfoPop"; 
+	public const string ChatPop =  "ChatPop"; 
 	public const string CityEnterPop =  "CityEnterPop"; 
 	public const string InvenPop =  "InvenPop"; 
 	public const string ItemInfoPop =  "ItemInfoPop"; 
