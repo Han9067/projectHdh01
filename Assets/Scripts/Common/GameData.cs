@@ -40,9 +40,13 @@ public class PlayerData
 [System.Serializable]
 public class NpcData
 {
+    public string Name;
+    public int Fame, Rls; //Relationship
     public int NpcId, Lv, Exp, NextExp, Hp, Mp, Sp, MaxHP, MaxMP, MaxSP;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
+    public Dictionary<string, ItemData> EqSlot = new Dictionary<string, ItemData>();
+    public int Skin, Face, Eyebrow, Eye, EyeColor, Ear, Nose, Mouth, Hair, HairColor;
 }
 [System.Serializable]
 public class MonData

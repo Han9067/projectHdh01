@@ -9,7 +9,7 @@ public class ShopManager : AutoSingleton<ShopManager>
     private ShopTable shopTable;
     private ShopItemTable shopItemTable;
     public Dictionary<int, ShopData> shopAllData = new Dictionary<int, ShopData>();
-    
+
     void Start()
     {
         shopTable = GameDataManager.GetTable<ShopTable>();
@@ -17,18 +17,22 @@ public class ShopManager : AutoSingleton<ShopManager>
         InitShopData();
     }
     public void InitShopData()
-    {   
+    {
         shopAllData.Clear();
         int len = shopTable.Count;
-        for(int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++)
         {
-            shopAllData.Add(shopTable[i].ShopID, new ShopData{Id = shopTable[i].ShopID, CityId = shopTable[i].CityID, Type = shopTable[i].Type});
+            shopAllData.Add(shopTable[i].ShopID, new ShopData { Id = shopTable[i].ShopID, CityId = shopTable[i].CityID, Type = shopTable[i].Type });
         }
         int len2 = shopItemTable.Count;
-        for(int j = 0; j < len2; j++)
-        {   
+        for (int j = 0; j < len2; j++)
+        {
             var shopItem = shopItemTable[j];
             shopAllData[shopItem.ShopID].items.Add(new ShopItemData(shopItem.ItemID, shopItem.Type));
         }
     }
-} 
+    public ShopData GetShopData(int id)
+    {
+        return shopAllData[id];
+    }
+}

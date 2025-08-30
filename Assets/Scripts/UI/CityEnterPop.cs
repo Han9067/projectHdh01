@@ -10,7 +10,7 @@ public class CityEnterPop : UIScreen
     public static bool isActive { get; private set; } = false;
     private int curId;
     private List<int> splitData = new List<int>();
-    public Dictionary<int, int> shopList = new Dictionary<int, int>();
+    public List<int> shopList = new List<int>();
     private int iId = 0;
     private void Awake()
     {
@@ -26,6 +26,7 @@ public class CityEnterPop : UIScreen
         WorldCore.I.enabled = false; // 월드맵 카메라 이동 비활성화
         splitData.Clear();
         shopList.Clear();
+        StateCity(0);
     }
     private void OnDisable()
     {
@@ -72,7 +73,7 @@ public class CityEnterPop : UIScreen
                 case "GoToArena":
                     break;
             }
-            StateCity(0);
+            StateCity(1);
         }
         else if (key.Contains("On"))
         {
@@ -90,7 +91,7 @@ public class CityEnterPop : UIScreen
                 case "OnGetOut":
                     break;
             }
-            StateCity(1);
+            StateCity(0);
         }
         else
         {
@@ -105,8 +106,16 @@ public class CityEnterPop : UIScreen
     }
     void StateCity(int id)
     {
-        mGameObject["InList"].SetActive(id == 0);
-        mGameObject["OutList"].SetActive(id == 1);
+        mGameObject["OutList"].SetActive(id == 0);
+        mGameObject["InList"].SetActive(id == 1);
+        if (id == 1)
+        {
+            var shop = ShopManager.I.GetShopData(shopList[iId]);
+            mTexts["TitleVal"].text = GetTitleName(shop.Type);
+            mTexts["JobVal"].text = GetJobName(shop.Type);
+            mTexts["NameVal"].text = "김 아무개";
+            mTexts["RlsVal"].text = "0";
+        }
     }
     void OpenTrade(string key, int type)
     {
@@ -120,7 +129,7 @@ public class CityEnterPop : UIScreen
         {
             case "EnterCity":
                 curId = data.Get<int>();
-                mTexts["Name"].text = CityManager.I.CityDataList[curId].Name;
+                mTexts["CityName"].text = CityManager.I.CityDataList[curId].Name;
                 string[] strArr = CityManager.I.CityDataList[curId].Place.Split('_');
                 splitData = strArr.Select(int.Parse).ToList();
                 LoadPlace();
@@ -164,8 +173,42 @@ public class CityEnterPop : UIScreen
                 .Where(data => data.CityId == curId && data.Type == v)
                 .ToList();
             foreach (var shop in result)
-                shopList[v] = shop.Id;
+                shopList.Add(shop.Id);
         }
+    }
+    string GetTitleName(int idx)
+    {
+        switch (idx)
+        {
+            case 1:
+                return "여관";
+            case 2:
+                return "대장간";
+            case 3:
+                return "재단소";
+            case 4:
+                return "약재상";
+            case 5:
+                return "시장";
+        }
+        return "길드";
+    }
+    string GetJobName(int idx)
+    {
+        switch (idx)
+        {
+            case 1:
+                return "여관 주인";
+            case 2:
+                return "대장장이";
+            case 3:
+                return "재단사";
+            case 4:
+                return "약재 상인";
+            case 5:
+                return "상인";
+        }
+        return "길드 안내원";
     }
     public override void Refresh()
     {
