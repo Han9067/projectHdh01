@@ -113,8 +113,9 @@ public class CityEnterPop : UIScreen
             var shop = ShopManager.I.GetShopData(shopList[iId]);
             mTexts["TitleVal"].text = GetTitleName(shop.Type);
             mTexts["JobVal"].text = GetJobName(shop.Type);
-            mTexts["NameVal"].text = "김 아무개";
-            mTexts["RlsVal"].text = "0";
+            var npc = NpcManager.I.NpcDataList[shop.NpcId];
+            mTexts["NameVal"].text = npc.Name;
+            mTexts["RlsVal"].text = npc.Rls.ToString();
         }
     }
     void OpenTrade(string key, int type)

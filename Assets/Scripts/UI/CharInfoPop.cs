@@ -16,7 +16,22 @@ public class CharInfoPop : UIScreen
     }
     private void Start()
     {
-        LoadBaseCharAppearance(); //최초 1번 로드
+        HumanAppearance.I.SetPlayerUiParts(PlayerManager.I.pData,
+            mGameObject["Face"].GetComponent<Image>(),
+            mGameObject["Eyebrow"].GetComponent<Image>(),
+            mGameObject["Eye"].GetComponent<Image>(),
+            mGameObject["Ear"].GetComponent<Image>(),
+            mGameObject["Nose"].GetComponent<Image>(),
+            mGameObject["Mouth"].GetComponent<Image>(),
+            mGameObject["BaseBody"].GetComponent<Image>(),
+            mGameObject["BaseHand1A"].GetComponent<Image>(),
+            mGameObject["BaseHand1A2"].GetComponent<Image>(),
+            mGameObject["BaseHand1B"].GetComponent<Image>(),
+            mGameObject["BaseHand2"].GetComponent<Image>(),
+            mGameObject["BaseBoth"].GetComponent<Image>(),
+            mGameObject["Hair1A"].GetComponent<Image>(),
+            mGameObject["Hair1B"].GetComponent<Image>(),
+            mGameObject["Hair2"].GetComponent<Image>());
     }
     private void OnEnable()
     {
@@ -46,47 +61,6 @@ public class CharInfoPop : UIScreen
     }
     public override void ViewQuick(string key, IOData data) { }
     public override void Refresh() { }
-    private void LoadBaseCharAppearance()
-    {
-        var pData = PlayerManager.I.pData;
-        mGameObject["Face"].GetComponent<Image>().sprite = ResManager.GetSprite("Face_" + pData.Face);
-        mGameObject["Eyebrow"].GetComponent<Image>().sprite = ResManager.GetSprite("Eyebrow_" + pData.Eyebrow);
-        mGameObject["Eye"].GetComponent<Image>().sprite = ResManager.GetSprite("Eye_" + pData.Eye);
-        mGameObject["Ear"].GetComponent<Image>().sprite = ResManager.GetSprite("Ear_" + pData.Ear);
-        mGameObject["Nose"].GetComponent<Image>().sprite = ResManager.GetSprite("Nose_" + pData.Nose);
-        mGameObject["Mouth"].GetComponent<Image>().sprite = ResManager.GetSprite("Mouth_" + pData.Mouth);
-
-        Color skinColor = CharColor.GetSkinColor(pData.Skin);
-        Color hairColor = CharColor.GetHairColor(pData.HairColor);
-
-        string[] parts = new string[] { "Face", "Ear", "BaseBody", "BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth" };
-        foreach (var v in parts)
-            mGameObject[v].GetComponent<Image>().color = skinColor;
-
-        switch (pData.Hair)
-        {
-            case 1:
-                mGameObject["Hair1A"].SetActive(true); mGameObject["Hair1B"].SetActive(false); mGameObject["Hair2"].SetActive(true);
-                mGameObject["Hair1A"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
-                mGameObject["Hair2"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
-                mGameObject["Hair1A"].GetComponent<Image>().color = hairColor;
-                mGameObject["Hair2"].GetComponent<Image>().color = hairColor;
-                break;
-            case 2:
-            case 3:
-                mGameObject["Hair1A"].SetActive(true); mGameObject["Hair1B"].SetActive(false); mGameObject["Hair2"].SetActive(false);
-                mGameObject["Hair1A"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
-                mGameObject["Hair1A"].GetComponent<Image>().color = hairColor;
-                break;
-            case 100:
-                mGameObject["Hair1A"].SetActive(false); mGameObject["Hair1B"].SetActive(true); mGameObject["Hair2"].SetActive(true);
-                mGameObject["Hair1B"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
-                mGameObject["Hair2"].GetComponent<Image>().sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
-                mGameObject["Hair1B"].GetComponent<Image>().color = hairColor;
-                mGameObject["Hair2"].GetComponent<Image>().color = hairColor;
-                break;
-        }
-    }
     public void UpdateCharInfo()
     {
         var pData = PlayerManager.I.pData;

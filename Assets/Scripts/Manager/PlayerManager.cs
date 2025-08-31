@@ -52,7 +52,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData = new PlayerData();
         pData.Name = data.Name;
         pData.Age = data.Age;
-        pData.Gender = data.Gender;
+        pData.Gen = data.Gen;
         pData.Crown = data.Crown;
         pData.Lv = data.Lv;
         pData.Exp = data.Exp;
@@ -84,12 +84,11 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             pData = new PlayerData();
         pData.Name = "주인공";
         pData.Age = 17;
-        pData.Gender = 0;
+        pData.Gen = 0;
         pData.Crown = 20000;
         pData.Lv = 1;
         pData.Exp = 0;
         pData.NextExp = LevelData.I.GetNextExp(pData.Lv);
-        pData.HP = 100; pData.MP = 100; pData.SP = 100;
         pData.AddHP = 0; pData.AddMP = 0; pData.AddSP = 0;
         pData.VIT = 10; pData.END = 10; pData.STR = 10; pData.AGI = 10; pData.FOR = 10; pData.INT = 10; pData.CHA = 10; pData.LUK = 10;
 

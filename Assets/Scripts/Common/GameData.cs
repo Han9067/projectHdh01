@@ -3,6 +3,8 @@ using System;
 using UnityEngine;
 using System.Security.Cryptography.X509Certificates;
 using GB;
+using Unity.VisualScripting;
+using UnityEngine.UI;
 
 [System.Serializable]
 public enum PtType
@@ -19,7 +21,7 @@ public class PlayerData
 {
     // 기본 정보
     public string Name = "이름";
-    public int Age, Gender; // 0: 남성, 1: 여성
+    public int Age, Gen; // 0: 남성, 1: 여성
     public long Crown; // 게임 재화
     // 레벨 및 경험치
     public int Lv, Exp, NextExp;
@@ -34,20 +36,24 @@ public class PlayerData
     public int Skin, Face, Eyebrow, Eye, EyeColor, Ear, Nose, Mouth, Hair, HairColor;
     public PlayerData()
     {
-        EqSlot.Add("Hand1", null); EqSlot.Add("Hand2", null); EqSlot.Add("Armor", null); EqSlot.Add("Shoes", null); EqSlot.Add("Helmet", null); EqSlot.Add("Gloves", null); EqSlot.Add("Belt", null); EqSlot.Add("Cape", null); EqSlot.Add("Necklace", null); EqSlot.Add("Ring1", null); EqSlot.Add("Ring2", null);
+        EqSlot.Add("Hand1", null); EqSlot.Add("Hand2", null); EqSlot.Add("Armor", null); EqSlot.Add("Shoes", null); EqSlot.Add("Helmet", null);
+        EqSlot.Add("Gloves", null); EqSlot.Add("Belt", null); EqSlot.Add("Cape", null); EqSlot.Add("Necklace", null); EqSlot.Add("Ring1", null); EqSlot.Add("Ring2", null);
+
     } // 생성자
 }
 [System.Serializable]
 public class NpcData
 {
     public string Name;
-    public int Fame, Rls; //Relationship
-    public int NpcId, Lv, Exp, NextExp, Hp, Mp, Sp, MaxHP, MaxMP, MaxSP;
+    public int Age, Gen, Fame, Rls; //Relationship
+    public int NpcId, Lv, Exp, NextExp;
+    public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public Dictionary<string, ItemData> EqSlot = new Dictionary<string, ItemData>();
     public int Skin, Face, Eyebrow, Eye, EyeColor, Ear, Nose, Mouth, Hair, HairColor;
 }
+
 [System.Serializable]
 public class MonData
 {
@@ -114,7 +120,7 @@ public class CityData
 [System.Serializable]
 public class ShopData
 {
-    public int Id, CityId, Type; // 상점ID, 도시ID, 상점타입
+    public int Id, CityId, Type, NpcId; // 상점ID, 도시ID, 상점타입, 상점주인
     public List<ShopItemData> items; // 상점아이템
     public ShopData()
     {
@@ -212,6 +218,56 @@ public class LevelData : AutoSingleton<LevelData>
     }
 }
 
+//인간형 오브젝트 외형 설정
+[System.Serializable]
+public class HumanAppearance : AutoSingleton<HumanAppearance>
+{
+    //Skin_Face_Eyebrow_Eye_EyeColor_Ear_Nose_Mouth_Hair_HairColor
+    public void SetPlayerUiParts(PlayerData pData,
+        Image Face, Image Eyebrow, Image Eye, Image Ear, Image Nose, Image Mouth,
+        Image BaseBody, Image BaseHand1A, Image BaseHand1A2, Image BaseHand1B, Image BaseHand2, Image BaseBoth,
+        Image Hair1A, Image Hair1B, Image Hair2)
+    {
+        Face.sprite = ResManager.GetSprite("Face_" + pData.Face);
+        Eyebrow.sprite = ResManager.GetSprite("Eyebrow_" + pData.Eyebrow);
+        Eye.sprite = ResManager.GetSprite("Eye_" + pData.Eye);
+        Ear.sprite = ResManager.GetSprite("Ear_" + pData.Ear);
+        Nose.sprite = ResManager.GetSprite("Nose_" + pData.Nose);
+        Mouth.sprite = ResManager.GetSprite("Mouth_" + pData.Mouth);
+
+        Color skinColor = CharColor.GetSkinColor(pData.Skin);
+        Color hairColor = CharColor.GetHairColor(pData.HairColor);
+        BaseBody.sprite = ResManager.GetSprite("Body" + pData.Gen);
+        Face.color = skinColor; Ear.color = skinColor;
+        BaseBody.color = skinColor; BaseHand1A.color = skinColor; BaseHand1A2.color = skinColor; BaseHand1B.color = skinColor;
+        BaseHand2.color = skinColor; BaseBoth.color = skinColor;
+
+        switch (pData.Hair)
+        {
+            case 1:
+                Hair1A.gameObject.SetActive(true); Hair1B.gameObject.SetActive(false); Hair2.gameObject.SetActive(true);
+                Hair1A.sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                Hair2.sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
+                Hair1A.color = hairColor;
+                Hair2.color = hairColor;
+                break;
+            case 2:
+            case 3:
+                Hair1A.gameObject.SetActive(true); Hair1B.gameObject.SetActive(false); Hair2.gameObject.SetActive(false);
+                Hair1A.sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                Hair1A.color = hairColor;
+                break;
+            case 100:
+                Hair1A.gameObject.SetActive(false); Hair1B.gameObject.SetActive(true); Hair2.gameObject.SetActive(true);
+                Hair1B.sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                Hair2.sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
+                Hair1B.color = hairColor;
+                Hair2.color = hairColor;
+                break;
+        }
+    }
+
+}
 // 통합 저장 데이터 클래스
 [System.Serializable]
 public class GameSaveData

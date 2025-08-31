@@ -5,7 +5,6 @@ using GB;
 
 public class ShopManager : AutoSingleton<ShopManager>
 {
-    [Header("Shop Data")]
     private ShopTable shopTable;
     private ShopItemTable shopItemTable;
     public Dictionary<int, ShopData> shopAllData = new Dictionary<int, ShopData>();
@@ -22,7 +21,13 @@ public class ShopManager : AutoSingleton<ShopManager>
         int len = shopTable.Count;
         for (int i = 0; i < len; i++)
         {
-            shopAllData.Add(shopTable[i].ShopID, new ShopData { Id = shopTable[i].ShopID, CityId = shopTable[i].CityID, Type = shopTable[i].Type });
+            shopAllData.Add(shopTable[i].ShopID, new ShopData
+            {
+                Id = shopTable[i].ShopID,
+                CityId = shopTable[i].CityID,
+                Type = shopTable[i].Type,
+                NpcId = shopTable[i].NpcID
+            });
         }
         int len2 = shopItemTable.Count;
         for (int j = 0; j < len2; j++)

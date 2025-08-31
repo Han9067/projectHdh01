@@ -31,9 +31,11 @@ public class NpcTable  : GameData
 				case "NpcID": return true;
 				case "Name": return true;
 				case "Gen": return true;
+				case "Age": return true;
 				case "Fame": return true;
 				case "Personality": return true;
 				case "Lv": return true;
+				case "Parts": return true;
 				case "Stat": return true;
 				case "Eq": return true;
 				case "Wp": return true;
@@ -66,9 +68,11 @@ public class NpcTable  : GameData
 				case "NpcID": return data.NpcID;
 				case "Name": return data.Name;
 				case "Gen": return data.Gen;
+				case "Age": return data.Age;
 				case "Fame": return data.Fame;
 				case "Personality": return data.Personality;
 				case "Lv": return data.Lv;
+				case "Parts": return data.Parts;
 				case "Stat": return data.Stat;
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
@@ -92,9 +96,11 @@ public class NpcTable  : GameData
 				case "NpcID": return data.NpcID;
 				case "Name": return data.Name;
 				case "Gen": return data.Gen;
+				case "Age": return data.Age;
 				case "Fame": return data.Fame;
 				case "Personality": return data.Personality;
 				case "Lv": return data.Lv;
+				case "Parts": return data.Parts;
 				case "Stat": return data.Stat;
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
@@ -119,14 +125,16 @@ public class NpcTable  : GameData
 				case 0: return data.NpcID;
 				case 1: return data.Name;
 				case 2: return data.Gen;
-				case 3: return data.Fame;
-				case 4: return data.Personality;
-				case 5: return data.Lv;
-				case 6: return data.Stat;
-				case 7: return data.Eq;
-				case 8: return data.Wp;
-				case 9: return data.KR;
-				case 10: return data.EN;
+				case 3: return data.Age;
+				case 4: return data.Fame;
+				case 5: return data.Personality;
+				case 6: return data.Lv;
+				case 7: return data.Parts;
+				case 8: return data.Stat;
+				case 9: return data.Eq;
+				case 10: return data.Wp;
+				case 11: return data.KR;
+				case 12: return data.EN;
 
                 default: return null;
             }
@@ -172,9 +180,11 @@ public class NpcTableProb : GameDataProb
 		[JsonProperty] public readonly int NpcID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Gen;
+	[JsonProperty] public readonly int Age;
 	[JsonProperty] public readonly int Fame;
 	[JsonProperty] public readonly int Personality;
 	[JsonProperty] public readonly int Lv;
+	[JsonProperty] public readonly string Parts;
 	[JsonProperty] public readonly string Stat;
 	[JsonProperty] public readonly string Eq;
 	[JsonProperty] public readonly string Wp;

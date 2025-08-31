@@ -23,20 +23,6 @@ public class MonManager : AutoSingleton<MonManager>
             int.Parse(stat[0]), int.Parse(stat[1]), int.Parse(stat[2]), int.Parse(stat[3]), int.Parse(stat[4]),
             int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]),
             mon.W, mon.H, mon.OffX, mon.OffY, mon.SdwScr, mon.SdwY);
-
-            // mData.Lv = 1; mData.Exp = 0; mData.NextExp = 100;
-            // mData.HP = mData.VIT * 10; mData.MaxHP = mData.HP;
-            // mData.MP = mData.INT * 10; mData.MaxMP = mData.MP;
-            // mData.SP = mData.END * 10; mData.MaxSP = mData.SP;
-
-            // mData.Att = mData.STR * 2;
-            // mData.Def = mData.VIT;
-            // mData.Crt = 50 + (mData.LUK * 2);
-            // mData.CrtRate = mData.LUK;
-            // int agi = mData.AGI / 4; //mData.AGI / 4 * 2
-            // mData.Hit = 60 + agi;
-            // mData.Eva = 10 + agi;
-
             MonDataList[id] = mData;
         }
     }
