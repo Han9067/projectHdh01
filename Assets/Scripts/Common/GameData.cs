@@ -223,7 +223,7 @@ public class LevelData : AutoSingleton<LevelData>
 public class HumanAppearance : AutoSingleton<HumanAppearance>
 {
     //Skin_Face_Eyebrow_Eye_EyeColor_Ear_Nose_Mouth_Hair_HairColor
-    public void SetPlayerUiParts(PlayerData pData,
+    public void SetUiBaseParts(PlayerData pData,
         Image Face, Image Eyebrow, Image Eye, Image Ear, Image Nose, Image Mouth,
         Image BaseBody, Image BaseHand1A, Image BaseHand1A2, Image BaseHand1B, Image BaseHand2, Image BaseBoth,
         Image Hair1A, Image Hair1B, Image Hair2)
@@ -266,7 +266,95 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
                 break;
         }
     }
+    public void SetUiEqParts(PlayerData pData, string backUpKey, Dictionary<string, GameObject> mGameObj)
+    {
+        var eq = pData.EqSlot;
+        string[] allParts = {"BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth",
+            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "TwoWp1", "TwoWp2", "TwoWp3"};
+        foreach (var v in allParts)
+            mGameObj[v].SetActive(false);
 
+        if (eq["Armor"] != null)
+        {
+            string eqStr = eq["Armor"].ItemId.ToString();
+            if (backUpKey != eqStr + "_body")
+            {
+                mGameObj["EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_body");
+                mGameObj["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
+                mGameObj["EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1B");
+                mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
+                mGameObj["EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_both");
+            }
+            mGameObj["EqBody"].SetActive(true);
+        }
+
+        List<string> parts = GetHandParts(eq);
+        foreach (var v in parts)
+            mGameObj[v].SetActive(true);
+
+        string[] hKey = { "Hand1", "Hand2" };
+        foreach (var v in hKey)
+        {
+            if (eq[v] != null)
+            {
+                switch (eq[v].Both)
+                {
+                    case 0:
+                        string one = v == "Hand1" ? "OneWp1" : "OneWp2";
+                        mGameObj[one].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq[v].ItemId.ToString());
+                        mGameObj[one].SetActive(true);
+                        break;
+                    case 1:
+                        mGameObj["TwoWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                        mGameObj["TwoWp1"].SetActive(true);
+                        break;
+                    case 2:
+                        mGameObj["TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                        mGameObj["TwoWp2"].SetActive(true);
+                        break;
+                }
+            }
+        }
+    }
+    List<string> GetHandParts(Dictionary<string, ItemData> eq)
+    {
+        bool hasArmor = eq["Armor"] != null;
+        List<string> parts = new List<string>();
+        if (eq["Hand1"] == null && eq["Hand2"] == null)
+            parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } : new List<string> { "BaseHand1A", "BaseHand2" };
+        else
+        {
+            string[] eqHand = { "Hand1", "Hand2" };
+            foreach (var v in eqHand)
+            {
+                if (eq[v] != null)
+                {
+                    switch (eq[v].Both)
+                    {
+                        case 1: parts = hasArmor ? new List<string> { "BaseBoth", "EqBoth" } : new List<string> { "BaseBoth" }; break;
+                        case 2:
+                            parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand1A2", "BaseHand2", "EqHand1A", "EqHand2" } :
+                         new List<string> { "BaseHand1A", "BaseHand1A2", "BaseHand2" }; break;
+                    }
+                }
+            }
+            if (parts.Count == 0)
+            {
+                parts = hasArmor ? new List<string> { "BaseHand2", "EqHand2" } : new List<string> { "BaseHand2" };
+                if (eq["Hand1"] != null)
+                {
+                    parts.Add("BaseHand1B");
+                    if (hasArmor) parts.Add("EqHand1B");
+                }
+                else
+                {
+                    parts.Add("BaseHand1A");
+                    if (hasArmor) parts.Add("EqHand1A");
+                }
+            }
+        }
+        return parts;
+    }
 }
 // 통합 저장 데이터 클래스
 [System.Serializable]

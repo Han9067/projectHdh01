@@ -16,7 +16,7 @@ public class CharInfoPop : UIScreen
     }
     private void Start()
     {
-        HumanAppearance.I.SetPlayerUiParts(PlayerManager.I.pData,
+        HumanAppearance.I.SetUiBaseParts(PlayerManager.I.pData,
             mGameObject["Face"].GetComponent<Image>(),
             mGameObject["Eyebrow"].GetComponent<Image>(),
             mGameObject["Eye"].GetComponent<Image>(),
@@ -89,7 +89,10 @@ public class CharInfoPop : UIScreen
         UpdateChaText(pData.CHA);
         UpdateLukText(pData.LUK);
 
-        UpdateEq(pData);
+        HumanAppearance.I.SetUiEqParts(pData, curBodyKey, mGameObject);
+        if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)
+            curBodyKey = mGameObject["EqBody"].GetComponent<Image>().sprite.name;
+        // UpdateEq(pData);
     }
     public void UpdateEq(PlayerData pData)
     {
@@ -146,11 +149,6 @@ public class CharInfoPop : UIScreen
             }
             foreach (var v in parts)
                 mGameObject[v].SetActive(true);
-        }
-        else
-        {
-            mGameObject["BaseHand1A"].SetActive(true);
-            mGameObject["BaseHand2"].SetActive(true);
         }
 
         string[] hKey = { "Hand1", "Hand2" };
