@@ -3,6 +3,7 @@ using GB;
 using QuickEye.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 
 public class CityEnterPop : UIScreen
@@ -116,6 +117,23 @@ public class CityEnterPop : UIScreen
             var npc = NpcManager.I.NpcDataList[shop.NpcId];
             mTexts["NameVal"].text = npc.Name;
             mTexts["RlsVal"].text = npc.Rls.ToString();
+
+            HumanAppearance.I.SetUiBaseParts(shop.NpcId,
+                mGameObject["NpcFace"].GetComponent<Image>(),
+                mGameObject["NpcEyebrow"].GetComponent<Image>(),
+                mGameObject["NpcEye"].GetComponent<Image>(),
+                mGameObject["NpcEar"].GetComponent<Image>(),
+                mGameObject["NpcNose"].GetComponent<Image>(),
+                mGameObject["NpcMouth"].GetComponent<Image>(),
+                mGameObject["NpcBaseBody"].GetComponent<Image>(),
+                mGameObject["NpcBaseHand1A"].GetComponent<Image>(),
+                mGameObject["NpcBaseHand1A2"].GetComponent<Image>(),
+                mGameObject["NpcBaseHand1B"].GetComponent<Image>(),
+                mGameObject["NpcBaseHand2"].GetComponent<Image>(),
+                mGameObject["NpcBaseBoth"].GetComponent<Image>(),
+                mGameObject["NpcHair1A"].GetComponent<Image>(),
+                mGameObject["NpcHair1B"].GetComponent<Image>(),
+                mGameObject["NpcHair2"].GetComponent<Image>());
         }
     }
     void OpenTrade(string key, int type)
@@ -192,7 +210,7 @@ public class CityEnterPop : UIScreen
             case 5:
                 return "시장";
         }
-        return "길드";
+        return "모험가 길드";
     }
     string GetJobName(int idx)
     {

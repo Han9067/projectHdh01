@@ -16,7 +16,7 @@ public class CharInfoPop : UIScreen
     }
     private void Start()
     {
-        HumanAppearance.I.SetUiBaseParts(PlayerManager.I.pData,
+        HumanAppearance.I.SetUiBaseParts(0,
             mGameObject["Face"].GetComponent<Image>(),
             mGameObject["Eyebrow"].GetComponent<Image>(),
             mGameObject["Eye"].GetComponent<Image>(),
@@ -92,88 +92,6 @@ public class CharInfoPop : UIScreen
         HumanAppearance.I.SetUiEqParts(pData, curBodyKey, mGameObject);
         if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)
             curBodyKey = mGameObject["EqBody"].GetComponent<Image>().sprite.name;
-        // UpdateEq(pData);
-    }
-    public void UpdateEq(PlayerData pData)
-    {
-        var eq = pData.EqSlot;
-        string[] allParts = {"BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth",
-            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "TwoWp1", "TwoWp2", "TwoWp3"};
-        foreach (var v in allParts)
-            mGameObject[v].SetActive(false);
-        curBodyKey = "";
-
-        if (eq["Armor"] != null)
-        {
-            string eqStr = eq["Armor"].ItemId.ToString();
-            if (curBodyKey != eqStr + "_body")
-            {
-                curBodyKey = eqStr + "_body";
-                mGameObject["EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(curBodyKey);
-                mGameObject["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
-                mGameObject["EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1B");
-                mGameObject["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
-                mGameObject["EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_both");
-            }
-            mGameObject["EqBody"].SetActive(true);
-
-            List<string> parts = new List<string>();
-            if (eq["Hand1"] == null && eq["Hand2"] == null)
-                parts = new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" };
-            else
-            {
-                string[] eqHand = { "Hand1", "Hand2" };
-                foreach (var v in eqHand)
-                {
-                    if (eq[v] != null)
-                    {
-                        switch (eq[v].Both)
-                        {
-                            case 1: parts = new List<string> { "BaseBoth", "EqBoth" }; break;
-                            case 2: parts = new List<string> { "BaseHand1A", "BaseHand1A2", "BaseHand2", "EqHand1A", "EqHand2" }; break;
-                        }
-                    }
-                }
-                if (parts.Count == 0)
-                {
-                    parts = new List<string> { "BaseHand2", "EqHand2" };
-                    if (eq["Hand1"] != null)
-                    {
-                        parts.Add("BaseHand1B"); parts.Add("EqHand1B");
-                    }
-                    else
-                    {
-                        parts.Add("BaseHand1A"); parts.Add("EqHand1A");
-                    }
-                }
-            }
-            foreach (var v in parts)
-                mGameObject[v].SetActive(true);
-        }
-
-        string[] hKey = { "Hand1", "Hand2" };
-        foreach (var v in hKey)
-        {
-            if (eq[v] != null)
-            {
-                switch (eq[v].Both)
-                {
-                    case 0:
-                        string one = v == "Hand1" ? "OneWp1" : "OneWp2";
-                        mGameObject[one].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq[v].ItemId.ToString());
-                        mGameObject[one].SetActive(true);
-                        break;
-                    case 1:
-                        mGameObject["TwoWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
-                        mGameObject["TwoWp1"].SetActive(true);
-                        break;
-                    case 2:
-                        mGameObject["TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
-                        mGameObject["TwoWp2"].SetActive(true);
-                        break;
-                }
-            }
-        }
     }
     private void UpdateVitText(int v) => mTexts["VitVal"].text = v.ToString();
     private void UpdateEndText(int v) => mTexts["EndVal"].text = v.ToString();
