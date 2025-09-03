@@ -1,7 +1,7 @@
 using GB;
 using UnityEngine;
 using System.Collections.Generic;
-
+using UnityEditor;
 public class PlayerManager : AutoSingleton<PlayerManager>
 {
 
@@ -9,6 +9,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public int currentCity = 0;
     public PlayerData pData;
     public List<List<InvenGrid>> grids;
+
+    [Header("테스트")]
+    public int testSkin = 1;
+    public int testHairColor = 1;
     protected void Awake()
     {
         InitGrid();
@@ -92,7 +96,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.AddHP = 0; pData.AddMP = 0; pData.AddSP = 0;
         pData.VIT = 10; pData.END = 10; pData.STR = 10; pData.AGI = 10; pData.FOR = 10; pData.INT = 10; pData.CHA = 10; pData.LUK = 10;
 
-        pData.Skin = 2; pData.Face = 1;
+        pData.Skin = 1; pData.Face = 1;
         pData.Eyebrow = 1; pData.Eye = 1;
         pData.EyeColor = 1; pData.Ear = 1;
         pData.Nose = 1; pData.Mouth = 1;
@@ -176,5 +180,40 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         return new Vector2(-1, -1);
         //현재 버그있음
         //추후에는 빈칸일때 회전된 상태로도 검색하는 기능도 추가해야함
+    }
+
+    public void ChangePlayerSkin()
+    {
+        testSkin++;
+        if (testSkin > 10) testSkin = 1;
+        pData.Skin = testSkin;
+        Presenter.Send("CharInfoPop", "UpdateCharAppearance");
+    }
+    public void ChangePlayerHairColor()
+    {
+        testHairColor++;
+        if (testHairColor > 27) testHairColor = 1;
+        pData.HairColor = testHairColor;
+        Presenter.Send("CharInfoPop", "UpdateCharAppearance");
+    }
+}
+
+[CustomEditor(typeof(PlayerManager))]
+public class PlayerManagerEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        PlayerManager myScript = (PlayerManager)target;
+
+        if (GUILayout.Button("플레이어 피부 변경"))
+        {
+            myScript.ChangePlayerSkin();
+        }
+        if (GUILayout.Button("플레이어 머리 색상 변경"))
+        {
+            myScript.ChangePlayerHairColor();
+        }
     }
 }

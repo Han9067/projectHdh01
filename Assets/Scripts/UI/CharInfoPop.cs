@@ -16,22 +16,24 @@ public class CharInfoPop : UIScreen
     }
     private void Start()
     {
-        HumanAppearance.I.SetUiBaseParts(0,
-            mGameObject["Face"].GetComponent<Image>(),
-            mGameObject["Eyebrow"].GetComponent<Image>(),
-            mGameObject["Eye"].GetComponent<Image>(),
-            mGameObject["Ear"].GetComponent<Image>(),
-            mGameObject["Nose"].GetComponent<Image>(),
-            mGameObject["Mouth"].GetComponent<Image>(),
-            mGameObject["BaseBody"].GetComponent<Image>(),
-            mGameObject["BaseHand1A"].GetComponent<Image>(),
-            mGameObject["BaseHand1A2"].GetComponent<Image>(),
-            mGameObject["BaseHand1B"].GetComponent<Image>(),
-            mGameObject["BaseHand2"].GetComponent<Image>(),
-            mGameObject["BaseBoth"].GetComponent<Image>(),
-            mGameObject["Hair1A"].GetComponent<Image>(),
-            mGameObject["Hair1B"].GetComponent<Image>(),
-            mGameObject["Hair2"].GetComponent<Image>());
+        // HumanAppearance.I.SetUiBaseParts(0,
+        //     mGameObject["Face"].GetComponent<Image>(),
+        //     mGameObject["Eyebrow"].GetComponent<Image>(),
+        //     mGameObject["Eye1"].GetComponent<Image>(),
+        //     mGameObject["Eye2"].GetComponent<Image>(),
+        //     mGameObject["Ear"].GetComponent<Image>(),
+        //     mGameObject["Nose"].GetComponent<Image>(),
+        //     mGameObject["Mouth"].GetComponent<Image>(),
+        //     mGameObject["BaseBody"].GetComponent<Image>(),
+        //     mGameObject["BaseHand1A"].GetComponent<Image>(),
+        //     mGameObject["BaseHand1A2"].GetComponent<Image>(),
+        //     mGameObject["BaseHand1B"].GetComponent<Image>(),
+        //     mGameObject["BaseHand2"].GetComponent<Image>(),
+        //     mGameObject["BaseBoth"].GetComponent<Image>(),
+        //     mGameObject["Hair1A"].GetComponent<Image>(),
+        //     mGameObject["Hair1B"].GetComponent<Image>(),
+        //     mGameObject["Hair2"].GetComponent<Image>());
+        UpdateCharAppearance();
     }
     private void OnEnable()
     {
@@ -59,8 +61,36 @@ public class CharInfoPop : UIScreen
         }
 
     }
-    public override void ViewQuick(string key, IOData data) { }
+    public override void ViewQuick(string key, IOData data)
+    {
+        switch (key)
+        {
+            case "UpdateCharAppearance":
+                UpdateCharAppearance();
+                break;
+        }
+    }
     public override void Refresh() { }
+    public void UpdateCharAppearance()
+    {
+        HumanAppearance.I.SetUiBaseParts(0,
+            mGameObject["Face"].GetComponent<Image>(),
+            mGameObject["Eyebrow"].GetComponent<Image>(),
+            mGameObject["Eye1"].GetComponent<Image>(),
+            mGameObject["Eye2"].GetComponent<Image>(),
+            mGameObject["Ear"].GetComponent<Image>(),
+            mGameObject["Nose"].GetComponent<Image>(),
+            mGameObject["Mouth"].GetComponent<Image>(),
+            mGameObject["BaseBody"].GetComponent<Image>(),
+            mGameObject["BaseHand1A"].GetComponent<Image>(),
+            mGameObject["BaseHand1A2"].GetComponent<Image>(),
+            mGameObject["BaseHand1B"].GetComponent<Image>(),
+            mGameObject["BaseHand2"].GetComponent<Image>(),
+            mGameObject["BaseBoth"].GetComponent<Image>(),
+            mGameObject["Hair1A"].GetComponent<Image>(),
+            mGameObject["Hair1B"].GetComponent<Image>(),
+            mGameObject["Hair2"].GetComponent<Image>());
+    }
     public void UpdateCharInfo()
     {
         var pData = PlayerManager.I.pData;

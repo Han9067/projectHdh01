@@ -84,7 +84,6 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
     }
 }
 
-
 [CustomEditor(typeof(SaveFileManager))]
 public class SaveFileManagerEditor : Editor
 {

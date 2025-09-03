@@ -9,7 +9,7 @@ using UnityEngine.UI;
 [System.Serializable]
 public enum PtType
 {
-    Face, Eyebrow, Eye, Ear, Nose, Mouth,
+    Face, Eyebrow, Eye1, Eye2, Ear, Nose, Mouth,
     BaseBody, BaseHand1A, BaseHand1A2, BaseHand1B, BaseHand2, BaseBoth,
     FrontHair1, FrontHair2, BackHair,
     EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth,
@@ -210,22 +210,53 @@ public static class CharColor
     // 스킨 컬러
     private static readonly Dictionary<int, Color> skinColor = new Dictionary<int, Color>()
     {
-        { 1, new Color(255f/255f, 235f/255f, 210f/255f) },
-        { 2, new Color(236f/255f, 204f/255f, 169f/255f) },
-        { 3, new Color(251f/255f, 206f/255f, 177f/255f) },
-        { 4, new Color(199f/255f, 165f/255f, 137f/255f) },
-        { 5, new Color(92f/255f, 73f/255f, 57f/255f) }
+        { 1, new Color(255f/255f, 235f/255f, 210f/255f) }, // 아이보리 베이지
+        { 2, new Color(255f/255f, 220f/255f, 190f/255f) }, // 피치 베이지
+        { 3, new Color(250f/255f, 210f/255f, 185f/255f) }, // 라이트 핑크 베이지
+        { 4, new Color(240f/255f, 200f/255f, 165f/255f) }, // 웜 베이지
+        { 5, new Color(235f/255f, 205f/255f, 170f/255f) }, // 피치 베이지/라이트 탠 ⭐
+        { 6, new Color(220f/255f, 180f/255f, 145f/255f) }, // 내추럴 탠
+        { 7, new Color(184f/255f, 120f/255f, 82f/255f) },  // 미디엄 브라운
+        { 8, new Color(153f/255f, 99f/255f, 71f/255f) },   // 딥 브라운
+        { 9, new Color(92f/255f, 58f/255f, 37f/255f) },    // 다크 초콜릿
+        { 10, new Color(62f/255f, 39f/255f, 32f/255f) },   // 쿨 다크 브라운
     };
     // 헤어 컬러
     private static readonly Dictionary<int, Color> hairColor = new Dictionary<int, Color>()
     {
-        { 1, new Color(30f/255f, 30f/255f, 30f/255f) },    // 어두운 회색
-        { 2, new Color(57f/255f, 41f/255f, 28f/255f) },    // 어두운 갈색
-        { 3, new Color(104f/255f, 69f/255f, 35f/255f) },   // 중간 갈색
-        { 4, new Color(138f/255f, 97f/255f, 69f/255f) },   // 밝은 갈색
-        { 5, new Color(219f/255f, 169f/255f, 93f/255f) },  // 금발
-        { 6, new Color(245f/255f, 238f/255f, 216f/255f) }, // 플래티넘 블론드
-        { 7, new Color(170f/255f, 255f/255f, 216f/255f) }  // 민트색 (특이한 색상)
+        // 현실 계열 (1~14)
+        { 1,  new Color(28f/255f, 28f/255f, 28f/255f) },     // 블랙
+        { 2,  new Color(45f/255f, 35f/255f, 35f/255f) },     // 소프트 블랙
+        { 3,  new Color(60f/255f, 40f/255f, 30f/255f) },     // 다크 브라운
+        { 4,  new Color(92f/255f, 58f/255f, 37f/255f) },     // 초콜릿 브라운
+        { 5,  new Color(120f/255f, 72f/255f, 50f/255f) },    // 체스트넛
+        { 6,  new Color(150f/255f, 100f/255f, 70f/255f) },   // 라이트 브라운
+        { 7,  new Color(181f/255f, 120f/255f, 82f/255f) },   // 골든 브라운
+        { 8,  new Color(201f/255f, 160f/255f, 95f/255f) },   // 다크 블론드
+        { 9,  new Color(220f/255f, 180f/255f, 110f/255f) },  // 허니 블론드
+        { 10, new Color(220f/255f, 170f/255f, 95f/255f) },   // 리치 골드 ⭐
+        { 11, new Color(230f/255f, 210f/255f, 170f/255f) },  // 애쉬 블론드
+        { 12, new Color(240f/255f, 225f/255f, 190f/255f) },  // 플래티넘 블론드
+        { 13, new Color(110f/255f, 40f/255f, 40f/255f) },    // 다크 레드(마호가니)
+        { 14, new Color(170f/255f, 75f/255f, 45f/255f) },    // 코퍼 레드
+        { 15, new Color(235f/255f, 235f/255f, 235f/255f) },  // 화이트/실버
+
+        // 판타지 계열 (16~25)
+        { 16, new Color(138f/255f, 40f/255f, 40f/255f) },    // 딥 레드
+        { 17, new Color(180f/255f, 60f/255f, 70f/255f) },    // 루비 레드
+        { 18, new Color(204f/255f, 112f/255f, 50f/255f) },   // 딥 오렌지
+        { 19, new Color(200f/255f, 120f/255f, 140f/255f) },  // 로즈 핑크
+        { 20, new Color(235f/255f, 180f/255f, 200f/255f) },  // 파스텔 핑크
+        { 21, new Color(90f/255f, 60f/255f, 110f/255f) },    // 다크 퍼플
+        { 22, new Color(150f/255f, 120f/255f, 180f/255f) },  // 라벤더 퍼플
+        { 23, new Color(40f/255f, 60f/255f, 120f/255f) },    // 네이비 블루
+        { 24, new Color(100f/255f, 130f/255f, 170f/255f) },  // 애쉬 블루
+        { 25, new Color(45f/255f, 90f/255f, 60f/255f) },     // 딥 그린
+        { 26, new Color(170f/255f, 255f/255f, 216f/255f) },  // 민트 그린 ⭐
+        { 27, new Color(150f/255f, 200f/255f, 235f/255f) },  // 스카이 블루
+        { 28, new Color(180f/255f, 240f/255f, 200f/255f) },  // 파스텔 민트
+        { 29, new Color(230f/255f, 210f/255f, 120f/255f) },  // 샌드 옐로우
+        { 30, new Color(200f/255f, 170f/255f, 230f/255f) },  // 라일락 퍼플
     };
 
     public static Color GetSkinColor(int skinId)
@@ -261,22 +292,23 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
 {
     //Skin_Face_Eyebrow_Eye_EyeColor_Ear_Nose_Mouth_Hair_HairColor
     public void SetUiBaseParts(int id,
-        Image Face, Image Eyebrow, Image Eye, Image Ear, Image Nose, Image Mouth,
+        Image Face, Image Eyebrow, Image Eye1, Image Eye2, Image Ear, Image Nose, Image Mouth,
         Image BaseBody, Image BaseHand1A, Image BaseHand1A2, Image BaseHand1B, Image BaseHand2, Image BaseBoth,
         Image Hair1A, Image Hair1B, Image Hair2)
     {
         ICharacterData data = id == 0 ? PlayerManager.I.pData : NpcManager.I.NpcDataList[id];
         Debug.Log("data.Face: " + data.Hair);
-        Face.sprite = ResManager.GetSprite("Face_" + data.Face);
-        Eyebrow.sprite = ResManager.GetSprite("Eyebrow_" + data.Eyebrow);
-        Eye.sprite = ResManager.GetSprite("Eye_" + data.Eye);
-        Ear.sprite = ResManager.GetSprite("Ear_" + data.Ear);
-        Nose.sprite = ResManager.GetSprite("Nose_" + data.Nose);
-        Mouth.sprite = ResManager.GetSprite("Mouth_" + data.Mouth);
+        Face.sprite = ResManager.GetSprite($"Face_{data.Face}");
+        Eyebrow.sprite = ResManager.GetSprite($"Eyebrow_{data.Eyebrow}");
+        Eye1.sprite = ResManager.GetSprite($"Eye_{data.Eye}_1");
+        Eye2.sprite = ResManager.GetSprite($"Eye_{data.Eye}_2");
+        Ear.sprite = ResManager.GetSprite($"Ear_{data.Ear}");
+        Nose.sprite = ResManager.GetSprite($"Nose_{data.Nose}");
+        Mouth.sprite = ResManager.GetSprite($"Mouth_{data.Mouth}");
 
         Color skinColor = CharColor.GetSkinColor(data.Skin);
         Color hairColor = CharColor.GetHairColor(data.HairColor);
-        BaseBody.sprite = ResManager.GetSprite("Body" + data.Gen);
+        BaseBody.sprite = ResManager.GetSprite($"Body{data.Gen}");
         Face.color = skinColor; Ear.color = skinColor;
         BaseBody.color = skinColor; BaseHand1A.color = skinColor; BaseHand1A2.color = skinColor; BaseHand1B.color = skinColor;
         BaseHand2.color = skinColor; BaseBoth.color = skinColor;

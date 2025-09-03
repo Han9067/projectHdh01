@@ -23,6 +23,9 @@ MonoBehaviour:
     - key: guideBall
       value: {fileID: 21300000, guid: 39aa53821360eba4ba39e7e574b73c01, type: 3}
       duplicatedKey: 0
+    - key: black
+      value: {fileID: 21300000, guid: fa2bc3d7553e5a244b2374f5492ad8b4, type: 3}
+      duplicatedKey: 0
     - key: empty
       value: {fileID: 21300000, guid: a16d8cfb048f57d458b7bcff79729ecf, type: 3}
       duplicatedKey: 0
@@ -80,13 +83,13 @@ MonoBehaviour:
     - key: item_10005
       value: {fileID: 21300000, guid: 522be00c76d298c419144a9a0e3c7af3, type: 3}
       duplicatedKey: 0
-    - key: item_30001
+    - key: Item_30001
       value: {fileID: 21300000, guid: e0cab30fc6507c14fbd5ebc4ea930ec0, type: 3}
       duplicatedKey: 0
-    - key: item_30002
+    - key: Item_30002
       value: {fileID: 21300000, guid: 7e0b772f2b2221346ab177ac4955fd39, type: 3}
       duplicatedKey: 0
-    - key: item_30003
+    - key: Item_30003
       value: {fileID: 21300000, guid: 94b5cdd1c8665c64c8ebd8a0132e95d2, type: 3}
       duplicatedKey: 0
     - key: item_32001
@@ -206,26 +209,38 @@ MonoBehaviour:
     - key: Ear_1
       value: {fileID: 21300000, guid: b822dc9fa43ed8845b0de178e9b0cd64, type: 3}
       duplicatedKey: 0
-    - key: Eye_1
-      value: {fileID: 21300000, guid: fdf229fb1ebf17d48bf3cd86383e2e6a, type: 3}
+    - key: Eye_1_1
+      value: {fileID: 21300000, guid: 25ffcbff66f8a184b81777eac3b75977, type: 3}
       duplicatedKey: 0
-    - key: Eye_2
-      value: {fileID: 21300000, guid: ab54565ac93d3914ca76b152fe93b3a2, type: 3}
+    - key: Eye_1_2
+      value: {fileID: 21300000, guid: 94cb5a78ca50d5c4e831c4a09c28b064, type: 3}
       duplicatedKey: 0
-    - key: Eye_3
-      value: {fileID: 21300000, guid: c89c12be0fb9a334b8762ba56b17a118, type: 3}
+    - key: Eye_2_1
+      value: {fileID: 21300000, guid: c33c0dab1b19d724b8b13dd707220f2b, type: 3}
       duplicatedKey: 0
-    - key: Eye_4
-      value: {fileID: 21300000, guid: 36e24264a4d90fe44a85db83d2cc8a6a, type: 3}
-      duplicatedKey: 0
-    - key: Eye_5
-      value: {fileID: 21300000, guid: 8adebaa52b9fce94a88793726b8636a0, type: 3}
-      duplicatedKey: 0
-    - key: Eye_6
-      value: {fileID: 21300000, guid: dd622604e3bc0b84990b2e34d9fb1611, type: 3}
+    - key: Eye_2_2
+      value: {fileID: 21300000, guid: 94ce07a3d80821b47b41b623f1613db9, type: 3}
       duplicatedKey: 0
     - key: Eyebrow_1
       value: {fileID: 21300000, guid: c0c51b401383ceb478b978a5aae0c516, type: 3}
+      duplicatedKey: 0
+    - key: Eyebrow_2
+      value: {fileID: 21300000, guid: 001289f42772a4542a2604f22ee66d79, type: 3}
+      duplicatedKey: 0
+    - key: Eyebrow_3
+      value: {fileID: 21300000, guid: 8352a8dac7215094793357a79c33d0f2, type: 3}
+      duplicatedKey: 0
+    - key: Eyebrow_4
+      value: {fileID: 21300000, guid: 19fe3d1deb5206d408c8f705bb954c89, type: 3}
+      duplicatedKey: 0
+    - key: Eyebrow_5
+      value: {fileID: 21300000, guid: 464581b1f8f88464c89c4ec061272181, type: 3}
+      duplicatedKey: 0
+    - key: Eyebrow_6
+      value: {fileID: 21300000, guid: 576b26c5cf7472c4da6b8df4870ac51b, type: 3}
+      duplicatedKey: 0
+    - key: Eyebrow_7
+      value: {fileID: 21300000, guid: c7204ff6fd18f434eb108915dae10704, type: 3}
       duplicatedKey: 0
     - key: Face_1
       value: {fileID: 21300000, guid: 7b6afddea967c634897b3714f5da3c09, type: 3}
@@ -281,8 +296,32 @@ MonoBehaviour:
     - key: Mouth_1
       value: {fileID: 21300000, guid: 7f5dce3aa85620f44a12e58a65410f35, type: 3}
       duplicatedKey: 0
+    - key: Mouth_2
+      value: {fileID: 21300000, guid: 46c41465367e0594ab2e71e96230e28c, type: 3}
+      duplicatedKey: 0
+    - key: Mouth_3
+      value: {fileID: 21300000, guid: a2a2891d6ef6aac42b5e9f7232f9a925, type: 3}
+      duplicatedKey: 0
     - key: Nose_1
       value: {fileID: 21300000, guid: 750661a77ed47c340bd867fc95ae19d5, type: 3}
+      duplicatedKey: 0
+    - key: Nose_2
+      value: {fileID: 21300000, guid: acd1d86568d777447863622b2334f51e, type: 3}
+      duplicatedKey: 0
+    - key: Nose_3
+      value: {fileID: 21300000, guid: 8945f6a1570e18a4c9c4a08e39a89982, type: 3}
+      duplicatedKey: 0
+    - key: Nose_4
+      value: {fileID: 21300000, guid: 682eb94806e59294487eb9e702361d43, type: 3}
+      duplicatedKey: 0
+    - key: Nose_5
+      value: {fileID: 21300000, guid: 83449844eb69d7c4f88cbbc44a9de51c, type: 3}
+      duplicatedKey: 0
+    - key: Nose_6
+      value: {fileID: 21300000, guid: 411bb648ca9b534429ac084e8ed74a05, type: 3}
+      duplicatedKey: 0
+    - key: Nose_7
+      value: {fileID: 21300000, guid: 4059e04192fcc684088ead4c701d0747, type: 3}
       duplicatedKey: 0
   AudioClips:
     list: []
