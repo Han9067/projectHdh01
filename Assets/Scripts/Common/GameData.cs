@@ -15,7 +15,7 @@ public enum PtType
     EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth,
     OneWp1, OneWp2, TwoWp1, TwoWp2, TwoWp3
 }
-public interface ICharacterData
+public interface ICharData
 {
     int Skin { get; set; }
     int Face { get; set; }
@@ -28,10 +28,10 @@ public interface ICharacterData
     int Hair { get; set; }
     int HairColor { get; set; }
     int Gen { get; set; }
+    Dictionary<string, ItemData> EqSlot { get; set; }
 }
-
 [System.Serializable]
-public class PlayerData : ICharacterData
+public class PlayerData : ICharData
 {
     // 기본 정보
     public string Name = "이름";
@@ -44,9 +44,9 @@ public class PlayerData : ICharacterData
     public int Att, Def;
     public int Crt, CrtRate, Hit, Eva; // 치명타율, 치명타확률, 명중, 회피
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
-    public Dictionary<string, ItemData> EqSlot = new Dictionary<string, ItemData>();
+    public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
-    #region ICharacterData
+    #region ICharData
     public int Gen { get; set; }
     public int Skin { get; set; }
     public int Face { get; set; }
@@ -67,7 +67,7 @@ public class PlayerData : ICharacterData
     } // 생성자
 }
 [System.Serializable]
-public class NpcData : ICharacterData
+public class NpcData : ICharData
 {
     public string Name;
     public int Age, Fame, Rls; //Relationship
@@ -75,8 +75,8 @@ public class NpcData : ICharacterData
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
-    public Dictionary<string, ItemData> EqSlot = new Dictionary<string, ItemData>();
-    #region ICharacterData
+    public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
+    #region ICharData
     public int Gen { get; set; }
     public int Skin { get; set; }
     public int Face { get; set; }
@@ -94,7 +94,7 @@ public class NpcData : ICharacterData
 [System.Serializable]
 public class MonData
 {
-    public int MonId, MonType, Lv, Exp, NextExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;
+    public int MonId, MonType, Lv, Exp, NextExp, GetExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;
     public string Name;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
@@ -259,6 +259,33 @@ public static class CharColor
         { 30, new Color(200f/255f, 170f/255f, 230f/255f) },  // 라일락 퍼플
     };
 
+    private static readonly Dictionary<int, Color> eyeColor = new Dictionary<int, Color>()
+    {
+        // ===== Eyes: Reality (1–12) =====
+        { 1,  new Color(50f/255f,  50f/255f,  50f/255f) },   // 뉴트럴 그레이 (요청값)
+        { 2,  new Color(80f/255f,  55f/255f,  40f/255f) },   // 미디엄 브라운
+        { 3,  new Color(105f/255f, 75f/255f,  50f/255f) },   // 라이트 브라운(헤이즐 기반)
+        { 4,  new Color(120f/255f, 95f/255f,  55f/255f) },   // 엠버(골드기)
+        { 5,  new Color(75f/255f,  100f/255f, 80f/255f) },   // 올리브 그린(저채도)
+        { 6,  new Color(95f/255f,  135f/255f, 105f/255f) },  // 포레스트 그린
+        { 7,  new Color(90f/255f,  120f/255f, 150f/255f) },  // 그레이시 블루
+        { 8,  new Color(70f/255f,  105f/255f, 145f/255f) },  // 딥 블루
+        { 9,  new Color(145f/255f, 165f/255f, 180f/255f) },  // 라이트 그레이
+        {10,  new Color(180f/255f, 190f/255f, 200f/255f) },  // 실버 그레이
+        {11,  new Color(135f/255f, 100f/255f, 60f/255f) },   // 웜 헤이즐(골드·브라운 믹스)
+        {12,  new Color(85f/255f,  120f/255f, 125f/255f) },  // 슬레이트 틸(블루-그린 저채도)
+
+        // ===== Eyes: Fantasy (13–20) =====
+        {13,  new Color(210f/255f, 170f/255f, 60f/255f) },   // 골드 아이
+        {14,  new Color(160f/255f, 90f/255f,  160f/255f) },  // 바이올렛
+        {15,  new Color(150f/255f, 30f/255f,  40f/255f) },   // 루비 레드
+        {16,  new Color(60f/255f,  90f/255f,  160f/255f) },  // 사파이어
+        {17,  new Color(40f/255f,  110f/255f, 95f/255f) },   // 딥 틸
+        {18,  new Color(180f/255f, 235f/255f, 255f/255f) },  // 아이스 블루(밝고 저채도)
+        {19,  new Color(120f/255f, 200f/255f, 170f/255f) },  // 민트 그린
+        {20,  new Color(235f/255f, 235f/255f, 245f/255f) },  // 펄 화이트
+    };
+
     public static Color GetSkinColor(int skinId)
     {
         return skinColor.TryGetValue(skinId, out Color color) ? color : new Color(236f / 255f, 204f / 255f, 169f / 255f);
@@ -267,6 +294,11 @@ public static class CharColor
     public static Color GetHairColor(int hairId)
     {
         return hairColor.TryGetValue(hairId, out Color color) ? color : new Color(30f / 255f, 30f / 255f, 30f / 255f);
+    }
+
+    public static Color GetEyeColor(int eyeId)
+    {
+        return eyeColor.TryGetValue(eyeId, out Color color) ? color : new Color(30f / 255f, 30f / 255f, 30f / 255f);
     }
 }
 
@@ -291,64 +323,67 @@ public class LevelData : AutoSingleton<LevelData>
 public class HumanAppearance : AutoSingleton<HumanAppearance>
 {
     //Skin_Face_Eyebrow_Eye_EyeColor_Ear_Nose_Mouth_Hair_HairColor
-    public void SetUiBaseParts(int id,
-        Image Face, Image Eyebrow, Image Eye1, Image Eye2, Image Ear, Image Nose, Image Mouth,
-        Image BaseBody, Image BaseHand1A, Image BaseHand1A2, Image BaseHand1B, Image BaseHand2, Image BaseBoth,
-        Image Hair1A, Image Hair1B, Image Hair2)
+    public void SetUiBaseParts(int id, Dictionary<string, GameObject> obj)
     {
-        ICharacterData data = id == 0 ? PlayerManager.I.pData : NpcManager.I.NpcDataList[id];
-        Debug.Log("data.Face: " + data.Hair);
-        Face.sprite = ResManager.GetSprite($"Face_{data.Face}");
-        Eyebrow.sprite = ResManager.GetSprite($"Eyebrow_{data.Eyebrow}");
-        Eye1.sprite = ResManager.GetSprite($"Eye_{data.Eye}_1");
-        Eye2.sprite = ResManager.GetSprite($"Eye_{data.Eye}_2");
-        Ear.sprite = ResManager.GetSprite($"Ear_{data.Ear}");
-        Nose.sprite = ResManager.GetSprite($"Nose_{data.Nose}");
-        Mouth.sprite = ResManager.GetSprite($"Mouth_{data.Mouth}");
+        Dictionary<string, Image> img = new Dictionary<string, Image>();
+        string[] str = { "Face", "Eyebrow", "Eye1", "Eye2", "Ear", "Nose", "Mouth", "BaseBody",
+            "BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth", "Hair1A", "Hair1B", "Hair2" };
+        foreach (var v in str)
+            img[v] = obj[v].GetComponent<Image>();
+
+        ICharData data = id == 0 ? PlayerManager.I.pData : NpcManager.I.NpcDataList[id];
+        img["Face"].sprite = ResManager.GetSprite($"Face_{data.Face}");
+        img["Eyebrow"].sprite = ResManager.GetSprite($"Eyebrow_{data.Eyebrow}");
+        img["Eye1"].sprite = ResManager.GetSprite($"Eye_{data.Eye}_1");
+        img["Eye2"].sprite = ResManager.GetSprite($"Eye_{data.Eye}_2");
+        img["Ear"].sprite = ResManager.GetSprite($"Ear_{data.Ear}");
+        img["Nose"].sprite = ResManager.GetSprite($"Nose_{data.Nose}");
+        img["Mouth"].sprite = ResManager.GetSprite($"Mouth_{data.Mouth}");
 
         Color skinColor = CharColor.GetSkinColor(data.Skin);
         Color hairColor = CharColor.GetHairColor(data.HairColor);
-        BaseBody.sprite = ResManager.GetSprite($"Body{data.Gen}");
-        Face.color = skinColor; Ear.color = skinColor;
-        BaseBody.color = skinColor; BaseHand1A.color = skinColor; BaseHand1A2.color = skinColor; BaseHand1B.color = skinColor;
-        BaseHand2.color = skinColor; BaseBoth.color = skinColor;
+        img["BaseBody"].sprite = ResManager.GetSprite($"Body{data.Gen}");
+        img["Face"].color = skinColor; img["Ear"].color = skinColor;
+        img["BaseBody"].color = skinColor; img["BaseHand1A"].color = skinColor;
+        img["BaseHand1A2"].color = skinColor; img["BaseHand1B"].color = skinColor;
+        img["BaseHand2"].color = skinColor; img["BaseBoth"].color = skinColor;
         //*1~100 남자 머리A타입(앞머리,뒷머리 존재)/ 101~200 남자 머리B타입(앞머리만 존재)
         //*201~300 여자 머리A타입(앞머리, 뒷머리 존재)/301~400 여자 머리B타입(앞머리만 존재)
         switch (data.Hair)
         {
             case 1:
-                Hair1A.gameObject.SetActive(true); Hair1B.gameObject.SetActive(false); Hair2.gameObject.SetActive(true);
-                Hair1A.sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
-                Hair2.sprite = ResManager.GetSprite("Hair_2_" + data.Hair);
-                Hair1A.color = hairColor;
-                Hair2.color = hairColor;
+                img["Hair1A"].gameObject.SetActive(true); img["Hair1B"].gameObject.SetActive(false); img["Hair2"].gameObject.SetActive(true);
+                img["Hair1A"].sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
+                img["Hair2"].sprite = ResManager.GetSprite("Hair_2_" + data.Hair);
+                img["Hair1A"].color = hairColor;
+                img["Hair2"].color = hairColor;
                 break;
             case 101:
             case 102:
-                Hair1A.gameObject.SetActive(true); Hair1B.gameObject.SetActive(false); Hair2.gameObject.SetActive(false);
-                Hair1A.sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
-                Hair1A.color = hairColor;
+                img["Hair1A"].gameObject.SetActive(true); img["Hair1B"].gameObject.SetActive(false); img["Hair2"].gameObject.SetActive(false);
+                img["Hair1A"].sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
+                img["Hair1A"].color = hairColor;
                 break;
             case 201:
             case 202:
             case 203:
             case 204:
-                Hair1A.gameObject.SetActive(false); Hair1B.gameObject.SetActive(true); Hair2.gameObject.SetActive(true);
-                Hair1B.sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
-                Hair2.sprite = ResManager.GetSprite("Hair_2_" + data.Hair);
-                Hair1B.color = hairColor;
-                Hair2.color = hairColor;
+                img["Hair1A"].gameObject.SetActive(false); img["Hair1B"].gameObject.SetActive(true); img["Hair2"].gameObject.SetActive(true);
+                img["Hair1B"].sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
+                img["Hair2"].sprite = ResManager.GetSprite("Hair_2_" + data.Hair);
+                img["Hair1B"].color = hairColor;
+                img["Hair2"].color = hairColor;
                 break;
             case 301:
-                Hair1A.gameObject.SetActive(false); Hair1B.gameObject.SetActive(true); Hair2.gameObject.SetActive(false);
-                Hair1B.sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
-                Hair1B.color = hairColor;
+                img["Hair1A"].gameObject.SetActive(false); img["Hair1B"].gameObject.SetActive(true); img["Hair2"].gameObject.SetActive(false);
+                img["Hair1B"].sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
+                img["Hair1B"].color = hairColor;
                 break;
         }
     }
-    public void SetUiEqParts(PlayerData pData, string backUpKey, Dictionary<string, GameObject> mGameObj)
+    public void SetUiEqParts(ICharData data, string backUpKey, Dictionary<string, GameObject> mGameObj)
     {
-        var eq = pData.EqSlot;
+        var eq = data.EqSlot;
         string[] allParts = {"BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth",
             "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "TwoWp1", "TwoWp2", "TwoWp3"};
         foreach (var v in allParts)
@@ -357,21 +392,31 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
         if (eq["Armor"] != null)
         {
             string eqStr = eq["Armor"].ItemId.ToString();
+            mGameObj["EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_body");
+            mGameObj["EqBody"].SetActive(true);
             if (backUpKey != eqStr + "_body")
             {
-                mGameObj["EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_body");
-                mGameObj["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
-                mGameObj["EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1B");
-                mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
-                mGameObj["EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_both");
+                if (eq["Armor"].ItemId > 10500)
+                {
+                    mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
+                    mGameObj["EqHand2"].SetActive(true);
+                    mGameObj["BaseHand2"].SetActive(true);
+                    mGameObj["BaseHand1A"].SetActive(true);
+                    return;
+                }
+                else
+                {
+                    mGameObj["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
+                    mGameObj["EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1B");
+                    mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
+                    mGameObj["EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_both");
+                }
             }
-            mGameObj["EqBody"].SetActive(true);
         }
 
         List<string> parts = GetHandParts(eq);
         foreach (var v in parts)
             mGameObj[v].SetActive(true);
-
         string[] hKey = { "Hand1", "Hand2" };
         foreach (var v in hKey)
         {

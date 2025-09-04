@@ -34,11 +34,11 @@ public class NpcTable  : GameData
 				case "Age": return true;
 				case "Fame": return true;
 				case "Personality": return true;
-				case "Lv": return true;
 				case "Parts": return true;
 				case "Stat": return true;
 				case "Eq": return true;
 				case "Wp": return true;
+				case "Note": return true;
 				case "KR": return true;
 				case "EN": return true;
 
@@ -71,11 +71,11 @@ public class NpcTable  : GameData
 				case "Age": return data.Age;
 				case "Fame": return data.Fame;
 				case "Personality": return data.Personality;
-				case "Lv": return data.Lv;
 				case "Parts": return data.Parts;
 				case "Stat": return data.Stat;
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
+				case "Note": return data.Note;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
 
@@ -99,11 +99,11 @@ public class NpcTable  : GameData
 				case "Age": return data.Age;
 				case "Fame": return data.Fame;
 				case "Personality": return data.Personality;
-				case "Lv": return data.Lv;
 				case "Parts": return data.Parts;
 				case "Stat": return data.Stat;
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
+				case "Note": return data.Note;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
 
@@ -128,11 +128,11 @@ public class NpcTable  : GameData
 				case 3: return data.Age;
 				case 4: return data.Fame;
 				case 5: return data.Personality;
-				case 6: return data.Lv;
-				case 7: return data.Parts;
-				case 8: return data.Stat;
-				case 9: return data.Eq;
-				case 10: return data.Wp;
+				case 6: return data.Parts;
+				case 7: return data.Stat;
+				case 8: return data.Eq;
+				case 9: return data.Wp;
+				case 10: return data.Note;
 				case 11: return data.KR;
 				case 12: return data.EN;
 
@@ -183,11 +183,11 @@ public class NpcTableProb : GameDataProb
 	[JsonProperty] public readonly int Age;
 	[JsonProperty] public readonly int Fame;
 	[JsonProperty] public readonly int Personality;
-	[JsonProperty] public readonly int Lv;
 	[JsonProperty] public readonly string Parts;
 	[JsonProperty] public readonly string Stat;
 	[JsonProperty] public readonly string Eq;
 	[JsonProperty] public readonly string Wp;
+	[JsonProperty] public readonly string Note;
 	[JsonProperty] public readonly string KR;
 	[JsonProperty] public readonly string EN;
 

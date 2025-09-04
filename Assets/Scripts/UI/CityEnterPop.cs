@@ -118,23 +118,8 @@ public class CityEnterPop : UIScreen
             mTexts["NameVal"].text = npc.Name;
             mTexts["RlsVal"].text = npc.Rls.ToString();
 
-            HumanAppearance.I.SetUiBaseParts(shop.NpcId,
-                mGameObject["NpcFace"].GetComponent<Image>(),
-                mGameObject["NpcEyebrow"].GetComponent<Image>(),
-                mGameObject["NpcEye1"].GetComponent<Image>(),
-                mGameObject["NpcEye2"].GetComponent<Image>(),
-                mGameObject["NpcEar"].GetComponent<Image>(),
-                mGameObject["NpcNose"].GetComponent<Image>(),
-                mGameObject["NpcMouth"].GetComponent<Image>(),
-                mGameObject["NpcBaseBody"].GetComponent<Image>(),
-                mGameObject["NpcBaseHand1A"].GetComponent<Image>(),
-                mGameObject["NpcBaseHand1A2"].GetComponent<Image>(),
-                mGameObject["NpcBaseHand1B"].GetComponent<Image>(),
-                mGameObject["NpcBaseHand2"].GetComponent<Image>(),
-                mGameObject["NpcBaseBoth"].GetComponent<Image>(),
-                mGameObject["NpcHair1A"].GetComponent<Image>(),
-                mGameObject["NpcHair1B"].GetComponent<Image>(),
-                mGameObject["NpcHair2"].GetComponent<Image>());
+            HumanAppearance.I.SetUiBaseParts(shop.NpcId, mGameObject);
+            HumanAppearance.I.SetUiEqParts(npc, "NpcEq", mGameObject);
         }
     }
     void OpenTrade(string key, int type)

@@ -49,7 +49,8 @@ public class MonManager : AutoSingleton<MonManager>
             OffX = offX,
             OffY = offY,
             SdwScr = sdwScr,
-            SdwY = sdwY
+            SdwY = sdwY,
+            Lv = LevelData.I.GetLv(VIT, END, STR, AGI, FOR, INT, CHA, LUK)
         };
     }
 
