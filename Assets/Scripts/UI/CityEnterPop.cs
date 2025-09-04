@@ -217,6 +217,5 @@ public class CityEnterPop : UIScreen
     }
     public override void Refresh()
     {
-
     }
 }
