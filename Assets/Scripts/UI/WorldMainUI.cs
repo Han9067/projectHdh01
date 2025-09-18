@@ -119,10 +119,8 @@ public class WorldMainUI : UIScreen
         {
             case "UpdateInfo":
                 mTexts["MainGoldTxt"].text = PlayerManager.I.pData.Crown.ToString();
-                mTexts["MainExpTxt"].text = PlayerManager.I.pData.Exp.ToString();
                 break;
             case "UpdateGoldTxt": mTexts["MainGoldTxt"].text = data.Get<string>(); break;
-            case "UpdateExpTxt": mTexts["MainExpTxt"].text = data.Get<string>(); break;
         }
     }
 

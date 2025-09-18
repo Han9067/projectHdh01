@@ -61,7 +61,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             string cName = "";
             switch (lastTile.name)
             {
-                case "wt2": cName = "notMove"; break;
+                case "wt_x": cName = "notMove"; break;
                 default: cName = "default"; break;
             }
             if (!CursorManager.I.IsCursor(cName)) CursorManager.I.SetCursor(cName);
