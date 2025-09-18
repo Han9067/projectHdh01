@@ -54,6 +54,10 @@ public class MonManager : AutoSingleton<MonManager>
         };
     }
 
+    #region 몬스터 AI 관련
+    // public void Check
+    #endregion
+
     public string GetAroundMon(float x, float y, int n, List<int> grp)
     {
         BattleMonList.Clear();

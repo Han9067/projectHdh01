@@ -34,8 +34,9 @@ public class wMon : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            wPlayer player = other.GetComponent<wPlayer>();
-            player.stopPlayer();
+            // wPlayer player = other.GetComponent<wPlayer>();
+            // player.stopPlayer();
+            WorldCore.I.stopPlayer();
             string result = MonManager.I.GetAroundMon(other.transform.position.x, other.transform.position.y, monIdx, monGrp);
 
             UIManager.ShowPopup("BattleInfoPop");
