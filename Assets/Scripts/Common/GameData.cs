@@ -38,7 +38,7 @@ public class PlayerData : ICharData
     public int Age;
     public long Crown; // 게임 재화
     // 레벨 및 경험치
-    public int Lv, Exp, NextExp;
+    public int Lv, Exp, NextExp, GainExp, Grade, GradeExp;
     // 상태
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def;
@@ -71,7 +71,7 @@ public class NpcData : ICharData
 {
     public string Name;
     public int Age, Fame, Rls; //Relationship
-    public int NpcId, Lv, Exp, NextExp;
+    public int NpcId, Lv, Exp, NextExp, GainExp, Grade, GradeExp;
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
@@ -94,7 +94,7 @@ public class NpcData : ICharData
 [System.Serializable]
 public class MonData
 {
-    public int MonId, MonType, Lv, Exp, NextExp, GetExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;
+    public int MonId, MonType, Lv, Exp, NextExp, GainExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;
     public string Name;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
@@ -125,6 +125,7 @@ public class MonData
             Lv = 1,
             Exp = 0,
             NextExp = 1000,
+            GainExp = 0,
             HP = VIT * 4,
             MP = INT * 4,
             SP = END * 4,
@@ -307,7 +308,7 @@ public class LevelData : AutoSingleton<LevelData>
 {
     public int GetLv(int VIT, int END, int STR, int AGI, int FOR, int INT, int CHA, int LUK)
     {
-        int total = (VIT + END + STR + AGI + FOR + INT + CHA + LUK) - 80;
+        int total = (VIT + END + STR + AGI + FOR + INT + CHA + LUK) - 40;
         return total < 1 ? 1 : total;
     }
     public int GetNextExp(int Lv, double s = 30.0, double p = 2.8)
@@ -315,6 +316,14 @@ public class LevelData : AutoSingleton<LevelData>
         double C = 1000.0 / Math.Pow(1.0 + s, p);
         double raw = C * Math.Pow(Lv + s, p);
         return (int)(Math.Floor(raw / 10.0 + 0.5) * 10.0);
+    }
+    public int GetGainExp(int vit, int end, int str, int agi, int for_, int intel, int cha, int luk, double rate = 5.0)
+    {
+        double score = vit * 2.0
+                    + end * 1.5
+                    + (str + agi) * 1.2
+                    + (for_ + intel + cha + luk) * 1.0;
+        return (int)(score * rate);
     }
 }
 

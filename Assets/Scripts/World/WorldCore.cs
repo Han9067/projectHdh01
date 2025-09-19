@@ -8,11 +8,7 @@ using DG.Tweening;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
-
-// public class WorldGrid
-// {
-//     public int x, y, tId;
-// }
+using System.Linq;
 public class WorldCore : AutoSingleton<WorldCore>
 {
     [Header("Main")]
@@ -30,6 +26,9 @@ public class WorldCore : AutoSingleton<WorldCore>
     private float pSpd = 10f;
     private Vector2 pPos;
     private bool isMove = false;
+    [Header("Monster")]
+    [SerializeField] private Transform wMonParent;
+    private Dictionary<int, GameObject> wMonObj = new Dictionary<int, GameObject>();
     void Awake()
     {
         WorldObjManager.I.CreateWorldArea(worldMapTile);
@@ -42,6 +41,9 @@ public class WorldCore : AutoSingleton<WorldCore>
 
         if (blackImg.gameObject.activeSelf)
             blackImg.gameObject.SetActive(false);
+
+        //월드맵 몬스터 체크 및 생성
+        CheckWorldMon();
     }
     void Update()
     {
@@ -124,6 +126,44 @@ public class WorldCore : AutoSingleton<WorldCore>
         {
             UIManager.ShowPopup("CityEnterPop");
             GB.Presenter.Send("CityEnterPop", "EnterCity", PlayerManager.I.currentCity);
+        }
+    }
+    #endregion
+    #region 월드맵 몬스터 체크 및 생성
+    void CheckWorldMon()
+    {
+        foreach (var area in WorldObjManager.I.areaDataList)
+        {
+            if (area.Value.curCnt < area.Value.maxCnt)
+            {
+                CreateWorldMon(area.Value.areaID, area.Value.maxCnt - area.Value.curCnt);
+                area.Value.curCnt = area.Value.maxCnt;
+            }
+        }
+    }
+    void CreateWorldMon(int areaID, int remain)
+    {
+        int[] grpList = WorldObjManager.I.areaDataList[areaID].grpByGrade[PlayerManager.I.pData.Grade].ToArray();
+        for (int i = 0; i < remain; i++)
+        {
+            bool on = true;
+            int uId = 0;
+            while (on)
+            {
+                uId = Random.Range(10000000, 99999999);
+                if (!WorldObjManager.I.worldMonDataList.ContainsKey(uId)) on = false;
+            }
+            var grpData = WorldObjManager.I.MonGrpTable.Datas[grpList[Random.Range(0, grpList.Length)]]; //몬스터 그룹 데이터 중 랜덤으로 1개 선택
+            // int leaderID = grpData.LeaderID;
+            List<int> mList = grpData.List.Split(',').Select(int.Parse).ToList(); //몬스터 그룹 내에 존재하는 몬스터들을 분류해서 배열로 저장
+            var obj = Instantiate(ResManager.GetGameObject("wMonObj"), wMonParent);
+            obj.name = "wMon_" + uId;
+            var wm = obj.GetComponent<wMon>();
+            wm.SetMonData(uId, mList[Random.Range(0, mList.Count)], mList);
+            wm.transform.position = WorldObjManager.I.GetSpawnPos(areaID); //구역에 맞춰 몬스터 좌표 갱신
+            wMonObj.Add(uId, obj);
+
+            WorldObjManager.I.AddWorldMonData(uId, areaID, grpData.GrpID, mList, wm.transform.position);
         }
     }
     #endregion

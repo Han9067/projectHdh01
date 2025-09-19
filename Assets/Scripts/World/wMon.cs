@@ -11,6 +11,7 @@ public class wMon : MonoBehaviour
     public List<int> monGrp = new List<int>();
     [SerializeField] private SpriteRenderer frmBack, frmFront, frmDeco, mainSpr;
     public MonData[] monData;
+    [SerializeField] private int uId;
     void Start()
     {
 
@@ -28,6 +29,13 @@ public class wMon : MonoBehaviour
         {
             monData[i] = MonManager.I.MonDataList[monGrp[i]].Clone();
         }
+    }
+
+    public void SetMonData(int uid, int mId, List<int> mList)
+    {
+        uId = uid;
+        monId = mId;
+        monGrp = mList;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

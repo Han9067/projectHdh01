@@ -30,7 +30,13 @@ public class SpawnMonTable  : GameData
         {
 				case "AreaID": return true;
 				case "Cnt": return true;
-				case "MonList": return true;
+				case "MG10": return true;
+				case "MG9": return true;
+				case "MG8": return true;
+				case "MG7": return true;
+				case "MG6": return true;
+				case "MG5": return true;
+				case "MG4": return true;
 
 		  default: return false;
 
@@ -57,7 +63,13 @@ public class SpawnMonTable  : GameData
             {
 				case "AreaID": return data.AreaID;
 				case "Cnt": return data.Cnt;
-				case "MonList": return data.MonList;
+				case "MG10": return data.MG10;
+				case "MG9": return data.MG9;
+				case "MG8": return data.MG8;
+				case "MG7": return data.MG7;
+				case "MG6": return data.MG6;
+				case "MG5": return data.MG5;
+				case "MG4": return data.MG4;
 
 
                 default: return null;
@@ -75,7 +87,13 @@ public class SpawnMonTable  : GameData
             {
 				case "AreaID": return data.AreaID;
 				case "Cnt": return data.Cnt;
-				case "MonList": return data.MonList;
+				case "MG10": return data.MG10;
+				case "MG9": return data.MG9;
+				case "MG8": return data.MG8;
+				case "MG7": return data.MG7;
+				case "MG6": return data.MG6;
+				case "MG5": return data.MG5;
+				case "MG4": return data.MG4;
 
 
                 default: return null;
@@ -94,7 +112,13 @@ public class SpawnMonTable  : GameData
             {
 				case 0: return data.AreaID;
 				case 1: return data.Cnt;
-				case 2: return data.MonList;
+				case 2: return data.MG10;
+				case 3: return data.MG9;
+				case 4: return data.MG8;
+				case 5: return data.MG7;
+				case 6: return data.MG6;
+				case 7: return data.MG5;
+				case 8: return data.MG4;
 
                 default: return null;
             }
@@ -139,6 +163,12 @@ public class SpawnMonTableProb : GameDataProb
 {
 		[JsonProperty] public readonly int AreaID;
 	[JsonProperty] public readonly int Cnt;
-	[JsonProperty] public readonly string MonList;
+	[JsonProperty] public readonly string MG10;
+	[JsonProperty] public readonly string MG9;
+	[JsonProperty] public readonly string MG8;
+	[JsonProperty] public readonly string MG7;
+	[JsonProperty] public readonly string MG6;
+	[JsonProperty] public readonly string MG5;
+	[JsonProperty] public readonly string MG4;
 
 }

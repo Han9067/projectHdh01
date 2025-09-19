@@ -58,6 +58,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Age = data.Age;
         pData.Gen = data.Gen;
         pData.Crown = data.Crown;
+        pData.Grade = data.Grade;
+        pData.GradeExp = data.GradeExp;
         pData.Lv = data.Lv;
         pData.Exp = data.Exp;
         pData.NextExp = LevelData.I.GetNextExp(data.Lv);
@@ -90,11 +92,14 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Age = 17;
         pData.Gen = 0;
         pData.Crown = 20000;
+        pData.Grade = 10;
+        pData.GradeExp = 0;
         pData.Lv = 1;
         pData.Exp = 0;
         pData.NextExp = LevelData.I.GetNextExp(pData.Lv);
+        pData.GainExp = 0;
         pData.AddHP = 0; pData.AddMP = 0; pData.AddSP = 0;
-        pData.VIT = 10; pData.END = 10; pData.STR = 10; pData.AGI = 10; pData.FOR = 10; pData.INT = 10; pData.CHA = 10; pData.LUK = 10;
+        pData.VIT = 5; pData.END = 5; pData.STR = 5; pData.AGI = 5; pData.FOR = 5; pData.INT = 5; pData.CHA = 5; pData.LUK = 5;
 
         pData.Skin = 1; pData.Face = 1;
         pData.Eyebrow = 1; pData.Eye = 1;
