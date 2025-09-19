@@ -125,7 +125,6 @@ public class MonData
             Lv = 1,
             Exp = 0,
             NextExp = 1000,
-            GainExp = 0,
             HP = VIT * 4,
             MP = INT * 4,
             SP = END * 4,
@@ -137,7 +136,8 @@ public class MonData
             OffX = this.OffX,
             OffY = this.OffY,
             SdwScr = this.SdwScr,
-            SdwY = this.SdwY
+            SdwY = this.SdwY,
+            GainExp = LevelData.I.GetGainExp(HP, SP, MP, STR, AGI, INT, CHA, LUK),
         };
     }
 }
@@ -317,12 +317,9 @@ public class LevelData : AutoSingleton<LevelData>
         double raw = C * Math.Pow(Lv + s, p);
         return (int)(Math.Floor(raw / 10.0 + 0.5) * 10.0);
     }
-    public int GetGainExp(int vit, int end, int str, int agi, int for_, int intel, int cha, int luk, double rate = 5.0)
+    public int GetGainExp(int hp, int sp, int mp, int str, int agi, int intel, int cha, int luk, double rate = 4.0)
     {
-        double score = vit * 2.0
-                    + end * 1.5
-                    + (str + agi) * 1.2
-                    + (for_ + intel + cha + luk) * 1.0;
+        double score = hp + (sp + mp) * 0.75 + (str + agi) * 0.5 + (intel + cha + luk) * 0.3;
         return (int)(score * rate);
     }
 }

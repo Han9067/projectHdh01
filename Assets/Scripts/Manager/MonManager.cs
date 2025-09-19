@@ -51,7 +51,6 @@ public class MonManager : AutoSingleton<MonManager>
             SdwScr = sdwScr,
             SdwY = sdwY,
             Lv = LevelData.I.GetLv(VIT, END, STR, AGI, FOR, INT, CHA, LUK),
-            GainExp = LevelData.I.GetGainExp(VIT, END, STR, AGI, FOR, INT, CHA, LUK),
         };
     }
 

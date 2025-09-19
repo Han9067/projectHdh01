@@ -30,9 +30,6 @@ public class NpcManager : AutoSingleton<NpcManager>
             data.VIT = stat[0]; data.END = stat[1]; data.STR = stat[2]; data.AGI = stat[3];
             data.FOR = stat[4]; data.INT = stat[5]; data.CHA = stat[6]; data.LUK = stat[7];
             data.Lv = LevelData.I.GetLv(data.VIT, data.END, data.STR, data.AGI, data.FOR, data.INT, data.CHA, data.LUK);
-            data.Exp = 0;
-            data.NextExp = LevelData.I.GetNextExp(data.Lv);
-            data.GainExp = LevelData.I.GetGainExp(data.VIT, data.END, data.STR, data.AGI, data.FOR, data.INT, data.CHA, data.LUK);
             /////
             data.Skin = parts[0]; data.Face = parts[1]; data.Eyebrow = parts[2]; data.Eye = parts[3]; data.EyeColor = parts[4];
             data.Ear = parts[5]; data.Nose = parts[6]; data.Mouth = parts[7]; data.Hair = parts[8]; data.HairColor = parts[9];
@@ -53,7 +50,7 @@ public class NpcManager : AutoSingleton<NpcManager>
 
             data.Exp = 0;
             data.NextExp = LevelData.I.GetNextExp(data.Lv);
-
+            data.GainExp = LevelData.I.GetGainExp(data.HP, data.SP, data.MP, data.STR, data.AGI, data.INT, data.CHA, data.LUK);
             NpcDataList[id] = data;
         }
     }
