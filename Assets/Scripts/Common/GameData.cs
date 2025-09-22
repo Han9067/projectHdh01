@@ -486,6 +486,107 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
         }
         return parts;
     }
+    public void InitParts(Dictionary<PtType, SpriteRenderer> ptSpr, GameObject ptMain)
+    {
+        foreach (PtType PtType in System.Enum.GetValues(typeof(PtType)))
+        {
+            string partName = PtType.ToString();
+            ptSpr[PtType] = ptMain.transform.Find(partName).GetComponent<SpriteRenderer>();
+        }
+    }
+    public void SetObjAppearance(Dictionary<PtType, SpriteRenderer> ptSpr)
+    {
+        var pData = PlayerManager.I.pData;
+        Color skinColor = CharColor.GetSkinColor(pData.Skin);
+        Color hairColor = CharColor.GetHairColor(pData.HairColor);
+        PtType[] skinParts = new PtType[] { PtType.Face, PtType.Ear, PtType.BaseBody, PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth };
+        foreach (PtType skinPart in skinParts)
+            ptSpr[skinPart].color = skinColor;
+        PtType[] hairParts = new PtType[] { PtType.FrontHair1, PtType.FrontHair2, PtType.BackHair };
+        foreach (PtType hairPart in hairParts)
+            ptSpr[hairPart].color = hairColor;
+        switch (pData.Hair)
+        {
+            case 1:
+                ptSpr[PtType.FrontHair1].gameObject.SetActive(true);
+                ptSpr[PtType.FrontHair2].gameObject.SetActive(false);
+                ptSpr[PtType.BackHair].gameObject.SetActive(true);
+                ptSpr[PtType.FrontHair1].sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                ptSpr[PtType.BackHair].sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
+                ptSpr[PtType.FrontHair1].color = hairColor;
+                ptSpr[PtType.BackHair].color = hairColor;
+                break;
+            case 2:
+            case 3:
+                ptSpr[PtType.FrontHair1].gameObject.SetActive(true);
+                ptSpr[PtType.FrontHair2].gameObject.SetActive(false);
+                ptSpr[PtType.BackHair].gameObject.SetActive(false);
+                ptSpr[PtType.FrontHair1].sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                ptSpr[PtType.FrontHair1].color = hairColor;
+                break;
+            case 100:
+                ptSpr[PtType.FrontHair1].gameObject.SetActive(false);
+                ptSpr[PtType.FrontHair2].gameObject.SetActive(true);
+                ptSpr[PtType.BackHair].gameObject.SetActive(true);
+                ptSpr[PtType.FrontHair2].sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                ptSpr[PtType.FrontHair2].color = hairColor;
+                ptSpr[PtType.BackHair].sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
+                ptSpr[PtType.BackHair].color = hairColor;
+                break;
+        }
+
+        PtType[] bParts = new PtType[] {PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth,
+            PtType.EqBody, PtType.EqHand1A, PtType.EqHand1B, PtType.EqHand2, PtType.EqBoth, PtType.OneWp1, PtType.OneWp2, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3 };
+        foreach (PtType bbb in bParts)
+            ptSpr[bbb].gameObject.SetActive(false);
+
+        int[] handState = new int[2] { -1, -1 };
+        string[] handKeys = new string[] { "Hand1", "Hand2" };
+        for (int i = 0; i < 2; i++)
+        {
+            if (pData.EqSlot[handKeys[i]] != null)
+            {
+                handState[i] = pData.EqSlot[handKeys[i]].Both;
+                SetHandSprite(ptSpr, pData.EqSlot[handKeys[i]], handState[i]);
+            }
+        }
+
+        if (pData.EqSlot["Armor"] != null)
+        {
+            string eqStr = pData.EqSlot["Armor"].ItemId.ToString();
+            ptSpr[PtType.EqBody].sprite = ResManager.GetSprite(eqStr + "_body");
+            ptSpr[PtType.EqHand1A].sprite = ResManager.GetSprite(eqStr + "_hand1A");
+            ptSpr[PtType.EqHand1B].sprite = ResManager.GetSprite(eqStr + "_hand1B");
+            ptSpr[PtType.EqHand2].sprite = ResManager.GetSprite(eqStr + "_hand2");
+            ptSpr[PtType.EqBoth].sprite = ResManager.GetSprite(eqStr + "_both");
+
+            ptSpr[PtType.EqBody].gameObject.SetActive(true);
+            switch (handState[0])
+            {
+                case -1: ptSpr[PtType.BaseHand1A].gameObject.SetActive(true); ptSpr[PtType.EqHand1A].gameObject.SetActive(true); break;
+                case 0: ptSpr[PtType.BaseHand1B].gameObject.SetActive(true); ptSpr[PtType.EqHand1B].gameObject.SetActive(true); break;
+                case 1: ptSpr[PtType.BaseBoth].gameObject.SetActive(true); ptSpr[PtType.EqBoth].gameObject.SetActive(true); break;
+                case 2: ptSpr[PtType.BaseHand1A].gameObject.SetActive(true); ptSpr[PtType.BaseHand1A2].gameObject.SetActive(true); ptSpr[PtType.EqHand1A].gameObject.SetActive(true); break;
+            }
+            if (handState[1] != 1)
+            {
+                ptSpr[PtType.BaseHand2].gameObject.SetActive(true);
+                ptSpr[PtType.EqHand2].gameObject.SetActive(true);
+            }
+        }
+    }
+    private void SetHandSprite(Dictionary<PtType, SpriteRenderer> ptSpr, ItemData data, int handIndex)
+    {
+        var sprType = data.Both switch
+        {
+            0 => handIndex == 0 ? PtType.OneWp1 : PtType.OneWp2,
+            1 => (handIndex == 0 && data.Type == 2) ? PtType.TwoWp1 : PtType.TwoWp2,
+            _ => PtType.TwoWp3
+        };
+
+        ptSpr[sprType].gameObject.SetActive(true);
+        ptSpr[sprType].sprite = ResManager.GetSprite("wp" + data.ItemId.ToString());
+    }
 }
 // 통합 저장 데이터 클래스
 [System.Serializable]
