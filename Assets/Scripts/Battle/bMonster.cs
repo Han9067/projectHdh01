@@ -16,8 +16,7 @@ public class bMonster : MonoBehaviour
         monData = MonManager.I.MonDataList[monsterId].Clone();
         bodyObj.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("mon_" + monsterId);
         shdObj.transform.localScale = new Vector3(monData.SdwScr, monData.SdwScr, 1);
-        shdObj.transform.localPosition = new Vector3(0, monData.SdwY, 0);
-        bodyObj.transform.localPosition = new Vector3(0, monData.OffY, 0);
+        //shdObj.transform.localPosition = new Vector3(0, monData.SdwY, 0);
         ggParent.SetActive(false);
         maxHp = monData.HP;
         hp = maxHp;

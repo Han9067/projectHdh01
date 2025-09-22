@@ -98,7 +98,7 @@ public class MonData
     public string Name;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
-    public float W, H, OffX, OffY, SdwScr, SdwY; // 몬스터 오브젝트 크기, 몬스터 오브젝트 X,Y 좌표, 몬스터 그림자 스케일, 몬스터 그림자 Y 좌표
+    public float W, H, SdwScr; // 몬스터 오브젝트 크기, 몬스터 오브젝트 X,Y 좌표, 몬스터 그림자 스케일, 몬스터 그림자 Y 좌표
     public MonData Clone()
     {
         return new MonData
@@ -133,10 +133,7 @@ public class MonData
             MaxSP = SP,
             W = this.W,
             H = this.H,
-            OffX = this.OffX,
-            OffY = this.OffY,
             SdwScr = this.SdwScr,
-            SdwY = this.SdwY,
             GainExp = LevelData.I.GetGainExp(HP, SP, MP, STR, AGI, INT, CHA, LUK),
         };
     }
