@@ -750,6 +750,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             obj.AddComponent<SaveFileManager>();
             obj.AddComponent<BattlePathManager>();
             obj.AddComponent<CursorManager>();
+            obj.AddComponent<WorldObjManager>();
         }
     }
 }

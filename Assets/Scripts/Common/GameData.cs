@@ -348,6 +348,7 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
 
         Color skinColor = CharColor.GetSkinColor(data.Skin);
         Color hairColor = CharColor.GetHairColor(data.HairColor);
+        Color eyeColor = CharColor.GetEyeColor(data.EyeColor);
         img["BaseBody"].sprite = ResManager.GetSprite($"Body{data.Gen}");
         img["Face"].color = skinColor; img["Ear"].color = skinColor;
         img["BaseBody"].color = skinColor; img["BaseHand1A"].color = skinColor;
@@ -386,6 +387,7 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
                 img["Hair1B"].color = hairColor;
                 break;
         }
+        img["Eye2"].color = eyeColor;
     }
     public void SetUiEqParts(ICharData data, string backUpKey, Dictionary<string, GameObject> mGameObj)
     {
@@ -494,25 +496,29 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
             ptSpr[PtType] = ptMain.transform.Find(partName).GetComponent<SpriteRenderer>();
         }
     }
-    public void SetObjAppearance(Dictionary<PtType, SpriteRenderer> ptSpr)
+    public void SetObjAppearance(int uid, Dictionary<PtType, SpriteRenderer> ptSpr)
     {
-        var pData = PlayerManager.I.pData;
-        Color skinColor = CharColor.GetSkinColor(pData.Skin);
-        Color hairColor = CharColor.GetHairColor(pData.HairColor);
+        //uid가 0이면 무조건 플레이어 1부터는 NPC
+        ICharData data = uid == 0 ? PlayerManager.I.pData : NpcManager.I.NpcDataList[uid];
+
+        Color skinColor = CharColor.GetSkinColor(data.Skin);
+        Color hairColor = CharColor.GetHairColor(data.HairColor);
+        Color eyeColor = CharColor.GetEyeColor(data.EyeColor);
         PtType[] skinParts = new PtType[] { PtType.Face, PtType.Ear, PtType.BaseBody, PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth };
         foreach (PtType skinPart in skinParts)
             ptSpr[skinPart].color = skinColor;
         PtType[] hairParts = new PtType[] { PtType.FrontHair1, PtType.FrontHair2, PtType.BackHair };
         foreach (PtType hairPart in hairParts)
             ptSpr[hairPart].color = hairColor;
-        switch (pData.Hair)
+
+        switch (data.Hair)
         {
             case 1:
                 ptSpr[PtType.FrontHair1].gameObject.SetActive(true);
                 ptSpr[PtType.FrontHair2].gameObject.SetActive(false);
                 ptSpr[PtType.BackHair].gameObject.SetActive(true);
-                ptSpr[PtType.FrontHair1].sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
-                ptSpr[PtType.BackHair].sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
+                ptSpr[PtType.FrontHair1].sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
+                ptSpr[PtType.BackHair].sprite = ResManager.GetSprite("Hair_2_" + data.Hair);
                 ptSpr[PtType.FrontHair1].color = hairColor;
                 ptSpr[PtType.BackHair].color = hairColor;
                 break;
@@ -521,20 +527,20 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
                 ptSpr[PtType.FrontHair1].gameObject.SetActive(true);
                 ptSpr[PtType.FrontHair2].gameObject.SetActive(false);
                 ptSpr[PtType.BackHair].gameObject.SetActive(false);
-                ptSpr[PtType.FrontHair1].sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                ptSpr[PtType.FrontHair1].sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
                 ptSpr[PtType.FrontHair1].color = hairColor;
                 break;
             case 100:
                 ptSpr[PtType.FrontHair1].gameObject.SetActive(false);
                 ptSpr[PtType.FrontHair2].gameObject.SetActive(true);
                 ptSpr[PtType.BackHair].gameObject.SetActive(true);
-                ptSpr[PtType.FrontHair2].sprite = ResManager.GetSprite("Hair_1_" + pData.Hair);
+                ptSpr[PtType.FrontHair2].sprite = ResManager.GetSprite("Hair_1_" + data.Hair);
                 ptSpr[PtType.FrontHair2].color = hairColor;
-                ptSpr[PtType.BackHair].sprite = ResManager.GetSprite("Hair_2_" + pData.Hair);
+                ptSpr[PtType.BackHair].sprite = ResManager.GetSprite("Hair_2_" + data.Hair);
                 ptSpr[PtType.BackHair].color = hairColor;
                 break;
         }
-
+        ptSpr[PtType.Eye2].color = eyeColor;
         PtType[] bParts = new PtType[] {PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth,
             PtType.EqBody, PtType.EqHand1A, PtType.EqHand1B, PtType.EqHand2, PtType.EqBoth, PtType.OneWp1, PtType.OneWp2, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3 };
         foreach (PtType bbb in bParts)
@@ -544,16 +550,16 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
         string[] handKeys = new string[] { "Hand1", "Hand2" };
         for (int i = 0; i < 2; i++)
         {
-            if (pData.EqSlot[handKeys[i]] != null)
+            if (data.EqSlot[handKeys[i]] != null)
             {
-                handState[i] = pData.EqSlot[handKeys[i]].Both;
-                SetHandSprite(ptSpr, pData.EqSlot[handKeys[i]], handState[i]);
+                handState[i] = data.EqSlot[handKeys[i]].Both;
+                SetHandSprite(ptSpr, data.EqSlot[handKeys[i]], handState[i]);
             }
         }
 
-        if (pData.EqSlot["Armor"] != null)
+        if (data.EqSlot["Armor"] != null)
         {
-            string eqStr = pData.EqSlot["Armor"].ItemId.ToString();
+            string eqStr = data.EqSlot["Armor"].ItemId.ToString();
             ptSpr[PtType.EqBody].sprite = ResManager.GetSprite(eqStr + "_body");
             ptSpr[PtType.EqHand1A].sprite = ResManager.GetSprite(eqStr + "_hand1A");
             ptSpr[PtType.EqHand1B].sprite = ResManager.GetSprite(eqStr + "_hand1B");

@@ -87,8 +87,8 @@ public class MonManager : AutoSingleton<MonManager>
     public void TestCreateMon()
     {
         BattleMonList.Clear();
-        BattleMonList.Add(1);
-        BattleMonList.Add(1);
+        BattleMonList.Add(2);
+        BattleMonList.Add(2);
         // BattleMonList.Add(1);
         // BattleMonList.Add(1);
     }

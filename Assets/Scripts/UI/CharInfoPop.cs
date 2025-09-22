@@ -57,6 +57,7 @@ public class CharInfoPop : UIScreen
     public void UpdateCharInfo()
     {
         var pData = PlayerManager.I.pData;
+        //string text = GB.LocalizationManager.GetValue("0"); //로컬라이즈 매니저에서 사용되는 언어 호출....추후 소제목들 이걸로 대응
         mTexts["NameVal"].text = pData.Name;
         mTexts["AgeVal"].text = pData.Age.ToString();
         mTexts["LvVal"].text = pData.Lv.ToString();

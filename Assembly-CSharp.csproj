@@ -70,7 +70,9 @@
     <Compile Include="Assets\Scripts\Manager\BattlePathManager.cs" />
     <Compile Include="Assets\GB\ResManager\ObjectPooling\PoolingType.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\WpTable.cs" />
+    <Compile Include="Assets\GB\Localization\LocalizationManager.cs" />
     <Compile Include="Assets\GB\ResManager\SoundManager.cs" />
+    <Compile Include="Assets\GB\Localization\LocalizationView.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\ShopTable.cs" />
     <Compile Include="Assets\Scripts\Manager\NpcManager.cs" />
     <Compile Include="Assets\Scripts\UI\InvenItemObj.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="Assets\GB\GSheet\GameData\EqTable.cs" />
     <Compile Include="Assets\Scripts\UI\QuestListBtn.cs" />
     <Compile Include="Assets\Scripts\World\wPlayer.cs" />
+    <Compile Include="Assets\GB\Localization\EditorLocalization.cs" />
     <Compile Include="Assets\Scripts\UI\GuildQuestPop.cs" />
     <Compile Include="Assets\Scripts\Manager\SaveFileManager.cs" />
     <Compile Include="Assets\Scripts\UI\ChatPop.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="Assets\Scripts\UI\BattleMainUI.cs" />
     <Compile Include="Assets\Scripts\Manager\MonManager.cs" />
     <Compile Include="Assets\GB\ResManager\ResourcesData.cs" />
+    <Compile Include="Assets\GB\Localization\LocalizationFontView.cs" />
     <Compile Include="Assets\Scripts\UI\BattleInfoPop.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\GameDataManager.cs" />
     <Compile Include="Assets\Scripts\Manager\WorldObjManager.cs" />
@@ -115,6 +119,7 @@
     <Compile Include="Assets\GB\GSheet\GameData\MonTable.cs" />
     <Compile Include="Assets\Scripts\UI\CharInfoPop.cs" />
     <Compile Include="Assets\Scripts\Manager\CityManager.cs" />
+    <Compile Include="Assets\GB\Localization\LocalizationData.cs" />
     <Compile Include="Assets\GB\ResManager\ObjectPooling\ObjectPooling.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +151,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\GB\Version\Localization.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
