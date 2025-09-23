@@ -30,7 +30,7 @@ public class bPlayer : MonoBehaviour
             Debug.Log("Player Dead");
         }
         Presenter.Send("BattleMainUI", "GetPlayerHp");
-
+        BattleCore.I.ShowBloodScreen();
         BattleCore.I.ShowDmgTxt(dmg, transform.position); // 데미지 텍스트 표시
     }
     #region ==== 🎨 ORDERING IN LAYER ====

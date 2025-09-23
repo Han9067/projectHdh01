@@ -9,7 +9,6 @@ using DG.Tweening;
 public class BattleMainUI : UIScreen
 {
     public Slider mSlider_HP, mSlider_MP, mSlider_SP;
-    public Image mBloodScreen;
     private void Awake()
     {
         Regist();
@@ -22,7 +21,6 @@ public class BattleMainUI : UIScreen
         SetMp();
         SetSp();
         mButtons["GoToWorld"].gameObject.SetActive(false);
-        mBloodScreen.gameObject.SetActive(false);
     }
     private void OnEnable()
     {
@@ -101,14 +99,6 @@ public class BattleMainUI : UIScreen
                 break;
             case "GetPlayerSp":
                 SetSp();
-                break;
-            case "OnBloodScreen":
-                mBloodScreen.gameObject.SetActive(true);
-                mBloodScreen.color = new Color(1f, 1f, 1f, 1f);
-                mBloodScreen.DOFade(0f, 1f).OnComplete(() =>
-                {
-                    mBloodScreen.gameObject.SetActive(false);
-                });
                 break;
             case "OnGameClear":
                 UnityEngine.Debug.Log("GameClear");

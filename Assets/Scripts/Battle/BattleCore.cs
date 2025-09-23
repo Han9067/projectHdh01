@@ -62,6 +62,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     [Header("====UI====")]
     public GameObject dmgTxtParent;
     private List<Text> dmgTxtList = new List<Text>();
+    public Image bloodScreen;
     [Header("====Map====")]
     [SerializeField] private GameObject tileMapObj; // 맵 타일 오브젝트
     public int mapSeed, pDir; // [맵 시드], [플레이어 방향 상,하,좌,우]
@@ -116,6 +117,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         LoadEnemyGrp(); // 몬스터, 적 NPC 생성 후 전원 배치
 
         //ps. 여기에서는 아니지만 나중에 맵이 변경 또는 이동되는 특수 지형 및 던전도 대응해야함....ㅠㅠ
+        bloodScreen.gameObject.SetActive(false);
     }
     void Start()
     {
@@ -714,6 +716,17 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
         return null;
+    }
+    public void ShowBloodScreen()
+    {
+        bloodScreen.DOKill();
+
+        bloodScreen.gameObject.SetActive(true);
+        bloodScreen.color = new Color(1f, 1f, 1f, 1f);
+        bloodScreen.DOFade(0f, 1f).OnComplete(() =>
+        {
+            bloodScreen.gameObject.SetActive(false);
+        });
     }
     #endregion
     void MoveCamera(bool isInit)
