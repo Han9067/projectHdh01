@@ -296,7 +296,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void LoadEnemyGrp()
     {
-        // MonManager.I.TestCreateMon(); //테스트용
+        MonManager.I.TestCreateMon(); //테스트용
 
         if (MonManager.I.BattleMonList.Count > 0)
         {
@@ -331,12 +331,13 @@ public class BattleCore : AutoSingleton<BattleCore>
                 mon.name = "Mon_" + objId;
                 mObj.Add(objId, mon);
                 mData.Add(objId, data);
-                gGrid[p.x, p.y].tId = objId;
+                UpdateGrid(p.x, p.y, p.x, p.y, data.w, data.h, objId);
                 objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p));
                 //나중에 몬스터가 2x2 또는 3x3 타일 형태로 생성되는데 그때는 왼쪽 상단을 기준으로 좌표가 갱신되도록 함
             }
         }
     }
+
     #endregion
     Vector2Int FindTilePos(Vector3 worldPos)
     {
@@ -507,7 +508,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], ct, () =>
             {
                 data.isAction = false; //행동 종료
-                UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, 1, 1, mId);
+                UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, mData[mId].w, mData[mId].h, mId);
                 data.pos = path[0]; //몬스터 위치 업데이트
                 mData[mId].SetObjLayer(mapH - path[0].y); //몬스터 레이어 업데이트
             }, () =>

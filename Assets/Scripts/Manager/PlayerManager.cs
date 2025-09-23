@@ -116,6 +116,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.EqSlot["Armor"] = pData.Inven[3]; // 갑옷
 
         CalcPlayerStat();
+        pData.HP = pData.MaxHP;
+        pData.MP = pData.MaxMP;
+        pData.SP = pData.MaxSP;
         Presenter.Send("WorldMainUI", "UpdateInfo");
     }
     private void CalcPlayerStat()

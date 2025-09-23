@@ -3,15 +3,18 @@ using GB;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 
 public class BattleMainUI : UIScreen
 {
     public Slider mSlider_HP, mSlider_MP, mSlider_SP;
+    public Image mBloodScreen;
     private void Awake()
     {
         Regist();
         RegistButton();
+
     }
     private void Start()
     {
@@ -19,6 +22,7 @@ public class BattleMainUI : UIScreen
         SetMp();
         SetSp();
         mButtons["GoToWorld"].gameObject.SetActive(false);
+        mBloodScreen.gameObject.SetActive(false);
     }
     private void OnEnable()
     {
@@ -98,6 +102,14 @@ public class BattleMainUI : UIScreen
             case "GetPlayerSp":
                 SetSp();
                 break;
+            case "OnBloodScreen":
+                mBloodScreen.gameObject.SetActive(true);
+                mBloodScreen.color = new Color(1f, 1f, 1f, 1f);
+                mBloodScreen.DOFade(0f, 1f).OnComplete(() =>
+                {
+                    mBloodScreen.gameObject.SetActive(false);
+                });
+                break;
             case "OnGameClear":
                 UnityEngine.Debug.Log("GameClear");
                 mButtons["GoToWorld"].gameObject.SetActive(true);
@@ -113,7 +125,6 @@ public class BattleMainUI : UIScreen
     {
         mSlider_HP.value = (float)PlayerManager.I.pData.HP / PlayerManager.I.pData.MaxHP * 100f;
         mTexts["GgHpTxt"].text = PlayerManager.I.pData.HP.ToString() + " / " + PlayerManager.I.pData.MaxHP.ToString();
-
     }
     public void SetMp()
     {

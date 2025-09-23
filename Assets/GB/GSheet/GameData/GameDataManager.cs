@@ -52,6 +52,8 @@ public class GameDataManager : AutoSingleton<GameDataManager>
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<SpawnMonTable>(SpawnMonTabledata,(result)=>{ I._Tables[TABLE.SpawnMonTable] = result;}));
                 string MonGrpTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/MonGrpTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<MonGrpTable>(MonGrpTabledata,(result)=>{ I._Tables[TABLE.MonGrpTable] = result;}));
+                string SkTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/SkTable").text);
+            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<SkTable>(SkTabledata,(result)=>{ I._Tables[TABLE.SkTable] = result;}));
                 
 
         gbCoroutine.OnComplete(()=>{complete?.Invoke();}).Play();
@@ -167,6 +169,11 @@ case TABLE.MonGrpTable:
         d_MonGrpTable.SetJson(data);
         obj  = d_MonGrpTable;
         break;
+case TABLE.SkTable:
+        SkTable d_SkTable = new SkTable();
+        d_SkTable.SetJson(data);
+        obj  = d_SkTable;
+        break;
         }
 
         return obj;
@@ -278,5 +285,6 @@ public enum TABLE
 	MonTable,
 	SpawnMonTable,
 	MonGrpTable,
+	SkTable,
 
 }

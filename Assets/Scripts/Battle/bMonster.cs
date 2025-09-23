@@ -11,13 +11,18 @@ public class bMonster : MonoBehaviour
     bool isGG = false;
     public float hp, maxHp;
     public int att, def, crt, crtRate, hit, eva;
+    public int w, h;
     void Start()
     {
         monData = MonManager.I.MonDataList[monsterId].Clone();
+        w = monData.W;
+        h = monData.H;
         bodyObj.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("mon_" + monsterId);
         shdObj.transform.localScale = new Vector3(monData.SdwScr, monData.SdwScr, 1);
-        //shdObj.transform.localPosition = new Vector3(0, monData.SdwY, 0);
+        bodyObj.transform.localPosition = new Vector3((w - 1) * 0.6f, 0.4f, 0);
+        shdObj.transform.localPosition = new Vector3((w - 1) * 0.6f, -0.35f, 0);
         ggParent.SetActive(false);
+        ggParent.transform.localPosition = new Vector3((w - 1) * 0.6f, monData.GgY, 0);
         maxHp = monData.HP;
         hp = maxHp;
         att = monData.Att;
@@ -32,6 +37,7 @@ public class bMonster : MonoBehaviour
         this.objId = objId;
         this.monsterId = monId;
         transform.position = new Vector3(px, py, 0);
+        //w에 따라 내부 자식 리소스 x좌표 변경
     }
     public void SetDirObj(int dir)
     {
@@ -47,6 +53,7 @@ public class bMonster : MonoBehaviour
     }
     public void OnDamaged(int dmg)
     {
+        dmg = dmg > def ? dmg - def : 0;
         hp -= dmg;
         if (hp > 0 && !isGG)
         {

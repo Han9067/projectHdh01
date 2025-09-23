@@ -9,21 +9,24 @@ public class bPlayer : MonoBehaviour
     public int objId = 1000;
     Dictionary<PtType, SpriteRenderer> ptSpr = new Dictionary<PtType, SpriteRenderer>();
     public GameObject ptMain;
+    private PlayerData pData;
     void Awake()
     {
         HumanAppearance.I.InitParts(ptSpr, ptMain);
     }
     void Start()
     {
+        pData = PlayerManager.I.pData;
         HumanAppearance.I.SetObjAppearance(0, ptSpr);
     }
     public void OnDamaged(int dmg)
     {
         //플레이어 피격!
-        PlayerManager.I.pData.HP -= dmg;
-        if (PlayerManager.I.pData.HP <= 0)
+        dmg = dmg > pData.Def ? dmg - pData.Def : 0;
+        pData.HP -= dmg;
+        if (pData.HP <= 0)
         {
-            PlayerManager.I.pData.HP = 0;
+            pData.HP = 0;
             Debug.Log("Player Dead");
         }
         Presenter.Send("BattleMainUI", "GetPlayerHp");

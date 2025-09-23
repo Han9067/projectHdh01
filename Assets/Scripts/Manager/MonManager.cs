@@ -22,14 +22,14 @@ public class MonManager : AutoSingleton<MonManager>
             MonData mData = CreateMonData(id, mon.Type, mon.Name,
             int.Parse(stat[0]), int.Parse(stat[1]), int.Parse(stat[2]), int.Parse(stat[3]), int.Parse(stat[4]),
             int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]),
-            mon.W, mon.H, mon.SdwScr);
+            mon.W, mon.H, mon.SdwScr, mon.GgY);
             MonDataList[id] = mData;
         }
     }
     //VIT_END_STR_AGI_FOR_INT_CHA_LUK
     private MonData CreateMonData(int id, int monType, string name,
     int VIT, int END, int STR, int AGI, int FOR, int INT, int CHA, int LUK,
-    float w, float h, float sdwScr)
+    int w, int h, float sdwScr, float ggY)
     {
         return new MonData
         {
@@ -47,6 +47,7 @@ public class MonManager : AutoSingleton<MonManager>
             W = w,
             H = h,
             SdwScr = sdwScr,
+            GgY = ggY,
             Lv = LevelData.I.GetLv(VIT, END, STR, AGI, FOR, INT, CHA, LUK),
         };
     }
@@ -84,8 +85,8 @@ public class MonManager : AutoSingleton<MonManager>
     public void TestCreateMon()
     {
         BattleMonList.Clear();
-        BattleMonList.Add(2);
-        BattleMonList.Add(2);
+        BattleMonList.Add(1);
+        BattleMonList.Add(1);
         // BattleMonList.Add(1);
         // BattleMonList.Add(1);
     }
