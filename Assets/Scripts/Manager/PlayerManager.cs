@@ -9,6 +9,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public int currentCity = 0;
     public PlayerData pData;
     public List<List<InvenGrid>> grids;
+    public Vector3 worldPos = new Vector3(0, 0, 0);
+    [Header("기타")]
+    public bool isObjCreated = false; // 월드 오브젝트 생성 여부
 
     [Header("테스트")]
     public int testSkin = 1;
@@ -60,6 +63,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Crown = data.Crown;
         pData.Grade = data.Grade;
         pData.GradeExp = data.GradeExp;
+        pData.GradeNext = data.GradeNext;
         pData.Lv = data.Lv;
         pData.Exp = data.Exp;
         pData.NextExp = LevelData.I.GetNextExp(data.Lv);
@@ -92,8 +96,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Age = 17;
         pData.Gen = 0;
         pData.Crown = 20000;
-        pData.Grade = 10;
+        pData.Grade = 0;
         pData.GradeExp = 0;
+        pData.GradeNext = 1000;
         pData.Lv = 1;
         pData.Exp = 0;
         pData.NextExp = LevelData.I.GetNextExp(pData.Lv);

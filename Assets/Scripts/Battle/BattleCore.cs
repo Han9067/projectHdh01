@@ -294,11 +294,10 @@ public class BattleCore : AutoSingleton<BattleCore>
             pData.SetObjLayer(mapH - cy);
             objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.PLAYER, cpPos));
         }
-
     }
     void LoadEnemyGrp()
     {
-        MonManager.I.TestCreateMon(); //테스트용
+        // MonManager.I.TestCreateMon(); //테스트용
 
         if (MonManager.I.BattleMonList.Count > 0)
         {

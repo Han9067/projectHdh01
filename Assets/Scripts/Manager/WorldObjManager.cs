@@ -16,7 +16,7 @@ public class WorldAreaData
 public class WorldMonData
 {
     public int areaID;
-    public int mGrpID;
+    public int ldID; //leaderID
     public List<int> monList = new List<int>();
     public Vector3 pos;
 }
@@ -66,13 +66,16 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
     #endregion
     #region 월드맵 몬스터 스폰 관련
     private SpawnMonTable _spawnMonTable;
-    private MonGrpTable _monGrpTable;
     public SpawnMonTable SpawnMonTable => _spawnMonTable ?? (_spawnMonTable = GameDataManager.GetTable<SpawnMonTable>());
-    public MonGrpTable MonGrpTable => _monGrpTable ?? (_monGrpTable = GameDataManager.GetTable<MonGrpTable>());
+    public Dictionary<int, MonGrpTableProb> monGrpData = new Dictionary<int, MonGrpTableProb>();
     public Dictionary<int, WorldAreaData> areaDataList = new Dictionary<int, WorldAreaData>(); //월드맵 구역 데이터
     public Dictionary<int, WorldMonData> worldMonDataList = new Dictionary<int, WorldMonData>();
     public void CreateWorldAreaData()
     {
+        var data = GameDataManager.GetTable<MonGrpTable>();
+        foreach (var monGrp in data.Datas)
+            monGrpData[monGrp.GrpID] = monGrp;
+
         foreach (var spawnMon in SpawnMonTable.Datas)
         {
             int id = spawnMon.AreaID;
@@ -83,26 +86,38 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
                 curCnt = 0,
                 maxCnt = spawnMon.Cnt
             };
-            areaDataList[id].grpByGrade.Add(10, spawnMon.MG10.Split(',').Select(int.Parse).ToList());
-            areaDataList[id].grpByGrade.Add(9, spawnMon.MG9.Split(',').Select(int.Parse).ToList());
-            areaDataList[id].grpByGrade.Add(8, spawnMon.MG8.Split(',').Select(int.Parse).ToList());
-            areaDataList[id].grpByGrade.Add(7, spawnMon.MG7.Split(',').Select(int.Parse).ToList());
-            areaDataList[id].grpByGrade.Add(6, spawnMon.MG6.Split(',').Select(int.Parse).ToList());
-            areaDataList[id].grpByGrade.Add(5, spawnMon.MG5.Split(',').Select(int.Parse).ToList());
+            areaDataList[id].grpByGrade.Add(0, spawnMon.MG1.Split(',').Select(int.Parse).ToList());
+            areaDataList[id].grpByGrade.Add(1, spawnMon.MG1.Split(',').Select(int.Parse).ToList());
+            areaDataList[id].grpByGrade.Add(2, spawnMon.MG2.Split(',').Select(int.Parse).ToList());
+            areaDataList[id].grpByGrade.Add(3, spawnMon.MG3.Split(',').Select(int.Parse).ToList());
             areaDataList[id].grpByGrade.Add(4, spawnMon.MG4.Split(',').Select(int.Parse).ToList());
+            areaDataList[id].grpByGrade.Add(5, spawnMon.MG5.Split(',').Select(int.Parse).ToList());
+            areaDataList[id].grpByGrade.Add(6, spawnMon.MG6.Split(',').Select(int.Parse).ToList());
+            areaDataList[id].grpByGrade.Add(7, spawnMon.MG7.Split(',').Select(int.Parse).ToList());
         }
         //추후에 curCnt는 세이브 데이터를 통해 갱신해야 함
         //curCnt는 maxCnt만큼만 적용되는데 적용되는 시점은 스폰타임(현재 1주일간격)에 1번 적용
     }
-    public void AddWorldMonData(int uId, int areaID, int mGrpID, List<int> monList, Vector3 pos)
+    public void AddWorldMonData(int uId, int areaID, int leaderID, List<int> monList, Vector3 pos)
     {
         worldMonDataList[uId] = new WorldMonData
         {
             areaID = areaID,
-            mGrpID = mGrpID,
+            ldID = leaderID,
             monList = monList,
             pos = pos
         };
+    }
+    public void RemoveWorldMonData(int uId)
+    {
+        worldMonDataList.Remove(uId);
+    }
+    public void UpdateWorldMonData(Dictionary<int, GameObject> wMonObj)
+    {
+        foreach (var wMon in wMonObj)
+        {
+            worldMonDataList[wMon.Key].pos = wMon.Value.transform.position;
+        }
     }
     public Vector3 GetSpawnPos(int areaID, float minDistance = 2.0f, int maxAttempts = 20)
     {

@@ -42,8 +42,23 @@ public class WorldCore : AutoSingleton<WorldCore>
         if (blackImg.gameObject.activeSelf)
             blackImg.gameObject.SetActive(false);
 
-        //월드맵 몬스터 체크 및 생성
-        CheckWorldMon();
+        if (!PlayerManager.I.isObjCreated)
+        {
+            PlayerManager.I.isObjCreated = true;
+            foreach (var area in WorldObjManager.I.areaDataList)
+            {
+                if (area.Value.curCnt < area.Value.maxCnt)
+                {
+                    CreateWorldMon(area.Value.areaID, area.Value.maxCnt - area.Value.curCnt);
+                    area.Value.curCnt = area.Value.maxCnt;
+                }
+            }
+        }
+        else
+        {
+            LoadPlayerPos();
+            LoadWorldMon();
+        }
     }
     void Update()
     {
@@ -117,6 +132,11 @@ public class WorldCore : AutoSingleton<WorldCore>
             }
         }
     }
+
+    void LoadPlayerPos()
+    {
+        player.transform.position = PlayerManager.I.worldPos;
+    }
     public void stopPlayer()
     {
         isMove = false;
@@ -130,20 +150,11 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     #endregion
     #region 월드맵 몬스터 체크 및 생성
-    void CheckWorldMon()
-    {
-        foreach (var area in WorldObjManager.I.areaDataList)
-        {
-            if (area.Value.curCnt < area.Value.maxCnt)
-            {
-                CreateWorldMon(area.Value.areaID, area.Value.maxCnt - area.Value.curCnt);
-                area.Value.curCnt = area.Value.maxCnt;
-            }
-        }
-    }
     void CreateWorldMon(int areaID, int remain)
     {
         int[] grpList = WorldObjManager.I.areaDataList[areaID].grpByGrade[PlayerManager.I.pData.Grade].ToArray();
+
+
         for (int i = 0; i < remain; i++)
         {
             bool on = true;
@@ -153,23 +164,61 @@ public class WorldCore : AutoSingleton<WorldCore>
                 uId = Random.Range(10000000, 99999999);
                 if (!WorldObjManager.I.worldMonDataList.ContainsKey(uId)) on = false;
             }
-            var grpData = WorldObjManager.I.MonGrpTable.Datas[grpList[Random.Range(0, grpList.Length)]]; //몬스터 그룹 데이터 중 랜덤으로 1개 선택
-            // int leaderID = grpData.LeaderID;
-            List<int> mList = grpData.List.Split(',').Select(int.Parse).ToList(); //몬스터 그룹 내에 존재하는 몬스터들을 분류해서 배열로 저장
+            var grpData = grpList.Length == 1 ? WorldObjManager.I.monGrpData[grpList[0]]
+                        : WorldObjManager.I.monGrpData[grpList[Random.Range(0, grpList.Length)]]; //몬스터 그룹 데이터 중 랜덤으로 1개 선택
+            int leaderID = grpData.LeaderID;
+            int mTot = Random.Range(grpData.Min, grpData.Max);
+            List<int> mType = grpData.List.Split(',').Select(int.Parse).ToList(); //몬스터 그룹 내에 존재하는 몬스터들을 분류해서 배열로 저장
+            List<int> mList = new List<int>();
+            if (mType.Count == 1)
+            {
+                for (int a = 0; a < mTot; a++)
+                    mList.Add(mType[0]);
+            }
+            else
+            {
+                int back = mTot;
+                int idx = 0;
+                while (back > 0)
+                {
+                    bool aOn = Random.Range(0, 2) == 0;
+                    if (aOn)
+                        mList.Add(mType[idx]);
+                    back--;
+                    idx++;
+                    if (mType.Count <= idx) idx = 0;
+                }
+            }
+
             var obj = Instantiate(ResManager.GetGameObject("wMonObj"), wMonParent);
             obj.name = "wMon_" + uId;
             var wm = obj.GetComponent<wMon>();
-            wm.SetMonData(uId, mList[Random.Range(0, mList.Count)], mList);
+            wm.SetMonData(uId, leaderID, mList);
             wm.transform.position = WorldObjManager.I.GetSpawnPos(areaID); //구역에 맞춰 몬스터 좌표 갱신
             wMonObj.Add(uId, obj);
 
-            WorldObjManager.I.AddWorldMonData(uId, areaID, grpData.GrpID, mList, wm.transform.position);
+            WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.transform.position);
+        }
+    }
+    void LoadWorldMon()
+    {
+        wMonObj.Clear();
+        foreach (var wMon in WorldObjManager.I.worldMonDataList)
+        {
+            var obj = Instantiate(ResManager.GetGameObject("wMonObj"), wMonParent);
+            obj.name = "wMon_" + wMon.Key;
+            var wm = obj.GetComponent<wMon>();
+            wm.SetMonData(wMon.Key, wMon.Value.ldID, wMon.Value.monList);
+            wm.transform.position = wMon.Value.pos;
+            wMonObj.Add(wMon.Key, obj);
         }
     }
     #endregion
     #region 씬 이동
     public void SceneFadeOut()
     {
+        PlayerManager.I.worldPos = player.transform.position;
+        WorldObjManager.I.UpdateWorldMonData(wMonObj);
         SceneManager.LoadScene("Battle");
         // blackImg.gameObject.SetActive(true);
         // blackImg.color = new Color(0, 0, 0, 0f);

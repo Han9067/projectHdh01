@@ -2,9 +2,12 @@ using GB;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-
+using UnityEngine.UI;
 public class BattleInfoPop : UIScreen
 {
+    public GameObject eListPrefab;
+    public Transform eListParent;
+    public List<EnemyList> eLists = new List<EnemyList>();
     private void Awake()
     {
         Regist();
@@ -14,12 +17,13 @@ public class BattleInfoPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("BattleInfoPop", this);
+
     }
 
     private void OnDisable()
     {
         Presenter.UnBind("BattleInfoPop", this);
-
+        InitEnemyList();
     }
 
     public void RegistButton()
@@ -44,9 +48,18 @@ public class BattleInfoPop : UIScreen
         switch (key)
         {
             case "MonInfo":
-                // string str = data.Get<string>();
-                // int[] strArr = str.Split('_').Select(int.Parse).ToArray();
-                //추후 몬스터 정보 기입 필요
+                string str = data.Get<string>();
+                int[] tot = str.Split('_').Select(int.Parse).ToArray();
+                Dictionary<int, int> dict = new Dictionary<int, int>();
+                for (int i = 0; i < tot.Length; i++)
+                {
+                    if (dict.ContainsKey(tot[i]))
+                        dict[tot[i]]++;
+                    else
+                        dict.Add(tot[i], 1);
+                }
+                foreach (var d in dict)
+                    CreateEnemyList(d.Key, d.Value);
                 break;
         }
     }
@@ -55,7 +68,18 @@ public class BattleInfoPop : UIScreen
     {
 
     }
-
-
+    void InitEnemyList()
+    {
+        foreach (var eList in eLists)
+        {
+            Destroy(eList.gameObject);
+        }
+    }
+    void CreateEnemyList(int id, int cnt)
+    {
+        var eList = Instantiate(eListPrefab, eListParent);
+        eList.GetComponent<EnemyList>().SetEnemy(id, cnt);
+        eLists.Add(eList.GetComponent<EnemyList>());
+    }
 
 }

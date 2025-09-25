@@ -60,25 +60,26 @@ public class MonManager : AutoSingleton<MonManager>
     {
         BattleMonList.Clear();
         string str = "";
-        foreach (var mon in grp)
+        foreach (var m in grp)
         {
-            BattleMonList.Add(mon);
-            str += mon + "_";
+            BattleMonList.Add(m);
+            str += m + "_";
         }
-        GameObject[] allMon = GameObject.FindGameObjectsWithTag("Monster");
-        for (int i = 0; i < allMon.Length; i++)
-        {
-            if (n == i) continue;
-            if (Vector2.Distance(allMon[i].transform.position, new Vector2(x, y)) < 10f)
-            {
-                wMon mon = allMon[i].GetComponent<wMon>();
-                foreach (var m in mon.monGrp)
-                {
-                    BattleMonList.Add(m);
-                    str += m + "_";
-                }
-            }
-        }
+        // GameObject[] allMon = GameObject.FindGameObjectsWithTag("Monster");
+        // for (int i = 0; i < allMon.Length; i++)
+        // {
+        //     if (n == i) continue;
+        //     if (Vector2.Distance(allMon[i].transform.position, new Vector2(x, y)) < 10f)
+        //     {
+        //         wMon mon = allMon[i].GetComponent<wMon>();
+        //         foreach (var m in mon.monGrp)
+        //         {
+        //             BattleMonList.Add(m);
+        //             str += m + "_";
+        //         }
+        //     }
+        // }
+        str = str.TrimEnd('_');
         return str;
     }
 

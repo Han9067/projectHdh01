@@ -38,7 +38,7 @@ public class PlayerData : ICharData
     public int Age;
     public long Crown; // 게임 재화
     // 레벨 및 경험치
-    public int Lv, Exp, NextExp, GainExp, Grade, GradeExp;
+    public int Lv, Exp, NextExp, GainExp, Grade, GradeExp, GradeNext;
     // 상태
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def;
@@ -71,7 +71,7 @@ public class NpcData : ICharData
 {
     public string Name;
     public int Age, Fame, Rls; //Relationship
-    public int NpcId, Lv, Exp, NextExp, GainExp, Grade, GradeExp;
+    public int NpcId, Lv, Exp, NextExp, GainExp, Grade, GradeExp, GradeNext;
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;

@@ -23,7 +23,7 @@ public class wMon : MonoBehaviour
         float[] rgb = mType == 0 ? new float[] { 112 / 255f, 122 / 255f, 92 / 255f } : new float[] { 180 / 255f, 50 / 255f, 60 / 255f };
         frmBack.GetComponent<SpriteRenderer>().color = new Color(rgb[0], rgb[1], rgb[2], 1);
         frmFront.GetComponent<SpriteRenderer>().color = new Color(rgb[0], rgb[1], rgb[2], 1);
-        mainSpr.sprite = ResManager.GetSprite("mon_" + monId);
+        mainSpr.sprite = ResManager.GetSprite("mIcon_" + monId);
         monData = new MonData[monGrp.Count];
         for (int i = 0; i < monGrp.Count; i++)
         {

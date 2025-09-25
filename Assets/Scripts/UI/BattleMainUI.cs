@@ -20,7 +20,7 @@ public class BattleMainUI : UIScreen
         SetHp();
         SetMp();
         SetSp();
-        mButtons["GoToWorld"].gameObject.SetActive(false);
+        // mButtons["GoToWorld"].gameObject.SetActive(false); //테스트 후 정상화
     }
     private void OnEnable()
     {
