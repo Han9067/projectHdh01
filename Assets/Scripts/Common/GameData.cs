@@ -116,27 +116,33 @@ public class MonData
             CHA = this.CHA,
             LUK = this.LUK,
 
-            Att = STR * 2,
-            Def = VIT,
-            Crt = 50 + (LUK * 2),
-            CrtRate = LUK + AGI,
-            Hit = 60 + (AGI / 4),
-            Eva = 10 + (AGI / 4),
+            // HP/MP/SP 관련 (중요!)
+            HP = this.HP,
+            MP = this.MP,
+            SP = this.SP,
+            MaxHP = this.MaxHP,
+            MaxMP = this.MaxMP,
+            MaxSP = this.MaxSP,
 
-            Lv = 1,
-            Exp = 0,
-            NextExp = 1000,
-            HP = VIT * 4,
-            MP = INT * 4,
-            SP = END * 4,
-            MaxHP = HP,
-            MaxMP = MP,
-            MaxSP = SP,
+            // 전투 스탯
+            Att = this.Att,
+            Def = this.Def,
+            Crt = this.Crt,
+            CrtRate = this.CrtRate,
+            Hit = this.Hit,
+            Eva = this.Eva,
+
+            // 레벨 관련
+            Lv = this.Lv,
+            Exp = this.Exp,
+            NextExp = this.NextExp,
+            GainExp = this.GainExp,
+
+            // 표시 관련
             W = this.W,
             H = this.H,
             SdwScr = this.SdwScr,
-            GgY = this.GgY,
-            GainExp = LevelData.I.GetGainExp(HP, SP, MP, STR, AGI, INT, CHA, LUK),
+            GgY = this.GgY
         };
     }
 }
@@ -316,10 +322,10 @@ public class LevelData : AutoSingleton<LevelData>
         double raw = C * Math.Pow(Lv + s, p);
         return (int)(Math.Floor(raw / 10.0 + 0.5) * 10.0);
     }
-    public int GetGainExp(int hp, int sp, int mp, int str, int agi, int intel, int cha, int luk, double rate = 4.0)
+    public int GetGainExp(int _hp, int _sp, int _mp, int _str, int _agi, int _int, int _cha, int _luk)
     {
-        double score = hp + (sp + mp) * 0.75 + (str + agi) * 0.5 + (intel + cha + luk) * 0.3;
-        return (int)(score * rate);
+        double score = _hp + (_sp + _mp) * 1 + (_str + _agi) * 0.8 + (_int + _cha + _luk) * 0.5;
+        return (int)(score * 4);
     }
 }
 

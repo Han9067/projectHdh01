@@ -9,6 +9,7 @@ public class CharInfoPop : UIScreen
 {
     public bool isActive { get; private set; } = false;
     private string curBodyKey = "";
+    [SerializeField] private GameObject statAddParent;
     private void Awake()
     {
         Regist();
@@ -36,13 +37,49 @@ public class CharInfoPop : UIScreen
     }
     public void OnButtonClick(string key)
     {
-        switch (key)
+        if (key.Contains("ClickAdd"))
         {
-            case "CharInfoPopClose":
-                UIManager.ClosePopup("CharInfoPop");
-                break;
+            switch (key)
+            {
+                case "ClickAddVit":
+                    PlayerManager.I.pData.VIT++;
+                    break;
+                case "ClickAddEnd":
+                    PlayerManager.I.pData.END++;
+                    break;
+                case "ClickAddStr":
+                    PlayerManager.I.pData.STR++;
+                    break;
+                case "ClickAddAgi":
+                    PlayerManager.I.pData.AGI++;
+                    break;
+                case "ClickAddFor":
+                    PlayerManager.I.pData.FOR++;
+                    break;
+                case "ClickAddInt":
+                    PlayerManager.I.pData.INT++;
+                    break;
+                case "ClickAddCha":
+                    PlayerManager.I.pData.CHA++;
+                    break;
+                case "ClickAddLuk":
+                    PlayerManager.I.pData.LUK++;
+                    break;
+            }
+            PlayerManager.I.pData.Exp -= PlayerManager.I.pData.NextExp;
+            PlayerManager.I.pData.Lv += 1;
+            PlayerManager.I.pData.NextExp = LevelData.I.GetNextExp(PlayerManager.I.pData.Lv);
+            UpdateCharInfo();
         }
-
+        else
+        {
+            switch (key)
+            {
+                case "CharInfoPopClose":
+                    UIManager.ClosePopup("CharInfoPop");
+                    break;
+            }
+        }
     }
     public override void ViewQuick(string key, IOData data)
     {
@@ -86,13 +123,15 @@ public class CharInfoPop : UIScreen
         HumanAppearance.I.SetUiEqParts(pData, curBodyKey, mGameObject);
         if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)
             curBodyKey = mGameObject["EqBody"].GetComponent<Image>().sprite.name;
+
+        statAddParent.SetActive(PlayerManager.I.pData.Exp >= PlayerManager.I.pData.NextExp);
     }
-    private void UpdateVitText(int v) => mTexts["VitVal"].text = v.ToString();
-    private void UpdateEndText(int v) => mTexts["EndVal"].text = v.ToString();
-    private void UpdateStrText(int v) => mTexts["StrVal"].text = v.ToString();
-    private void UpdateAgiText(int v) => mTexts["AgiVal"].text = v.ToString();
-    private void UpdateForText(int v) => mTexts["ForVal"].text = v.ToString();
-    private void UpdateIntText(int v) => mTexts["IntVal"].text = v.ToString();
-    private void UpdateChaText(int v) => mTexts["ChaVal"].text = v.ToString();
-    private void UpdateLukText(int v) => mTexts["LukVal"].text = v.ToString();
+    void UpdateVitText(int v) => mTexts["VitVal"].text = v.ToString();
+    void UpdateEndText(int v) => mTexts["EndVal"].text = v.ToString();
+    void UpdateStrText(int v) => mTexts["StrVal"].text = v.ToString();
+    void UpdateAgiText(int v) => mTexts["AgiVal"].text = v.ToString();
+    void UpdateForText(int v) => mTexts["ForVal"].text = v.ToString();
+    void UpdateIntText(int v) => mTexts["IntVal"].text = v.ToString();
+    void UpdateChaText(int v) => mTexts["ChaVal"].text = v.ToString();
+    void UpdateLukText(int v) => mTexts["LukVal"].text = v.ToString();
 }

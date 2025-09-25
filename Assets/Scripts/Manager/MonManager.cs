@@ -9,6 +9,7 @@ public class MonManager : AutoSingleton<MonManager>
     public MonTable MonTable => _monTable ?? (_monTable = GameDataManager.GetTable<MonTable>());
     public Dictionary<int, MonData> MonDataList = new Dictionary<int, MonData>();
     public List<int> BattleMonList = new List<int>();
+    public List<int> BattleMonGrpUid = new List<int>();
     private void Awake()
     {
         LoadMonData();
@@ -23,6 +24,7 @@ public class MonManager : AutoSingleton<MonManager>
             int.Parse(stat[0]), int.Parse(stat[1]), int.Parse(stat[2]), int.Parse(stat[3]), int.Parse(stat[4]),
             int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]),
             mon.W, mon.H, mon.SdwScr, mon.GgY);
+            // mData.GainExp = LevelData.I.GetGainExp(mData.MaxHP, mData.SP, mData.MP, mData.STR, mData.AGI, mData.INT, mData.CHA, mData.LUK);
             MonDataList[id] = mData;
         }
     }
@@ -31,6 +33,7 @@ public class MonManager : AutoSingleton<MonManager>
     int VIT, int END, int STR, int AGI, int FOR, int INT, int CHA, int LUK,
     int w, int h, float sdwScr, float ggY)
     {
+        int hp = VIT * 4, sp = END * 4, mp = INT * 4;
         return new MonData
         {
             MonId = id,
@@ -49,22 +52,38 @@ public class MonManager : AutoSingleton<MonManager>
             SdwScr = sdwScr,
             GgY = ggY,
             Lv = LevelData.I.GetLv(VIT, END, STR, AGI, FOR, INT, CHA, LUK),
+
+            // HP/MP/SP 설정
+            HP = hp,
+            SP = sp,
+            MP = mp,
+            MaxHP = hp,
+            MaxSP = sp,
+            MaxMP = mp,
+
+            // 전투 스탯 계산 및 설정 (추가 필요!)
+            Att = STR * 2,
+            Def = VIT,
+            Crt = 50 + (LUK * 2),
+            CrtRate = LUK + AGI,
+            Hit = 60 + (AGI / 4),
+            Eva = 10 + (AGI / 4),
+
+            GainExp = LevelData.I.GetGainExp(hp, sp, mp, STR, AGI, INT, CHA, LUK)
         };
     }
 
-    #region 몬스터 AI 관련
-    // public void Check
-    #endregion
-
-    public string GetAroundMon(float x, float y, int n, List<int> grp)
+    public string GetAroundMon(List<int> grp, int uid, float x, float y, int n)
     {
-        BattleMonList.Clear();
+        BattleMonList.Clear(); //전투에 참여하는 몬스터 ID
+        BattleMonGrpUid.Clear(); //전투에 참여하는 몬스터의 파티 or 그룹 UID
         string str = "";
         foreach (var m in grp)
         {
             BattleMonList.Add(m);
             str += m + "_";
         }
+        BattleMonGrpUid.Add(uid);
         // GameObject[] allMon = GameObject.FindGameObjectsWithTag("Monster");
         // for (int i = 0; i < allMon.Length; i++)
         // {

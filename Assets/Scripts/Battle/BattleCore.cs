@@ -25,7 +25,7 @@ public enum BtObjType
 }
 public enum BtFaction
 {
-    PLAYER, ALLY, ENEMY
+    ALLY, ENEMY
 }
 public static class Directions
 {
@@ -292,7 +292,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             cpPos = new Vector2Int(cx, cy);
             gGrid[cx, cy].tId = 1000;
             pData.SetObjLayer(mapH - cy);
-            objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.PLAYER, cpPos));
+            objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos));
         }
     }
     void LoadEnemyGrp()
@@ -422,7 +422,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         }));
                         break;
                     case BtObjState.ATTACK:
-                        StartCoroutine(PlayNormalAttack(pObj, BtObjType.PLAYER, 1000, ot.tgId));
+                        StartCoroutine(AttackObjWithMelee(pObj, BtObjType.PLAYER, 1000, ot.tgId));
                         ot.state = BtObjState.READY;
                         break;
                 }
@@ -431,7 +431,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 int mId = ot.objId;
                 if (ot.tgId == 0)
                 {
-                    tgId = SearchNearbyAiObj(ot.pos, BtObjType.MONSTER);
+                    tgId = SearchNearbyAiObj(ot.pos, ot.faction, BtObjType.MONSTER);
                     if (tgId != 0)
                         ot.tgId = tgId;
                     //추후에 버그 발생을 대응하기 위해 타깃이 없으면 해당 타입을 제외한 다른 타입들을 검색하여 씬을 종료시키든 마무리해야함.
@@ -440,7 +440,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 {
                     case BtObjState.IDLE:
                         if (GetAttackTarget(ot.tgId, ot.pos))
-                            StartCoroutine(PlayNormalAttack(mObj[mId], BtObjType.MONSTER, mId, ot.tgId));
+                            StartCoroutine(AttackObjWithMelee(mObj[mId], BtObjType.MONSTER, mId, ot.tgId));
                         else
                         {
                             //추적 시작
@@ -519,7 +519,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             }));
         }
     }
-    IEnumerator PlayNormalAttack(GameObject myObj, BtObjType myType, int myId, int tgId)
+    IEnumerator AttackObjWithMelee(GameObject myObj, BtObjType myType, int myId, int tgId)
     {
         var tgType = GetObjType(tgId);
         if (tgType == BtObjType.NONE) yield break;
@@ -547,7 +547,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         switch (tgType)
                         {
                             case BtObjType.MONSTER:
-                                mData[tgId].OnDamaged(PlayerManager.I.pData.Att);
+                                mData[tgId].OnDamaged(PlayerManager.I.pData.Att, BtFaction.ALLY);
                                 break;
                             case BtObjType.NPC:
                                 break;
@@ -591,28 +591,22 @@ public class BattleCore : AutoSingleton<BattleCore>
         float dist = Vector3.Distance(myPos, tgPos);
         return myPos + (dir * (dist * 0.1f));
     }
-    int SearchNearbyAiObj(Vector2Int pos, BtObjType myType)
+    int SearchNearbyAiObj(Vector2Int pos, BtFaction faction, BtObjType myType)
     {
         int oId = 0;
         float minDist = float.MaxValue;
-        switch (myType)
+        BtFaction tgFaction = faction == BtFaction.ENEMY ? BtFaction.ALLY : BtFaction.ENEMY;
+        foreach (var t in objTurn)
         {
-            case BtObjType.MONSTER:
-                foreach (var t in objTurn)
+            if (t.faction == tgFaction)
+            {
+                float dist = Vector2.Distance(pos, t.pos);
+                if (dist < minDist)
                 {
-                    if (t.type == BtObjType.PLAYER || t.type == BtObjType.NPC)
-                    {
-                        float dist = Vector2.Distance(pos, t.pos);
-                        if (dist < minDist)
-                        {
-                            minDist = dist;
-                            oId = t.objId;
-                        }
-                    }
+                    minDist = dist;
+                    oId = t.objId;
                 }
-                break;
-            case BtObjType.NPC:
-                break;
+            }
         }
         return oId;
     }
@@ -626,8 +620,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return BtObjType.NONE;
     }
-
-    public void DeathObj(int objId)
+    public void DeathObj(int objId, BtFaction attacker)
     {
         foreach (var t in objTurn)
         {
@@ -638,18 +631,29 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
         RemoveGridId(objId);
+        if (attacker == BtFaction.ALLY)
+        {
+            Debug.Log("경험치: " + mData[objId].gainExp);
+            //경험치 획득
+            GetExp(mData[objId].gainExp, attacker);
+            //아이템 드롭
+
+        }
         CheckGameClear();
     }
     void CheckGameClear()
     {
-        int aliveCnt = 0;
+        int aCnt = 0, eCnt = 0;
         foreach (var t in objTurn)
         {
-            if (t.objId == 1000) continue;
-            if (t.state != BtObjState.DEAD) aliveCnt++;
+            if (t.state == BtObjState.DEAD) continue;
+            if (t.faction == BtFaction.ALLY) aCnt++;
+            else eCnt++;
         }
-        if (aliveCnt == 0)
+        if (eCnt == 0)
             Presenter.Send("BattleMainUI", "OnGameClear");
+        else if (aCnt == 0)
+            Presenter.Send("BattleMainUI", "OnGameOver");
     }
     void UpdateGrid(int sx, int sy, int tx, int ty, int w, int h, int id)
     {
@@ -728,6 +732,15 @@ public class BattleCore : AutoSingleton<BattleCore>
         });
     }
     #endregion
+    #region ==== Data Action ====
+    public void GetExp(int exp, BtFaction attacker)
+    {
+        if (attacker == BtFaction.ALLY)
+        {
+            PlayerManager.I.pData.Exp += exp; //일단은 플레이어만 넣어두고 추후에 아군 NPC, 몬스터 경험치 획득 추가
+        }
+    }
+    #endregion
     void MoveCamera(bool isInit)
     {
         var targetPosition = new Vector3(pObj.transform.position.x, pObj.transform.position.y, -10f);
@@ -750,7 +763,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     public void MoveToWorld()
     {
-        SceneManager.LoadScene("World");
+        UIManager.ChangeScene("World");
     }
     void CheckMainManager()
     {
@@ -764,6 +777,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             obj.AddComponent<BattlePathManager>();
             obj.AddComponent<CursorManager>();
             obj.AddComponent<WorldObjManager>();
+            obj.AddComponent<TimeManager>();
         }
     }
 }

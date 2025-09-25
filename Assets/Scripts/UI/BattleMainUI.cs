@@ -103,6 +103,11 @@ public class BattleMainUI : UIScreen
             case "OnGameClear":
                 UnityEngine.Debug.Log("GameClear");
                 mButtons["GoToWorld"].gameObject.SetActive(true);
+                WorldObjManager.I.RemoveWorldMonGrp(); //모든 몬스터를 처치하여 전투에 참여된 모든 몬스터 그룹을 제거
+                break;
+            case "OnGameOver":
+                UnityEngine.Debug.Log("GameOver");
+                mButtons["GoToWorld"].gameObject.SetActive(true);
                 break;
         }
     }

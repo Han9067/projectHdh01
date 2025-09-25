@@ -219,11 +219,11 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         PlayerManager.I.worldPos = player.transform.position;
         WorldObjManager.I.UpdateWorldMonData(wMonObj);
-        SceneManager.LoadScene("Battle");
+        UIManager.ChangeScene("Battle");
         // blackImg.gameObject.SetActive(true);
         // blackImg.color = new Color(0, 0, 0, 0f);
         // blackImg.DOFade(1f, 0.5f).SetUpdate(true).OnComplete(() => {
-        //     SceneManager.LoadScene("Battle");
+        //     UIManager.ChangeScene("Battle");
         // });
     }
     #endregion

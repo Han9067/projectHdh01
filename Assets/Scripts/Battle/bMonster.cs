@@ -10,7 +10,7 @@ public class bMonster : MonoBehaviour
     public GameObject shdObj, bodyObj, ggParent, ggObj;
     bool isGG = false;
     public float hp, maxHp;
-    public int att, def, crt, crtRate, hit, eva;
+    public int att, def, crt, crtRate, hit, eva, gainExp;
     public int w, h;
     void Start()
     {
@@ -31,6 +31,7 @@ public class bMonster : MonoBehaviour
         crtRate = monData.CrtRate;
         hit = monData.Hit;
         eva = monData.Eva;
+        gainExp = monData.GainExp;
     }
     public void SetMonData(int objId, int monId, float px, float py)
     {
@@ -51,7 +52,7 @@ public class bMonster : MonoBehaviour
         shdObj.GetComponent<SpriteRenderer>().sortingOrder = ly;
         bodyObj.GetComponent<SpriteRenderer>().sortingOrder = ly + 1;
     }
-    public void OnDamaged(int dmg)
+    public void OnDamaged(int dmg, BtFaction attacker)
     {
         dmg = dmg > def ? dmg - def : 0;
         hp -= dmg;
@@ -62,23 +63,22 @@ public class bMonster : MonoBehaviour
         }
 
         if (hp <= 0)
-            StartCoroutine(DeathMon());
+        {
+            StartCoroutine(DeathMon(attacker));
+        }
         else
             ggObj.transform.localScale = new Vector3(hp / maxHp, 1, 1);
         //텍스트 연출
         BattleCore.I.ShowDmgTxt(dmg, transform.position); // 데미지 텍스트 표시
     }
-    private IEnumerator DeathMon()
+    private IEnumerator DeathMon(BtFaction attacker)
     {
-        BattleCore.I.DeathObj(objId);
+        BattleCore.I.DeathObj(objId, attacker);
         //몬스터 죽음 연출
         ggParent.SetActive(false);
         bodyObj.GetComponent<SpriteRenderer>().DOFade(0f, 0.2f);
         shdObj.GetComponent<SpriteRenderer>().DOFade(0f, 0.2f);
         //경험치 획득
-
-        //아이템 드롭
-
         yield return new WaitForSeconds(0.3f);
         Destroy(gameObject);
     }

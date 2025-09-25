@@ -50,7 +50,8 @@ public class NpcManager : AutoSingleton<NpcManager>
 
             data.Exp = 0;
             data.NextExp = LevelData.I.GetNextExp(data.Lv);
-            data.GainExp = LevelData.I.GetGainExp(data.HP, data.SP, data.MP, data.STR, data.AGI, data.INT, data.CHA, data.LUK);
+            // data.GainExp = LevelData.I.GetGainExp(data.HP, data.SP, data.MP, data.STR, data.AGI, data.INT, data.CHA, data.LUK);
+            data.GainExp = 0;
             NpcDataList[id] = data;
         }
     }

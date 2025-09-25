@@ -146,6 +146,12 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         // 모든 시도가 실패하면 첫 번째 위치 반환
         return allPositions[0];
     }
-
+    public void RemoveWorldMonGrp()
+    {
+        List<int> list = MonManager.I.BattleMonGrpUid;
+        foreach (var t in list)
+            worldMonDataList.Remove(t);
+        MonManager.I.BattleMonGrpUid.Clear();
+    }
     #endregion
 }
