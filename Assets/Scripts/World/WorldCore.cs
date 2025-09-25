@@ -59,6 +59,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             LoadPlayerPos();
             LoadWorldMon();
         }
+        cam.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -10f);
     }
     void Update()
     {

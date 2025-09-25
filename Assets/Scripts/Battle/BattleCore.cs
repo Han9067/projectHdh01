@@ -297,7 +297,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void LoadEnemyGrp()
     {
-        // MonManager.I.TestCreateMon(); //테스트용
+        MonManager.I.TestCreateMon(); //테스트용
 
         if (MonManager.I.BattleMonList.Count > 0)
         {
