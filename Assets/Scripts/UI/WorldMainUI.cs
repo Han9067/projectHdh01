@@ -121,9 +121,17 @@ public class WorldMainUI : UIScreen
                 mTexts["MainGoldTxt"].text = PlayerManager.I.pData.Crown.ToString();
                 break;
             case "UpdateGoldTxt": mTexts["MainGoldTxt"].text = data.Get<string>(); break;
+            case "UpdateTime":
+                UpdateTime();
+                break;
         }
     }
-
+    private void UpdateTime()
+    {
+        mTexts["YearVal"].text = TimeManager.I.wYear.ToString();
+        mTexts["MonVal"].text = TimeManager.I.wMonth.ToString();
+        mTexts["DayVal"].text = TimeManager.I.wDay.ToString();
+    }
     public override void Refresh()
     {
         // UI가 새로고침될 때 현재 속도에 맞게 버튼 이미지 업데이트

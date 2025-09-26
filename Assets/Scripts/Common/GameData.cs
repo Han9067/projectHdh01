@@ -328,6 +328,14 @@ public class LevelData : AutoSingleton<LevelData>
         return (int)(score * 4);
     }
 }
+[System.Serializable]
+public class ObjLayerData : AutoSingleton<ObjLayerData>
+{
+    public int GetObjLayer(float y)
+    {
+        return (int)((80 - y) * 100);
+    }
+}
 
 //인간형 오브젝트 외형 설정
 [System.Serializable]

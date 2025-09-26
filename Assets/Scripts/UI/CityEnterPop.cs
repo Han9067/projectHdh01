@@ -89,6 +89,8 @@ public class CityEnterPop : UIScreen
                     break;
                 case "OnMake":
                     break;
+                case "OnWork":
+                    break;
                 case "OnGetOut":
                     break;
             }
@@ -101,6 +103,7 @@ public class CityEnterPop : UIScreen
                 case "CityEnterPopClose":
                     Close();
                     UIManager.ClosePopup("InvenPop");
+                    UnityEngine.Debug.Log("CityEnterPopClose");
                     break;
             }
         }

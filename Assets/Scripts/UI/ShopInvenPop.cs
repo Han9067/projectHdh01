@@ -25,27 +25,27 @@ public class ShopInvenPop : UIScreen
         RegistButton();
         InitGrid();
     }
-    
+
     private void InitGrid()
     {
         grids = new List<List<InvenGrid>>();
-        for(int y = 0; y < gh; y++)
+        for (int y = 0; y < gh; y++)
         {
             List<InvenGrid> row = new List<InvenGrid>();
-            for(int x = 0; x < gw; x++)
+            for (int x = 0; x < gw; x++)
             {
                 row.Add(new InvenGrid { x = x, y = y, slotId = -1 });
             }
             grids.Add(row);
         }
     }
-    
+
     private void OnEnable()
     {
-        Presenter.Bind("ShopInvenPop",this);
+        Presenter.Bind("ShopInvenPop", this);
         isActive = true;
     }
-    private void OnDisable() 
+    private void OnDisable()
     {
         Presenter.UnBind("ShopInvenPop", this);
         isActive = false;
@@ -53,8 +53,8 @@ public class ShopInvenPop : UIScreen
 
     public void RegistButton()
     {
-        foreach(var v in mButtons)
-            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key);});
+        foreach (var v in mButtons)
+            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key); });
     }
 
     public void OnButtonClick(string key)
@@ -62,15 +62,15 @@ public class ShopInvenPop : UIScreen
         switch (key)
         {
             case "ShopInvenPopClose":
-                UIManager.ClosePopup("ShopInvenPop");
+                UIManager.ClosePopup("InvenPop");
                 Close();
                 break;
         }
     }
     public override void ViewQuick(string key, IOData data)
-    {   
+    {
         string name = "";
-        switch(key)
+        switch (key)
         {
             case "LoadSmith":
                 name = "대장간";
@@ -93,7 +93,7 @@ public class ShopInvenPop : UIScreen
         List<ItemPos> itemPosList = new List<ItemPos>();
         var shopData = ShopManager.I.shopAllData[id];
         var items = shopData.items;
-        foreach(var item in items)
+        foreach (var item in items)
         {
             ItemData data = ItemManager.I.ItemDataList[item.ItemId].Clone();
             Vector2Int pos = ApplyGrid(data.ItemId, data.W, data.H);
@@ -105,7 +105,7 @@ public class ShopInvenPop : UIScreen
         DrawGrid();
         // 아이템 오브젝트 생성
         CreateShopItem(itemPosList);
-        
+
     }
     public Vector2Int ApplyGrid(int slotId, int w, int h)
     {
@@ -113,7 +113,7 @@ public class ShopInvenPop : UIScreen
         PlaceItem(slotId, pos.x, pos.y, w, h);
         return pos;
     }
-    
+
     private Vector2Int FindAvailablePosition(int w, int h)
     {
         // 항상 왼쪽 위(0,0)부터 오른쪽으로 차례대로 빈 공간 찾기
@@ -130,7 +130,7 @@ public class ShopInvenPop : UIScreen
         // 배치할 공간이 없으면 그리드 확장
         return ExpandGridAndFindPos(w, h);
     }
-    
+
     private Vector2Int ExpandGridAndFindPos(int w, int h)
     {
         // 필요한 만큼 그리드 높이 확장
@@ -139,10 +139,10 @@ public class ShopInvenPop : UIScreen
         {
             requiredHeight++;
         }
-        
+
         // 그리드 확장
         ExpandGridHeight(requiredHeight - gh);
-        
+
         // 확장된 그리드에서 다시 위치 찾기
         for (int y = gh - h; y < gh; y++)
         {
@@ -155,11 +155,11 @@ public class ShopInvenPop : UIScreen
                 }
             }
         }
-        
+
         // 여전히 배치할 수 없다면 (너무 큰 아이템인 경우)
         return new Vector2Int(-1, -1);
     }
-    
+
     private void ExpandGridHeight(int additionalRows)
     {
         // 새로운 행들을 추가
@@ -172,12 +172,12 @@ public class ShopInvenPop : UIScreen
             }
             grids.Add(newRow);
         }
-        
+
         // 그리드 높이 업데이트
         gh += additionalRows;
         UnityEngine.Debug.Log($"그리드 높이가 {gh}로 확장되었습니다.");
     }
-    
+
     /// 지정된 위치에 아이템을 배치할 수 있는지 확인합니다.
     private bool CanPlaceItem(int startX, int startY, int w, int h)
     {
@@ -238,7 +238,7 @@ public class ShopInvenPop : UIScreen
             Sprite iSpr = ResManager.GetSprite(data.itemData.Res);
             // 프리팹 인스턴스화
             GameObject shopItem = Instantiate(shopItemPrefab, content);
-            
+
             int w = data.itemData.W * 64, h = data.itemData.H * 64;
             // RectTransform 설정
             RectTransform rt = shopItem.GetComponent<RectTransform>();
@@ -246,7 +246,7 @@ public class ShopInvenPop : UIScreen
             rt.anchorMax = new Vector2(0, 1);
             rt.pivot = new Vector2(0, 1);
             rt.sizeDelta = new Vector2(w, h);
-            
+
             // 그리드 좌표에 맞게 위치 설정 (64는 한 칸의 픽셀 크기)
             rt.anchoredPosition = new Vector2(data.x * 64, -(data.y * 64));
 
@@ -256,5 +256,5 @@ public class ShopInvenPop : UIScreen
             shopItem.GetComponent<ShopItem>().SetItemImage(iSpr);
         }
     }
-    public override void Refresh(){ }
+    public override void Refresh() { }
 }

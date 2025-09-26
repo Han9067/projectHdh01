@@ -16,6 +16,9 @@ public class WorldCore : AutoSingleton<WorldCore>
     private Camera cam;
     private float moveSpd = 20f, zoomSpd = 10f; // 카메라 이동 속도, 줌 속도
     private float minZoom = 5f, maxZoom = 10f;  // 줌 범위
+    [Header("City")]
+    [SerializeField] private Transform cityParent;
+    [SerializeField] private Dictionary<int, GameObject> cityObjList = new Dictionary<int, GameObject>();
     [Header("Tile")]
     [SerializeField] private Tilemap worldMapTile;
     private Vector3Int lastCellPos = Vector3Int.zero;
@@ -59,12 +62,16 @@ public class WorldCore : AutoSingleton<WorldCore>
             LoadPlayerPos();
             LoadWorldMon();
         }
-        cam.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -10f);
+
+        LoadCityObj();
+
+        MoveCamera(player.transform.position);
     }
     void Update()
     {
         // if(CityEnterPop.isActive)return;
         // 일시정지 상태에서도 카메라 이동이 가능하도록 Input 처리
+
         #region Player Act
         Vector3 moveDirection = Vector3.zero;
         if (Input.GetKey(KeyCode.W)) moveDirection.y += 1; // 위로 이동
@@ -103,7 +110,11 @@ public class WorldCore : AutoSingleton<WorldCore>
 
     }
     #region 플레이어 관련
-    private void InputPlayerAct()
+    void MoveCamera(Vector3 v)
+    {
+        cam.transform.position = new Vector3(v.x, v.y, -10f);
+    }
+    void InputPlayerAct()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -116,7 +127,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         }
     }
 
-    private void UpdatePlayerAct()
+    void UpdatePlayerAct()
     {
         if (isMove)
         {
@@ -125,6 +136,9 @@ public class WorldCore : AutoSingleton<WorldCore>
                 pPos,
                 pSpd * Time.deltaTime
             );
+
+
+            player.SetObjLayer(ObjLayerData.I.GetObjLayer(player.transform.position.y));
 
             if (Vector2.Distance(player.transform.position, pPos) < 0.01f)
             {
@@ -145,8 +159,23 @@ public class WorldCore : AutoSingleton<WorldCore>
 
         if (PlayerManager.I.currentCity > 0)
         {
+            int id = PlayerManager.I.currentCity;
+            MoveCamera(cityObjList[id].transform.position);
             UIManager.ShowPopup("CityEnterPop");
-            GB.Presenter.Send("CityEnterPop", "EnterCity", PlayerManager.I.currentCity);
+            GB.Presenter.Send("CityEnterPop", "EnterCity", id);
+            // player.gameObject.SetActive(false);
+        }
+    }
+    #endregion
+    #region 월드맵 도시 관련
+    void LoadCityObj()
+    {
+        int idx = 1;
+        cityObjList.Clear(); // 기존 리스트 초기화
+        foreach (Transform child in cityParent)
+        {
+            cityObjList.Add(idx, child.gameObject);
+            idx++;
         }
     }
     #endregion
@@ -196,6 +225,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             var wm = obj.GetComponent<wMon>();
             wm.SetMonData(uId, leaderID, mList);
             wm.transform.position = WorldObjManager.I.GetSpawnPos(areaID); //구역에 맞춰 몬스터 좌표 갱신
+            wm.SetObjLayer(ObjLayerData.I.GetObjLayer(wm.transform.position.y));
             wMonObj.Add(uId, obj);
 
             WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.transform.position);

@@ -42,13 +42,18 @@ public class wMon : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // wPlayer player = other.GetComponent<wPlayer>();
-            // player.stopPlayer();
             WorldCore.I.stopPlayer();
             string result = MonManager.I.GetAroundMon(monGrp, uId, other.transform.position.x, other.transform.position.y, monIdx);
 
             UIManager.ShowPopup("BattleReadyPop");
             Presenter.Send("BattleReadyPop", "MonInfo", result);
         }
+    }
+    public void SetObjLayer(int y)
+    {
+        frmBack.sortingOrder = y + 40;
+        frmFront.sortingOrder = y + 41;
+        frmDeco.sortingOrder = y + 42;
+        mainSpr.sortingOrder = y + 43;
     }
 }
