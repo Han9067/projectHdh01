@@ -73,6 +73,7 @@
     <Compile Include="Assets\GB\Localization\LocalizationManager.cs" />
     <Compile Include="Assets\Scripts\Manager\TimeManager.cs" />
     <Compile Include="Assets\GB\ResManager\SoundManager.cs" />
+    <Compile Include="Assets\Scripts\UI\ObjSelPop.cs" />
     <Compile Include="Assets\GB\Localization\LocalizationView.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\ShopTable.cs" />
     <Compile Include="Assets\Scripts\Manager\NpcManager.cs" />
@@ -97,9 +98,11 @@
     <Compile Include="Assets\GB\Localization\EditorLocalization.cs" />
     <Compile Include="Assets\Scripts\UI\GuildQuestPop.cs" />
     <Compile Include="Assets\Scripts\Manager\SaveFileManager.cs" />
+    <Compile Include="Assets\Scripts\UI\ObjInfoPop.cs" />
     <Compile Include="Assets\Scripts\UI\ChatPop.cs" />
     <Compile Include="Assets\Scripts\Manager\ItemManager.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\SkTable.cs" />
+    <Compile Include="Assets\Scripts\UI\BtReadyPop.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\CityTable.cs" />
     <Compile Include="Assets\Scripts\UI\EnemyList.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\AbilityTable.cs" />
@@ -129,6 +132,7 @@
     <None Include="Assets\GB\Version\DoTween.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\Resources\Shader\SprOutline.shader" />
     <None Include="Assets\Resources\Json\CityTable.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\Resources\Json\ItemTable.txt" />

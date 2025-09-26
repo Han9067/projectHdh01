@@ -6,6 +6,7 @@ using DG.Tweening;
 public class bMonster : MonoBehaviour
 {
     public int objId, monsterId;
+    public string mName;
     public MonData monData;
     public GameObject shdObj, bodyObj, ggParent, ggObj;
     bool isGG = false;
@@ -15,6 +16,7 @@ public class bMonster : MonoBehaviour
     [SerializeField] private SpriteRenderer bodySpr;
     private MaterialPropertyBlock mProp;
     public bool isOutline = false;
+    private Color redColor = new Color(1, 0.5f, 0.5f, 1);
     void Start()
     {
         monData = MonManager.I.MonDataList[monsterId].Clone();
@@ -26,6 +28,7 @@ public class bMonster : MonoBehaviour
         shdObj.transform.localPosition = new Vector3((w - 1) * 0.6f, -0.35f, 0);
         ggParent.SetActive(false);
         ggParent.transform.localPosition = new Vector3((w - 1) * 0.6f, monData.GgY, 0);
+        mName = monData.Name;
         maxHp = monData.HP;
         hp = maxHp;
         att = monData.Att;
@@ -95,5 +98,6 @@ public class bMonster : MonoBehaviour
         mProp.SetColor("_OutlineColor", Color.red);
         mProp.SetFloat("_OutlineSize", 10);
         bodySpr.SetPropertyBlock(mProp);
+        bodySpr.color = on ? redColor : Color.white;
     }
 }

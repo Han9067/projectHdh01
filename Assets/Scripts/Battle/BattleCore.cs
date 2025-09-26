@@ -98,6 +98,7 @@ public class BattleCore : AutoSingleton<BattleCore>
 
     [Header("====Common====")]
     [SerializeField] private int objId;
+    [SerializeField] private int curSelObjId = 0;
     private List<TurnData> objTurn = new List<TurnData>();
     private int tIdx = 0; // 턴 인덱스
     // float dTime = 0;
@@ -146,7 +147,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 return;
             }
             focus.transform.position = new Vector3(gGrid[t.x, t.y].x, gGrid[t.x, t.y].y, 0);
-            string cName = "";
+            string cName;
             if (gGrid[t.x, t.y].tId == 0)
             {
                 cName = "default";
@@ -162,6 +163,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     cName = "attack";
                     if (focus.activeSelf) focus.SetActive(false);
                     //추후에 해당 타깃 이미지 주변에 아웃라인 강조를 추가하여 선택중이다라는 느낌을 줄 예정
+                    HideAllOutline();
                     ShowOutline(gGrid[t.x, t.y].tId);
                 }
                 else if (gGrid[t.x, t.y].tId >= 1000)
@@ -200,6 +202,19 @@ public class BattleCore : AutoSingleton<BattleCore>
                         if (!focus.activeSelf) return;
                         OnMovePlayer(t);
                         break;
+                }
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                if (curSelObjId != 0)
+                {
+                    UIManager.ShowPopup("ObjSelPop");
+                    Vector2 mousePos = Input.mousePosition;
+                    Presenter.Send("ObjSelPop", "MovePop", mousePos);
+                    string data = "";
+                    data += mData[curSelObjId].mName + "_" + mData[curSelObjId].hp + " / " + mData[curSelObjId].maxHp + "_"
+                     + mData[curSelObjId].att + "_" + mData[curSelObjId].def;
+                    Presenter.Send("ObjSelPop", "ObjInfoDataA", data);
                 }
             }
 
@@ -303,6 +318,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (MonManager.I.BattleMonList.Count > 0)
         {
             int cx = 0, cy = 0;
+            int idx = 0;
             //플레이어와 반대 방향에 배치 0:좌, 1:우
             switch (pDir)
             {
@@ -325,17 +341,19 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
             foreach (var p in mPos)
             {
+                int mId = MonManager.I.BattleMonList[idx];
+                int w = MonManager.I.MonDataList[mId].W, h = MonManager.I.MonDataList[mId].H;
                 var mon = Instantiate(ResManager.GetGameObject("MonObj"), monsterParent);
                 var data = mon.GetComponent<bMonster>();
                 data.SetDirObj(pDir == 0 ? 1 : -1);
-                data.SetMonData(++objId, MonManager.I.BattleMonList[0], gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
+                data.SetMonData(++objId, mId, gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
                 data.SetObjLayer(mapH - p.y);
                 mon.name = "Mon_" + objId;
                 mObj.Add(objId, mon);
                 mData.Add(objId, data);
-                UpdateGrid(p.x, p.y, p.x, p.y, data.w, data.h, objId);
+                UpdateGrid(p.x, p.y, p.x, p.y, w, h, objId);
                 objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p));
-                //나중에 몬스터가 2x2 또는 3x3 타일 형태로 생성되는데 그때는 왼쪽 상단을 기준으로 좌표가 갱신되도록 함
+                idx++;
             }
         }
     }
@@ -738,6 +756,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         {
             mData[objId].StateOutline(true);
         }
+        curSelObjId = objId;
     }
     public void HideAllOutline()
     {
@@ -746,6 +765,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             if (t.Value.isOutline)
                 t.Value.StateOutline(false);
         }
+        curSelObjId = 0;
     }
     #endregion
     #region ==== Data Action ====

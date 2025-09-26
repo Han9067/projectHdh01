@@ -2,8 +2,8 @@ using GB;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.UI;
-public class BattleInfoPop : UIScreen
+
+public class BattleReadyPop : UIScreen
 {
     public GameObject eListPrefab;
     public Transform eListParent;
@@ -16,13 +16,13 @@ public class BattleInfoPop : UIScreen
 
     private void OnEnable()
     {
-        Presenter.Bind("BattleInfoPop", this);
+        Presenter.Bind("BattleReadyPop", this);
 
     }
 
     private void OnDisable()
     {
-        Presenter.UnBind("BattleInfoPop", this);
+        Presenter.UnBind("BattleReadyPop", this);
         InitEnemyList();
     }
 
@@ -81,5 +81,4 @@ public class BattleInfoPop : UIScreen
         eList.GetComponent<EnemyList>().SetEnemy(id, cnt);
         eLists.Add(eList.GetComponent<EnemyList>());
     }
-
 }
