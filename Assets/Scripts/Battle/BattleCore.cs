@@ -153,6 +153,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 if (!CursorManager.I.IsCursor(cName)) CursorManager.I.SetCursor(cName);
                 if (!focus.activeSelf) focus.SetActive(true);
                 if (focusSrp.color != Color.white) focusSrp.color = Color.white;
+                HideAllOutline();
             }
             else
             {
@@ -161,7 +162,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     cName = "attack";
                     if (focus.activeSelf) focus.SetActive(false);
                     //추후에 해당 타깃 이미지 주변에 아웃라인 강조를 추가하여 선택중이다라는 느낌을 줄 예정
-
+                    ShowOutline(gGrid[t.x, t.y].tId);
                 }
                 else if (gGrid[t.x, t.y].tId >= 1000)
                 {
@@ -730,6 +731,21 @@ public class BattleCore : AutoSingleton<BattleCore>
         {
             bloodScreen.gameObject.SetActive(false);
         });
+    }
+    public void ShowOutline(int objId)
+    {
+        if (!mData[objId].isOutline)
+        {
+            mData[objId].StateOutline(true);
+        }
+    }
+    public void HideAllOutline()
+    {
+        foreach (var t in mData)
+        {
+            if (t.Value.isOutline)
+                t.Value.StateOutline(false);
+        }
     }
     #endregion
     #region ==== Data Action ====

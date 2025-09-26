@@ -12,6 +12,9 @@ public class bMonster : MonoBehaviour
     public float hp, maxHp;
     public int att, def, crt, crtRate, hit, eva, gainExp;
     public int w, h;
+    [SerializeField] private SpriteRenderer bodySpr;
+    private MaterialPropertyBlock mProp;
+    public bool isOutline = false;
     void Start()
     {
         monData = MonManager.I.MonDataList[monsterId].Clone();
@@ -32,6 +35,8 @@ public class bMonster : MonoBehaviour
         hit = monData.Hit;
         eva = monData.Eva;
         gainExp = monData.GainExp;
+
+        mProp = new MaterialPropertyBlock();
     }
     public void SetMonData(int objId, int monId, float px, float py)
     {
@@ -81,5 +86,14 @@ public class bMonster : MonoBehaviour
         //경험치 획득
         yield return new WaitForSeconds(0.3f);
         Destroy(gameObject);
+    }
+    public void StateOutline(bool on)
+    {
+        isOutline = on;
+        bodySpr.GetPropertyBlock(mProp);
+        mProp.SetFloat("_Outline", on ? 1f : 0);
+        mProp.SetColor("_OutlineColor", Color.red);
+        mProp.SetFloat("_OutlineSize", 10);
+        bodySpr.SetPropertyBlock(mProp);
     }
 }
