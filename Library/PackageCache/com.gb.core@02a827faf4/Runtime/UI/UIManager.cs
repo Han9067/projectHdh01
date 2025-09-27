@@ -293,18 +293,18 @@ namespace GB
         }
 
 
-        // void OnBackKey()
-        // {
-        //     if (_popupList.Count > 0)
-        //     {
-        //         _popupList[0].BackKey();
-        //     }
-        //     else
-        //     {
-        //         if (_scene != null)
-        //             _scene.BackKey();
-        //     }
-        // }
+        void OnBackKey()
+        {
+            if (_popupList.Count > 0)
+            {
+                _popupList[0].BackKey();
+            }
+            else
+            {
+                if (_scene != null)
+                    _scene.BackKey();
+            }
+        }
 
         public static void ClosePopup()
         {
@@ -337,14 +337,14 @@ namespace GB
             _popupList.Sort((s1, s2) => s2.Weight.CompareTo(s1.Weight));
         }
 
-        // private void Update()
-        // {
-        //     if (Input.GetKeyDown(KeyCode.Escape))
-        //     {
-        //         if (canClose)
-        //             OnBackKey();
-        //     }
-        // }
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (canClose)
+                    OnBackKey();
+            }
+        }
     }
 
     public static class UiUtil
