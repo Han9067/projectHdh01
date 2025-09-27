@@ -76,7 +76,8 @@ public class CharInfoPop : UIScreen
             switch (key)
             {
                 case "CharInfoPopClose":
-                    UIManager.ClosePopup("CharInfoPop");
+                    // UIManager.ClosePopup("CharInfoPop");
+                    Close();
                     break;
             }
         }
