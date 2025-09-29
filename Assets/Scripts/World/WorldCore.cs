@@ -143,7 +143,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             if (Vector2.Distance(player.transform.position, pPos) < 0.01f)
             {
                 player.transform.position = pPos;
-                stopPlayer();
+                StopPlayer();
             }
         }
     }
@@ -152,7 +152,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         player.transform.position = PlayerManager.I.worldPos;
     }
-    public void stopPlayer()
+    public void StopPlayer()
     {
         isMove = false;
         mainUI.stateGameSpd("X0");
@@ -160,11 +160,17 @@ public class WorldCore : AutoSingleton<WorldCore>
         if (PlayerManager.I.currentCity > 0)
         {
             int id = PlayerManager.I.currentCity;
-            MoveCamera(cityObjList[id].transform.position);
+            Vector3 pos = cityObjList[id].transform.position;
+            MoveCamera(pos);
+            player.transform.position = pos;
             UIManager.ShowPopup("CityEnterPop");
             GB.Presenter.Send("CityEnterPop", "EnterCity", id);
-            // player.gameObject.SetActive(false);
+            StatePlayer(false);
         }
+    }
+    public void StatePlayer(bool on)
+    {
+        player.gameObject.SetActive(on);
     }
     #endregion
     #region 월드맵 도시 관련

@@ -9,7 +9,6 @@ public class CharInfoPop : UIScreen
 {
     public bool isActive { get; private set; } = false;
     private string curBodyKey = "";
-    [SerializeField] private GameObject statAddParent;
     private void Awake()
     {
         Regist();
@@ -124,7 +123,14 @@ public class CharInfoPop : UIScreen
         if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)
             curBodyKey = mGameObject["EqBody"].GetComponent<Image>().sprite.name;
 
-        statAddParent.SetActive(PlayerManager.I.pData.Exp >= PlayerManager.I.pData.NextExp);
+        UpdateStatAdd();
+    }
+    void UpdateStatAdd()
+    {
+        bool isActive = PlayerManager.I.pData.Exp >= PlayerManager.I.pData.NextExp;
+        string[] arr = new string[] { "ClickAddVit", "ClickAddEnd", "ClickAddStr", "ClickAddAgi", "ClickAddFor", "ClickAddInt", "ClickAddCha", "ClickAddLuk" };
+        foreach (string s in arr)
+            mButtons[s].gameObject.SetActive(isActive);
     }
     void UpdateVitText(int v) => mTexts["VitVal"].text = v.ToString();
     void UpdateEndText(int v) => mTexts["EndVal"].text = v.ToString();

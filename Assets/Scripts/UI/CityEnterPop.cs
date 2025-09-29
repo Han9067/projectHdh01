@@ -37,6 +37,7 @@ public class CityEnterPop : UIScreen
         UnityEngine.Debug.Log("CityEnterPop OnDisable");
 
         //도시 안으로 들어간 플레이어 활성화
+        WorldCore.I.StatePlayer(true);
     }
     public void RegistButton()
     {
