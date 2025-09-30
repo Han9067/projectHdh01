@@ -170,6 +170,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     public void StatePlayer(bool on)
     {
+        if (player == null) return;
         player.gameObject.SetActive(on);
     }
     #endregion

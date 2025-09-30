@@ -336,6 +336,95 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: TwoWp3
+--- !u!1 &431434207901505687
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 745558563495903929}
+  - component: {fileID: 6623285797481801693}
+  - component: {fileID: 1752736527130548332}
+  - component: {fileID: 5402257410247023473}
+  m_Layer: 5
+  m_Name: Icon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &745558563495903929
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431434207901505687}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4435814408978331254}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -20, y: -48}
+  m_SizeDelta: {x: 40, y: 40}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &6623285797481801693
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431434207901505687}
+  m_CullTransparentMesh: 1
+--- !u!114 &1752736527130548332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431434207901505687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 9bbf29fb76dc5824ebe5a029ccaef88a, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5402257410247023473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431434207901505687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e780aa955b0704a9195f94d7b16d5d97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: BadgeIcon
 --- !u!1 &455005900558640150
 GameObject:
   m_ObjectHideFlags: 0
@@ -707,8 +796,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -48}
-  m_SizeDelta: {x: 120, y: 34}
+  m_AnchoredPosition: {x: 20, y: -48}
+  m_SizeDelta: {x: 60, y: 34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1555167702919053519
 CanvasRenderer:
@@ -751,7 +840,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uC5C6\uC74C"
+  m_Text: H
 --- !u!114 &7760691306600716001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1462,7 +1551,6 @@ GameObject:
   - component: {fileID: 1340958064243858167}
   - component: {fileID: 7908860717251675134}
   - component: {fileID: 3453983867334350831}
-  - component: {fileID: 7102444595264290853}
   m_Layer: 5
   m_Name: Slash
   m_TagString: Untagged
@@ -1531,19 +1619,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: /
---- !u!114 &7102444595264290853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1227561295442042539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b050ba3305f74cfab96b1d9944c9a94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: HpMaxVal
 --- !u!1 &1274897768420640798
 GameObject:
   m_ObjectHideFlags: 0
@@ -2203,7 +2278,6 @@ GameObject:
   - component: {fileID: 9041071761379510422}
   - component: {fileID: 2631572833078841490}
   - component: {fileID: 3732060732693843041}
-  - component: {fileID: 117811813286752926}
   m_Layer: 5
   m_Name: Slash
   m_TagString: Untagged
@@ -2272,19 +2346,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: /
---- !u!114 &117811813286752926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1542063625324921765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b050ba3305f74cfab96b1d9944c9a94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: HpMaxVal
 --- !u!1 &1587325383861062054
 GameObject:
   m_ObjectHideFlags: 0
@@ -3372,7 +3433,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _UIType: 1
   mImages:
-    list: []
+    list:
+    - key: BadgeIcon
+      value: {fileID: 1752736527130548332}
+      duplicatedKey: 0
   mTexts:
     list:
     - key: NameVal
@@ -3392,6 +3456,21 @@ MonoBehaviour:
       duplicatedKey: 0
     - key: GenVal
       value: {fileID: 1398088394256879542}
+      duplicatedKey: 0
+    - key: GradeVal
+      value: {fileID: 6046007901911106274}
+      duplicatedKey: 0
+    - key: FactionVal
+      value: {fileID: 8806193160708416991}
+      duplicatedKey: 0
+    - key: StatusVal
+      value: {fileID: 165751653645135090}
+      duplicatedKey: 0
+    - key: TitleVal
+      value: {fileID: 1144631717076596558}
+      duplicatedKey: 0
+    - key: EpithetVal
+      value: {fileID: 4987450068422867563}
       duplicatedKey: 0
     - key: VitVal
       value: {fileID: 8775413819509968529}
@@ -3420,29 +3499,38 @@ MonoBehaviour:
     - key: HpVal
       value: {fileID: 1129077964494367003}
       duplicatedKey: 0
+    - key: HpMaxVal
+      value: {fileID: 690572314313328730}
+      duplicatedKey: 0
     - key: MpVal
-      value: {fileID: 0}
+      value: {fileID: 2969935232683451839}
+      duplicatedKey: 0
+    - key: MpMaxVal
+      value: {fileID: 5437334571554341460}
       duplicatedKey: 0
     - key: SpVal
-      value: {fileID: 0}
+      value: {fileID: 6405217804414297252}
+      duplicatedKey: 0
+    - key: SpMaxVal
+      value: {fileID: 1497836991366400944}
       duplicatedKey: 0
     - key: AttVal
-      value: {fileID: 0}
+      value: {fileID: 1858297142080693227}
       duplicatedKey: 0
     - key: DefVal
-      value: {fileID: 0}
+      value: {fileID: 5378008422049383204}
       duplicatedKey: 0
     - key: CrtVal
-      value: {fileID: 0}
+      value: {fileID: 4872713194138792605}
       duplicatedKey: 0
     - key: CrtRateVal
-      value: {fileID: 0}
+      value: {fileID: 1100259683704138798}
       duplicatedKey: 0
     - key: HitVal
-      value: {fileID: 0}
+      value: {fileID: 2947102397964478686}
       duplicatedKey: 0
     - key: EvaVal
-      value: {fileID: 0}
+      value: {fileID: 3830979358845335112}
       duplicatedKey: 0
   mButtons:
     list:
@@ -5790,6 +5878,7 @@ Transform:
   - {fileID: 2925700138520603237}
   - {fileID: 7596660444851354577}
   - {fileID: 68156907720182562}
+  - {fileID: 745558563495903929}
   m_Father: {fileID: 5647488351328733217}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3797295476371655723
@@ -12012,7 +12101,6 @@ GameObject:
   - component: {fileID: 8753279749517869869}
   - component: {fileID: 294366623332182626}
   - component: {fileID: 6274049019095497971}
-  - component: {fileID: 4957230773365804254}
   m_Layer: 5
   m_Name: Slash
   m_TagString: Untagged
@@ -12081,19 +12169,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: /
---- !u!114 &4957230773365804254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8168272071384745078}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b050ba3305f74cfab96b1d9944c9a94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: HpMaxVal
 --- !u!1 &8176023020395312764
 GameObject:
   m_ObjectHideFlags: 0

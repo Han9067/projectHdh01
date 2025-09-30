@@ -94,6 +94,7 @@ public class CharInfoPop : UIScreen
     {
         var pData = PlayerManager.I.pData;
         //string text = GB.LocalizationManager.GetValue("0"); //로컬라이즈 매니저에서 사용되는 언어 호출....추후 소제목들 이걸로 대응
+        #region 기본 정보
         mTexts["NameVal"].text = pData.Name;
         mTexts["AgeVal"].text = pData.Age.ToString();
         mTexts["LvVal"].text = pData.Lv.ToString();
@@ -110,20 +111,21 @@ public class CharInfoPop : UIScreen
         mTexts["HitVal"].text = pData.Hit.ToString() + "%";
         mTexts["EvaVal"].text = pData.Eva.ToString() + "%";
 
-        UpdateVitText(pData.VIT);
-        UpdateEndText(pData.END);
-        UpdateStrText(pData.STR);
-        UpdateAgiText(pData.AGI);
-        UpdateForText(pData.FOR);
-        UpdateIntText(pData.INT);
-        UpdateChaText(pData.CHA);
-        UpdateLukText(pData.LUK);
-
+        mTexts["VitVal"].text = pData.VIT.ToString();
+        mTexts["EndVal"].text = pData.END.ToString();
+        mTexts["StrVal"].text = pData.STR.ToString();
+        mTexts["AgiVal"].text = pData.AGI.ToString();
+        mTexts["ForVal"].text = pData.FOR.ToString();
+        mTexts["IntVal"].text = pData.INT.ToString();
+        mTexts["ChaVal"].text = pData.CHA.ToString();
+        mTexts["LukVal"].text = pData.LUK.ToString();
+        #endregion
         HumanAppearance.I.SetUiEqParts(pData, curBodyKey, mGameObject);
         if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)
             curBodyKey = mGameObject["EqBody"].GetComponent<Image>().sprite.name;
 
-        UpdateStatAdd();
+        UpdateStatAdd(); // 스탯 추가 버튼 활성화
+        UpdateGrade(); // 등급 표시
     }
     void UpdateStatAdd()
     {
@@ -132,12 +134,52 @@ public class CharInfoPop : UIScreen
         foreach (string s in arr)
             mButtons[s].gameObject.SetActive(isActive);
     }
-    void UpdateVitText(int v) => mTexts["VitVal"].text = v.ToString();
-    void UpdateEndText(int v) => mTexts["EndVal"].text = v.ToString();
-    void UpdateStrText(int v) => mTexts["StrVal"].text = v.ToString();
-    void UpdateAgiText(int v) => mTexts["AgiVal"].text = v.ToString();
-    void UpdateForText(int v) => mTexts["ForVal"].text = v.ToString();
-    void UpdateIntText(int v) => mTexts["IntVal"].text = v.ToString();
-    void UpdateChaText(int v) => mTexts["ChaVal"].text = v.ToString();
-    void UpdateLukText(int v) => mTexts["LukVal"].text = v.ToString();
+    void UpdateGrade()
+    {
+        int g = PlayerManager.I.pData.Grade;
+        mTexts["GradeVal"].text = GetGradeName(g);
+        mTexts["GradeVal"].transform.localPosition = g == 0 ? new Vector3(0, -48f, 0) : new Vector3(20f, -48f, 0);
+        mImages["BadgeIcon"].gameObject.SetActive(g != 0);
+        if (g > 0)
+        {
+            mImages["BadgeIcon"].color = GetGradeColor(g);
+            int n = g > 3 ? 1 : 2;
+            mImages["BadgeIcon"].sprite = ResManager.GetSprite($"icon_badge{n}");
+        }
+    }
+    string GetGradeName(int grade)
+    {
+        switch (grade)
+        {
+            case 0: return "없음";
+            case 1: return "H";
+            case 2: return "G";
+            case 3: return "F";
+            case 4: return "E";
+            case 5: return "D";
+            case 6: return "C";
+            case 7: return "B";
+            case 8: return "A";
+            case 9: return "S";
+            case 10: return "SS";
+        }
+        return "";
+    }
+    Color GetGradeColor(int grade)
+    {
+        switch (grade)
+        {
+            case 1: return new Color(180f / 255f, 110f / 255f, 60f / 255f);
+            case 2: return new Color(60f / 60f, 60f / 255f, 60f / 255f);
+            case 3: return new Color(230f / 255f, 230f / 255f, 230f / 255f);
+            case 4: return new Color(150f / 255f, 150f / 255f, 150f / 255f);
+            case 5: return new Color(215f / 255f, 140f / 255f, 110f / 255f);
+            case 6: return new Color(225f / 255f, 225f / 255f, 225f / 255f);
+            case 7: return new Color(255f / 255f, 210f / 255f, 110f / 255f);
+            case 8: return new Color(220f / 255f, 245f / 255f, 255f / 255f);
+            case 9: return new Color(85f / 255f, 140f / 255f, 200f / 255f);
+            case 10: return new Color(30f / 255f, 30f / 255f, 30f / 255f);
+        }
+        return Color.white;
+    }
 }

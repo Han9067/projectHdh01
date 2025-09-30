@@ -9,10 +9,10 @@ using UnityEngine.UI;
 public class CityEnterPop : UIScreen
 {
     public static bool isActive { get; private set; } = false;
-    private int curId;
+    private int cityId; // 현재 도시 ID
     private List<int> splitData = new List<int>();
     public List<int> shopList = new List<int>();
-    private int iId = 0;
+    private int iId = 0; //장소 ID
     private void Awake()
     {
         Regist();
@@ -23,7 +23,7 @@ public class CityEnterPop : UIScreen
     {
         Presenter.Bind("CityEnterPop", this);
         isActive = true;
-        curId = 0; // 초기화
+        cityId = 0; // 초기화
         WorldCore.I.enabled = false; // 월드맵 카메라 이동 비활성화
         splitData.Clear();
         shopList.Clear();
@@ -84,6 +84,12 @@ public class CityEnterPop : UIScreen
         {
             switch (key)
             {
+                case "OnJoin":
+                    if (iId == 0)
+                    {
+
+                    }
+                    break;
                 case "OnChat":
                     break;
                 case "OnQuest":
@@ -125,6 +131,11 @@ public class CityEnterPop : UIScreen
 
             HumanAppearance.I.SetUiBaseParts(shop.NpcId, mGameObject);
             HumanAppearance.I.SetUiEqParts(npc, "NpcEq", mGameObject);
+
+            if (iId == 0)
+            {
+                mButtons["OnJoin"].gameObject.SetActive(PlayerManager.I.pData.Grade == 0);
+            }
         }
     }
     void OpenTrade(string key, int type)
@@ -138,9 +149,9 @@ public class CityEnterPop : UIScreen
         switch (key)
         {
             case "EnterCity":
-                curId = data.Get<int>();
-                mTexts["CityName"].text = CityManager.I.CityDataList[curId].Name;
-                string[] strArr = CityManager.I.CityDataList[curId].Place.Split('_');
+                cityId = data.Get<int>();
+                mTexts["CityName"].text = CityManager.I.CityDataList[cityId].Name;
+                string[] strArr = CityManager.I.CityDataList[cityId].Place.Split('_');
                 splitData = strArr.Select(int.Parse).ToList();
                 LoadPlace();
                 break;
@@ -180,7 +191,7 @@ public class CityEnterPop : UIScreen
             }
             // shopAllData에서 조건에 맞는 데이터 찾기
             var result = ShopManager.I.shopAllData.Values
-                .Where(data => data.CityId == curId && data.Type == v)
+                .Where(data => data.CityId == cityId && data.Type == v)
                 .ToList();
             foreach (var shop in result)
                 shopList.Add(shop.Id);
