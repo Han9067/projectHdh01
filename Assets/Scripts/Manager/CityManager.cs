@@ -19,8 +19,11 @@ public class CityManager : AutoSingleton<CityManager>
         //     CityDataList[city.CityID] = new CityData(city.CityID, city.Name, city.Place);
         for (int i = 0; i < 5; i++)
         {
-            CityDataList[CityTable.Datas[i].CityID] = new CityData(CityTable.Datas[i].CityID, CityTable.Datas[i].Name, CityTable.Datas[i].Place, CityTable.Datas[i].Near);
+            CityDataList[CityTable.Datas[i].CityID] = new CityData(CityTable.Datas[i].CityID, CityTable.Datas[i].Name, CityTable.Datas[i].Place, CityTable.Datas[i].Area);
         }
     }
-
+    public string GetCityName(int cityID)
+    {
+        return LocalizationManager.GetValue(CityDataList[cityID].Name);
+    }
 }

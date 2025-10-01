@@ -33,8 +33,6 @@ public class CityEnterPop : UIScreen
         Presenter.UnBind("CityEnterPop", this);
         isActive = false;
         WorldCore.I.enabled = true; // 월드맵 카메라 이동 활성화
-        UnityEngine.Debug.Log("CityEnterPop OnDisable");
-
         //도시 안으로 들어간 플레이어 활성화
         WorldCore.I.StatePlayer(true);
     }

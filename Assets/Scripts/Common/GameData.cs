@@ -214,17 +214,13 @@ public class ItemData
 [System.Serializable]
 public class QuestData
 {
-    public int QuestID, Type, Days, Min, Max;
+    public int QuestID, Days;
     public string Name;
-    public QuestData(int id, string name, int type, int days, string cnt)
+    public QuestData(int id, string name, int days)
     {
         this.QuestID = id;
         this.Name = name;
-        this.Type = type;
         this.Days = days;
-        string[] arr = cnt.Split('-');
-        this.Min = int.Parse(arr[0]);
-        this.Max = int.Parse(arr[1]);
     }
 }
 
@@ -232,19 +228,24 @@ public class QuestData
 [System.Serializable]
 public class QuestInstData
 {
-    public int QuestID, Type, Days, Cnt, Grade, Exp, Crown;
-    public string Name, Desc;
-    public QuestInstData(int id, string name, string desc, int type, int days, int cnt, int grade)
+    //QSCid 는 퀘스트를 수락하여 시작한 도시 ID
+    public int Qid, QSCid, Days, Star;
+    public int Exp, Crown, GradeExp;
+    public string Desc;
+    public int Cnt, MonId, ItemId, CityId, RoadId, NpcGrpId;
+    public QuestInstData(int qid, int qscid)
     {
-        this.QuestID = id;
-        this.Name = name;
+        this.Qid = qid;
+        this.QSCid = qscid;
+    }
+    public void SetQuestBase(string desc, int days, int star, int exp, int crown, int gradeExp)
+    {
         this.Desc = desc;
-        this.Type = type;
         this.Days = days;
-        this.Cnt = cnt;
-        this.Grade = grade;
-        // this.Exp = exp;
-        // this.Crown = crown;
+        this.Star = star;
+        this.Exp = exp;
+        this.Crown = crown;
+        this.GradeExp = gradeExp;
     }
 }
 

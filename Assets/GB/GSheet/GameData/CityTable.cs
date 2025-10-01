@@ -31,7 +31,7 @@ public class CityTable  : GameData
 				case "CityID": return true;
 				case "Name": return true;
 				case "Place": return true;
-				case "Near": return true;
+				case "Area": return true;
 				case "Desc": return true;
 
 		  default: return false;
@@ -60,7 +60,7 @@ public class CityTable  : GameData
 				case "CityID": return data.CityID;
 				case "Name": return data.Name;
 				case "Place": return data.Place;
-				case "Near": return data.Near;
+				case "Area": return data.Area;
 				case "Desc": return data.Desc;
 
 
@@ -80,7 +80,7 @@ public class CityTable  : GameData
 				case "CityID": return data.CityID;
 				case "Name": return data.Name;
 				case "Place": return data.Place;
-				case "Near": return data.Near;
+				case "Area": return data.Area;
 				case "Desc": return data.Desc;
 
 
@@ -101,7 +101,7 @@ public class CityTable  : GameData
 				case 0: return data.CityID;
 				case 1: return data.Name;
 				case 2: return data.Place;
-				case 3: return data.Near;
+				case 3: return data.Area;
 				case 4: return data.Desc;
 
                 default: return null;
@@ -148,7 +148,7 @@ public class CityTableProb : GameDataProb
 		[JsonProperty] public readonly int CityID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly string Place;
-	[JsonProperty] public readonly string Near;
+	[JsonProperty] public readonly string Area;
 	[JsonProperty] public readonly string Desc;
 
 }
