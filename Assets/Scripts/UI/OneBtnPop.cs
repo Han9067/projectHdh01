@@ -41,6 +41,7 @@ public class OneBtnPop : UIScreen
                 Debug.Log("GuildJoin");
                 mImages["GradeIcon"].color = ColorData.GetGradeColor(1);
                 mTexts["GradeDesc"].text = LocalizationManager.GetValue("One_GuildJoin");
+                Presenter.Send("CityEnterPop", "UpdateGuildList");
                 break;
         }
     }

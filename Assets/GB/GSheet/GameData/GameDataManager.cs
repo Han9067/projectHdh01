@@ -54,6 +54,8 @@ public class GameDataManager : AutoSingleton<GameDataManager>
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<MonGrpTable>(MonGrpTabledata,(result)=>{ I._Tables[TABLE.MonGrpTable] = result;}));
                 string SkTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/SkTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<SkTable>(SkTabledata,(result)=>{ I._Tables[TABLE.SkTable] = result;}));
+                string QuestTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/QuestTable").text);
+            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<QuestTable>(QuestTabledata,(result)=>{ I._Tables[TABLE.QuestTable] = result;}));
                 
 
         gbCoroutine.OnComplete(()=>{complete?.Invoke();}).Play();
@@ -174,6 +176,11 @@ case TABLE.SkTable:
         d_SkTable.SetJson(data);
         obj  = d_SkTable;
         break;
+case TABLE.QuestTable:
+        QuestTable d_QuestTable = new QuestTable();
+        d_QuestTable.SetJson(data);
+        obj  = d_QuestTable;
+        break;
         }
 
         return obj;
@@ -286,5 +293,6 @@ public enum TABLE
 	SpawnMonTable,
 	MonGrpTable,
 	SkTable,
+	QuestTable,
 
 }

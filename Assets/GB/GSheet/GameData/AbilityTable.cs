@@ -18,7 +18,7 @@ public class AbilityTable  : GameData
 		var dic = new Dictionary<string, AbilityTableProb>();
 
         for (int i = 0; i < Datas.Length; ++i)
-            dic[Datas[i].AbID.ToString()] = Datas[i];
+            dic[Datas[i].OptID.ToString()] = Datas[i];
 
         _DicDatas = dic;
 
@@ -28,7 +28,7 @@ public class AbilityTable  : GameData
     {
         switch (name)
         {
-				case "AbID": return true;
+				case "OptID": return true;
 				case "Name": return true;
 				case "KR": return true;
 				case "EN": return true;
@@ -56,7 +56,7 @@ public class AbilityTable  : GameData
             AbilityTableProb data = this[row];
             switch (col)
             {
-				case "AbID": return data.AbID;
+				case "OptID": return data.OptID;
 				case "Name": return data.Name;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
@@ -75,7 +75,7 @@ public class AbilityTable  : GameData
              AbilityTableProb data = this[row];
             switch (col)
             {
-				case "AbID": return data.AbID;
+				case "OptID": return data.OptID;
 				case "Name": return data.Name;
 				case "KR": return data.KR;
 				case "EN": return data.EN;
@@ -95,7 +95,7 @@ public class AbilityTable  : GameData
 
             switch (col)
             {
-				case 0: return data.AbID;
+				case 0: return data.OptID;
 				case 1: return data.Name;
 				case 2: return data.KR;
 				case 3: return data.EN;
@@ -141,7 +141,7 @@ public class AbilityTable  : GameData
 [Serializable]
 public class AbilityTableProb : GameDataProb
 {
-		[JsonProperty] public readonly int AbID;
+		[JsonProperty] public readonly int OptID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly string KR;
 	[JsonProperty] public readonly string EN;

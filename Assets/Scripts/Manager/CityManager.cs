@@ -15,8 +15,12 @@ public class CityManager : AutoSingleton<CityManager>
 
     private void LoadCityData()
     {
-        foreach (var city in CityTable.Datas)
-            CityDataList[city.CityID] = new CityData(city.CityID, city.Name, city.Place);
+        // foreach (var city in CityTable.Datas)
+        //     CityDataList[city.CityID] = new CityData(city.CityID, city.Name, city.Place);
+        for (int i = 0; i < 5; i++)
+        {
+            CityDataList[CityTable.Datas[i].CityID] = new CityData(CityTable.Datas[i].CityID, CityTable.Datas[i].Name, CityTable.Datas[i].Place, CityTable.Datas[i].Near);
+        }
     }
 
 }

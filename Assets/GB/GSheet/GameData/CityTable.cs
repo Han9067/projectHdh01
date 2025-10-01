@@ -31,11 +31,8 @@ public class CityTable  : GameData
 				case "CityID": return true;
 				case "Name": return true;
 				case "Place": return true;
-				case "Res": return true;
-				case "KR": return true;
-				case "EN": return true;
+				case "Near": return true;
 				case "Desc": return true;
-				case "Note": return true;
 
 		  default: return false;
 
@@ -63,11 +60,8 @@ public class CityTable  : GameData
 				case "CityID": return data.CityID;
 				case "Name": return data.Name;
 				case "Place": return data.Place;
-				case "Res": return data.Res;
-				case "KR": return data.KR;
-				case "EN": return data.EN;
+				case "Near": return data.Near;
 				case "Desc": return data.Desc;
-				case "Note": return data.Note;
 
 
                 default: return null;
@@ -86,11 +80,8 @@ public class CityTable  : GameData
 				case "CityID": return data.CityID;
 				case "Name": return data.Name;
 				case "Place": return data.Place;
-				case "Res": return data.Res;
-				case "KR": return data.KR;
-				case "EN": return data.EN;
+				case "Near": return data.Near;
 				case "Desc": return data.Desc;
-				case "Note": return data.Note;
 
 
                 default: return null;
@@ -110,11 +101,8 @@ public class CityTable  : GameData
 				case 0: return data.CityID;
 				case 1: return data.Name;
 				case 2: return data.Place;
-				case 3: return data.Res;
-				case 4: return data.KR;
-				case 5: return data.EN;
-				case 6: return data.Desc;
-				case 7: return data.Note;
+				case 3: return data.Near;
+				case 4: return data.Desc;
 
                 default: return null;
             }
@@ -160,10 +148,7 @@ public class CityTableProb : GameDataProb
 		[JsonProperty] public readonly int CityID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly string Place;
-	[JsonProperty] public readonly string Res;
-	[JsonProperty] public readonly string KR;
-	[JsonProperty] public readonly  string EN;
+	[JsonProperty] public readonly string Near;
 	[JsonProperty] public readonly string Desc;
-	[JsonProperty] public readonly string Note;
 
 }

@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using System.Security.Cryptography.X509Certificates;
 using GB;
-using Unity.VisualScripting;
 using UnityEngine.UI;
+using System.Linq;
 
 [System.Serializable]
 public enum PtType
@@ -152,11 +151,13 @@ public class CityData
 {
     public int CityId;
     public string Name, Place;
-    public CityData(int id, string name, string place)
+    public int[] Near;
+    public CityData(int id, string name, string place, string str)
     {
         this.CityId = id;
         this.Name = name;
         this.Place = place;
+        Near = str.Split('_').Select(int.Parse).ToArray();
     }
 }
 
@@ -209,7 +210,45 @@ public class ItemData
     }
 }
 
-//외형 색상
+//퀘스트
+[System.Serializable]
+public class QuestData
+{
+    public int QuestID, Type, Days, Min, Max;
+    public string Name;
+    public QuestData(int id, string name, int type, int days, string cnt)
+    {
+        this.QuestID = id;
+        this.Name = name;
+        this.Type = type;
+        this.Days = days;
+        string[] arr = cnt.Split('-');
+        this.Min = int.Parse(arr[0]);
+        this.Max = int.Parse(arr[1]);
+    }
+}
+
+//길드에서 제시하는 퀘스트용 데이터 클래스
+[System.Serializable]
+public class QuestInstData
+{
+    public int QuestID, Type, Days, Cnt, Grade, Exp, Crown;
+    public string Name, Desc;
+    public QuestInstData(int id, string name, string desc, int type, int days, int cnt, int grade)
+    {
+        this.QuestID = id;
+        this.Name = name;
+        this.Desc = desc;
+        this.Type = type;
+        this.Days = days;
+        this.Cnt = cnt;
+        this.Grade = grade;
+        // this.Exp = exp;
+        // this.Crown = crown;
+    }
+}
+
+//색상 클래스
 [System.Serializable]
 public static class ColorData
 {
@@ -325,6 +364,7 @@ public static class ColorData
     }
 }
 
+//레벨, 경험치 관련 클래스
 [System.Serializable]
 public class LevelData : AutoSingleton<LevelData>
 {
@@ -345,6 +385,8 @@ public class LevelData : AutoSingleton<LevelData>
         return (int)(score * 4);
     }
 }
+
+//오브젝트 레이어 클래스
 [System.Serializable]
 public class ObjLayerData : AutoSingleton<ObjLayerData>
 {
