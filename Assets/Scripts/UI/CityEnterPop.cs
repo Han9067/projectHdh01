@@ -1,10 +1,7 @@
-using System.Diagnostics;
 using GB;
-using QuickEye.Utility;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.UI;
-
+using UnityEngine;
 
 public class CityEnterPop : UIScreen
 {
@@ -139,8 +136,13 @@ public class CityEnterPop : UIScreen
             }
         }
     }
+    void SetInListPreset()
+    {
+
+    }
     void OpenTrade(string key, int type)
     {
+        Debug.Log(key + " " + type);
         UIManager.ShowPopup("ShopInvenPop");
         UIManager.ShowPopup("InvenPop");
         Presenter.Send("ShopInvenPop", "Load" + key, shopList[type]);
