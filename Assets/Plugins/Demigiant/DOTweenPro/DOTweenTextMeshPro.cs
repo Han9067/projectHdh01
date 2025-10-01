@@ -428,7 +428,7 @@ namespace DG.Tweening
         /// Returns the current color of the given character, if it exists and is visible.
         /// </summary>
         /// <param name="charIndex">Character index</param>
-        public Color GetCharColor(int charIndex)
+        public Color GetColorData(int charIndex)
         {
             if (!ValidateChar(charIndex)) return Color.white;
             return _charTransforms[charIndex].GetColor(textInfo.meshInfo);
@@ -474,7 +474,7 @@ namespace DG.Tweening
         /// </summary>
         /// <param name="charIndex">Character index</param>
         /// <param name="color">Color to set</param>
-        public void SetCharColor(int charIndex, Color32 color)
+        public void SetColorData(int charIndex, Color32 color)
         {
             if (!ValidateChar(charIndex)) return;
             CharTransform c = _charTransforms[charIndex];

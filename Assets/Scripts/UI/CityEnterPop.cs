@@ -87,7 +87,8 @@ public class CityEnterPop : UIScreen
                 case "OnJoin":
                     if (iId == 0)
                     {
-
+                        UIManager.ShowPopup("YesNoPop");
+                        Presenter.Send("YesNoPop", "SendYesNoPopData", "GuildJoin/Al_GuildJoin");
                     }
                     break;
                 case "OnChat":
@@ -102,9 +103,9 @@ public class CityEnterPop : UIScreen
                 case "OnWork":
                     break;
                 case "OnGetOut":
+                    StateCity(0);
                     break;
             }
-            StateCity(0);
         }
         else
         {

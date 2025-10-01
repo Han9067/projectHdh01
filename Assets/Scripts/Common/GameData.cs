@@ -211,7 +211,7 @@ public class ItemData
 
 //외형 색상
 [System.Serializable]
-public static class CharColor
+public static class ColorData
 {
     // 스킨 컬러
     private static readonly Dictionary<int, Color> skinColor = new Dictionary<int, Color>()
@@ -306,6 +306,23 @@ public static class CharColor
     {
         return eyeColor.TryGetValue(eyeId, out Color color) ? color : new Color(30f / 255f, 30f / 255f, 30f / 255f);
     }
+    public static Color GetGradeColor(int grade)
+    {
+        switch (grade)
+        {
+            case 1: return new Color(180f / 255f, 110f / 255f, 60f / 255f);
+            case 2: return new Color(60f / 60f, 60f / 255f, 60f / 255f);
+            case 3: return new Color(230f / 255f, 230f / 255f, 230f / 255f);
+            case 4: return new Color(150f / 255f, 150f / 255f, 150f / 255f);
+            case 5: return new Color(215f / 255f, 140f / 255f, 110f / 255f);
+            case 6: return new Color(225f / 255f, 225f / 255f, 225f / 255f);
+            case 7: return new Color(255f / 255f, 210f / 255f, 110f / 255f);
+            case 8: return new Color(220f / 255f, 245f / 255f, 255f / 255f);
+            case 9: return new Color(85f / 255f, 140f / 255f, 200f / 255f);
+            case 10: return new Color(30f / 255f, 30f / 255f, 30f / 255f);
+        }
+        return Color.white;
+    }
 }
 
 [System.Serializable]
@@ -359,9 +376,9 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
         img["Nose"].sprite = ResManager.GetSprite($"Nose_{data.Nose}");
         img["Mouth"].sprite = ResManager.GetSprite($"Mouth_{data.Mouth}");
 
-        Color skinColor = CharColor.GetSkinColor(data.Skin);
-        Color hairColor = CharColor.GetHairColor(data.HairColor);
-        Color eyeColor = CharColor.GetEyeColor(data.EyeColor);
+        Color skinColor = ColorData.GetSkinColor(data.Skin);
+        Color hairColor = ColorData.GetHairColor(data.HairColor);
+        Color eyeColor = ColorData.GetEyeColor(data.EyeColor);
         img["BaseBody"].sprite = ResManager.GetSprite($"Body{data.Gen}");
         img["Face"].color = skinColor; img["Ear"].color = skinColor;
         img["BaseBody"].color = skinColor; img["BaseHand1A"].color = skinColor;
@@ -514,9 +531,9 @@ public class HumanAppearance : AutoSingleton<HumanAppearance>
         //uid가 0이면 무조건 플레이어 1부터는 NPC
         ICharData data = uid == 0 ? PlayerManager.I.pData : NpcManager.I.NpcDataList[uid];
 
-        Color skinColor = CharColor.GetSkinColor(data.Skin);
-        Color hairColor = CharColor.GetHairColor(data.HairColor);
-        Color eyeColor = CharColor.GetEyeColor(data.EyeColor);
+        Color skinColor = ColorData.GetSkinColor(data.Skin);
+        Color hairColor = ColorData.GetHairColor(data.HairColor);
+        Color eyeColor = ColorData.GetEyeColor(data.EyeColor);
         PtType[] skinParts = new PtType[] { PtType.Face, PtType.Ear, PtType.BaseBody, PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth };
         foreach (PtType skinPart in skinParts)
             ptSpr[skinPart].color = skinColor;

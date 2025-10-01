@@ -142,7 +142,7 @@ public class CharInfoPop : UIScreen
         mImages["BadgeIcon"].gameObject.SetActive(g != 0);
         if (g > 0)
         {
-            mImages["BadgeIcon"].color = GetGradeColor(g);
+            mImages["BadgeIcon"].color = ColorData.GetGradeColor(g);
             int n = g > 3 ? 1 : 2;
             mImages["BadgeIcon"].sprite = ResManager.GetSprite($"icon_badge{n}");
         }
@@ -164,22 +164,5 @@ public class CharInfoPop : UIScreen
             case 10: return "SS";
         }
         return "";
-    }
-    Color GetGradeColor(int grade)
-    {
-        switch (grade)
-        {
-            case 1: return new Color(180f / 255f, 110f / 255f, 60f / 255f);
-            case 2: return new Color(60f / 60f, 60f / 255f, 60f / 255f);
-            case 3: return new Color(230f / 255f, 230f / 255f, 230f / 255f);
-            case 4: return new Color(150f / 255f, 150f / 255f, 150f / 255f);
-            case 5: return new Color(215f / 255f, 140f / 255f, 110f / 255f);
-            case 6: return new Color(225f / 255f, 225f / 255f, 225f / 255f);
-            case 7: return new Color(255f / 255f, 210f / 255f, 110f / 255f);
-            case 8: return new Color(220f / 255f, 245f / 255f, 255f / 255f);
-            case 9: return new Color(85f / 255f, 140f / 255f, 200f / 255f);
-            case 10: return new Color(30f / 255f, 30f / 255f, 30f / 255f);
-        }
-        return Color.white;
     }
 }
