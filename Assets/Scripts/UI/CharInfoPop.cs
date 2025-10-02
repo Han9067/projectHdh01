@@ -67,7 +67,7 @@ public class CharInfoPop : UIScreen
             }
             PlayerManager.I.pData.Exp -= PlayerManager.I.pData.NextExp;
             PlayerManager.I.pData.Lv += 1;
-            PlayerManager.I.pData.NextExp = LevelData.I.GetNextExp(PlayerManager.I.pData.Lv);
+            PlayerManager.I.pData.NextExp = ObjLevelManager.I.GetNextExp(PlayerManager.I.pData.Lv);
             UpdateCharInfo();
         }
         else

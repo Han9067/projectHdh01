@@ -24,7 +24,7 @@ public class MonManager : AutoSingleton<MonManager>
             int.Parse(stat[0]), int.Parse(stat[1]), int.Parse(stat[2]), int.Parse(stat[3]), int.Parse(stat[4]),
             int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]),
             mon.W, mon.H, mon.SdwScr, mon.GgY);
-            // mData.GainExp = LevelData.I.GetGainExp(mData.MaxHP, mData.SP, mData.MP, mData.STR, mData.AGI, mData.INT, mData.CHA, mData.LUK);
+            // mData.GainExp = ObjLevelManager.I.GetGainExp(mData.MaxHP, mData.SP, mData.MP, mData.STR, mData.AGI, mData.INT, mData.CHA, mData.LUK);
             MonDataList[id] = mData;
         }
     }
@@ -51,7 +51,7 @@ public class MonManager : AutoSingleton<MonManager>
             H = h,
             SdwScr = sdwScr,
             GgY = ggY,
-            Lv = LevelData.I.GetLv(VIT, END, STR, AGI, FOR, INT, CHA, LUK),
+            Lv = ObjLevelManager.I.GetLv(VIT, END, STR, AGI, FOR, INT, CHA, LUK),
 
             // HP/MP/SP 설정
             HP = hp,
@@ -69,7 +69,7 @@ public class MonManager : AutoSingleton<MonManager>
             Hit = 60 + (AGI / 4),
             Eva = 10 + (AGI / 4),
 
-            GainExp = LevelData.I.GetGainExp(hp, sp, mp, STR, AGI, INT, CHA, LUK)
+            GainExp = ObjLevelManager.I.GetGainExp(hp, sp, mp, STR, AGI, INT, CHA, LUK)
         };
     }
 
