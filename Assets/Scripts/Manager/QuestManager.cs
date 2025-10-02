@@ -15,7 +15,7 @@ public class QuestManager : AutoSingleton<QuestManager>
     }
     private void Start()
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 1; i <= 5; i++)
             SetQuestsInCity(i);
         // foreach (var city in PlaceManager.I.CityDataList)
         //     SetQuestsInCity(city.Key);
@@ -53,7 +53,7 @@ public class QuestManager : AutoSingleton<QuestManager>
                     //등급에 따라 도시 주변 스폰하는 몬스터들을 한곳으로 저장
                     //저장된 리스트에서 랜덤으로 몬스터 하나 선택
                     int min = GetMinGrade(PlayerManager.I.pData.Grade), max = GetMaxGrade(PlayerManager.I.pData.Grade);
-                    int[] Area = PlaceManager.I.CityDataList[cityID].Area;
+                    List<int> Area = PlaceManager.I.CityDataList[cityID].Area;
                     List<int> GrpList = new List<int>();
                     foreach (var area in Area)
                     {

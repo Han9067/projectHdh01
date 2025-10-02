@@ -178,7 +178,6 @@ public class WorldCore : AutoSingleton<WorldCore>
     void LoadCityObj()
     {
         int idx = 1;
-        cityObjList.Clear(); // 기존 리스트 초기화
         foreach (Transform child in cityParent)
         {
             cityObjList.Add(idx, child.gameObject);
@@ -240,7 +239,6 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     void LoadWorldMon()
     {
-        wMonObj.Clear();
         foreach (var wMon in WorldObjManager.I.worldMonDataList)
         {
             var obj = Instantiate(ResManager.GetGameObject("wMonObj"), wMonParent);

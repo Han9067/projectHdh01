@@ -7,8 +7,8 @@ public class GuildQuestPop : UIScreen
 {
     [SerializeField] private Transform parent;
     public Slider mSlider;
-    private List<GameObject> questBtn = new List<GameObject>();
-    private Dictionary<int, QuestInstData> qList = new Dictionary<int, QuestInstData>();
+    private List<GameObject> questBtn = new List<GameObject>(); //퀘스트 버튼 오브젝트
+    private Dictionary<int, QuestInstData> qList = new Dictionary<int, QuestInstData>(); //생성된 퀘스트 데이터
     private void Awake()
     {
         Regist();
@@ -18,12 +18,17 @@ public class GuildQuestPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("GuildQuestPop", this);
-        questBtn.Clear();
     }
     private void OnDisable()
     {
         Presenter.UnBind("GuildQuestPop", this);
-
+        foreach (GameObject btn in questBtn)
+        {
+            if (btn != null)
+                Destroy(btn);
+        }
+        questBtn.Clear();
+        qList.Clear();
     }
 
     public void RegistButton()
@@ -40,7 +45,7 @@ public class GuildQuestPop : UIScreen
                 Close();
                 break;
             case "OnQuestAccept":
-                Debug.Log("QuestAccept 클릭되었습니다!");
+                Debug.Log("QuestAccept");
                 break;
         }
     }
@@ -56,6 +61,10 @@ public class GuildQuestPop : UIScreen
                 mSlider.value = gg;
                 CreateQuestBtn(data.Get<int>());
                 break;
+            case "ClickQuestListBtn":
+                int qid = data.Get<int>();
+                Debug.Log(qid);
+                break;
         }
     }
 
@@ -65,19 +74,15 @@ public class GuildQuestPop : UIScreen
 
     void CreateQuestBtn(int cityId)
     {
-        qList.Clear();
-        questBtn.Clear();
-        //CityQuest[cityID][i]
         var qData = QuestManager.I.CityQuest[cityId];
-
-        // for (int i = 0; i < qData.Count; i++)
-        // {
-        //     // GameObject btn = Instantiate(mGameObject["QuestBtn"], parent);
-        //     // btn.GetComponent<QuestListBtn>().SetQuestListBtn(qData[i].Qid, qData[i].Star, qData[i].Name);
-        //     // questBtn.Add(btn);
-        //     // qList[qData[i].Qid] = qData[i];
-        //     Debug.Log(qData[i].Qid + " " + qData[i].Star + " " + qData[i].Name);
-        // }
+        for (int i = 1; i <= qData.Count; i++)
+        {
+            GameObject obj = Instantiate(ResManager.GetGameObject("QuestBtn"), parent);
+            obj.name = "QuestBtn_" + qData[i].Qid;
+            obj.GetComponent<QuestListBtn>().SetQuestListBtn(qData[i].Qid, qData[i].Star, qData[i].Name);
+            questBtn.Add(obj);
+            qList[qData[i].Qid] = qData[i];
+        }
     }
 
 }

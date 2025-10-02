@@ -151,13 +151,13 @@ public class CityData
 {
     public int CityId;
     public string Name, Place;
-    public int[] Area;
+    public List<int> Area;
     public CityData(int id, string name, string place, string str)
     {
         this.CityId = id;
         this.Name = name;
         this.Place = place;
-        Area = str.Split('_').Select(int.Parse).ToArray();
+        Area = str.Split('_').Select(int.Parse).ToList();
     }
 }
 

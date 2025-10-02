@@ -96,7 +96,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Age = 17;
         pData.Gen = 0;
         pData.Crown = 20000;
-        pData.Grade = 0;
+        pData.Grade = 1;
         pData.GradeExp = 0;
         pData.GradeNext = 1000;
         pData.Lv = 1;
