@@ -8,8 +8,8 @@ public class MonManager : AutoSingleton<MonManager>
     private MonTable _monTable;
     public MonTable MonTable => _monTable ?? (_monTable = GameDataManager.GetTable<MonTable>());
     public Dictionary<int, MonData> MonDataList = new Dictionary<int, MonData>();
-    public List<int> BattleMonList = new List<int>();
-    public List<int> BattleMonGrpUid = new List<int>();
+    // public List<int> BattleMonList = new List<int>();
+    // public List<int> BattleMonGrpUid = new List<int>();
     private void Awake()
     {
         LoadMonData();
@@ -24,7 +24,7 @@ public class MonManager : AutoSingleton<MonManager>
             int.Parse(stat[0]), int.Parse(stat[1]), int.Parse(stat[2]), int.Parse(stat[3]), int.Parse(stat[4]),
             int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]),
             mon.W, mon.H, mon.SdwScr, mon.GgY);
-            // mData.GainExp = ObjLevelManager.I.GetGainExp(mData.MaxHP, mData.SP, mData.MP, mData.STR, mData.AGI, mData.INT, mData.CHA, mData.LUK);
+            // mData.GainExp = GsManager.I.GetGainExp(mData.MaxHP, mData.SP, mData.MP, mData.STR, mData.AGI, mData.INT, mData.CHA, mData.LUK);
             MonDataList[id] = mData;
         }
     }
@@ -51,7 +51,7 @@ public class MonManager : AutoSingleton<MonManager>
             H = h,
             SdwScr = sdwScr,
             GgY = ggY,
-            Lv = ObjLevelManager.I.GetLv(VIT, END, STR, AGI, FOR, INT, CHA, LUK),
+            Lv = GsManager.I.GetLv(VIT, END, STR, AGI, FOR, INT, CHA, LUK),
 
             // HP/MP/SP 설정
             HP = hp,
@@ -69,45 +69,7 @@ public class MonManager : AutoSingleton<MonManager>
             Hit = 60 + (AGI / 4),
             Eva = 10 + (AGI / 4),
 
-            GainExp = ObjLevelManager.I.GetGainExp(hp, sp, mp, STR, AGI, INT, CHA, LUK)
+            GainExp = GsManager.I.GetGainExp(hp, sp, mp, STR, AGI, INT, CHA, LUK)
         };
-    }
-
-    public string GetAroundMon(List<int> grp, int uid, float x, float y, int n)
-    {
-        BattleMonList.Clear(); //전투에 참여하는 몬스터 ID
-        BattleMonGrpUid.Clear(); //전투에 참여하는 몬스터의 파티 or 그룹 UID
-        string str = "";
-        foreach (var m in grp)
-        {
-            BattleMonList.Add(m);
-            str += m + "_";
-        }
-        BattleMonGrpUid.Add(uid);
-        // GameObject[] allMon = GameObject.FindGameObjectsWithTag("Monster");
-        // for (int i = 0; i < allMon.Length; i++)
-        // {
-        //     if (n == i) continue;
-        //     if (Vector2.Distance(allMon[i].transform.position, new Vector2(x, y)) < 10f)
-        //     {
-        //         wMon mon = allMon[i].GetComponent<wMon>();
-        //         foreach (var m in mon.monGrp)
-        //         {
-        //             BattleMonList.Add(m);
-        //             str += m + "_";
-        //         }
-        //     }
-        // }
-        str = str.TrimEnd('_');
-        return str;
-    }
-
-    public void TestCreateMon()
-    {
-        BattleMonList.Clear();
-        BattleMonList.Add(1);
-        BattleMonList.Add(1);
-        // BattleMonList.Add(1);
-        // BattleMonList.Add(1);
     }
 }

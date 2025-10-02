@@ -114,15 +114,15 @@ public class CityEnterPop : UIScreen
         mGameObject["InList"].SetActive(id == 1);
         if (id == 1)
         {
-            var shop = ShopManager.I.GetShopData(shopIdList[sId]);
+            var shop = PlaceManager.I.GetShopData(shopIdList[sId]);
             mTexts["TitleVal"].text = GetTitleName(shop.Type);
             mTexts["JobVal"].text = GetJobName(shop.Type);
             var npc = NpcManager.I.NpcDataList[shop.NpcId];
             mTexts["NameVal"].text = npc.Name;
             mTexts["RlsVal"].text = npc.Rls.ToString();
 
-            AppearanceManager.I.SetUiBaseParts(shop.NpcId, mGameObject);
-            AppearanceManager.I.SetUiEqParts(npc, "NpcEq", mGameObject);
+            GsManager.I.SetUiBaseParts(shop.NpcId, mGameObject);
+            GsManager.I.SetUiEqParts(npc, "NpcEq", mGameObject);
             SetInListPreset();
         }
     }
@@ -169,8 +169,8 @@ public class CityEnterPop : UIScreen
         {
             case "EnterCity":
                 cityId = data.Get<int>();
-                mTexts["CityName"].text = CityManager.I.CityDataList[cityId].Name;
-                string[] strArr = CityManager.I.CityDataList[cityId].Place.Split('_');
+                mTexts["CityName"].text = PlaceManager.I.CityDataList[cityId].Name;
+                string[] strArr = PlaceManager.I.CityDataList[cityId].Place.Split('_');
                 splitData = strArr.Select(int.Parse).ToList();
                 LoadPlace();
                 break;
@@ -214,7 +214,7 @@ public class CityEnterPop : UIScreen
                 y -= 100;
             }
             // shopAllData에서 조건에 맞는 데이터 찾기
-            var result = ShopManager.I.shopAllData.Values
+            var result = PlaceManager.I.shopAllData.Values
                 .Where(data => data.CityId == cityId && data.Type == v)
                 .ToList();
             foreach (var shop in result)

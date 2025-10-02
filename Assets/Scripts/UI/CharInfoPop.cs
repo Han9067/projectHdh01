@@ -16,7 +16,7 @@ public class CharInfoPop : UIScreen
     }
     private void Start()
     {
-        AppearanceManager.I.SetUiBaseParts(0, mGameObject);
+        GsManager.I.SetUiBaseParts(0, mGameObject);
     }
     private void OnEnable()
     {
@@ -67,7 +67,7 @@ public class CharInfoPop : UIScreen
             }
             PlayerManager.I.pData.Exp -= PlayerManager.I.pData.NextExp;
             PlayerManager.I.pData.Lv += 1;
-            PlayerManager.I.pData.NextExp = ObjLevelManager.I.GetNextExp(PlayerManager.I.pData.Lv);
+            PlayerManager.I.pData.NextExp = GsManager.I.GetNextExp(PlayerManager.I.pData.Lv);
             UpdateCharInfo();
         }
         else
@@ -85,7 +85,7 @@ public class CharInfoPop : UIScreen
         switch (key)
         {
             case "UpdateCharAppearance":
-                AppearanceManager.I.SetUiBaseParts(0, mGameObject);
+                GsManager.I.SetUiBaseParts(0, mGameObject);
                 break;
         }
     }
@@ -120,7 +120,7 @@ public class CharInfoPop : UIScreen
         mTexts["ChaVal"].text = pData.CHA.ToString();
         mTexts["LukVal"].text = pData.LUK.ToString();
         #endregion
-        AppearanceManager.I.SetUiEqParts(pData, curBodyKey, mGameObject);
+        GsManager.I.SetUiEqParts(pData, curBodyKey, mGameObject);
         if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)
             curBodyKey = mGameObject["EqBody"].GetComponent<Image>().sprite.name;
 

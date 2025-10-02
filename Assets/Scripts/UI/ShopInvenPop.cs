@@ -91,7 +91,7 @@ public class ShopInvenPop : UIScreen
         InitGrid();
         ItemList.Clear();
         List<ItemPos> itemPosList = new List<ItemPos>();
-        var shopData = ShopManager.I.shopAllData[id];
+        var shopData = PlaceManager.I.shopAllData[id];
         var items = shopData.items;
         foreach (var item in items)
         {

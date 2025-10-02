@@ -66,7 +66,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.GradeNext = data.GradeNext;
         pData.Lv = data.Lv;
         pData.Exp = data.Exp;
-        pData.NextExp = ObjLevelManager.I.GetNextExp(data.Lv);
+        pData.NextExp = GsManager.I.GetNextExp(data.Lv);
         pData.HP = data.HP; pData.MP = data.MP; pData.SP = data.SP;
         pData.AddHP = data.AddHP; pData.AddMP = data.AddMP; pData.AddSP = data.AddSP;
 
@@ -101,7 +101,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.GradeNext = 1000;
         pData.Lv = 1;
         pData.Exp = 0;
-        pData.NextExp = ObjLevelManager.I.GetNextExp(pData.Lv);
+        pData.NextExp = GsManager.I.GetNextExp(pData.Lv);
         pData.GainExp = 0;
         pData.AddHP = 0; pData.AddMP = 0; pData.AddSP = 0;
         pData.VIT = 5; pData.END = 5; pData.STR = 5; pData.AGI = 5; pData.FOR = 5; pData.INT = 5; pData.CHA = 5; pData.LUK = 5;

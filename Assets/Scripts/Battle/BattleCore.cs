@@ -132,7 +132,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (EventSystem.current.IsPointerOverGameObject())
         {
             // UI 오버레이 영역에서는 포커스 커서 비활성화
-            if (!CursorManager.I.IsCursor("default")) CursorManager.I.SetCursor("default");
+            if (!GsManager.I.IsCursor("default")) GsManager.I.SetCursor("default");
             if (focus.activeSelf) focus.SetActive(false);
             return;
         }
@@ -151,7 +151,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             if (gGrid[t.x, t.y].tId == 0)
             {
                 cName = "default";
-                if (!CursorManager.I.IsCursor(cName)) CursorManager.I.SetCursor(cName);
+                if (!GsManager.I.IsCursor(cName)) GsManager.I.SetCursor(cName);
                 if (!focus.activeSelf) focus.SetActive(true);
                 if (focusSrp.color != Color.white) focusSrp.color = Color.white;
                 HideAllOutline();
@@ -178,7 +178,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     if (!focus.activeSelf) focus.SetActive(true);
                     if (focusSrp.color != Color.red) focusSrp.color = Color.red;
                 }
-                if (!CursorManager.I.IsCursor(cName)) CursorManager.I.SetCursor(cName);
+                if (!GsManager.I.IsCursor(cName)) GsManager.I.SetCursor(cName);
                 //공격 커서 상황일때도 가이드라인이 생성되어야할지는 추후 고민
             }
 
@@ -313,9 +313,9 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void LoadEnemyGrp()
     {
-        MonManager.I.TestCreateMon(); //테스트용
+        // WorldObjManager.I.TestCreateMon(); //테스트용
 
-        if (MonManager.I.BattleMonList.Count > 0)
+        if (WorldObjManager.I.btMonList.Count > 0)
         {
             int cx = 0, cy = 0;
             int idx = 0;
@@ -326,7 +326,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 case 1: cx = 10; cy = 12; break;
             }
             //추후 핵심 시스템 끝나면 중심점과 rng 값을 조정할 생각 
-            int mCnt = MonManager.I.BattleMonList.Count, rx = (mCnt / 2) + 1, ry = (mCnt / 4) + 1;
+            int mCnt = WorldObjManager.I.btMonList.Count, rx = (mCnt / 2) + 1, ry = (mCnt / 4) + 1;
             var mPos = new List<Vector2Int>();
             while (mCnt > 0)
             {
@@ -341,7 +341,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
             foreach (var p in mPos)
             {
-                int mId = MonManager.I.BattleMonList[idx];
+                int mId = WorldObjManager.I.btMonList[idx];
                 int w = MonManager.I.MonDataList[mId].W, h = MonManager.I.MonDataList[mId].H;
                 var mon = Instantiate(ResManager.GetGameObject("MonObj"), monsterParent);
                 var data = mon.GetComponent<bMonster>();
@@ -805,15 +805,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (GameObject.Find("Manager") == null)
         {
-            var obj = new GameObject("Manager");
-            obj.AddComponent<PlayerManager>();
-            obj.AddComponent<MonManager>();
-            obj.AddComponent<ItemManager>();
-            obj.AddComponent<SaveFileManager>();
-            obj.AddComponent<BattlePathManager>();
-            obj.AddComponent<CursorManager>();
-            obj.AddComponent<WorldObjManager>();
-            obj.AddComponent<TimeManager>();
+            Instantiate(ResManager.GetGameObject("Manager"), GameObject.Find("Battle").transform);
         }
     }
 }

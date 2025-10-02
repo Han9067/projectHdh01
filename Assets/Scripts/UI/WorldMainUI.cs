@@ -128,9 +128,9 @@ public class WorldMainUI : UIScreen
     }
     private void UpdateTime()
     {
-        mTexts["YearVal"].text = TimeManager.I.wYear.ToString();
-        mTexts["MonVal"].text = TimeManager.I.wMonth.ToString();
-        mTexts["DayVal"].text = TimeManager.I.wDay.ToString();
+        mTexts["YearVal"].text = GsManager.I.wYear.ToString();
+        mTexts["MonVal"].text = GsManager.I.wMonth.ToString();
+        mTexts["DayVal"].text = GsManager.I.wDay.ToString();
     }
     public override void Refresh()
     {

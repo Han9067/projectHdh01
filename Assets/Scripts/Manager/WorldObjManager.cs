@@ -149,10 +149,51 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
     }
     public void RemoveWorldMonGrp()
     {
-        List<int> list = MonManager.I.BattleMonGrpUid;
+        List<int> list = btMonGrpUid;
         foreach (var t in list)
             worldMonDataList.Remove(t);
-        MonManager.I.BattleMonGrpUid.Clear();
+        btMonGrpUid.Clear();
+    }
+    #endregion
+
+    #region 전투 참여 몬스터 관리
+    public List<int> btMonList = new List<int>();
+    public List<int> btMonGrpUid = new List<int>();
+    public string GetAroundMon(List<int> grp, int uid, float x, float y, int n)
+    {
+        btMonList.Clear(); //전투에 참여하는 몬스터 ID
+        btMonGrpUid.Clear(); //전투에 참여하는 몬스터의 파티 or 그룹 UID
+        string str = "";
+        foreach (var m in grp)
+        {
+            btMonList.Add(m);
+            str += m + "_";
+        }
+        btMonGrpUid.Add(uid);
+        // GameObject[] allMon = GameObject.FindGameObjectsWithTag("Monster");
+        // for (int i = 0; i < allMon.Length; i++)
+        // {
+        //     if (n == i) continue;
+        //     if (Vector2.Distance(allMon[i].transform.position, new Vector2(x, y)) < 10f)
+        //     {
+        //         wMon mon = allMon[i].GetComponent<wMon>();
+        //         foreach (var m in mon.monGrp)
+        //         {
+        //             BattleMonList.Add(m);
+        //             str += m + "_";
+        //         }
+        //     }
+        // }
+        str = str.TrimEnd('_');
+        return str;
+    }
+    public void TestCreateMon()
+    {
+        btMonList.Clear();
+        btMonList.Add(1);
+        btMonList.Add(1);
+        // btMonList.Add(1);
+        // btMonList.Add(1);
     }
     #endregion
 }

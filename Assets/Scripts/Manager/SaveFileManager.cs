@@ -9,13 +9,6 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
     private static bool isFirstLoad = true;
     private void Awake()
     {
-        if (I != null && I != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        DontDestroyOnLoad(this.gameObject);
-
         if (isFirstLoad)
         {
             LoadGameFile();

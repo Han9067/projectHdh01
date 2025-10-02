@@ -103,7 +103,7 @@ public class WorldCore : AutoSingleton<WorldCore>
                 case "wt_x": cName = "notMove"; break;
                 default: cName = "default"; break;
             }
-            if (!CursorManager.I.IsCursor(cName)) CursorManager.I.SetCursor(cName);
+            if (!GsManager.I.IsCursor(cName)) GsManager.I.SetCursor(cName);
         }
         #endregion
 
@@ -138,7 +138,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             );
 
 
-            player.SetObjLayer(ObjLayerManager.I.GetObjLayer(player.transform.position.y));
+            player.SetObjLayer(GsManager.I.GetObjLayer(player.transform.position.y));
 
             if (Vector2.Distance(player.transform.position, pPos) < 0.01f)
             {
@@ -232,7 +232,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             var wm = obj.GetComponent<wMon>();
             wm.SetMonData(uId, leaderID, mList);
             wm.transform.position = WorldObjManager.I.GetSpawnPos(areaID); //구역에 맞춰 몬스터 좌표 갱신
-            wm.SetObjLayer(ObjLayerManager.I.GetObjLayer(wm.transform.position.y));
+            wm.SetObjLayer(GsManager.I.GetObjLayer(wm.transform.position.y));
             wMonObj.Add(uId, obj);
 
             WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.transform.position);
