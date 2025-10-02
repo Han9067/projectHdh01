@@ -83,6 +83,8 @@ public class CityEnterPop : UIScreen
                 case "OnChat":
                     break;
                 case "OnQuest":
+                    UIManager.ShowPopup("GuildQuestPop");
+                    Presenter.Send("GuildQuestPop", "SettingQuestPop", cityId);
                     break;
                 case "OnTrade":
                     OpenTrade();
@@ -119,8 +121,8 @@ public class CityEnterPop : UIScreen
             mTexts["NameVal"].text = npc.Name;
             mTexts["RlsVal"].text = npc.Rls.ToString();
 
-            HumanAppearance.I.SetUiBaseParts(shop.NpcId, mGameObject);
-            HumanAppearance.I.SetUiEqParts(npc, "NpcEq", mGameObject);
+            AppearanceManager.I.SetUiBaseParts(shop.NpcId, mGameObject);
+            AppearanceManager.I.SetUiEqParts(npc, "NpcEq", mGameObject);
             SetInListPreset();
         }
     }

@@ -59,13 +59,14 @@
     <UnityVersion>2022.3.61f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Users\hdh\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.1.3\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Users\hdh\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.1.2\Analyzers\Microsoft.Unity.Analyzers.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.61f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.61f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Battle\bMonster.cs" />
     <Compile Include="Assets\Scripts\World\WorldCore.cs" />
+    <Compile Include="Assets\Scripts\Manager\ObjLayerManager.cs" />
     <Compile Include="Assets\Scripts\Battle\BattleCore.cs" />
     <Compile Include="Assets\Scripts\Manager\BattlePathManager.cs" />
     <Compile Include="Assets\GB\ResManager\ObjectPooling\PoolingType.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Assets\GB\GSheet\GameData\EqTable.cs" />
     <Compile Include="Assets\Scripts\UI\QuestListBtn.cs" />
     <Compile Include="Assets\Scripts\World\wPlayer.cs" />
+    <Compile Include="Assets\Scripts\Manager\ObjLevelManager.cs" />
     <Compile Include="Assets\GB\Localization\EditorLocalization.cs" />
     <Compile Include="Assets\Scripts\UI\GuildQuestPop.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\QuestTable.cs" />
@@ -103,6 +105,7 @@
     <Compile Include="Assets\Scripts\UI\ChatPop.cs" />
     <Compile Include="Assets\Scripts\Manager\ItemManager.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\SkTable.cs" />
+    <Compile Include="Assets\Scripts\Manager\AppearanceManager.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\CityTable.cs" />
     <Compile Include="Assets\Scripts\UI\EnemyList.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\AbilityTable.cs" />

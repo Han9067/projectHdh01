@@ -16,7 +16,7 @@ public class CharInfoPop : UIScreen
     }
     private void Start()
     {
-        HumanAppearance.I.SetUiBaseParts(0, mGameObject);
+        AppearanceManager.I.SetUiBaseParts(0, mGameObject);
     }
     private void OnEnable()
     {
@@ -85,7 +85,7 @@ public class CharInfoPop : UIScreen
         switch (key)
         {
             case "UpdateCharAppearance":
-                HumanAppearance.I.SetUiBaseParts(0, mGameObject);
+                AppearanceManager.I.SetUiBaseParts(0, mGameObject);
                 break;
         }
     }
@@ -120,7 +120,7 @@ public class CharInfoPop : UIScreen
         mTexts["ChaVal"].text = pData.CHA.ToString();
         mTexts["LukVal"].text = pData.LUK.ToString();
         #endregion
-        HumanAppearance.I.SetUiEqParts(pData, curBodyKey, mGameObject);
+        AppearanceManager.I.SetUiEqParts(pData, curBodyKey, mGameObject);
         if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)
             curBodyKey = mGameObject["EqBody"].GetComponent<Image>().sprite.name;
 

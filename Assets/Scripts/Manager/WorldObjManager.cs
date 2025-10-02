@@ -67,14 +67,15 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
     #region 월드맵 몬스터 스폰 관련
     private SpawnMonTable _spawnMonTable;
     public SpawnMonTable SpawnMonTable => _spawnMonTable ?? (_spawnMonTable = GameDataManager.GetTable<SpawnMonTable>());
-    public Dictionary<int, MonGrpTableProb> monGrpData = new Dictionary<int, MonGrpTableProb>();
+    private MonGrpTable _monGrpTable;
+    public MonGrpTable MonGrpTable => _monGrpTable ?? (_monGrpTable = GameDataManager.GetTable<MonGrpTable>());
+    public Dictionary<int, MonGrpData> monGrpData = new Dictionary<int, MonGrpData>();
     public Dictionary<int, WorldAreaData> areaDataList = new Dictionary<int, WorldAreaData>(); //월드맵 구역 데이터
     public Dictionary<int, WorldMonData> worldMonDataList = new Dictionary<int, WorldMonData>();
     public void CreateWorldAreaData()
     {
-        var data = GameDataManager.GetTable<MonGrpTable>();
-        foreach (var monGrp in data.Datas)
-            monGrpData[monGrp.GrpID] = monGrp;
+        foreach (var monGrp in MonGrpTable.Datas)
+            monGrpData[monGrp.GrpID] = new MonGrpData(monGrp.GrpID, monGrp.Grade, monGrp.Type, monGrp.Min, monGrp.Max, monGrp.LeaderID, monGrp.List);
 
         foreach (var spawnMon in SpawnMonTable.Datas)
         {

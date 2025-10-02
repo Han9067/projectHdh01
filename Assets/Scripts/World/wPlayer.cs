@@ -14,7 +14,7 @@ public class wPlayer : MonoBehaviour
 
     void Awake()
     {
-        HumanAppearance.I.InitParts(ptSpr, ptMain);
+        AppearanceManager.I.InitParts(ptSpr, ptMain);
     }
     void Start()
     {
@@ -23,10 +23,10 @@ public class wPlayer : MonoBehaviour
         if (frmFront.sprite == null)
             frmFront.sprite = ResManager.GetSprite("frm_front");
 
-        HumanAppearance.I.SetObjAppearance(0, ptSpr);
+        AppearanceManager.I.SetObjAppearance(0, ptSpr);
 
         CacheLayerOrder();
-        SetObjLayer(ObjLayerData.I.GetObjLayer(transform.position.y));
+        SetObjLayer(ObjLayerManager.I.GetObjLayer(transform.position.y));
     }
     void CacheLayerOrder()
     {

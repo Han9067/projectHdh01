@@ -12,12 +12,12 @@ public class bPlayer : MonoBehaviour
     private PlayerData pData;
     void Awake()
     {
-        HumanAppearance.I.InitParts(ptSpr, ptMain);
+        AppearanceManager.I.InitParts(ptSpr, ptMain);
     }
     void Start()
     {
         pData = PlayerManager.I.pData;
-        HumanAppearance.I.SetObjAppearance(0, ptSpr);
+        AppearanceManager.I.SetObjAppearance(0, ptSpr);
     }
     public void OnDamaged(int dmg)
     {

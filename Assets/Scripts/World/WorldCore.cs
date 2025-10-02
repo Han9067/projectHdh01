@@ -138,7 +138,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             );
 
 
-            player.SetObjLayer(ObjLayerData.I.GetObjLayer(player.transform.position.y));
+            player.SetObjLayer(ObjLayerManager.I.GetObjLayer(player.transform.position.y));
 
             if (Vector2.Distance(player.transform.position, pPos) < 0.01f)
             {
@@ -205,7 +205,7 @@ public class WorldCore : AutoSingleton<WorldCore>
                         : WorldObjManager.I.monGrpData[grpList[Random.Range(0, grpList.Length)]]; //몬스터 그룹 데이터 중 랜덤으로 1개 선택
             int leaderID = grpData.LeaderID;
             int mTot = Random.Range(grpData.Min, grpData.Max);
-            List<int> mType = grpData.List.Split(',').Select(int.Parse).ToList(); //몬스터 그룹 내에 존재하는 몬스터들을 분류해서 배열로 저장
+            List<int> mType = grpData.List; //몬스터 그룹 내에 존재하는 몬스터들을 분류해서 배열로 저장 //
             List<int> mList = new List<int>();
             if (mType.Count == 1)
             {
@@ -232,7 +232,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             var wm = obj.GetComponent<wMon>();
             wm.SetMonData(uId, leaderID, mList);
             wm.transform.position = WorldObjManager.I.GetSpawnPos(areaID); //구역에 맞춰 몬스터 좌표 갱신
-            wm.SetObjLayer(ObjLayerData.I.GetObjLayer(wm.transform.position.y));
+            wm.SetObjLayer(ObjLayerManager.I.GetObjLayer(wm.transform.position.y));
             wMonObj.Add(uId, obj);
 
             WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.transform.position);
