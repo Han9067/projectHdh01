@@ -14,7 +14,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     public Dictionary<int, ItemData> ItemDataList = new Dictionary<int, ItemData>();
     // 필요시 아이템 관련 메서드 추가 가능
 
-    private void Awake()
+    public void LoadItemManager()
     {
         LoadEqData();
         LoadWpData();

@@ -8,7 +8,10 @@ public class GuildQuestPop : UIScreen
     [SerializeField] private Transform parent;
     public Slider mSlider;
     private List<GameObject> questBtn = new List<GameObject>(); //퀘스트 버튼 오브젝트
-    private Dictionary<int, QuestInstData> qList = new Dictionary<int, QuestInstData>(); //생성된 퀘스트 데이터
+    private List<QuestInstData> qList = new List<QuestInstData>(); //생성된 퀘스트 데이터
+    private int curId = 0;
+    private int cityId = 1;
+    private bool isAccept = false;
     private void Awake()
     {
         Regist();
@@ -22,6 +25,12 @@ public class GuildQuestPop : UIScreen
     private void OnDisable()
     {
         Presenter.UnBind("GuildQuestPop", this);
+        InitQuestList();
+        isAccept = false;
+        cityId = 1;
+    }
+    void InitQuestList()
+    {
         foreach (GameObject btn in questBtn)
         {
             if (btn != null)
@@ -30,7 +39,6 @@ public class GuildQuestPop : UIScreen
         questBtn.Clear();
         qList.Clear();
     }
-
     public void RegistButton()
     {
         foreach (var v in mButtons)
@@ -41,11 +49,24 @@ public class GuildQuestPop : UIScreen
     {
         switch (key)
         {
-            case "OnQuestClose":
+            case "OnQstClose":
                 Close();
                 break;
-            case "OnQuestAccept":
-                Debug.Log("QuestAccept");
+            case "OnQstAccept":
+                if (isAccept) return;
+                //
+                PlayerManager.I.pData.QuestList.Add(qList[curId]);
+                int cnt = PlayerManager.I.pData.QuestList.Count;
+                PlayerManager.I.pData.QuestList[cnt - 1].IsAccept = true;
+                QuestManager.I.CityQuest[cityId].Remove(qList[curId].Qid);
+                InitQuestList();
+                CreateMyQuest();
+                CreateCityQuest();
+                questBtn[cnt - 1].GetComponent<QuestListBtn>().OnButtonClick();
+                mTexts["MyQuestVal"].text = cnt.ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
+                break;
+            case "OnUpgrade":
+                Debug.Log("Upgrade");
                 break;
         }
     }
@@ -59,11 +80,38 @@ public class GuildQuestPop : UIScreen
                 float gg = PlayerManager.I.pData.GradeExp / PlayerManager.I.pData.GradeNext * 100;
                 if (gg > 100) gg = 100;
                 mSlider.value = gg;
-                CreateQuestBtn(data.Get<int>());
+                bool not = true;
+                if (PlayerManager.I.pData.QuestList.Count > 0)
+                {
+                    CreateMyQuest();
+                    not = false;
+                }
+                mTexts["MyQuestVal"].text = PlayerManager.I.pData.QuestList.Count.ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
+                cityId = data.Get<int>();
+                if (QuestManager.I.CityQuest[cityId].Count > 0)
+                {
+                    CreateCityQuest();
+                    not = false;
+                    questBtn[0].GetComponent<QuestListBtn>().OnButtonClick();
+                }
+                if (not)
+                    NotQuestList(); //퀘스트가 없을떄 표시
                 break;
             case "ClickQuestListBtn":
-                int qid = data.Get<int>();
-                Debug.Log(qid);
+                curId = data.Get<int>();
+                UpdateStars(qList[curId].Star);
+                mTexts["DescVal"].text = qList[curId].Desc;
+                mTexts["ExpVal"].text = qList[curId].Exp.ToString();
+                mTexts["CrownVal"].text = qList[curId].Crown.ToString();
+                mTexts["GdExpVal"].text = qList[curId].GradeExp.ToString();
+                mTexts["DaysVal"].text = qList[curId].Days.ToString();
+                for (int i = 0; i < questBtn.Count; i++)
+                {
+                    questBtn[i].GetComponent<Image>().color = qList[i].IsAccept ? Color.gray : Color.white;
+                }
+                questBtn[curId].GetComponent<Image>().color = Color.yellow;
+                isAccept = qList[curId].IsAccept;
+                mButtons["OnQstAccept"].GetComponent<Image>().color = isAccept ? Color.gray : Color.white;
                 break;
         }
     }
@@ -71,18 +119,39 @@ public class GuildQuestPop : UIScreen
     public override void Refresh()
     {
     }
-
-    void CreateQuestBtn(int cityId)
+    void CreateMyQuest()
     {
-        var qData = QuestManager.I.CityQuest[cityId];
-        for (int i = 1; i <= qData.Count; i++)
+        var qData = PlayerManager.I.pData.QuestList;
+        for (int i = 0; i < qData.Count; i++)
         {
             GameObject obj = Instantiate(ResManager.GetGameObject("QuestBtn"), parent);
-            obj.name = "QuestBtn_" + qData[i].Qid;
-            obj.GetComponent<QuestListBtn>().SetQuestListBtn(qData[i].Qid, qData[i].Star, qData[i].Name);
+            obj.name = "QuestBtn_" + i;
+            obj.GetComponent<QuestListBtn>().SetQuestListBtn(i, qData[i].Star, qData[i].Name);
             questBtn.Add(obj);
-            qList[qData[i].Qid] = qData[i];
+            qList.Add(qData[i]);
         }
     }
+    void CreateCityQuest()
+    {
+        int cnt = questBtn.Count;
+        var qData = QuestManager.I.CityQuest[cityId]; //QuestManager.I.CityQuest[cityId]는 1부터 시작하지만 questBtn,qList는 0부터 시작하므로 cnt+i를 해준다.
+        for (int i = 0; i < qData.Count; i++)
+        {
+            GameObject obj = Instantiate(ResManager.GetGameObject("QuestBtn"), parent);
+            obj.name = "QuestBtn_" + (cnt + i);
+            int n = i + 1;
+            obj.GetComponent<QuestListBtn>().SetQuestListBtn(cnt + i, qData[n].Star, qData[n].Name);
+            questBtn.Add(obj);
+            qList.Add(qData[n]);
+        }
+    }
+    void UpdateStars(int star)
+    {
+        for (int i = 1; i <= 10; i++)
+            mGameObject[$"gqPopStar{i}"].SetActive(i <= star);
+    }
+    void NotQuestList()
+    {
 
+    }
 }

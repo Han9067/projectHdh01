@@ -27,6 +27,16 @@ public class GsManager : AutoSingleton<GsManager>
             cursorTextures.Add(str, cursorTexture);
         }
         #endregion
+
+        #region 매니저 스크립트 초기화
+        ItemManager.I.LoadItemManager();
+        PlayerManager.I.LoadPlayerManager();
+        MonManager.I.LoadMonManager();
+        NpcManager.I.LoadNpcManager();
+        QuestManager.I.LoadQuestManager();
+        PlaceManager.I.LoadPlaceManager();
+        SaveFileManager.I.LoadSaveFileManager();
+        #endregion
     }
     void Start()
     {
@@ -46,7 +56,45 @@ public class GsManager : AutoSingleton<GsManager>
             AddDay();
         }
     }
+    #region 메뉴 팝업 상태
+    public void StateMenuPopup(string key)
+    {
+        GameObject go = null;
+        string str = "";
 
+        switch (key)
+        {
+            case "StateCharInfoPop":
+                go = GameObject.Find("CharInfoPop");
+                str = "CharInfoPop";
+                break;
+            case "StateInvenPop":
+                go = GameObject.Find("InvenPop");
+                str = "InvenPop";
+                break;
+            case "StateJournalPop":
+                go = GameObject.Find("JournalPop");
+                str = "JournalPop";
+                break;
+            case "StateSkillPop":
+                go = GameObject.Find("SkillPop");
+                str = "SkillPop";
+                break;
+        }
+
+        if (go == null)
+        {
+            UIManager.ShowPopup(str);
+        }
+        else
+        {
+            if (go.gameObject.activeSelf)
+                UIManager.ClosePopup(str);
+            else
+                UIManager.ShowPopup(str);
+        }
+    }
+    #endregion
     #region 커서 관리
     public string cName = "default";
     Dictionary<string, Texture2D> cursorTextures = new Dictionary<string, Texture2D>();

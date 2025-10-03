@@ -16,7 +16,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     [Header("테스트")]
     public int testSkin = 1;
     public int testHairColor = 1;
-    protected void Awake()
+    public void LoadPlayerManager()
     {
         InitGrid();
     }
@@ -85,6 +85,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Hair = data.Hair;
         pData.HairColor = data.HairColor;
 
+        pData.QuestList = data.QuestList;
+        // pData.QuestMax = data.QuestMax;
+        pData.QuestMax = 5;
+
         CalcPlayerStat();
         Presenter.Send("WorldMainUI", "UpdateInfo");
     }
@@ -95,7 +99,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Name = "주인공";
         pData.Age = 17;
         pData.Gen = 0;
-        pData.Crown = 20000;
+        pData.Crown = 200;
         pData.Grade = 1;
         pData.GradeExp = 0;
         pData.GradeNext = 1000;
@@ -124,6 +128,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.HP = pData.MaxHP;
         pData.MP = pData.MaxMP;
         pData.SP = pData.MaxSP;
+
+        pData.QuestList = new List<QuestInstData>();
+        pData.QuestMax = 5;
         Presenter.Send("WorldMainUI", "UpdateInfo");
     }
     private void CalcPlayerStat()

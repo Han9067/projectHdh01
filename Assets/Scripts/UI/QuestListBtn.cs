@@ -5,19 +5,19 @@ using GB;
 using UnityEngine.UI;
 public class QuestListBtn : MonoBehaviour
 {
-    public int qId, star;
+    public int uId, star;
     private string qName;
     public List<GameObject> starList = new List<GameObject>();
     [SerializeField] private Text mTxtName;
     [SerializeField] private Button btn;
     public void OnButtonClick()
     {
-        Debug.Log("QuestListBtn 클릭되었습니다!");
-        Presenter.Send("GuildQuestPop", "ClickQuestListBtn", qId);
+        // Debug.Log("QuestListBtn 클릭되었습니다!");
+        Presenter.Send("GuildQuestPop", "ClickQuestListBtn", uId);
     }
-    public void SetQuestListBtn(int id, int st, string name)
+    public void SetQuestListBtn(int u, int st, string name)
     {
-        qId = id;
+        uId = u;
         star = st;
         qName = name;
     }

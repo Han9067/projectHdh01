@@ -10,7 +10,7 @@ public class MonManager : AutoSingleton<MonManager>
     public Dictionary<int, MonData> MonDataList = new Dictionary<int, MonData>();
     // public List<int> BattleMonList = new List<int>();
     // public List<int> BattleMonGrpUid = new List<int>();
-    private void Awake()
+    public void LoadMonManager()
     {
         LoadMonData();
     }

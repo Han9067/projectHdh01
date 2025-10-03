@@ -56,7 +56,7 @@ public class PlaceManager : AutoSingleton<PlaceManager>
     }
     #endregion
 
-    private void Awake()
+    public void LoadPlaceManager()
     {
         LoadCityData();
         LoadShopData();

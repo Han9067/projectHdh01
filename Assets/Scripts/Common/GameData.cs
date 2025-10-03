@@ -43,6 +43,8 @@ public class PlayerData : ICharData
     public int Att, Def;
     public int Crt, CrtRate, Hit, Eva; // 치명타율, 치명타확률, 명중, 회피
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
+    public int QuestMax;
+    public List<QuestInstData> QuestList;
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
     #region ICharData

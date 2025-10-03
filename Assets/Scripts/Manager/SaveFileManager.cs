@@ -7,12 +7,12 @@ using GB;
 public class SaveFileManager : AutoSingleton<SaveFileManager>
 {
     private static bool isFirstLoad = true;
-    private void Awake()
+    public void LoadSaveFileManager()
     {
         if (isFirstLoad)
         {
-            LoadGameFile();
             isFirstLoad = false;
+            LoadGameFile();
         }
     }
     public void SaveGameFile()
@@ -49,7 +49,7 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
         }
         else
         {
-            Debug.Log("저장 파일을 찾을 수 없습니다: " + path);
+            // Debug.Log("저장 파일을 찾을 수 없습니다: " + path);
             PlayerManager.I.DummyPlayerData();
         }
     }

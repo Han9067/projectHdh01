@@ -7,7 +7,7 @@ public class NpcManager : AutoSingleton<NpcManager>
     private NpcTable _npcTable;
     public NpcTable NpcTable => _npcTable ?? (_npcTable = GameDataManager.GetTable<NpcTable>());
     public Dictionary<int, NpcData> NpcDataList = new Dictionary<int, NpcData>();
-    private void Awake()
+    public void LoadNpcManager()
     {
         LoadNpcData();
     }
