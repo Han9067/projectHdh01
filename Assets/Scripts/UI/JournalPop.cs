@@ -1,9 +1,10 @@
 using GB;
+using UnityEngine;
 
 
 public class JournalPop : UIScreen
 {
-
+    [SerializeField] private Transform parent;
 
 
     private void Awake()
