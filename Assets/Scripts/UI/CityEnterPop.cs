@@ -102,7 +102,7 @@ public class CityEnterPop : UIScreen
         {
             switch (key)
             {
-                case "CityEnterPopClose":
+                case "GetOutCity":
                     Close();
                     break;
             }
@@ -169,7 +169,7 @@ public class CityEnterPop : UIScreen
         {
             case "EnterCity":
                 cityId = data.Get<int>();
-                mTexts["CityName"].text = PlaceManager.I.CityDataList[cityId].Name;
+                mTexts["CityName"].text = LocalizationManager.GetValue(PlaceManager.I.CityDataList[cityId].Name);
                 string[] strArr = PlaceManager.I.CityDataList[cityId].Place.Split('_');
                 splitData = strArr.Select(int.Parse).ToList();
                 LoadPlace();

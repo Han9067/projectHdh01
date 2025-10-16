@@ -235,13 +235,14 @@ public class ItemData
 [System.Serializable]
 public class QuestData
 {
-    public int QuestID, Days;
+    public int QuestID, Days, Type;
     public string Name;
-    public QuestData(int id, string name, int days)
+    public QuestData(int id, string name, int days, int type)
     {
         this.QuestID = id;
         this.Name = name;
         this.Days = days;
+        this.Type = type;
     }
 }
 
@@ -249,18 +250,20 @@ public class QuestData
 [System.Serializable]
 public class QuestInstData
 {
-    //QSCid 는 퀘스트를 수락하여 시작한 도시 ID
-    public int Qid, QSCid, Days, Star;
+    //Qid는 퀘스트 ID,QSCid는 퀘스트를 수락하여 시작한 도시 ID
+    public int Qid, QSCid, QType, Days, Star;
     public int Exp, Crown, GradeExp;
     public string Name, Desc;
-    public int Cnt, MonId, ItemId, CityId, RoadId, NpcGrpId;
-    public bool IsAccept;
-    public QuestInstData(int qid, int qscid, string name)
+    public int CurCnt, TgCnt, MonId, ItemId, CityId, RoadId, NpcGrpId;
+    public bool IsAccept, IsComplete;
+    public QuestInstData(int qid, int qscid, int qtype, string name)
     {
         this.Qid = qid;
         this.QSCid = qscid;
+        this.QType = qtype;
         this.Name = name;
         this.IsAccept = false;
+        this.IsComplete = false;
     }
     public void SetQuestBase(string desc, int days, int star, int exp, int crown, int gradeExp)
     {

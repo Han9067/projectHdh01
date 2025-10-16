@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class ShopInvenPop : UIScreen
 {
-    public GameObject shopItemPrefab;
     public static bool isActive { get; private set; } = false;
     private int gw = 10; //기본 넓이 10칸
     private int gh = 12; //기본 높이 12칸
@@ -237,7 +236,7 @@ public class ShopInvenPop : UIScreen
         {
             Sprite iSpr = ResManager.GetSprite(data.itemData.Res);
             // 프리팹 인스턴스화
-            GameObject shopItem = Instantiate(shopItemPrefab, content);
+            GameObject shopItem = Instantiate(ResManager.GetGameObject("ShopItem"), content);
 
             int w = data.itemData.W * 64, h = data.itemData.H * 64;
             // RectTransform 설정

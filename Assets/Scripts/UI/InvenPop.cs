@@ -15,7 +15,6 @@ public class InvenPop : UIScreen
     [SerializeField] private Transform slotParent; // 슬롯 부모
     [SerializeField] private Transform eqParent; // 장비 부모
     [SerializeField] private Transform itemParent; // 아이템 부모
-    [SerializeField] private GameObject itemPrefab; // 아이템 프리팹
     [SerializeField] private GameObject popPrefab; // 팝업 프리팹
     public Image[,] gridObj; // 그리드 게임오브젝트
     private List<List<InvenGrid>> pGrids; // 플레이어 그리드
@@ -247,7 +246,7 @@ public class InvenPop : UIScreen
     }
     private void PlaceInvenItem(int sx, int sy, int wid, int hei, ItemData item, bool isEq)
     {
-        GameObject itemObj = Instantiate(itemPrefab, itemParent);
+        GameObject itemObj = Instantiate(ResManager.GetGameObject("InvenItem"), itemParent);
         itemObj.name = $"Item_{item.Name}";
         InvenItemObj invenItemObj = itemObj.GetComponent<InvenItemObj>();
         invenItemObj.SetItemData(item, sx, sy);

@@ -116,13 +116,13 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Nose = 1; pData.Mouth = 1;
         pData.Hair = 1; pData.HairColor = 1;
 
-        ItemManager.I.CreateInvenItem(30002, 1, 0);
-        ItemManager.I.CreateInvenItem(10002, 3, 0);
+        // ItemManager.I.CreateInvenItem(30002, 1, 0);
+        // ItemManager.I.CreateInvenItem(10002, 3, 0);
         ItemManager.I.CreateInvenItem(30001, -1, -1); // 장착 아이템은 -1, -1로 설정
         ItemManager.I.CreateInvenItem(10001, -1, -1);
 
-        pData.EqSlot["Hand1"] = pData.Inven[2]; // 손1
-        pData.EqSlot["Armor"] = pData.Inven[3]; // 갑옷
+        pData.EqSlot["Hand1"] = pData.Inven[0]; // 손1
+        pData.EqSlot["Armor"] = pData.Inven[1]; // 갑옷
 
         CalcPlayerStat();
         pData.HP = pData.MaxHP;

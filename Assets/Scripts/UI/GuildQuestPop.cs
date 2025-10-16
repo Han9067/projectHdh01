@@ -9,8 +9,8 @@ public class GuildQuestPop : UIScreen
     public Slider mSlider;
     private List<GameObject> questBtn = new List<GameObject>(); //퀘스트 버튼 오브젝트
     private List<QuestInstData> qList = new List<QuestInstData>(); //생성된 퀘스트 데이터
-    private int curId = 0;
-    private int cityId = 1;
+
+    private int curId = 0, cityId = 1, qIdx = 0;
     private bool isAccept = false;
     private void Awake()
     {
@@ -38,6 +38,7 @@ public class GuildQuestPop : UIScreen
         }
         questBtn.Clear();
         qList.Clear();
+        qIdx = 0;
     }
     public void RegistButton()
     {
@@ -54,7 +55,6 @@ public class GuildQuestPop : UIScreen
                 break;
             case "OnQstAccept":
                 if (isAccept) return;
-                //
                 PlayerManager.I.pData.QuestList.Add(qList[curId]);
                 int cnt = PlayerManager.I.pData.QuestList.Count;
                 PlayerManager.I.pData.QuestList[cnt - 1].IsAccept = true;
@@ -76,6 +76,7 @@ public class GuildQuestPop : UIScreen
         {
             case "SettingQuestPop":
                 //MyRankBadge
+                qIdx = 0;
                 mTexts["GradeGgVal"].text = PlayerManager.I.pData.GradeExp.ToString() + " / " + PlayerManager.I.pData.GradeNext.ToString();
                 float gg = PlayerManager.I.pData.GradeExp / PlayerManager.I.pData.GradeNext * 100;
                 if (gg > 100) gg = 100;
@@ -106,12 +107,11 @@ public class GuildQuestPop : UIScreen
                 mTexts["GdExpVal"].text = qList[curId].GradeExp.ToString();
                 mTexts["DaysVal"].text = qList[curId].Days.ToString();
                 for (int i = 0; i < questBtn.Count; i++)
-                {
                     questBtn[i].GetComponent<Image>().color = qList[i].IsAccept ? Color.gray : Color.white;
-                }
                 questBtn[curId].GetComponent<Image>().color = Color.yellow;
                 isAccept = qList[curId].IsAccept;
-                mButtons["OnQstAccept"].GetComponent<Image>().color = isAccept ? Color.gray : Color.white;
+                mButtons["OnQstAccept"].gameObject.SetActive(!isAccept);
+                mGameObject["tObjProgress"].SetActive(isAccept);
                 break;
         }
     }
@@ -124,25 +124,25 @@ public class GuildQuestPop : UIScreen
         var qData = PlayerManager.I.pData.QuestList;
         for (int i = 0; i < qData.Count; i++)
         {
-            GameObject obj = Instantiate(ResManager.GetGameObject("QuestBtn"), parent);
-            obj.name = "QuestBtn_" + i;
-            obj.GetComponent<QuestListBtn>().SetQuestListBtn(i, qData[i].Star, qData[i].Name);
+            GameObject obj = Instantiate(ResManager.GetGameObject("GuildQstBtn"), parent);
+            obj.name = "MyQuest_" + qIdx;
+            obj.GetComponent<QuestListBtn>().SetQuestListBtn(qIdx, qData[i].Star, qData[i].QType, LocalizationManager.GetValue(qData[i].Name), "GuildQuestPop");
             questBtn.Add(obj);
             qList.Add(qData[i]);
+            qIdx++;
         }
     }
     void CreateCityQuest()
     {
-        int cnt = questBtn.Count;
-        var qData = QuestManager.I.CityQuest[cityId]; //QuestManager.I.CityQuest[cityId]는 1부터 시작하지만 questBtn,qList는 0부터 시작하므로 cnt+i를 해준다.
-        for (int i = 0; i < qData.Count; i++)
+        var qData = QuestManager.I.CityQuest[cityId];
+        foreach (var v in qData)
         {
-            GameObject obj = Instantiate(ResManager.GetGameObject("QuestBtn"), parent);
-            obj.name = "QuestBtn_" + (cnt + i);
-            int n = i + 1;
-            obj.GetComponent<QuestListBtn>().SetQuestListBtn(cnt + i, qData[n].Star, qData[n].Name);
+            GameObject obj = Instantiate(ResManager.GetGameObject("GuildQstBtn"), parent);
+            obj.name = "CityQuest_" + qIdx;
+            obj.GetComponent<QuestListBtn>().SetQuestListBtn(qIdx, v.Value.Star, v.Value.QType, LocalizationManager.GetValue(v.Value.Name), "GuildQuestPop");
             questBtn.Add(obj);
-            qList.Add(qData[n]);
+            qList.Add(v.Value);
+            qIdx++;
         }
     }
     void UpdateStars(int star)

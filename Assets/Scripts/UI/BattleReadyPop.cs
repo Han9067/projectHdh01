@@ -5,7 +5,6 @@ using System.Linq;
 
 public class BattleReadyPop : UIScreen
 {
-    public GameObject eListPrefab;
     public Transform eListParent;
     public List<EnemyList> eLists = new List<EnemyList>();
     private void Awake()
@@ -77,8 +76,9 @@ public class BattleReadyPop : UIScreen
     }
     void CreateEnemyList(int id, int cnt)
     {
-        var eList = Instantiate(eListPrefab, eListParent);
-        eList.GetComponent<EnemyList>().SetEnemy(id, cnt);
-        eLists.Add(eList.GetComponent<EnemyList>());
+        GameObject eList = Instantiate(ResManager.GetGameObject("EnemyList"), eListParent);
+        EnemyList enemyList = eList.GetComponent<EnemyList>();
+        enemyList.SetEnemy(id, cnt);
+        eLists.Add(enemyList);
     }
 }

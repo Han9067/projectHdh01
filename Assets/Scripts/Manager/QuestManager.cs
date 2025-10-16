@@ -23,14 +23,14 @@ public class QuestManager : AutoSingleton<QuestManager>
     private void LoadQuestData()
     {
         foreach (var quest in QuestTable.Datas)
-            QuestData[quest.QuestID] = new QuestData(quest.QuestID, quest.Name, quest.Days);
+            QuestData[quest.QuestID] = new QuestData(quest.QuestID, quest.Name, quest.Days, quest.Type);
     }
     private void SetQuestsInCity(int cityID)
     {
         CityQuest[cityID] = new Dictionary<int, QuestInstData>();
         for (int i = 1; i <= 2; i++)
         {
-            CityQuest[cityID][i] = new QuestInstData(i, cityID, QuestData[i].Name);
+            CityQuest[cityID][i] = new QuestInstData(i, cityID, QuestData[i].Type, QuestData[i].Name);
             string desc = ""; //퀘스트 설명
             int tg = 0; //타겟 ID
             int days = 1, star = 1, exp = 0, crown = 0, gradeExp = 0; //별, 경험치, 왕관, 등급 경험치
@@ -41,7 +41,7 @@ public class QuestManager : AutoSingleton<QuestManager>
                     List<int> tgCity = new List<int> { 1, 2, 3, 4, 5 };
                     tgCity.Remove(cityID);
                     tg = tgCity[Random.Range(0, tgCity.Count)];
-                    desc = string.Format(LocalizationManager.GetValue("Quest_1"), PlaceManager.I.GetCityName(tg));
+                    desc = string.Format(LocalizationManager.GetValue("QstG_Delivery_Desc"), PlaceManager.I.GetCityName(tg));
                     star = 1;
                     days = 30; exp = 200; crown = 500; gradeExp = 100;
                     CityQuest[cityID][i].SetQuestBase(desc, days, star, exp, crown, gradeExp);
@@ -74,12 +74,13 @@ public class QuestManager : AutoSingleton<QuestManager>
                     }
                     tg = MonList[Random.Range(0, MonList.Count)];
                     int cnt = Random.Range(10, 30);
-                    desc = string.Format(LocalizationManager.GetValue("Quest_2"), cnt, MonManager.I.MonDataList[tg].Name);
+                    desc = string.Format(LocalizationManager.GetValue("QstG_KillMon_Desc"), cnt, MonManager.I.MonDataList[tg].Name);
                     star = GetStarToMon(tg);
                     days = 30; exp = star * cnt * 50; crown = star * cnt * 40; gradeExp = star * cnt * 10;
                     CityQuest[cityID][i].SetQuestBase(desc, days, star, exp, crown, gradeExp);
                     CityQuest[cityID][i].MonId = tg;
-                    CityQuest[cityID][i].Cnt = cnt;
+                    CityQuest[cityID][i].CurCnt = 0;
+                    CityQuest[cityID][i].TgCnt = cnt;
                     break; //특정 몬스터 처치 퀘스트
                 case 3:
                     break; //특정 아이템 획득 퀘스트
