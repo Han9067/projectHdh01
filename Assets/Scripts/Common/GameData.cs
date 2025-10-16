@@ -64,7 +64,6 @@ public class PlayerData : ICharData
     {
         EqSlot.Add("Hand1", null); EqSlot.Add("Hand2", null); EqSlot.Add("Armor", null); EqSlot.Add("Shoes", null); EqSlot.Add("Helmet", null);
         EqSlot.Add("Gloves", null); EqSlot.Add("Belt", null); EqSlot.Add("Cape", null); EqSlot.Add("Necklace", null); EqSlot.Add("Ring1", null); EqSlot.Add("Ring2", null);
-
     } // 생성자
 }
 [System.Serializable]
@@ -389,16 +388,5 @@ public static class ColorData
             case 10: return new Color(30f / 255f, 30f / 255f, 30f / 255f);
         }
         return Color.white;
-    }
-}
-
-// 통합 저장 데이터 클래스
-[System.Serializable]
-public class GameSaveData
-{
-    public PlayerData playerData;
-    public GameSaveData()
-    {
-        playerData = new PlayerData();
     }
 }

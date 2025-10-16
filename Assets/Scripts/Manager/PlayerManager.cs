@@ -54,7 +54,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             GameObject.Find("CharInfoPop").GetComponent<CharInfoPop>().UpdateCharInfo();
     }
     // 플레이어 데이터 초기화
-    public void ApplyPlayerData(PlayerData data)
+    public void ApplyPlayerData(PlayerData data, Vector3 pos)
     {
         pData = new PlayerData();
         pData.Name = data.Name;
@@ -73,6 +73,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.VIT = data.VIT; pData.END = data.END; pData.STR = data.STR; pData.AGI = data.AGI; pData.FOR = data.FOR; pData.INT = data.INT; pData.CHA = data.CHA; pData.LUK = data.LUK;
 
         pData.Inven = data.Inven;
+        pData.EqSlot = data.EqSlot;
 
         pData.Skin = data.Skin;
         pData.Face = data.Face;
@@ -90,12 +91,14 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.QuestMax = 5;
 
         CalcPlayerStat();
+
+        isObjCreated = true; //저장된 데이터이기에 해당 불대수 true로 설정
+        worldPos = pos;
         Presenter.Send("WorldMainUI", "UpdateInfo");
     }
     public void DummyPlayerData()
     {
-        if (pData == null)
-            pData = new PlayerData();
+        pData = new PlayerData();
         pData.Name = "주인공";
         pData.Age = 17;
         pData.Gen = 0;
@@ -118,8 +121,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
         // ItemManager.I.CreateInvenItem(30002, 1, 0);
         // ItemManager.I.CreateInvenItem(10002, 3, 0);
-        ItemManager.I.CreateInvenItem(30001, -1, -1); // 장착 아이템은 -1, -1로 설정
-        ItemManager.I.CreateInvenItem(10001, -1, -1);
+        ItemManager.I.CreateInvenItem(30001, -1, -1); //옷, 장착 아이템은 -1, -1로 설정
+        ItemManager.I.CreateInvenItem(10001, -1, -1); //무기
 
         pData.EqSlot["Hand1"] = pData.Inven[0]; // 손1
         pData.EqSlot["Armor"] = pData.Inven[1]; // 갑옷

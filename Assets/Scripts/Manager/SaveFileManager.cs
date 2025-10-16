@@ -3,6 +3,17 @@ using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
 using GB;
+using Newtonsoft.Json;
+
+// 통합 저장 데이터 클래스
+[System.Serializable]
+public class GameSaveData
+{
+    public Vector3 playerPos;
+    public PlayerData playerData;
+    public Dictionary<int, Dictionary<int, QuestInstData>> CityQuest;
+    public Dictionary<int, WorldMonData> worldMonDataList;
+}
 
 public class SaveFileManager : AutoSingleton<SaveFileManager>
 {
@@ -17,43 +28,82 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
     }
     public void SaveGameFile()
     {
-        PlayerData pData = PlayerManager.I.pData;
         GameSaveData saveData = new GameSaveData();
-        saveData.playerData = pData;
-        Debug.Log(JsonUtility.ToJson(saveData, true));
-        string json = JsonUtility.ToJson(saveData, true);
+
+        #region 저장 데이터
+        saveData.playerPos = WorldCore.I.GetPlayerPos();
+        saveData.playerData = PlayerManager.I.pData;
+        saveData.CityQuest = QuestManager.I.CityQuest;
+        saveData.worldMonDataList = WorldObjManager.I.worldMonDataList;
+        #endregion
+
+        // ⭐ 여기가 핵심!
+        var settings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            Formatting = Formatting.Indented
+        };
+
+        string json = JsonConvert.SerializeObject(saveData, settings);
         File.WriteAllText(Path.Combine(Application.persistentDataPath, "game_save.json"), json);
+        Debug.Log("=== 게임 데이터 저장 완료 ===");
     }
     public void LoadGameFile()
     {
         string path = Path.Combine(Application.persistentDataPath, "game_save.json");
+
         if (File.Exists(path))
         {
             try
             {
-                // JSON 파일 읽기
+                // ✅ 파일 읽기와 역직렬화를 try 안에 포함
                 string jsonContent = File.ReadAllText(path);
-                GameSaveData loadedData = JsonUtility.FromJson<GameSaveData>(jsonContent);
-                // PlayerManager에 데이터 로드
-                if (loadedData.playerData != null)
+                var settings = new JsonSerializerSettings
                 {
-                    PlayerManager.I.ApplyPlayerData(loadedData.playerData);
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+                GameSaveData loadedData = JsonConvert.DeserializeObject<GameSaveData>(jsonContent, settings);
+
+                // ✅ null 체크
+                if (loadedData != null && loadedData.playerData != null)
+                {
+                    PlayerManager.I.ApplyPlayerData(loadedData.playerData, loadedData.playerPos);
+                    Debug.Log("=== 게임 데이터 로드 완료 ===");
                 }
-                Debug.Log("=== 게임 데이터 로드 완료 ===");
+                else
+                {
+                    Debug.LogWarning("저장 데이터가 유효하지 않습니다. 기본 데이터로 시작합니다.");
+                    PlayerManager.I.DummyPlayerData();
+                }
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"게임 데이터 로드 중 오류 발생: {e.Message}");
+                // ✅ 상세한 에러 정보 출력
+                Debug.LogError($"게임 데이터 로드 중 오류 발생:\n{e.Message}\n{e.StackTrace}");
                 PlayerManager.I.DummyPlayerData();
             }
         }
         else
         {
-            // Debug.Log("저장 파일을 찾을 수 없습니다: " + path);
+            // ✅ 파일이 없을 때 처리
+            Debug.Log("저장 파일이 없습니다. 새 게임으로 시작합니다.");
             PlayerManager.I.DummyPlayerData();
         }
     }
+    public void LoadDataTest()
+    {
+        string path = Path.Combine(Application.persistentDataPath, "game_save.json");
+        if (File.Exists(path))
+        {
+            string jsonContent = File.ReadAllText(path);
+            GameSaveData loadedData = JsonConvert.DeserializeObject<GameSaveData>(jsonContent);
+            Debug.Log(loadedData.playerPos);
+            Debug.Log(loadedData.playerData.EqSlot["Hand1"].Name);
+            // Debug.Log(loadedData.playerData.EqSlot["Armor"].Name);
 
+        }
+
+    }
     // 저장 파일 삭제
     public void DelSaveFile()
     {
@@ -96,7 +146,8 @@ public class SaveFileManagerEditor : Editor
 
         if (GUILayout.Button("게임 데이터 로드"))
         {
-            myScript.LoadGameFile();
+            // myScript.LoadGameFile();
+            myScript.LoadDataTest();
         }
 
         GUILayout.Space(5);

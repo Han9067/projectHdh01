@@ -152,6 +152,10 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         player.transform.position = PlayerManager.I.worldPos;
     }
+    public Vector3 GetPlayerPos()
+    {
+        return player.transform.position;
+    }
     public void StopPlayer()
     {
         isMove = false;
