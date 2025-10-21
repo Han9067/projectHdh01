@@ -32,9 +32,6 @@ public class ShopTable  : GameData
 				case "Type": return true;
 				case "NpcID": return true;
 				case "CityID": return true;
-				case "KR": return true;
-				case "EN": return true;
-				case "Note": return true;
 
 		  default: return false;
 
@@ -63,9 +60,6 @@ public class ShopTable  : GameData
 				case "Type": return data.Type;
 				case "NpcID": return data.NpcID;
 				case "CityID": return data.CityID;
-				case "KR": return data.KR;
-				case "EN": return data.EN;
-				case "Note": return data.Note;
 
 
                 default: return null;
@@ -85,9 +79,6 @@ public class ShopTable  : GameData
 				case "Type": return data.Type;
 				case "NpcID": return data.NpcID;
 				case "CityID": return data.CityID;
-				case "KR": return data.KR;
-				case "EN": return data.EN;
-				case "Note": return data.Note;
 
 
                 default: return null;
@@ -108,9 +99,6 @@ public class ShopTable  : GameData
 				case 1: return data.Type;
 				case 2: return data.NpcID;
 				case 3: return data.CityID;
-				case 4: return data.KR;
-				case 5: return data.EN;
-				case 6: return data.Note;
 
                 default: return null;
             }
@@ -157,8 +145,5 @@ public class ShopTableProb : GameDataProb
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly int NpcID;
 	[JsonProperty] public readonly int CityID;
-	[JsonProperty] public readonly string KR;
-	[JsonProperty] public readonly string EN;
-	[JsonProperty] public readonly string Note;
 
 }

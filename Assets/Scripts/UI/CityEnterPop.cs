@@ -52,12 +52,8 @@ public class CityEnterPop : UIScreen
         {
             switch (key)
             {
-                case "GoToGuild":
-                    sId = 1; sKey = "Guild";
-                    break;
-                case "GoToInn":
-                    sId = 2; sKey = "Inn";
-                    break;
+                case "GoToGuild": sId = 1; sKey = "Guild"; break;
+                case "GoToInn": sId = 2; sKey = "Inn"; break;
                 case "GoToSmith": sId = 3; sKey = "Smith"; break;
                 case "GoToTailor": sId = 4; sKey = "Tailor"; break;
                 case "GoToApothecary": sId = 5; sKey = "Apothecary"; break;
@@ -228,31 +224,35 @@ public class CityEnterPop : UIScreen
         switch (idx)
         {
             case 1:
-                return "여관";
+                return "길드";
             case 2:
-                return "대장간";
+                return "여관";
             case 3:
-                return "재단소";
+                return "대장간";
             case 4:
-                return "약재상";
+                return "재단소";
             case 5:
+                return "약재상";
+            case 6:
                 return "시장";
         }
-        return "모험가 길드";
+        return "길드";
     }
     string GetJobName(int idx)
     {
         switch (idx)
         {
             case 1:
-                return "여관 주인";
+                return "길드 안내원";
             case 2:
-                return "대장장이";
+                return "여관 주인";
             case 3:
-                return "재단사";
+                return "대장장이";
             case 4:
-                return "약재 상인";
+                return "재단사";
             case 5:
+                return "약재 상인";
+            case 6:
                 return "상인";
         }
         return "길드 안내원";
