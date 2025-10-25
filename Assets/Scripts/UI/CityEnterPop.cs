@@ -165,8 +165,8 @@ public class CityEnterPop : UIScreen
         {
             case "EnterCity":
                 cityId = data.Get<int>();
-                mTexts["CityName"].text = LocalizationManager.GetValue(PlaceManager.I.CityDataList[cityId].Name);
-                string[] strArr = PlaceManager.I.CityDataList[cityId].Place.Split('_');
+                mTexts["CityName"].text = LocalizationManager.GetValue(PlaceManager.I.CityDic[cityId].Name);
+                string[] strArr = PlaceManager.I.CityDic[cityId].Place.Split('_');
                 splitData = strArr.Select(int.Parse).ToList();
                 LoadPlace();
                 break;

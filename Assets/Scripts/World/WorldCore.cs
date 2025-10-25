@@ -34,7 +34,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     private Dictionary<int, GameObject> wMonObj = new Dictionary<int, GameObject>();
     void Awake()
     {
-        WorldObjManager.I.CreateWorldArea(worldMapTile);
+        WorldObjManager.I.CreateWorldMap(worldMapTile);
     }
     void Start()
     {
