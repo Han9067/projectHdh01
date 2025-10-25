@@ -194,7 +194,6 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         int[] grpList = WorldObjManager.I.areaDataList[areaID].grpByGrade[PlayerManager.I.pData.Grade].ToArray();
 
-
         for (int i = 0; i < remain; i++)
         {
             bool on = true;
@@ -252,6 +251,10 @@ public class WorldCore : AutoSingleton<WorldCore>
             wm.transform.position = wMon.Value.pos;
             wMonObj.Add(wMon.Key, obj);
         }
+    }
+    void ReCreateWorldMon()
+    {
+        //등급 상향 및 특정 조건으로 인한 몬스터 재배치
     }
     #endregion
     #region 씬 이동

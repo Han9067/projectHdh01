@@ -15,7 +15,7 @@ public class InvenPop : UIScreen
     [SerializeField] private Transform slotParent; // 슬롯 부모
     [SerializeField] private Transform eqParent; // 장비 부모
     [SerializeField] private Transform itemParent; // 아이템 부모
-    [SerializeField] private GameObject popPrefab; // 팝업 프리팹
+    [SerializeField] public GameObject popPrefab; // 팝업 프리팹
     public Image[,] gridObj; // 그리드 게임오브젝트
     private List<List<InvenGrid>> pGrids; // 플레이어 그리드
     private List<GameObject> curItem = new List<GameObject>(); // 현재 선택된 아이템

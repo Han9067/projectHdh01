@@ -40,12 +40,8 @@ public class GsManager : AutoSingleton<GsManager>
     }
     void Start()
     {
-        wYear = 316;
-        wMonth = 4;
-        wDay = 1;
         wTime = 0; //wTime의 수치가 일정 이상 올라가면 일차가 올라감.
-                   //저장된 데이터가 있다면 추후 불러와 년,월,일을 적용
-        Presenter.Send("WorldMainUI", "UpdateTime");
+        CalcCalender();
     }
     void Update()
     {
@@ -136,22 +132,23 @@ public class GsManager : AutoSingleton<GsManager>
     #endregion
 
     #region 시간 관리
+    public int tDay = 0;
     public int wYear, wMonth, wDay;
     public float wTime;
+    public void CalcCalender()
+    {
+        //해당 세계관은 1달에 30일이라 총 360일이 1년
+        if (tDay < 113850)
+            tDay = 113850;
+        wYear = tDay / 360;
+        wMonth = tDay % 360 / 30;
+        wDay = tDay % 30 + 1;
+        Presenter.Send("WorldMainUI", "UpdateTime");
+    }
     public void AddDay()
     {
-        wDay++;
-        if (wDay > 30)
-        {
-            wDay = 1;
-            wMonth++;
-            if (wMonth > 12)
-            {
-                wMonth = 1;
-                wYear++;
-            }
-        }
-        Presenter.Send("WorldMainUI", "UpdateTime");
+        tDay++;
+        CalcCalender();
     }
     #endregion
 

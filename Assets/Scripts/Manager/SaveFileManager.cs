@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 [System.Serializable]
 public class GameSaveData
 {
+    public int day;
     public Vector3 playerPos;
     public PlayerData playerData;
     public Dictionary<int, Dictionary<int, QuestInstData>> CityQuest;
@@ -35,6 +36,7 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
         saveData.playerData = PlayerManager.I.pData;
         saveData.CityQuest = QuestManager.I.CityQuest;
         saveData.worldMonDataList = WorldObjManager.I.worldMonDataList;
+        saveData.day = GsManager.I.tDay;
         #endregion
 
         // ⭐ 여기가 핵심!
@@ -64,17 +66,12 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
                 };
                 GameSaveData loadedData = JsonConvert.DeserializeObject<GameSaveData>(jsonContent, settings);
 
-                // ✅ null 체크
-                if (loadedData != null && loadedData.playerData != null)
-                {
-                    PlayerManager.I.ApplyPlayerData(loadedData.playerData, loadedData.playerPos);
-                    Debug.Log("=== 게임 데이터 로드 완료 ===");
-                }
-                else
-                {
-                    Debug.LogWarning("저장 데이터가 유효하지 않습니다. 기본 데이터로 시작합니다.");
-                    PlayerManager.I.DummyPlayerData();
-                }
+                PlayerManager.I.ApplyPlayerData(loadedData.playerData, loadedData.playerPos);
+                QuestManager.I.CityQuest = loadedData.CityQuest;
+                WorldObjManager.I.worldMonDataList = loadedData.worldMonDataList;
+                GsManager.I.tDay = loadedData.day;
+                PlayerManager.I.isObjCreated = true; //WorldObjManager.I.worldMonDataList 에 데이터가 있기떄문에 덮여씌어지지 않도록 isObjCreated 를 true 로 설정
+                Debug.Log("=== 게임 데이터 로드 완료 ===");
             }
             catch (System.Exception e)
             {

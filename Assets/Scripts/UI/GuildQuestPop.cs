@@ -58,6 +58,8 @@ public class GuildQuestPop : UIScreen
                 PlayerManager.I.pData.QuestList.Add(qList[curId]);
                 int cnt = PlayerManager.I.pData.QuestList.Count;
                 PlayerManager.I.pData.QuestList[cnt - 1].IsAccept = true;
+                PlayerManager.I.pData.QuestList[cnt - 1].sDay = GsManager.I.tDay;
+                PlayerManager.I.pData.QuestList[cnt - 1].eDay = GsManager.I.tDay + qList[curId].Days;
                 QuestManager.I.CityQuest[cityId].Remove(qList[curId].Qid);
                 InitQuestList();
                 CreateMyQuest();

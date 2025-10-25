@@ -125,7 +125,7 @@ public class JournalPop : UIScreen
         QuestInstData data = PlayerManager.I.pData.QuestList[idx];
         UpdateStars(data.Star);
         mTexts["DescVal"].text = data.Desc;
-        mTexts["DaysVal"].text = data.Days.ToString();
+        mTexts["DaysVal"].text = (data.eDay - data.sDay).ToString();
         mTexts["TgVal"].gameObject.SetActive(false);
         switch (data.Qid)
         {

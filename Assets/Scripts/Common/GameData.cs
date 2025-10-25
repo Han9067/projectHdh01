@@ -252,6 +252,7 @@ public class QuestInstData
     //Qid는 퀘스트 ID,QSCid는 퀘스트를 수락하여 시작한 도시 ID
     public int Qid, QSCid, QType, Days, Star;
     public int Exp, Crown, GradeExp;
+    public int sDay, eDay; //퀘스트 시작일, 종료일
     public string Name, Desc;
     public int CurCnt, TgCnt, MonId, ItemId, CityId, RoadId, NpcGrpId;
     public bool IsAccept, IsComplete;

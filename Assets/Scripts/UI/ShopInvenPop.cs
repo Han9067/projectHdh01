@@ -7,7 +7,7 @@ public class ShopInvenPop : UIScreen
 {
     public static bool isActive { get; private set; } = false;
     private int gw = 10; //기본 넓이 10칸
-    private int gh = 12; //기본 높이 12칸
+    private int gh = 14; //기본 높이 12칸
     private List<List<InvenGrid>> grids;
     public RectTransform content; // ScrollView의 Content 오브젝트
     public Sprite gridSpr;  // 10칸짜리(640x64) 그리드 이미지

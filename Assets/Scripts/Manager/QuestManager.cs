@@ -15,10 +15,12 @@ public class QuestManager : AutoSingleton<QuestManager>
     }
     private void Start()
     {
-        for (int i = 1; i <= 5; i++)
-            SetQuestsInCity(i);
-        // foreach (var city in PlaceManager.I.CityDataList)
-        //     SetQuestsInCity(city.Key);
+        //최초 시작시 로드된 CityQuest가 없을 경우 새로 만들어줌
+        if (CityQuest.Count == 0)
+        {
+            for (int i = 1; i <= 5; i++)
+                SetQuestsInCity(i);
+        }
     }
     private void LoadQuestData()
     {
@@ -90,6 +92,12 @@ public class QuestManager : AutoSingleton<QuestManager>
                     break; //상인 호위 퀘스트
             }
         }
+    }
+    public void ResetCityQuest()
+    {
+        CityQuest.Clear();
+        for (int i = 1; i <= 5; i++)
+            SetQuestsInCity(i);
     }
     int GetMinGrade(int grade)
     {
