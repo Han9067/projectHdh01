@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
 using System.Linq;
+using UnityEditor;
 public class WorldCore : AutoSingleton<WorldCore>
 {
     [Header("Main")]
@@ -26,7 +27,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     [Header("Player")]
     [SerializeField] private wPlayer player;
     public WorldMainUI mainUI;
-    private float pSpd = 10f;
+    private float pSpd = 10f; //플레이어 이동 속도
     private Vector2 pPos;
     private bool isMove = false;
     [Header("Monster")]
@@ -257,6 +258,35 @@ public class WorldCore : AutoSingleton<WorldCore>
         //등급 상향 및 특정 조건으로 인한 몬스터 재배치
     }
     #endregion
+    #region 월드맵 도로 관련
+    public void MoveRoad(int s, int e)
+    {
+        List<Vector3> road = PlaceManager.I.CityDic[s].Road[$"{s}_{e}"];
+        player.transform.position = road[0];
+        MoveCamera(player.transform.position);
+        mainUI.stateGameSpd("X1");
+        MoveObjectAlongPath(player.transform, road, true, () =>
+        {
+            Debug.Log("도착 완료!");
+            StopPlayer();
+        });
+    }
+
+    // 확장 가능한 버전
+    private void MoveObjectAlongPath(Transform target, List<Vector3> path, bool updateCamera = false, System.Action onComplete = null)
+    {
+        target.DOPath(path.ToArray(), pSpd, PathType.Linear)
+            .SetEase(Ease.Linear)
+            .SetSpeedBased(true)
+            .SetUpdate(false) // ← timeScale 영향 받음 (또는 생략 가능, 기본값이 false)
+            .OnUpdate(() =>
+            {
+                if (updateCamera)
+                    MoveCamera(target.position);
+            })
+            .OnComplete(() => onComplete?.Invoke());
+    }
+    #endregion
     #region 씬 이동
     public void SceneFadeOut()
     {
@@ -270,4 +300,21 @@ public class WorldCore : AutoSingleton<WorldCore>
         // });
     }
     #endregion
+}
+
+[CustomEditor(typeof(WorldCore))]
+public class WorldCoreEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        WorldCore myScript = (WorldCore)target;
+
+        if (GUILayout.Button("플레이어 마을 이동"))
+        {
+            myScript.MoveRoad(1, 2);
+        }
+
+    }
 }

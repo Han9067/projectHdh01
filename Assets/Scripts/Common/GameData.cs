@@ -153,14 +153,14 @@ public class CityData
     public int CityId;
     public string Name, Place;
     public List<int> Area;
-    public Dictionary<int, List<Vector3>> Road;
+    public Dictionary<string, List<Vector3>> Road;
     public CityData(int id, string name, string place, string str)
     {
         this.CityId = id;
         this.Name = name;
         this.Place = place;
         Area = str.Split('_').Select(int.Parse).ToList();
-        Road = new Dictionary<int, List<Vector3>>();
+        Road = new Dictionary<string, List<Vector3>>();
     }
 }
 
