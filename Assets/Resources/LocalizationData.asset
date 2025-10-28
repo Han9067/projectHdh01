@@ -24,7 +24,7 @@ MonoBehaviour:
           value: test
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Yes
+    - key: Yes1
       value:
         list:
         - key: 23
@@ -34,7 +34,17 @@ MonoBehaviour:
           value: Yes
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: No
+    - key: Yes2
+      value:
+        list:
+        - key: 23
+          value: "\uC54C\uC558\uC5B4"
+          duplicatedKey: 0
+        - key: 10
+          value: Yes
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: No1
       value:
         list:
         - key: 23
@@ -42,6 +52,56 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: No
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: No2
+      value:
+        list:
+        - key: 23
+          value: "\uC544\uB2C8"
+          duplicatedKey: 0
+        - key: 10
+          value: No
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Confirm
+      value:
+        list:
+        - key: 23
+          value: "\uD655\uC778"
+          duplicatedKey: 0
+        - key: 10
+          value: Confirm
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Cancel
+      value:
+        list:
+        - key: 23
+          value: "\uCDE8\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Cancel
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Accept
+      value:
+        list:
+        - key: 23
+          value: "\uC218\uB77D"
+          duplicatedKey: 0
+        - key: 10
+          value: Accept
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Reject
+      value:
+        list:
+        - key: 23
+          value: "\uAC70\uC808"
+          duplicatedKey: 0
+        - key: 10
+          value: Reject
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Caelgrad
@@ -64,24 +124,24 @@ MonoBehaviour:
           value: Ardelan
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Wesray
+    - key: Sren
       value:
         list:
         - key: 23
-          value: "\uC6E8\uC2A4\uB808\uC774"
+          value: "\uC2A4\uB80C"
           duplicatedKey: 0
         - key: 10
-          value: Wesray
+          value: Sren
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Feldenmude
+    - key: Denwood
       value:
         list:
         - key: 23
-          value: "\uD3A0\uB374\uBB34\uB4DC"
+          value: "\uB374\uC6B0\uB4DC"
           duplicatedKey: 0
         - key: 10
-          value: Feldenmude
+          value: Denwood
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Bellonar
@@ -134,14 +194,14 @@ MonoBehaviour:
           value: Azhara
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Veloria
+    - key: Leloria
       value:
         list:
         - key: 23
-          value: "\uBCA8\uB85C\uB9AC\uC544"
+          value: "\uB810\uB85C\uB9AC\uC544"
           duplicatedKey: 0
         - key: 10
-          value: Veloria
+          value: Leloria
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Lapion
@@ -313,7 +373,7 @@ MonoBehaviour:
           value: "\uD2B9\uC815 NPC \uAD6C\uCD9C"
           duplicatedKey: 0
         - key: 10
-          value: "\uD2B9\uC815 NPC \uAD6C\uCD9C"
+          value: Rescue NPC
           duplicatedKey: 0
       duplicatedKey: 0
     - key: QstG_KillNpc_Desc
@@ -323,7 +383,7 @@ MonoBehaviour:
           value: "\uD2B9\uC815 NPC \uCC98\uCE58"
           duplicatedKey: 0
         - key: 10
-          value: "\uD2B9\uC815 NPC \uCC98\uCE58"
+          value: Eliminate NPC
           duplicatedKey: 0
       duplicatedKey: 0
     - key: QstG_KillBoss_Desc
@@ -333,6 +393,17 @@ MonoBehaviour:
           value: "\uBCF4\uC2A4 \uBAAC\uC2A4\uD130 \uCC98\uCE58"
           duplicatedKey: 0
         - key: 10
-          value: "\uBCF4\uC2A4 \uBAAC\uC2A4\uD130 \uCC98\uCE58"
+          value: Kill Boss
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Ment_QstG1_1
+      value:
+        list:
+        - key: 23
+          value: "\uAE38\uB4DC\uC5D0\uC11C \uBCF4\uB0B8 \uAC70\uAD70\uC694. \uC218\uACE0
+            \uB9CE\uC73C\uC168\uC2B5\uB2C8\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: "It\u2019s from the guild, I see. Thank you for your hard work."
           duplicatedKey: 0
       duplicatedKey: 0

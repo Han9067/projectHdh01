@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using GB;
 using UnityEngine.UI;
-
+using System.Linq;
 //GameSystemManager
 public class GsManager : AutoSingleton<GsManager>
 {
@@ -158,11 +158,13 @@ public class GsManager : AutoSingleton<GsManager>
     #endregion
 
     #region 캐릭터 외형 관리
-    public void SetUiBaseParts(int id, Dictionary<string, GameObject> obj)
+    public void SetUiBaseParts(int id, Dictionary<string, GameObject> obj, string addKey = "")
     {
         Dictionary<string, Image> img = new Dictionary<string, Image>();
         string[] str = { "Face", "Eyebrow", "Eye1", "Eye2", "Ear", "Nose", "Mouth", "BaseBody",
             "BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth", "Hair1A", "Hair1B", "Hair2" };
+        if (addKey != "")
+            str = str.Select(s => addKey + s).ToArray();
         foreach (var v in str)
             img[v] = obj[v].GetComponent<Image>();
 
