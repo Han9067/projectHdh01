@@ -8,6 +8,7 @@ using UnityEngine.UI;
 //GameSystemManager
 public class GsManager : AutoSingleton<GsManager>
 {
+    // Vector2 _csOffset = new Vector2(50, 50);
     private void Awake()
     {
         #region 초기화
@@ -21,11 +22,14 @@ public class GsManager : AutoSingleton<GsManager>
 
         #region 커서 관리
         string[] strArr = { "default", "attack", "notMove", "enter" };
-        foreach (string str in strArr)
+        Vector2[] offsetArr = { new Vector2(28, 14), new Vector2(32, 32), new Vector2(28, 14), new Vector2(32, 32) };
+        for (int i = 0; i < strArr.Length; i++)
         {
-            Texture2D cursorTexture = Resources.Load<Texture2D>($"Images/UI/Cursor/cursor_{str}");
-            cursorTextures.Add(str, cursorTexture);
+            Texture2D cursorTexture = Resources.Load<Texture2D>($"Images/UI/Cursor/cursor_{strArr[i]}");
+            csrTextures.Add(strArr[i], cursorTexture);
+            csrOffsets.Add(strArr[i], offsetArr[i]);
         }
+        SetCursor("default");
         #endregion
 
         #region 매니저 스크립트 초기화
@@ -93,11 +97,12 @@ public class GsManager : AutoSingleton<GsManager>
     #endregion
     #region 커서 관리
     public string cName = "default";
-    Dictionary<string, Texture2D> cursorTextures = new Dictionary<string, Texture2D>();
+    Dictionary<string, Texture2D> csrTextures = new Dictionary<string, Texture2D>();
+    Dictionary<string, Vector2> csrOffsets = new Dictionary<string, Vector2>();
     public void SetCursor(string name)
     {
         cName = name;
-        Cursor.SetCursor(cursorTextures[cName], Vector2.zero, CursorMode.Auto);
+        Cursor.SetCursor(csrTextures[cName], csrOffsets[cName], CursorMode.Auto);
     }
     public bool IsCursor(string name)
     {

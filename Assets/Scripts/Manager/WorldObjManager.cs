@@ -22,6 +22,13 @@ public class WorldMonData
 }
 public class WorldObjManager : AutoSingleton<WorldObjManager>
 {
+    public class wmGrid
+    {
+        public int x;
+        public int y;
+        public string tName;
+        public Vector3 worldPos;
+    }
     private static readonly Vector3Int[] v3Dir8 = new Vector3Int[]
     {
         new Vector3Int(0, 1, 0),    // 위
@@ -33,18 +40,18 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         new Vector3Int(-1, -1, 0),  // 왼쪽 아래 대각선
         new Vector3Int(1, -1, 0)    // 오른쪽 아래 대각선
     };
-    #region 월드맵 초기 생성 관련
+    #region 월드맵 그리드, 타일 관련
     private bool isCreate = false;
     public Dictionary<int, List<Vector3>> wAreaPos = new Dictionary<int, List<Vector3>>(); //영역 내 타일들의 월드 좌표
-    public void CreateWorldMap(Tilemap tilemap)
+    public Dictionary<(int x, int y), wmGrid> wGridDic = new Dictionary<(int, int), wmGrid>(); //월드맵 그리드
+    public void CreateWorldMapGrid(Tilemap tilemap)
     {
         if (isCreate) return;
         isCreate = true;
+        wGridDic.Clear();
         wAreaPos.Clear();
-        Dictionary<int, Vector3Int> wRoadSpotPos = new Dictionary<int, Vector3Int>();
-        // 타일맵의 모든 타일을 검색
+
         BoundsInt bounds = tilemap.cellBounds;
-        #region 월드맵 구역 생성
         for (int x = bounds.xMin; x < bounds.xMax; x++)
         {
             for (int y = bounds.yMin; y < bounds.yMax; y++)
@@ -52,69 +59,83 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
                 Vector3Int tPos = new Vector3Int(x, y, 0);
                 TileBase tile = tilemap.GetTile(tPos);
 
-                // tile이 null이 아닌지 확인 추가
-                if (tile != null && tile.name != null && tile.name.Length > 5)
+                wmGrid grid = new wmGrid();
+                grid.x = x;
+                grid.y = y;
+                grid.tName = tile != null ? tile.name : "wt_o";
+                grid.worldPos = tilemap.CellToWorld(tPos) + tilemap.cellSize * 0.5f;  // 월드 좌표도 저장
+
+                wGridDic[(x, y)] = grid;
+            }
+        }
+        #region 월드맵 그리드 전체 체크
+        Dictionary<int, Vector3Int> wRoadSpotPos = new Dictionary<int, Vector3Int>();
+        foreach (var kvp in wGridDic)
+        {
+            int x = kvp.Key.Item1;
+            int y = kvp.Key.Item2;
+            wmGrid grid = kvp.Value;
+
+            Vector3Int tPos = new Vector3Int(x, y, 0);
+
+            if (!string.IsNullOrEmpty(grid.tName) && grid.tName != "wt_o" && grid.tName.Length > 5)
+            {
+                string name = grid.tName;
+                string type = name.Substring(0, 5);
+                int num = int.Parse(name.Substring(5));
+
+                switch (type)
                 {
-                    string name = tile.name;
-                    string type = name.Substring(0, 5);
-                    int num = int.Parse(name.Substring(5));
-                    switch (type)
-                    {
-                        case "wt_r_":
-                            if (num > 0)
-                                wRoadSpotPos[num] = tPos;
-                            //wRoadSpotPos[num] = tilemap.CellToWorld(tPos) + tilemap.cellSize * 0.5f;
-                            break;
-                        default:
-                            int id = type == "wt_n_" ? num : 100 + num;
-                            if (!wAreaPos.ContainsKey(id))
-                                wAreaPos[id] = new List<Vector3>();
-                            // 타일맵 좌표를 게임 좌표로 변환
-                            Vector3 worldPos = tilemap.CellToWorld(tPos) + tilemap.cellSize * 0.5f;
-                            wAreaPos[id].Add(worldPos);
-                            break;
-                    }
+                    case "wt_r_":
+                        if (num > 0)
+                            wRoadSpotPos[num] = tPos;
+                        break;
+                    default:
+                        int id = type == "wt_n_" ? num : 100 + num;
+                        if (!wAreaPos.ContainsKey(id))
+                            wAreaPos[id] = new List<Vector3>();
+
+                        wAreaPos[id].Add(grid.worldPos);  // 캐싱된 월드 좌표 사용
+                        break;
                 }
             }
         }
+        CreateWorldAreaData(); //월드맵 지역 데이터 생성
         #endregion
-        CreateWorldAreaData(); //구역별 몬스터 스폰 데이터 생성
         #region 월드맵 도로 생성
         int[,] root = { { 1, 2 }, { 1, 3 } };
         int cnt = root.GetLength(0);
         for (int i = 0; i < cnt; i++)
         {
             int s = root[i, 0], e = root[i, 1];
-            List<Vector3Int> road = FindRoadPath(tilemap, wRoadSpotPos[s], wRoadSpotPos[e]);
+            List<Vector3Int> road = FindRoadPath(wRoadSpotPos[s], wRoadSpotPos[e]);  // tilemap 매개변수 제거
             List<Vector3> p1 = new List<Vector3>(), p2 = new List<Vector3>();
             for (int j = 0; j < road.Count; j++)
             {
-                p1.Add(tilemap.CellToWorld(road[j]) + tilemap.cellSize * 0.5f);
-                p2.Add(tilemap.CellToWorld(road[road.Count - j - 1]) + tilemap.cellSize * 0.5f);
+                // wGridDic에서 월드 좌표 가져오기
+                p1.Add(wGridDic[(road[j].x, road[j].y)].worldPos);
+                p2.Add(wGridDic[(road[road.Count - j - 1].x, road[road.Count - j - 1].y)].worldPos);
             }
             PlaceManager.I.CityDic[s].Road.Add($"{s}_{e}", p1);
             PlaceManager.I.CityDic[e].Road.Add($"{e}_{s}", p2);
         }
         #endregion
     }
-    public static List<Vector3Int> FindRoadPath(Tilemap tilemap, Vector3Int sPos, Vector3Int ePos)
+
+    public List<Vector3Int> FindRoadPath(Vector3Int sPos, Vector3Int ePos)
     {
-        // BFS를 위한 큐와 방문 체크
         Queue<Vector3Int> queue = new Queue<Vector3Int>();
         Dictionary<Vector3Int, Vector3Int> parent = new Dictionary<Vector3Int, Vector3Int>();
         HashSet<Vector3Int> visited = new HashSet<Vector3Int>();
 
-        // 시작점 초기화
         queue.Enqueue(sPos);
         visited.Add(sPos);
         parent[sPos] = sPos;
 
-        // BFS 탐색
         while (queue.Count > 0)
         {
             Vector3Int current = queue.Dequeue();
 
-            // 목적지에 도달했으면 경로 역추적
             if (current == ePos)
             {
                 List<Vector3Int> path = new List<Vector3Int>();
@@ -131,23 +152,16 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
                 return path;
             }
 
-            // 인접한 타일 탐색
             foreach (Vector3Int dir in v3Dir8)
             {
                 Vector3Int next = current + dir;
-
-                // 이미 방문했으면 스킵
                 if (visited.Contains(next))
                     continue;
-
-                // 타일 가져오기
-                TileBase tile = tilemap.GetTile(next);
-                if (tile == null)
+                // wGridDic에서 타일 정보 가져오기
+                if (!wGridDic.TryGetValue((next.x, next.y), out wmGrid grid))
                     continue;
-
                 // 끝점이거나 "wt_r_0" 타일인 경우만 경로로 인정
-                bool isValid = (next == ePos) || (tile.name == "wt_r_0");
-
+                bool isValid = (next == ePos) || (grid.tName == "wt_r_0");
                 if (isValid)
                 {
                     visited.Add(next);
@@ -157,9 +171,10 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
             }
         }
 
-        // 경로를 찾지 못한 경우 빈 리스트 반환
         return new List<Vector3Int>();
     }
+
+
     #endregion
     #region 월드맵 몬스터 스폰 관련
     private SpawnMonTable _spawnMonTable;

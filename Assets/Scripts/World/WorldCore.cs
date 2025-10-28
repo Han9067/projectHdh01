@@ -35,7 +35,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     private Dictionary<int, GameObject> wMonObj = new Dictionary<int, GameObject>();
     void Awake()
     {
-        WorldObjManager.I.CreateWorldMap(worldMapTile);
+        WorldObjManager.I.CreateWorldMapGrid(worldMapTile); //월드맵 그리드부터 지역, 도로 등 생성
     }
     void Start()
     {
@@ -169,8 +169,9 @@ public class WorldCore : AutoSingleton<WorldCore>
             MoveCamera(pos);
             player.transform.position = pos;
             UIManager.ShowPopup("CityEnterPop");
-            GB.Presenter.Send("CityEnterPop", "EnterCity", id);
+            Presenter.Send("CityEnterPop", "EnterCity", id);
             StatePlayer(false);
+            GsManager.I.SetCursor("default");
         }
     }
     public void StatePlayer(bool on)
