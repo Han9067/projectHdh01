@@ -56,16 +56,16 @@ public class GuildQuestPop : UIScreen
             case "OnQstAccept":
                 if (isAccept) return;
                 PlayerManager.I.pData.QuestList.Add(qList[curId]);
-                int cnt = PlayerManager.I.pData.QuestList.Count;
-                PlayerManager.I.pData.QuestList[cnt - 1].IsAccept = true;
-                PlayerManager.I.pData.QuestList[cnt - 1].sDay = GsManager.I.tDay;
-                PlayerManager.I.pData.QuestList[cnt - 1].eDay = GsManager.I.tDay + qList[curId].Days;
+                int n = PlayerManager.I.pData.QuestList.Count - 1;
+                PlayerManager.I.pData.QuestList[n].IsAccept = true;
+                PlayerManager.I.pData.QuestList[n].sDay = GsManager.I.tDay;
+                PlayerManager.I.pData.QuestList[n].eDay = GsManager.I.tDay + qList[curId].Days;
                 QuestManager.I.CityQuest[cityId].Remove(qList[curId].Qid);
                 InitQuestList();
                 CreateMyQuest();
                 CreateCityQuest();
-                questBtn[cnt - 1].GetComponent<QuestListBtn>().OnButtonClick();
-                mTexts["MyQuestVal"].text = cnt.ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
+                questBtn[n].GetComponent<QuestListBtn>().OnButtonClick();
+                mTexts["MyQuestVal"].text = (n + 1).ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
                 break;
             case "OnUpgrade":
                 Debug.Log("Upgrade");

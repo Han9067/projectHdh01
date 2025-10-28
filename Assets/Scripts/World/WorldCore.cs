@@ -27,12 +27,13 @@ public class WorldCore : AutoSingleton<WorldCore>
     [Header("Player")]
     [SerializeField] private wPlayer player;
     public WorldMainUI mainUI;
-    private float pSpd = 10f; //플레이어 이동 속도
+    private float pSpd = 5f; //플레이어 이동 속도
     private Vector2 pPos;
     private bool isMove = false;
     [Header("Monster")]
     [SerializeField] private Transform wMonParent;
     private Dictionary<int, GameObject> wMonObj = new Dictionary<int, GameObject>();
+
     void Awake()
     {
         WorldObjManager.I.CreateWorldMapGrid(worldMapTile); //월드맵 그리드부터 지역, 도로 등 생성
@@ -42,7 +43,6 @@ public class WorldCore : AutoSingleton<WorldCore>
         //월드맵 시작
         cam = Camera.main;
         mainUI.stateGameSpd("X0");
-
         if (blackImg.gameObject.activeSelf)
             blackImg.gameObject.SetActive(false);
 
@@ -80,7 +80,6 @@ public class WorldCore : AutoSingleton<WorldCore>
         if (Input.GetKey(KeyCode.A)) moveDirection.x -= 1; // 왼쪽 이동
         if (Input.GetKey(KeyCode.D)) moveDirection.x += 1; // 오른쪽 이동
         InputPlayerAct();
-        UpdatePlayerAct();
         #endregion
         #region Camera Act
         // Time.unscaledDeltaTime을 사용하여 일시정지 상태에서도 일정한 속도로 이동
@@ -111,45 +110,60 @@ public class WorldCore : AutoSingleton<WorldCore>
 
     }
     #region 플레이어 관련
-    void MoveCamera(Vector3 v)
+    private void MoveCamera(Vector3 v)
     {
         cam.transform.position = new Vector3(v.x, v.y, -10f);
     }
-    void InputPlayerAct()
+    private void InputPlayerAct()
     {
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             if (CityEnterPop.isActive) return;
+            if (GsManager.I.IsCursor("notMove")) return;
+            Vector2 clickWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 playerWorldPos = player.transform.position;
 
-            pPos = cam.ScreenToWorldPoint(Input.mousePosition);
-            isMove = true;
-            mainUI.stateGameSpd("X1");
-        }
-    }
+            Vector3Int startCell = worldMapTile.WorldToCell(playerWorldPos);
+            Vector3Int endCell = worldMapTile.WorldToCell(clickWorldPos);
 
-    void UpdatePlayerAct()
-    {
-        if (isMove)
-        {
-            player.transform.position = Vector2.MoveTowards(
-                player.transform.position,
-                pPos,
-                pSpd * Time.deltaTime
-            );
-
-
-            player.SetObjLayer(GsManager.I.GetObjLayer(player.transform.position.y));
-
-            if (Vector2.Distance(player.transform.position, pPos) < 0.01f)
+            // 기존 이동 취소
+            if (isMove)
             {
-                player.transform.position = pPos;
-                StopPlayer();
+                player.transform.DOKill();
+                isMove = false;
+                mainUI.stateGameSpd("X0");
             }
+            List<Vector3> path = WorldObjManager.I.FindPathOptimized(startCell, endCell);
+            path.RemoveAt(0);
+            path.RemoveAt(path.Count - 1);
+            path.Add(clickWorldPos);
+            path.Insert(0, playerWorldPos);
+            MovePlayerPath(path);
         }
     }
-
-    void LoadPlayerPos()
+    // 경로 이동
+    private void MovePlayerPath(List<Vector3> path)
+    {
+        pPos = path[path.Count - 1];
+        isMove = true;
+        mainUI.stateGameSpd("X1");
+        DOVirtual.DelayedCall(0.08f, () =>
+        {
+            player.transform.DOPath(path.ToArray(), pSpd, PathType.Linear)
+            .SetEase(Ease.Linear)
+            .SetSpeedBased(true)
+            .OnUpdate(() =>
+            {
+                player.SetObjLayer(GsManager.I.GetObjLayer(player.transform.position.y));
+            })
+            .OnComplete(() =>
+            {
+                StopPlayer();
+            });
+        }, false);
+    }
+    private void LoadPlayerPos()
     {
         player.transform.position = PlayerManager.I.worldPos;
     }
