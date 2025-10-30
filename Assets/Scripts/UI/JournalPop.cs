@@ -126,13 +126,21 @@ public class JournalPop : UIScreen
         UpdateStars(data.Star);
         mTexts["DescVal"].text = data.Desc;
         mTexts["DaysVal"].text = (data.eDay - data.sDay).ToString();
-        mTexts["TgVal"].gameObject.SetActive(false);
-        switch (data.Qid)
+        if (data.State == 2)
         {
-            case 2:
-                mTexts["TgVal"].gameObject.SetActive(true);
-                mTexts["TgVal"].text = data.CurCnt.ToString() + " / " + data.TgCnt.ToString();
-                break;
+            mTexts["TgVal"].gameObject.SetActive(true);
+            mTexts["TgVal"].text = LocalizationManager.GetValue("Completed");
+        }
+        else
+        {
+            mTexts["TgVal"].gameObject.SetActive(false);
+            switch (data.Qid)
+            {
+                case 2:
+                    mTexts["TgVal"].gameObject.SetActive(true);
+                    mTexts["TgVal"].text = data.CurCnt.ToString() + " / " + data.TgCnt.ToString();
+                    break;
+            }
         }
     }
     void UpdateStars(int star)

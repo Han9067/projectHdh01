@@ -163,10 +163,9 @@ public class GsManager : AutoSingleton<GsManager>
         Dictionary<string, Image> img = new Dictionary<string, Image>();
         string[] str = { "Face", "Eyebrow", "Eye1", "Eye2", "Ear", "Nose", "Mouth", "BaseBody",
             "BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth", "Hair1A", "Hair1B", "Hair2" };
-        if (addKey != "")
-            str = str.Select(s => addKey + s).ToArray();
-        foreach (var v in str)
-            img[v] = obj[v].GetComponent<Image>();
+        for (int i = 0; i < str.Length; i++)
+            img[str[i]] = obj[addKey + str[i]].GetComponent<Image>();
+
 
         ICharData data = id == 0 ? PlayerManager.I.pData : NpcManager.I.NpcDataList[id];
         img["Face"].sprite = ResManager.GetSprite($"Face_{data.Face}");
@@ -220,42 +219,42 @@ public class GsManager : AutoSingleton<GsManager>
         }
         img["Eye2"].color = eyeColor;
     }
-    public void SetUiEqParts(ICharData data, string backUpKey, Dictionary<string, GameObject> mGameObj)
+    public void SetUiEqParts(ICharData data, string backUpKey, Dictionary<string, GameObject> mGameObj, string addKey = "")
     {
         var eq = data.EqSlot;
         string[] allParts = {"BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth",
             "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "TwoWp1", "TwoWp2", "TwoWp3"};
         foreach (var v in allParts)
-            mGameObj[v].SetActive(false);
+            mGameObj[addKey + v].SetActive(false);
 
         if (eq["Armor"] != null)
         {
             string eqStr = eq["Armor"].ItemId.ToString();
-            mGameObj["EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_body");
-            mGameObj["EqBody"].SetActive(true);
+            mGameObj[addKey + "EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_body");
+            mGameObj[addKey + "EqBody"].SetActive(true);
             if (backUpKey != eqStr + "_body")
             {
                 if (eq["Armor"].ItemId > 10500)
                 {
-                    mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
-                    mGameObj["EqHand2"].SetActive(true);
-                    mGameObj["BaseHand2"].SetActive(true);
-                    mGameObj["BaseHand1A"].SetActive(true);
+                    mGameObj[addKey + "EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
+                    mGameObj[addKey + "EqHand2"].SetActive(true);
+                    mGameObj[addKey + "BaseHand2"].SetActive(true);
+                    mGameObj[addKey + "BaseHand1A"].SetActive(true);
                     return;
                 }
                 else
                 {
-                    mGameObj["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
-                    mGameObj["EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1B");
-                    mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
-                    mGameObj["EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_both");
+                    mGameObj[addKey + "EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
+                    mGameObj[addKey + "EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1B");
+                    mGameObj[addKey + "EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
+                    mGameObj[addKey + "EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_both");
                 }
             }
         }
 
         List<string> parts = GetHandParts(eq);
         foreach (var v in parts)
-            mGameObj[v].SetActive(true);
+            mGameObj[addKey + v].SetActive(true);
         string[] hKey = { "Hand1", "Hand2" };
         foreach (var v in hKey)
         {
@@ -265,16 +264,16 @@ public class GsManager : AutoSingleton<GsManager>
                 {
                     case 0:
                         string one = v == "Hand1" ? "OneWp1" : "OneWp2";
-                        mGameObj[one].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq[v].ItemId.ToString());
-                        mGameObj[one].SetActive(true);
+                        mGameObj[addKey + one].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq[v].ItemId.ToString());
+                        mGameObj[addKey + one].SetActive(true);
                         break;
                     case 1:
-                        mGameObj["TwoWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
-                        mGameObj["TwoWp1"].SetActive(true);
+                        mGameObj[addKey + "TwoWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                        mGameObj[addKey + "TwoWp1"].SetActive(true);
                         break;
                     case 2:
-                        mGameObj["TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
-                        mGameObj["TwoWp2"].SetActive(true);
+                        mGameObj[addKey + "TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                        mGameObj[addKey + "TwoWp2"].SetActive(true);
                         break;
                 }
             }

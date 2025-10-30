@@ -44,7 +44,7 @@ public class ObjInfoPop : UIScreen
     {
         switch (key)
         {
-            case "ObjInfoDataB":
+            case "ObjInfoData":
                 SetInfo(data.Get<string>());
                 break;
         }

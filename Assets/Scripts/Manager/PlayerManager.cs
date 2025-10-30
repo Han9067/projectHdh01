@@ -2,6 +2,7 @@ using GB;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
+using Unity.VisualScripting;
 public class PlayerManager : AutoSingleton<PlayerManager>
 {
 
@@ -204,6 +205,19 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         //현재 버그있음
         //추후에는 빈칸일때 회전된 상태로도 검색하는 기능도 추가해야함
     }
+
+    public void CompleteQuest(int qid)
+    {
+        foreach (var q in pData.QuestList)
+        {
+            if (q.Qid == qid)
+            {
+                q.State = 2;
+                break;
+            }
+        }
+    }
+
 
     public void ChangePlayerSkin()
     {

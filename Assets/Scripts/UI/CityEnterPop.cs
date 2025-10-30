@@ -1,10 +1,12 @@
 using GB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class CityEnterPop : UIScreen
 {
+    #region 변수
     public static bool isActive { get; private set; } = false;
     private int cityId; // 현재 도시 ID
     private List<int> splitData = new List<int>();
@@ -12,6 +14,10 @@ public class CityEnterPop : UIScreen
     private int sId = 0; //상점 & 장소 ID
     private int npcId = 0; // NPC ID
     private string sKey = ""; //상점 & 장소 키
+    #endregion
+    #region 닷 관련
+    private Dictionary<int, List<string>> dotList = new Dictionary<int, List<string>>();
+    #endregion
     #region 퀘스트 관련
     private bool isChatGQst1 = false; // 편지 전달 퀘스트 체크
     #endregion
@@ -30,7 +36,6 @@ public class CityEnterPop : UIScreen
         splitData.Clear();
         shopIdList.Clear();
         sId = 0; sKey = "";
-        StateCity(0);
     }
     private void OnDisable()
     {
@@ -124,26 +129,33 @@ public class CityEnterPop : UIScreen
     {
         mGameObject["OutList"].SetActive(id == 0);
         mGameObject["InList"].SetActive(id == 1);
-        if (id == 1)
+        switch (id)
         {
-            var shop = PlaceManager.I.GetShopData(shopIdList[sId]);
-            mTexts["TitleVal"].text = GetTitleName(shop.Type);
-            mTexts["JobVal"].text = GetJobName(shop.Type);
-            npcId = shop.NpcId;
-            var npc = NpcManager.I.NpcDataList[npcId];
-            mTexts["NameVal"].text = npc.Name;
-            mTexts["RlsVal"].text = npc.Rls.ToString();
-            GsManager.I.SetUiBaseParts(npcId, mGameObject);
-            GsManager.I.SetUiEqParts(npc, "NpcEq", mGameObject);
-            SetInListPreset();
+            case 0:
+                InitAllDots();
+                break;
+            case 1:
+                var shop = PlaceManager.I.GetShopData(shopIdList[sId]);
+                mTexts["TitleVal"].text = GetTitleName(shop.Type);
+                mTexts["JobVal"].text = GetJobName(shop.Type);
+                npcId = shop.NpcId;
+                var npc = NpcManager.I.NpcDataList[npcId];
+                mTexts["NameVal"].text = npc.Name;
+                mTexts["RlsVal"].text = npc.Rls.ToString();
+                GsManager.I.SetUiBaseParts(npcId, mGameObject);
+                GsManager.I.SetUiEqParts(npc, "NpcEq", mGameObject);
+                UpdateInListPreset();
+                break;
         }
     }
-    void SetInListPreset()
+    void UpdateInListPreset()
     {
         foreach (var btn in mButtons.Where(b => b.Key.StartsWith("On")))
             btn.Value.gameObject.SetActive(false);
-        foreach (var obj in mGameObject.Where(b => b.Key.StartsWith("Dot_")))
+        foreach (var obj in mGameObject.Where(b => b.Key.StartsWith("DI_")))
             obj.Value.SetActive(false);
+        for (int i = 0; i < dotList[sId].Count; i++)
+            mGameObject[dotList[sId][i]].SetActive(true);
         StateBaseInList();
         // 1 길드 2 여관 3 대장간 4 재단소 5 약재상 6 시장
         switch (sId)
@@ -151,7 +163,6 @@ public class CityEnterPop : UIScreen
             case 1:
                 mButtons["OnJoin"].gameObject.SetActive(PlayerManager.I.pData.Grade == 0);
                 mButtons["OnQuest"].gameObject.SetActive(true);
-                CheckQuest(1);
                 break;
             case 2:
             case 3:
@@ -188,9 +199,11 @@ public class CityEnterPop : UIScreen
                 string[] strArr = PlaceManager.I.CityDic[cityId].Place.Split('_');
                 splitData = strArr.Select(int.Parse).ToList();
                 LoadPlace();
+                StateCity(0); //도시 입장 상태여서 한번 도시 정보 업데이트
                 break;
-            case "UpdateGuildList":
-                SetInListPreset();
+            case "UpdateCityList":
+                InitAllDots();
+                UpdateInListPreset();
                 break;
         }
     }
@@ -279,30 +292,74 @@ public class CityEnterPop : UIScreen
     public override void Refresh()
     {
     }
-    #region 퀘스트 체크
-    void InitQuestCheck()
+    #region 기타
+    void InitAllDots()
     {
-        isChatGQst1 = false;
-    }
-    void CheckQuest(int qid)
-    {
-        foreach (var q in PlayerManager.I.pData.QuestList)
+        foreach (var obj in mGameObject.Where(b => b.Key.StartsWith("DO_")))
+            obj.Value.SetActive(false);
+        dotList.Clear();
+        int idx = 1;
+        foreach (var p in mButtons.Where(b => b.Key.StartsWith("GoTo")))
         {
-            if (q.Qid == qid)
+            if (!p.Value.gameObject.activeSelf) continue;
+            dotList.Add(idx, new List<string>());
+            switch (p.Key)
             {
-                //1 편지 전달, 2 몬스터 처치, 3 아이템 공급
-                switch (q.Qid)
-                {
-                    case 1:
-                        if (q.CityId == cityId)
+                case "GoToGuild":
+                    foreach (var q in PlayerManager.I.pData.QuestList)
+                    {
+                        switch (q.Qid)
                         {
-                            isChatGQst1 = true;
-                            mGameObject["Dot_Chat"].SetActive(true);
+                            case 1:
+                                if (q.State == 1 && q.CityId == cityId)
+                                {
+                                    isChatGQst1 = true;
+                                    dotList[idx].Add("DI_Chat");
+                                }
+                                break;
                         }
-                        break;
+                        if (q.State == 2 && !dotList[idx].Contains("DI_Quest"))
+                            dotList[idx].Add("DI_Quest");
+                    }
+                    break;
+                case "GoToInn":
+                    break;
+                case "GoToSmith":
+                    break;
+                case "GoToTailor":
+                    break;
+                case "GoToApothecary":
+                    break;
+                case "GoToMarket":
+                    break;
+                case "GoToTG":
+                    break;
+                case "GoToArena":
+                    break;
+            }
+            idx++;
+        }
+        foreach (var d in dotList)
+        {
+            if (d.Value.Count > 0)
+            {
+                switch (d.Key)
+                {
+                    case 1: mGameObject["DO_Guild"].SetActive(true); break;
+                    case 2: mGameObject["DO_Inn"].SetActive(true); break;
+                    case 3: mGameObject["DO_Smith"].SetActive(true); break;
+                    case 4: mGameObject["DO_Tailor"].SetActive(true); break;
+                    case 5: mGameObject["DO_Apoth"].SetActive(true); break;
+                    case 6: mGameObject["DO_Market"].SetActive(true); break;
+                    case 7: mGameObject["DO_TG"].SetActive(true); break;
+                    case 8: mGameObject["DO_Arena"].SetActive(true); break;
                 }
             }
         }
+    }
+    void InitQuestCheck()
+    {
+        isChatGQst1 = false;
     }
     #endregion
 }

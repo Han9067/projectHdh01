@@ -236,7 +236,7 @@ public class ShopInvenPop : UIScreen
         {
             Sprite iSpr = ResManager.GetSprite(data.itemData.Res);
             // 프리팹 인스턴스화
-            GameObject shopItem = Instantiate(ResManager.GetGameObject("ShopItem"), content);
+            GameObject shopItem = Instantiate(ResManager.GetGameObject("ItemObj"), content);
 
             int w = data.itemData.W * 64, h = data.itemData.H * 64;
             // RectTransform 설정
@@ -250,9 +250,8 @@ public class ShopInvenPop : UIScreen
             rt.anchoredPosition = new Vector2(data.x * 64, -(data.y * 64));
 
             // 아이템 정보 저장 (필요시)
-            shopItem.name = $"ShopItem_{data.itemData.ItemId}";
-            shopItem.GetComponent<ShopItem>().SetItemData(data.itemData);
-            shopItem.GetComponent<ShopItem>().SetItemImage(iSpr);
+            shopItem.name = $"ItemObj_{data.itemData.ItemId}";
+            shopItem.GetComponent<ItemObj>().SetItemData(data.itemData, 1);
         }
     }
     public override void Refresh() { }

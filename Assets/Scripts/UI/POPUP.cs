@@ -10,11 +10,10 @@ namespace GB
 	public const string GuildQuestPop =  "GuildQuestPop"; 
 	public const string InvenPop =  "InvenPop"; 
 	public const string ItemInfoPop =  "ItemInfoPop"; 
-	public const string ItemSelPop =  "ItemSelPop"; 
 	public const string JournalPop =  "JournalPop"; 
 	public const string ObjInfoPop =  "ObjInfoPop"; 
-	public const string ObjSelPop =  "ObjSelPop"; 
 	public const string OneBtnPop =  "OneBtnPop"; 
+	public const string SelectPop =  "SelectPop"; 
 	public const string ShopInvenPop =  "ShopInvenPop"; 
 	public const string SkillPop =  "SkillPop"; 
 	public const string YesNoPop =  "YesNoPop"; 

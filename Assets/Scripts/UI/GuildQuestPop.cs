@@ -11,7 +11,8 @@ public class GuildQuestPop : UIScreen
     private List<QuestInstData> qList = new List<QuestInstData>(); //생성된 퀘스트 데이터
 
     private int curId = 0, cityId = 1, qIdx = 0;
-    private bool isAccept = false;
+    private int qstState; //현재 퀘스트 상태 0: 수락 가능, 1: 수락 완료, 2: 퀘스트 완료
+    private bool isUpgrade = false; //업그레이드 가능 여부
     private void Awake()
     {
         Regist();
@@ -21,12 +22,13 @@ public class GuildQuestPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("GuildQuestPop", this);
+
     }
     private void OnDisable()
     {
         Presenter.UnBind("GuildQuestPop", this);
         InitQuestList();
-        isAccept = false;
+        qstState = 0;
         cityId = 1;
     }
     void InitQuestList()
@@ -39,6 +41,7 @@ public class GuildQuestPop : UIScreen
         questBtn.Clear();
         qList.Clear();
         qIdx = 0;
+        isUpgrade = false;
     }
     public void RegistButton()
     {
@@ -54,20 +57,31 @@ public class GuildQuestPop : UIScreen
                 Close();
                 break;
             case "OnQstAccept":
-                if (isAccept) return;
+                if (qstState == 1) return;
                 PlayerManager.I.pData.QuestList.Add(qList[curId]);
                 int n = PlayerManager.I.pData.QuestList.Count - 1;
-                PlayerManager.I.pData.QuestList[n].IsAccept = true;
+                PlayerManager.I.pData.QuestList[n].State = 1;
                 PlayerManager.I.pData.QuestList[n].sDay = GsManager.I.tDay;
                 PlayerManager.I.pData.QuestList[n].eDay = GsManager.I.tDay + qList[curId].Days;
                 QuestManager.I.CityQuest[cityId].Remove(qList[curId].Qid);
-                InitQuestList();
-                CreateMyQuest();
-                CreateCityQuest();
+                UpdateQuestList(n);
                 questBtn[n].GetComponent<QuestListBtn>().OnButtonClick();
-                mTexts["MyQuestVal"].text = (n + 1).ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
+                break;
+            case "OnQstComplete":
+                //보상내역 Exp, Crown, GradeExp
+                Debug.Log("보상내역: " + qList[curId].Crown + " " + qList[curId].Exp + " " + qList[curId].GradeExp);
+                PlayerManager.I.pData.Crown += qList[curId].Crown;
+                PlayerManager.I.pData.Exp += qList[curId].Exp;
+                PlayerManager.I.pData.GradeExp += qList[curId].GradeExp;
+                //퀘스트 삭제 및 UI 갱신
+                PlayerManager.I.pData.QuestList.Remove(qList[curId]);
+                UpdateQuestList(curId);
+                UpdateGradeGgSlider();
+                int n2 = curId > qIdx ? qIdx - 1 : curId;
+                questBtn[n2].GetComponent<QuestListBtn>().OnButtonClick();
                 break;
             case "OnUpgrade":
+                if (!isUpgrade) return;
                 Debug.Log("Upgrade");
                 break;
         }
@@ -78,11 +92,9 @@ public class GuildQuestPop : UIScreen
         {
             case "SettingQuestPop":
                 //MyRankBadge
+                cityId = data.Get<int>();
                 qIdx = 0;
-                mTexts["GradeGgVal"].text = PlayerManager.I.pData.GradeExp.ToString() + " / " + PlayerManager.I.pData.GradeNext.ToString();
-                float gg = PlayerManager.I.pData.GradeExp / PlayerManager.I.pData.GradeNext * 100;
-                if (gg > 100) gg = 100;
-                mSlider.value = gg;
+                UpdateGradeGgSlider();
                 bool not = true;
                 if (PlayerManager.I.pData.QuestList.Count > 0)
                 {
@@ -90,7 +102,6 @@ public class GuildQuestPop : UIScreen
                     not = false;
                 }
                 mTexts["MyQuestVal"].text = PlayerManager.I.pData.QuestList.Count.ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
-                cityId = data.Get<int>();
                 if (QuestManager.I.CityQuest[cityId].Count > 0)
                 {
                     CreateCityQuest();
@@ -109,17 +120,46 @@ public class GuildQuestPop : UIScreen
                 mTexts["GdExpVal"].text = qList[curId].GradeExp.ToString();
                 mTexts["DaysVal"].text = qList[curId].Days.ToString();
                 for (int i = 0; i < questBtn.Count; i++)
-                    questBtn[i].GetComponent<Image>().color = qList[i].IsAccept ? Color.gray : Color.white;
+                {
+                    switch (qList[i].State)
+                    {
+                        case 0:
+                            questBtn[i].GetComponent<Image>().color = Color.white;
+                            break;
+                        case 1:
+                            questBtn[i].GetComponent<Image>().color = Color.gray;
+                            break;
+                        case 2:
+                            questBtn[i].GetComponent<Image>().color = Color.green;
+                            break;
+                    }
+                }
                 questBtn[curId].GetComponent<Image>().color = Color.yellow;
-                isAccept = qList[curId].IsAccept;
-                mButtons["OnQstAccept"].gameObject.SetActive(!isAccept);
-                mGameObject["tObjProgress"].SetActive(isAccept);
+                qstState = qList[curId].State;
+                mButtons["OnQstAccept"].gameObject.SetActive(qstState == 0);
+                mButtons["OnQstComplete"].gameObject.SetActive(qstState == 2);
+                mGameObject["tObjProgress"].SetActive(qstState == 1);
                 break;
         }
     }
-
-    public override void Refresh()
+    public override void Refresh() { }
+    void UpdateGradeGgSlider()
     {
+        mTexts["GradeGgVal"].text = PlayerManager.I.pData.GradeExp.ToString() + " / " + PlayerManager.I.pData.GradeNext.ToString();
+        float gg = (float)PlayerManager.I.pData.GradeExp / (float)PlayerManager.I.pData.GradeNext * 100;
+        if (gg >= 100)
+        {
+            isUpgrade = true;
+            gg = 100;
+        }
+        mSlider.value = gg;
+    }
+    void UpdateQuestList(int cnt)
+    {
+        InitQuestList();
+        CreateMyQuest();
+        CreateCityQuest();
+        mTexts["MyQuestVal"].text = (cnt + 1).ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
     }
     void CreateMyQuest()
     {

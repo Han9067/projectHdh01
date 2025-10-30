@@ -90,20 +90,27 @@ public class WorldCore : AutoSingleton<WorldCore>
         cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
         #endregion
         #region Cursor Act
-        Vector3 mPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3Int currentCellPos = worldMapTile.WorldToCell(mPos);
-        if (currentCellPos != lastCellPos)
+        if (EventSystem.current.IsPointerOverGameObject())
         {
-            lastCellPos = currentCellPos;
-            lastTile = worldMapTile.GetTile(currentCellPos);
-            if (lastTile == null) return;
-            string cName = "";
-            switch (lastTile.name)
+            if (!GsManager.I.IsCursor("default")) GsManager.I.SetCursor("default");
+        }
+        else
+        {
+            Vector3 mPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3Int currentCellPos = worldMapTile.WorldToCell(mPos);
+            if (currentCellPos != lastCellPos)
             {
-                case "wt_x": cName = "notMove"; break;
-                default: cName = "default"; break;
+                lastCellPos = currentCellPos;
+                lastTile = worldMapTile.GetTile(currentCellPos);
+                if (lastTile == null) return;
+                string cName;
+                switch (lastTile.name)
+                {
+                    case "wt_x": cName = "notMove"; break;
+                    default: cName = "default"; break;
+                }
+                if (!GsManager.I.IsCursor(cName)) GsManager.I.SetCursor(cName);
             }
-            if (!GsManager.I.IsCursor(cName)) GsManager.I.SetCursor(cName);
         }
         #endregion
 

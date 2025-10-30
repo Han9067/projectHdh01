@@ -257,15 +257,14 @@ public class QuestInstData
     public int sDay, eDay; //퀘스트 시작일, 종료일
     public string Name, Desc;
     public int CurCnt, TgCnt, MonId, ItemId, CityId, RoadId, NpcGrpId;
-    public bool IsAccept, IsComplete;
+    public int State; //0: 미수락, 1: 수락, 2: 완료
     public QuestInstData(int qid, int qscid, int qtype, string name)
     {
         this.Qid = qid;
         this.QSCid = qscid;
         this.QType = qtype;
         this.Name = name;
-        this.IsAccept = false;
-        this.IsComplete = false;
+        this.State = 0;
     }
     public void SetQuestBase(string desc, int days, int star, int exp, int crown, int gradeExp)
     {

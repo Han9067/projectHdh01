@@ -21,7 +21,7 @@ public class InvenPop : UIScreen
     private List<GameObject> curItem = new List<GameObject>(); // 현재 선택된 아이템
     private bool moveOn = false; // 이동 중인지 체크
     private int curIdx = -1, curState = 0; // 현재 선택된 아이템 인덱스, 상태
-    private InvenItemObj curItemObj; // 현재 선택된 아이템의 오브젝트 스크립트
+    private ItemObj curItemObj; // 현재 선택된 아이템의 오브젝트 스크립트
     private string[] curEq; // 현재 선택된 장비
     private int curItemX, curItemY; // 현재 선택된 아이템의 위치
     private float[] popEdge = new float[4]; // 팝업 경계
@@ -89,7 +89,7 @@ public class InvenPop : UIScreen
                     CheckCurEq(id, type);
                     foreach (var v in curItem)
                     {
-                        InvenItemObj iObj = v.GetComponent<InvenItemObj>();
+                        ItemObj iObj = v.GetComponent<ItemObj>();
                         if (iObj.uid == uid)
                         {
                             curIdx = curItem.IndexOf(v);
@@ -217,22 +217,6 @@ public class InvenPop : UIScreen
         }
         return result;
     }
-    private bool CanPlaceItem(int sx, int sy, int wid, int hei)
-    {
-        // 그리드 범위 체크
-        if (sx + wid > 10 || sy + hei > 10)
-            return false;
-        // 해당 영역이 비어있는지 검사
-        for (int y = sy; y < sy + hei; y++)
-        {
-            for (int x = sx; x < sx + wid; x++)
-            {
-                if (pGrids[y][x].slotId != -1)
-                    return false;
-            }
-        }
-        return true;
-    }
     private void SetGridPos(RectTransform rect, int type, int x, int y, int w, int h)
     {
         if (x > -1 && y > -1)
@@ -246,10 +230,10 @@ public class InvenPop : UIScreen
     }
     private void PlaceInvenItem(int sx, int sy, int wid, int hei, ItemData item, bool isEq)
     {
-        GameObject itemObj = Instantiate(ResManager.GetGameObject("InvenItem"), itemParent);
+        GameObject itemObj = Instantiate(ResManager.GetGameObject("ItemObj"), itemParent);
         itemObj.name = $"Item_{item.Name}";
-        InvenItemObj invenItemObj = itemObj.GetComponent<InvenItemObj>();
-        invenItemObj.SetItemData(item, sx, sy);
+        ItemObj ItemObj = itemObj.GetComponent<ItemObj>();
+        ItemObj.SetItemData(item, sx, sy, 0);
         RectTransform rectTransform = itemObj.transform as RectTransform;
         SetGridPos(rectTransform, 0, sx, sy, wid, hei);
         curItem.Add(itemObj);
@@ -257,7 +241,7 @@ public class InvenPop : UIScreen
         {
             string eq = GetEquipBody(item.Uid);
             PlayerManager.I.pData.EqSlot[eq] = null;
-            curItemObj = invenItemObj;
+            curItemObj = ItemObj;
             curIdx = curItem.Count - 1;
             EquipItem(eq, item.X, item.Y, item.W, item.H);
         }
@@ -388,7 +372,7 @@ public class InvenPop : UIScreen
     }
     private void MoveItem(int sx, int sy, int w, int h, int ex, int ey)
     {
-        InvenItemObj iObj = curItem[curIdx].GetComponent<InvenItemObj>();
+        ItemObj iObj = curItem[curIdx].GetComponent<ItemObj>();
         if (iObj.x > -1 && iObj.y > -1)
         {
             for (int y = sy; y < sy + h; y++)
@@ -423,7 +407,7 @@ public class InvenPop : UIScreen
                 }
             }
         }
-        InvenItemObj otherItem = GetItem(uId);
+        ItemObj otherItem = GetItem(uId);
         int ox = otherItem.x, oy = otherItem.y;
         int ow = otherItem.itemData.W, oh = otherItem.itemData.H;
         for (int y = oy; y < oy + oh; y++)
@@ -486,7 +470,7 @@ public class InvenPop : UIScreen
                 break;
         }
         //포커싱 된 아이템의 좌표 및 장착 상태 설정
-        InvenItemObj iObj = curItem[curIdx].GetComponent<InvenItemObj>();
+        ItemObj iObj = curItem[curIdx].GetComponent<ItemObj>();
         if (iObj.x > -1 && iObj.y > -1)
         {
             for (int y = sy; y < sy + h; y++)
@@ -546,15 +530,15 @@ public class InvenPop : UIScreen
     {
         //포커싱 된 아이템의 위치 설정
         curItem[curIdx].transform.position = new Vector3(eqBox[eq].transform.position.x, eqBox[eq].transform.position.y, 0f);
-        InvenItemObj iObj = curItem[curIdx].GetComponent<InvenItemObj>();
+        ItemObj iObj = curItem[curIdx].GetComponent<ItemObj>();
         iObj.x = -1; iObj.y = -1; iObj.eq = eq;
         PlayerManager.I.ApplyEqSlot(eq, curItemObj.itemData);
     }
-    private InvenItemObj GetItem(int id)
+    private ItemObj GetItem(int id)
     {
         foreach (var v in curItem)
         {
-            InvenItemObj iObj = v.GetComponent<InvenItemObj>();
+            ItemObj iObj = v.GetComponent<ItemObj>();
             if (iObj.uid == id) return iObj;
         }
         return null;
@@ -562,7 +546,7 @@ public class InvenPop : UIScreen
     private void SendMessageEqItem(string eq)
     {
         int uid = PlayerManager.I.pData.EqSlot[eq].Uid;
-        InvenItemObj item = GetItem(uid);
+        ItemObj item = GetItem(uid);
         string str = $"{item.uid}_{item.itemData.ItemId}_{item.itemData.Type}";
         PlayerManager.I.TakeoffEq(eq); //장착 중이던 장비를 해제시킴
         PlaceSelectedItem(eq);
@@ -594,3 +578,20 @@ public class InvenPop : UIScreen
         }
     }
 }
+
+// private bool CanPlaceItem(int sx, int sy, int wid, int hei)
+// {
+//     // 그리드 범위 체크
+//     if (sx + wid > 10 || sy + hei > 10)
+//         return false;
+//     // 해당 영역이 비어있는지 검사
+//     for (int y = sy; y < sy + hei; y++)
+//     {
+//         for (int x = sx; x < sx + wid; x++)
+//         {
+//             if (pGrids[y][x].slotId != -1)
+//                 return false;
+//         }
+//     }
+//     return true;
+// }

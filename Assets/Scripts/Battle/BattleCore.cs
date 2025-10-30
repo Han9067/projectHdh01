@@ -208,13 +208,11 @@ public class BattleCore : AutoSingleton<BattleCore>
             {
                 if (curSelObjId != 0)
                 {
-                    UIManager.ShowPopup("ObjSelPop");
-                    Vector2 mousePos = Input.mousePosition;
-                    Presenter.Send("ObjSelPop", "MovePop", mousePos);
-                    string data = "";
-                    data += mData[curSelObjId].mName + "_" + mData[curSelObjId].hp + " / " + mData[curSelObjId].maxHp + "_"
-                     + mData[curSelObjId].att + "_" + mData[curSelObjId].def;
-                    Presenter.Send("ObjSelPop", "ObjInfoDataA", data);
+                    // UIManager.ShowPopup("SelectPop");
+                    // string data = "";
+                    // data += mData[curSelObjId].mName + "_" + mData[curSelObjId].hp + " / " + mData[curSelObjId].maxHp + "_"
+                    //  + mData[curSelObjId].att + "_" + mData[curSelObjId].def;
+                    // Presenter.Send("ObjInfoPop", "ObjInfoPop", data);
                 }
             }
 

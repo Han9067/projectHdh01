@@ -36,20 +36,22 @@ public class ChatPop : UIScreen
     }
     public override void ViewQuick(string key, IOData data)
     {
-        int npcId = data.Get<int>();
         switch (key)
         {
             case "ChatGQst1":
+                int npcId = data.Get<int>();
                 GsManager.I.SetUiBaseParts(npcId, mGameObject, "Ot_");
+                GsManager.I.SetUiEqParts(NpcManager.I.NpcDataList[npcId], "", mGameObject, "Ot_");
                 GsManager.I.SetUiBaseParts(0, mGameObject, "My_");
+                GsManager.I.SetUiEqParts(PlayerManager.I.pData, "", mGameObject, "My_");
                 mTexts["OtName"].text = NpcManager.I.NpcDataList[npcId].Name;
-                mTexts["MyName"].text = PlayerManager.I.pData.Name;
                 mTexts["OtMent"].text = LocalizationManager.GetValue("Ment_QstG1_1");
-                int idx = 0;
-                chatMentBtn.Add(ResManager.GetGameObject("ChatMentBtn"));
-                chatMentBtn[idx].GetComponent<ChatMentBtn>().SetChatMentBtn("Confirm", "Confirm");
-                chatMentBtn[idx].name = "ChatMentBtn_Confirm";
-                //
+                var obj = Instantiate(ResManager.GetGameObject("ChatMentBtn"), parent);
+                obj.GetComponent<ChatMentBtn>().SetChatMentBtn("Confirm", "Confirm", 1);
+                obj.name = "ChatMentBtn_Confirm";
+                chatMentBtn.Add(obj);
+                PlayerManager.I.CompleteQuest(1); // 퀘스트 완료 처리
+                Presenter.Send("CityEnterPop", "UpdateCityList"); //도시 팝업 갱신
                 break;
             case "ChatMentBtn":
                 string sKey = data.Get<string>();
