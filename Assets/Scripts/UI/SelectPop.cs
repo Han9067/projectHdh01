@@ -49,6 +49,7 @@ public class SelectPop : UIScreen
         switch (key)
         {
             case "SetList":
+                int idx = 1;
                 //순차적으로 0 :구매, 1: 판매, 2: 정보, 3: 버리기, 4: 취소
                 for (int i = 0; i < 4; i++)
                     selList[i].SetActive(false);
@@ -56,7 +57,15 @@ public class SelectPop : UIScreen
                 {
                     case 0:
                         selList[0].SetActive(true);
+                        idx = 2;
                         break;
+                }
+                RectTransform popRect = pop.GetComponent<RectTransform>();
+                if (popRect != null)
+                {
+                    Vector2 newSize = popRect.sizeDelta;
+                    newSize.y = (idx * 40) + 20;
+                    popRect.sizeDelta = newSize;
                 }
                 break;
             case "SetItemData":
@@ -69,10 +78,12 @@ public class SelectPop : UIScreen
                     Debug.Log("돈이 부족합니다.");
                     return;
                 }
-                // PlayerManager.I.pData.Crown -= selItem.Price;
-                // Presenter.Send("WorldMainUI", "UpdateGoldTxt", PlayerManager.I.pData.Crown.ToString());
-                // ItemManager.I.CreateInvenItem(selItem.ItemId, (int)pos.x, (int)pos.y);
-                // Presenter.Send("InvenPop", "AddItem", PlayerManager.I.pData.Inven[PlayerManager.I.pData.Inven.Count - 1]);
+                PlayerManager.I.pData.Crown -= selItem.Price;
+                Presenter.Send("WorldMainUI", "UpdateCrownTxt", PlayerManager.I.pData.Crown.ToString());
+                Vector2 pos = PlayerManager.I.CanAddItem(selItem.W, selItem.H);
+                ItemManager.I.CreateInvenItem(selItem.ItemId, (int)pos.x, (int)pos.y);
+                Presenter.Send("InvenPop", "AddItem", PlayerManager.I.pData.Inven[PlayerManager.I.pData.Inven.Count - 1]);
+                Close();
                 break;
             case "OnSell":
                 break;

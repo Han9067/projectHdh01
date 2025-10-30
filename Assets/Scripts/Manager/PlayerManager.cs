@@ -95,7 +95,6 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
         isObjCreated = true; //저장된 데이터이기에 해당 불대수 true로 설정
         worldPos = pos;
-        Presenter.Send("WorldMainUI", "UpdateInfo");
     }
     public void DummyPlayerData()
     {
@@ -103,7 +102,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Name = "주인공";
         pData.Age = 17;
         pData.Gen = 0;
-        pData.Crown = 200;
+        pData.Crown = 2000;
         pData.Grade = 1;
         pData.GradeExp = 0;
         pData.GradeNext = 1000;
@@ -135,7 +134,6 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
         pData.QuestList = new List<QuestInstData>();
         pData.QuestMax = 5;
-        Presenter.Send("WorldMainUI", "UpdateInfo");
     }
     private void CalcPlayerStat()
     {
@@ -179,14 +177,34 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     }
     public Vector2 CanAddItem(int w, int h)
     {
-        // Debug.Log(w + "   " + h);
+        // 1. 매개변수 유효성 검사
+        if (w <= 0 || h <= 0 || w > 10 || h > 10)
+        {
+            Debug.LogWarning($"CanAddItem: 잘못된 크기 입력 w={w}, h={h}");
+            return new Vector2(-1, -1);
+        }
+
+        // 3. 빈 공간 탐색
         for (int y = 0; y < 10; y++)
         {
+            // 세로 범위 체크 (경계 초과 시 더 이상 탐색 불필요)
             if (y + h > 10) break;
+
+            // grids[y]가 null이거나 크기가 맞지 않는 경우 방어
+            if (grids[y] == null || grids[y].Count != 10)
+            {
+                Debug.LogError($"CanAddItem: grids[{y}]가 초기화되지 않았습니다!");
+                continue;
+            }
+
             for (int x = 0; x < 10; x++)
             {
+                // 가로 범위 체크
                 if (x + w > 10) break;
+
                 bool isAdd = true;
+
+                // 아이템이 들어갈 영역 검사
                 for (int i = y; i < y + h; i++)
                 {
                     for (int j = x; j < x + w; j++)
@@ -194,16 +212,26 @@ public class PlayerManager : AutoSingleton<PlayerManager>
                         if (grids[i][j].slotId != -1)
                         {
                             isAdd = false;
-                            break;
+                            break; // 안쪽 j 루프 탈출
                         }
                     }
+                    if (!isAdd) break;
                 }
-                if (isAdd) return new Vector2(x, y);
+
+                // 빈 공간을 찾았다면 해당 좌표 반환
+                if (isAdd)
+                {
+                    // Debug.Log($"빈 공간 발견: ({x}, {y}), 크기: {w}x{h}");
+                    return new Vector2(x, y);
+                }
             }
         }
+
+        // 빈 공간을 찾지 못함
+        // Debug.Log($"빈 공간 없음: 크기 {w}x{h}");
         return new Vector2(-1, -1);
-        //현재 버그있음
-        //추후에는 빈칸일때 회전된 상태로도 검색하는 기능도 추가해야함
+
+        // 추후에는 빈칸일때 회전된 상태로도 검색하는 기능도 추가해야함
     }
 
     public void CompleteQuest(int qid)
@@ -217,8 +245,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             }
         }
     }
-
-
+    #region 🎨 TESTING
     public void ChangePlayerSkin()
     {
         testSkin++;
@@ -233,6 +260,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.HairColor = testHairColor;
         Presenter.Send("CharInfoPop", "UpdateCharAppearance");
     }
+    #endregion
 }
 
 [CustomEditor(typeof(PlayerManager))]

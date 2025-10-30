@@ -30,6 +30,7 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             case 1:
                 UIManager.ShowPopup("SelectPop");
                 Presenter.Send("SelectPop", "SetList", 0);
+                Presenter.Send("SelectPop", "SetItemData", itemData);
                 break;
         }
     }

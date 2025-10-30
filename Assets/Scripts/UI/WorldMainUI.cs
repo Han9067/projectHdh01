@@ -16,6 +16,7 @@ public class WorldMainUI : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("WorldMainUI", this);
+        UpdateCrownTxt();
     }
 
     private void OnDisable()
@@ -85,13 +86,17 @@ public class WorldMainUI : UIScreen
         switch (key)
         {
             case "UpdateInfo":
-                mTexts["MainGoldTxt"].text = PlayerManager.I.pData.Crown.ToString();
+                UpdateCrownTxt();
                 break;
-            case "UpdateGoldTxt": mTexts["MainGoldTxt"].text = data.Get<string>(); break;
+            case "UpdateCrownTxt": mTexts["MainCrownTxt"].text = data.Get<string>(); break;
             case "UpdateTime":
                 UpdateTime();
                 break;
         }
+    }
+    private void UpdateCrownTxt()
+    {
+        mTexts["MainCrownTxt"].text = PlayerManager.I.pData.Crown.ToString();
     }
     private void UpdateTime()
     {

@@ -27,7 +27,7 @@ public class SelectList : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public void OnPointerExit(PointerEventData eventData)
     {
         // 마우스가 버튼 밖으로 나갔을 때 한 번 실행
-        text.color = Color.black;
+        text.color = Color.white;
     }
 
 }
