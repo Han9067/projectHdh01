@@ -209,7 +209,7 @@ public class ShopItemData
 public class ItemData
 {
     public string Name, Res;
-    public int ItemId, Type, Price, Val, W, H, Dur, X, Y;
+    public int ItemId, Type, Price, Val, W, H, Dur, X, Y, Grade;
     public int Dir, Uid; //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
     public int Both; // 0: 한손무기, 1: 양손무기 // 무기에만 적용
     public ItemData Clone()
@@ -227,7 +227,8 @@ public class ItemData
             Dur = this.Dur,
             X = this.X,
             Y = this.Y,
-            Dir = this.Dir
+            Dir = this.Dir,
+            Grade = this.Grade
         };
     }
 }
@@ -360,6 +361,20 @@ public static class ColorData
         {20,  new Color(235f/255f, 235f/255f, 245f/255f) },  // 펄 화이트
     };
 
+    private static readonly Dictionary<int, Color> itemGradeColor = new Dictionary<int, Color>()
+    {
+        { 1,  new Color(197f/255f, 197f/255f, 197f/255f) }, // H급
+        { 2,  new Color(230f/255f, 234f/255f, 240f/255f) }, // G급
+        { 3,  new Color(96f/255f, 152f/255f, 72f/255f) }, // F급
+        { 4,  new Color(54f/255f, 108f/255f, 191f/255f) }, // E급
+        { 5,  new Color(125f/255f, 111f/255f, 176f/255f) }, // D급
+        { 6,  new Color(215f/255f, 180f/255f, 183f/255f) }, // C급
+        { 7,  new Color(229f/255f, 194f/255f, 96f/255f) }, // B급
+        { 8,  new Color(221f/255f, 162f/255f, 96f/255f) }, // A급
+        { 9,  new Color(186f/255f, 11f/255f, 6f/255f) }, // SS급
+        { 10, new Color(70f/255f, 55f/255f, 55f/255f) }, // SSS급
+    };
+
     public static Color GetSkinColor(int skinId)
     {
         return skinColor.TryGetValue(skinId, out Color color) ? color : new Color(236f / 255f, 204f / 255f, 169f / 255f);
@@ -374,7 +389,7 @@ public static class ColorData
     {
         return eyeColor.TryGetValue(eyeId, out Color color) ? color : new Color(30f / 255f, 30f / 255f, 30f / 255f);
     }
-    public static Color GetGradeColor(int grade)
+    public static Color GetBadgeGradeColor(int grade)
     {
         switch (grade)
         {
@@ -390,5 +405,9 @@ public static class ColorData
             case 10: return new Color(30f / 255f, 30f / 255f, 30f / 255f);
         }
         return Color.white;
+    }
+    public static Color GetItemGradeColor(int grade)
+    {
+        return itemGradeColor.TryGetValue(grade, out Color color) ? color : new Color(197f / 255f, 197f / 255f, 197f / 255f);
     }
 }

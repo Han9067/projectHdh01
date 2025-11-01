@@ -42,8 +42,6 @@ public class GameDataManager : AutoSingleton<GameDataManager>
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<ShopTable>(ShopTabledata,(result)=>{ I._Tables[TABLE.ShopTable] = result;}));
                 string ShopItemTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/ShopItemTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<ShopItemTable>(ShopItemTabledata,(result)=>{ I._Tables[TABLE.ShopItemTable] = result;}));
-                string AbilityTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/AbilityTable").text);
-            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<AbilityTable>(AbilityTabledata,(result)=>{ I._Tables[TABLE.AbilityTable] = result;}));
                 string NpcTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/NpcTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<NpcTable>(NpcTabledata,(result)=>{ I._Tables[TABLE.NpcTable] = result;}));
                 string MonTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/MonTable").text);
@@ -145,11 +143,6 @@ case TABLE.ShopItemTable:
         ShopItemTable d_ShopItemTable = new ShopItemTable();
         d_ShopItemTable.SetJson(data);
         obj  = d_ShopItemTable;
-        break;
-case TABLE.AbilityTable:
-        AbilityTable d_AbilityTable = new AbilityTable();
-        d_AbilityTable.SetJson(data);
-        obj  = d_AbilityTable;
         break;
 case TABLE.NpcTable:
         NpcTable d_NpcTable = new NpcTable();
@@ -287,7 +280,6 @@ public enum TABLE
 	ItemTable,
 	ShopTable,
 	ShopItemTable,
-	AbilityTable,
 	NpcTable,
 	MonTable,
 	SpawnMonTable,

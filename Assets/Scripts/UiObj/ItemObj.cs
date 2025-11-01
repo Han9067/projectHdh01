@@ -26,6 +26,8 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             case 0:
                 str = $"{itemData.Uid}_{itemData.ItemId}_{itemData.Type}";
                 Presenter.Send("InvenPop", "ClickObj", str);
+                if (ItemInfoPop.isActive)
+                    UIManager.ClosePopup("ItemInfoPop");
                 break;
             case 1:
                 UIManager.ShowPopup("SelectPop");
@@ -37,10 +39,16 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         // 마우스가 버튼 위에 올라왔을 때 한 번 실행
+        UIManager.ShowPopup("ItemInfoPop");
+        Presenter.Send("ItemInfoPop", "OnItemInfo", itemData);
+        RectTransform rect = GetComponent<RectTransform>();
+        int dir = rect.anchoredPosition.x < 0 ? -1 : 1;
+        Presenter.Send("ItemInfoPop", "OnItemPos", new Vector3(rect.position.x + (dir * (rect.sizeDelta.x / 2 + 154)), rect.position.y, 0));
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        UIManager.ClosePopup("ItemInfoPop");
         // 마우스가 버튼 밖으로 나갔을 때 한 번 실행
     }
     public void SetItemData(ItemData data, int type)

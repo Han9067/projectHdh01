@@ -142,7 +142,7 @@ public class CharInfoPop : UIScreen
         mImages["BadgeIcon"].gameObject.SetActive(g != 0);
         if (g > 0)
         {
-            mImages["BadgeIcon"].color = ColorData.GetGradeColor(g);
+            mImages["BadgeIcon"].color = ColorData.GetBadgeGradeColor(g);
             int n = g > 3 ? 1 : 2;
             mImages["BadgeIcon"].sprite = ResManager.GetSprite($"icon_badge{n}");
         }

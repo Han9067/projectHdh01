@@ -32,7 +32,6 @@ public class ItemTable  : GameData
 				case "Name": return true;
 				case "Type": return true;
 				case "Price": return true;
-				case "Grade": return true;
 				case "Val": return true;
 				case "W": return true;
 				case "H": return true;
@@ -67,7 +66,6 @@ public class ItemTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Price": return data.Price;
-				case "Grade": return data.Grade;
 				case "Val": return data.Val;
 				case "W": return data.W;
 				case "H": return data.H;
@@ -93,7 +91,6 @@ public class ItemTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Price": return data.Price;
-				case "Grade": return data.Grade;
 				case "Val": return data.Val;
 				case "W": return data.W;
 				case "H": return data.H;
@@ -120,13 +117,12 @@ public class ItemTable  : GameData
 				case 1: return data.Name;
 				case 2: return data.Type;
 				case 3: return data.Price;
-				case 4: return data.Grade;
-				case 5: return data.Val;
-				case 6: return data.W;
-				case 7: return data.H;
-				case 8: return data.Res;
-				case 9: return data.KR;
-				case 10: return data.EN;
+				case 4: return data.Val;
+				case 5: return data.W;
+				case 6: return data.H;
+				case 7: return data.Res;
+				case 8: return data.KR;
+				case 9: return data.EN;
 
                 default: return null;
             }
@@ -173,7 +169,6 @@ public class ItemTableProb : GameDataProb
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly int Price;
-	[JsonProperty] public readonly int Grade;
 	[JsonProperty] public readonly int Val;
 	[JsonProperty] public readonly int W;
 	[JsonProperty] public readonly int H;

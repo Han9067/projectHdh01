@@ -32,15 +32,12 @@ public class WpTable  : GameData
 				case "Name": return true;
 				case "Type": return true;
 				case "Price": return true;
-				case "Grade": return true;
 				case "Val": return true;
 				case "W": return true;
 				case "H": return true;
 				case "Dur": return true;
 				case "Both": return true;
 				case "Res": return true;
-				case "KR": return true;
-				case "EN": return true;
 
 		  default: return false;
 
@@ -69,15 +66,12 @@ public class WpTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Price": return data.Price;
-				case "Grade": return data.Grade;
 				case "Val": return data.Val;
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Dur": return data.Dur;
 				case "Both": return data.Both;
 				case "Res": return data.Res;
-				case "KR": return data.KR;
-				case "EN": return data.EN;
 
 
                 default: return null;
@@ -97,15 +91,12 @@ public class WpTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Price": return data.Price;
-				case "Grade": return data.Grade;
 				case "Val": return data.Val;
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Dur": return data.Dur;
 				case "Both": return data.Both;
 				case "Res": return data.Res;
-				case "KR": return data.KR;
-				case "EN": return data.EN;
 
 
                 default: return null;
@@ -126,15 +117,12 @@ public class WpTable  : GameData
 				case 1: return data.Name;
 				case 2: return data.Type;
 				case 3: return data.Price;
-				case 4: return data.Grade;
-				case 5: return data.Val;
-				case 6: return data.W;
-				case 7: return data.H;
-				case 8: return data.Dur;
-				case 9: return data.Both;
-				case 10: return data.Res;
-				case 11: return data.KR;
-				case 12: return data.EN;
+				case 4: return data.Val;
+				case 5: return data.W;
+				case 6: return data.H;
+				case 7: return data.Dur;
+				case 8: return data.Both;
+				case 9: return data.Res;
 
                 default: return null;
             }
@@ -181,14 +169,11 @@ public class WpTableProb : GameDataProb
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly int Price;
-	[JsonProperty] public readonly int Grade;
 	[JsonProperty] public readonly int Val;
 	[JsonProperty] public readonly int W;
 	[JsonProperty] public readonly int H;
 	[JsonProperty] public readonly int Dur;
 	[JsonProperty] public readonly int Both;
 	[JsonProperty] public readonly string Res;
-	[JsonProperty] public readonly string KR;
-	[JsonProperty] public readonly string EN;
 
 }

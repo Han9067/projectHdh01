@@ -39,7 +39,7 @@ public class OneBtnPop : UIScreen
             case "GuildJoin":
                 PlayerManager.I.pData.Grade = 1;
                 Debug.Log("GuildJoin");
-                mImages["GradeIcon"].color = ColorData.GetGradeColor(1);
+                mImages["GradeIcon"].color = ColorData.GetBadgeGradeColor(1);
                 mTexts["GradeDesc"].text = LocalizationManager.GetValue("One_GuildJoin");
                 Presenter.Send("CityEnterPop", "UpdateCityList");
                 break;

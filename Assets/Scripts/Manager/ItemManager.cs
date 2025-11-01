@@ -44,7 +44,8 @@ public class ItemManager : AutoSingleton<ItemManager>
     }
     private ItemData CreateItemData(int id, string name, int type, int price, int val, int w, int h, string res, int dur)
     {
-        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Val = val, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0 };
+        int g = GetGrade(price);
+        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Val = val, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = g };
     }
     public void CreateInvenItem(int id, int x, int y)
     {
@@ -59,5 +60,28 @@ public class ItemManager : AutoSingleton<ItemManager>
     public int GetUid()
     {
         return 10000000 + Random.Range(0, 89999999);
+    }
+    public int GetGrade(int price)
+    {
+        if (price > 5000000)
+            return 10;
+        else if (price > 2000000)
+            return 9;
+        else if (price > 800000)
+            return 8;
+        else if (price > 400000)
+            return 7;
+        else if (price > 200000)
+            return 6;
+        else if (price > 100000)
+            return 5;
+        else if (price > 50000)
+            return 4;
+        else if (price > 20000)
+            return 3;
+        else if (price > 5000)
+            return 2;
+        else
+            return 1;
     }
 }
