@@ -32,6 +32,10 @@ public class GsManager : AutoSingleton<GsManager>
         SetCursor("default");
         #endregion
 
+        #region 스탯 데이터 로드
+        LoadStatData();
+        #endregion
+
         #region 매니저 스크립트 초기화
         ItemManager.I.LoadItemManager();
         PlayerManager.I.LoadPlayerManager();
@@ -422,6 +426,20 @@ public class GsManager : AutoSingleton<GsManager>
 
         ptSpr[sprType].gameObject.SetActive(true);
         ptSpr[sprType].sprite = ResManager.GetSprite("wp" + data.ItemId.ToString());
+    }
+    #endregion
+
+    #region 스탯 관리
+    private StatTable _statTable;
+    public StatTable StatTable => _statTable ?? (_statTable = GameDataManager.GetTable<StatTable>());
+    public Dictionary<int, StatData> StatDataList = new Dictionary<int, StatData>();
+
+    private void LoadStatData()
+    {
+        foreach (var stat in StatTable.Datas)
+        {
+            StatDataList[stat.StatID] = new StatData(stat.StatID, stat.Name);
+        }
     }
     #endregion
 }

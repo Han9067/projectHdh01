@@ -161,15 +161,14 @@ public class PlayerManager : AutoSingleton<PlayerManager>
                 {
                     case "Hand1":
                     case "Hand2":
-                        // Debug.Log(pData.EqSlot[e].Val);
-                        pData.Att += pData.EqSlot[e].Val;
+                        pData.Att += pData.EqSlot[e].Stat[13]; // 공격력
                         break;
                     case "Necklace":
                     case "Ring1":
                     case "Ring2":
                         break;
                     default:
-                        pData.Def += pData.EqSlot[e].Val;
+                        pData.Def += pData.EqSlot[e].Stat[12]; // 방어력
                         break;
                 }
             }

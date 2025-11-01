@@ -24,14 +24,14 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var eq in EqTable.Datas)
         {
-            ItemDataList[eq.ItemID] = CreateItemData(eq.ItemID, eq.Name, eq.Type, eq.Price, eq.Val, eq.W, eq.H, eq.Res, eq.Dur);
+            ItemDataList[eq.ItemID] = CreateItemData(eq.ItemID, eq.Name, eq.Type, eq.Price, eq.AttKey, eq.AttVal, eq.W, eq.H, eq.Res, eq.Dur);
         }
     }
     private void LoadWpData()
     {
         foreach (var wp in WpTable.Datas)
         {
-            ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.Val, wp.W, wp.H, wp.Res, wp.Dur);
+            ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.AttKey, wp.AttVal, wp.W, wp.H, wp.Res, wp.Dur);
             ItemDataList[wp.ItemID].Both = wp.Both;
         }
     }
@@ -39,13 +39,19 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var item in ItemTable.Datas)
         {
-            ItemDataList[item.ItemID] = CreateItemData(item.ItemID, item.Name, item.Type, item.Price, item.Val, item.W, item.H, item.Res, 0);
+            ItemDataList[item.ItemID] = CreateItemData(item.ItemID, item.Name, item.Type, item.Price, item.AttKey, item.AttVal, item.W, item.H, item.Res, 0);
         }
     }
-    private ItemData CreateItemData(int id, string name, int type, int price, int val, int w, int h, string res, int dur)
+    private ItemData CreateItemData(int id, string name, int type, int price, string keys, string vals, int w, int h, string res, int dur)
     {
         int g = GetGrade(price);
-        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Val = val, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = g };
+        string[] kArr = keys.Split('_');
+        string[] vArr = vals.Split('_');
+        Dictionary<int, int> stat = new Dictionary<int, int>();
+        for (int i = 0; i < kArr.Length; i++)
+            stat[int.Parse(kArr[i])] = int.Parse(vArr[i]);
+
+        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Stat = stat, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = g };
     }
     public void CreateInvenItem(int id, int x, int y)
     {

@@ -4,7 +4,7 @@ using GB;
 public class SkillPop : UIScreen
 {
 
-    
+
 
     private void Awake()
     {
@@ -14,10 +14,10 @@ public class SkillPop : UIScreen
 
     private void OnEnable()
     {
-        Presenter.Bind("SkillPop",this);
+        Presenter.Bind("SkillPop", this);
     }
 
-    private void OnDisable() 
+    private void OnDisable()
     {
         Presenter.UnBind("SkillPop", this);
 
@@ -25,9 +25,9 @@ public class SkillPop : UIScreen
 
     public void RegistButton()
     {
-        foreach(var v in mButtons)
-            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key);});
-        
+        foreach (var v in mButtons)
+            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key); });
+
     }
 
     public void OnButtonClick(string key)
@@ -39,12 +39,12 @@ public class SkillPop : UIScreen
     }
     public override void ViewQuick(string key, IOData data)
     {
-         
+
     }
 
     public override void Refresh()
     {
-            
+
     }
 
 

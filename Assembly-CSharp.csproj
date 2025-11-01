@@ -72,6 +72,7 @@
     <Compile Include="Assets\GB\ResManager\ObjectPooling\PoolingType.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\WpTable.cs" />
     <Compile Include="Assets\GB\Localization\LocalizationManager.cs" />
+    <Compile Include="Assets\GB\GSheet\GameData\StatTable.cs" />
     <Compile Include="Assets\GB\ResManager\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Manager\GsManager.cs" />
     <Compile Include="Assets\GB\Localization\LocalizationView.cs" />
@@ -106,7 +107,6 @@
     <Compile Include="Assets\GB\GSheet\GameData\CityTable.cs" />
     <Compile Include="Assets\Scripts\UiObj\InvenGrid.cs" />
     <Compile Include="Assets\Scripts\Manager\PlaceManager.cs" />
-    <Compile Include="Assets\GB\GSheet\GameData\AbilityTable.cs" />
     <Compile Include="Assets\Scripts\Common\GameData.cs" />
     <Compile Include="Assets\Scripts\World\wCity.cs" />
     <Compile Include="Assets\Scripts\World\wMon.cs" />
@@ -146,9 +146,11 @@
     <None Include="Assets\GB\GSheet\GameData\O.txt" />
     <None Include="Assets\GB\Version\Resources.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Resources\Json\StatTable.txt" />
     <None Include="Assets\Resources\Json\SkTable.txt" />
     <None Include="Assets\Resources\Json\ShopItemTable.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\Resources\Json\AttributeTable.txt" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />

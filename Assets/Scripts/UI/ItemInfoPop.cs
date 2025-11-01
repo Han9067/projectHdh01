@@ -50,18 +50,11 @@ public class ItemInfoPop : UIScreen
                 mTexts["Grade"].text = GetGrade(itemData.Grade);
                 mTexts["Grade"].color = ColorData.GetItemGradeColor(itemData.Grade);
                 // string stat = "";
-                if (itemData.ItemId > 60000)
-                {
-                    //아이템
-                }
-                else if (itemData.ItemId > 30000)
-                {
-                    //무기
-                }
-                else
-                {
-                    //장비
-                }
+                // foreach (var v in itemData.Stat)
+                // {
+                //     stat += $"{LocalizationManager.GetValue(v.Value)}: {v.Value}\n";
+                // }
+                // mTexts["Stat"].text = stat;
                 break;
             case "OnItemPos":
                 Vector3 pos = data.Get<Vector3>();

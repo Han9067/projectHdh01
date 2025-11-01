@@ -81,15 +81,14 @@ public class NpcManager : AutoSingleton<NpcManager>
                 {
                     case "Hand1":
                     case "Hand2":
-                        // Debug.Log(pData.EqSlot[e].Val);
-                        npcData.Att += npcData.EqSlot[e].Val;
+                        npcData.Att += npcData.EqSlot[e].Stat[13]; // 공격력
                         break;
                     case "Necklace":
                     case "Ring1":
                     case "Ring2":
                         break;
                     default:
-                        npcData.Def += npcData.EqSlot[e].Val;
+                        npcData.Def += npcData.EqSlot[e].Stat[12]; // 방어력
                         break;
                 }
             }

@@ -32,7 +32,8 @@ public class WpTable  : GameData
 				case "Name": return true;
 				case "Type": return true;
 				case "Price": return true;
-				case "Val": return true;
+				case "AttKey": return true;
+				case "AttVal": return true;
 				case "W": return true;
 				case "H": return true;
 				case "Dur": return true;
@@ -66,7 +67,8 @@ public class WpTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Price": return data.Price;
-				case "Val": return data.Val;
+				case "AttKey": return data.AttKey;
+				case "AttVal": return data.AttVal;
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Dur": return data.Dur;
@@ -91,7 +93,8 @@ public class WpTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Price": return data.Price;
-				case "Val": return data.Val;
+				case "AttKey": return data.AttKey;
+				case "AttVal": return data.AttVal;
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Dur": return data.Dur;
@@ -117,12 +120,13 @@ public class WpTable  : GameData
 				case 1: return data.Name;
 				case 2: return data.Type;
 				case 3: return data.Price;
-				case 4: return data.Val;
-				case 5: return data.W;
-				case 6: return data.H;
-				case 7: return data.Dur;
-				case 8: return data.Both;
-				case 9: return data.Res;
+				case 4: return data.AttKey;
+				case 5: return data.AttVal;
+				case 6: return data.W;
+				case 7: return data.H;
+				case 8: return data.Dur;
+				case 9: return data.Both;
+				case 10: return data.Res;
 
                 default: return null;
             }
@@ -169,7 +173,8 @@ public class WpTableProb : GameDataProb
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly int Price;
-	[JsonProperty] public readonly int Val;
+	[JsonProperty] public readonly string AttKey;
+	[JsonProperty] public readonly string AttVal;
 	[JsonProperty] public readonly int W;
 	[JsonProperty] public readonly int H;
 	[JsonProperty] public readonly int Dur;
