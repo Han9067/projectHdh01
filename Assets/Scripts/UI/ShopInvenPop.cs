@@ -213,7 +213,8 @@ public class ShopInvenPop : UIScreen
         {
             Destroy(content.GetChild(i).gameObject);
         }
-        float startY = -2f;
+        // float startY = -2f;
+        float sy = (gh * 32f) - 32f;
         for (int y = 0; y < gh; y++)
         {
             GameObject row = new GameObject($"GridRow_{y}", typeof(RectTransform), typeof(Image));
@@ -222,34 +223,27 @@ public class ShopInvenPop : UIScreen
             img.sprite = gridSpr;
             img.SetNativeSize(); // 640x64
             RectTransform rt = row.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0, 1);
-            rt.anchorMax = new Vector2(0, 1);
-            rt.pivot = new Vector2(0, 1);
-            rt.anchoredPosition = new Vector2(0, startY + (y * -64));
+
+            rt.anchoredPosition = new Vector2(0, sy + (y * -64));
         }
         // Content 높이 자동 조정
         content.sizeDelta = new Vector2(content.sizeDelta.x, (gh * 64) + 6);
     }
     public void CreateShopItem(List<ItemPos> itemPosList)
     {
+        float sy = gh * 32f;
+        float sx = -320f;
+        Debug.Log(sx + " " + sy);
         foreach (var data in itemPosList)
         {
-            Sprite iSpr = ResManager.GetSprite(data.itemData.Res);
             // 프리팹 인스턴스화
             GameObject shopItem = Instantiate(ResManager.GetGameObject("ItemObj"), content);
-
-            int w = data.itemData.W * 64, h = data.itemData.H * 64;
             // RectTransform 설정
             RectTransform rt = shopItem.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0, 1);
-            rt.anchorMax = new Vector2(0, 1);
-            rt.pivot = new Vector2(0, 1);
-            rt.sizeDelta = new Vector2(w, h);
-
-            // 그리드 좌표에 맞게 위치 설정 (64는 한 칸의 픽셀 크기)
-            rt.anchoredPosition = new Vector2(data.x * 64, -(data.y * 64));
-
-            // 아이템 정보 저장 (필요시)
+            rt.sizeDelta = new Vector2(data.itemData.W * 64, data.itemData.H * 64);
+            Vector2 dPos = new Vector2(sx + (data.x * 64), sy + (data.y * -64)); //data position
+            Vector2 iPos = new Vector2(dPos.x + (data.itemData.W * 32), dPos.y - (data.itemData.H * 32)); //item position
+            rt.anchoredPosition = iPos;
             shopItem.name = $"ItemObj_{data.itemData.ItemId}";
             shopItem.GetComponent<ItemObj>().SetItemData(data.itemData, 1);
         }

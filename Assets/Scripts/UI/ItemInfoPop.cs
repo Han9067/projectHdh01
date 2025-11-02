@@ -1,16 +1,20 @@
 using GB;
 using System.Collections;
 using UnityEngine;
+using System.Linq;
 
 public class ItemInfoPop : UIScreen
 {
     [SerializeField] private GameObject pop;
     public static bool isActive = false;
+    private RectTransform statRect, popRect;
     private void Awake()
     {
         Regist();
         RegistButton();
         pop.transform.position = new Vector3(0, 2000, 0);
+        statRect = mTexts["Stat"].GetComponent<RectTransform>();
+        popRect = pop.GetComponent<RectTransform>();
     }
 
     private void OnEnable()
@@ -49,12 +53,25 @@ public class ItemInfoPop : UIScreen
                 mTexts["Name"].text = itemData.Name;
                 mTexts["Grade"].text = GetGrade(itemData.Grade);
                 mTexts["Grade"].color = ColorData.GetItemGradeColor(itemData.Grade);
-                // string stat = "";
-                // foreach (var v in itemData.Stat)
-                // {
-                //     stat += $"{LocalizationManager.GetValue(v.Value)}: {v.Value}\n";
-                // }
-                // mTexts["Stat"].text = stat;
+                //440
+                string stat = "";
+                float tot = 450f;
+                float h1 = 40f;
+                foreach (var v in itemData.Stat)
+                {
+                    stat += $"{LocalizationManager.GetValue(GsManager.I.StatDataList[v.Key].Name)}: {v.Value}\n";
+                    h1 += 30;
+                }
+                if (itemData.ItemId < 60000)
+                {
+                    stat += $"\n{LocalizationManager.GetValue("Durability")} : {itemData.Dur}/{itemData.MaxDur}";
+                    h1 += 30;
+                }
+                mTexts["Stat"].text = stat;
+                statRect.sizeDelta = new Vector2(350, h1);
+                // int cnt = desc.Count(c => c == '\n');
+                mTexts["Desc"].text = LocalizationManager.GetValue($"{itemData.Res}_Desc");
+                popRect.sizeDelta = new Vector2(400, tot);
                 break;
             case "OnItemPos":
                 Vector3 pos = data.Get<Vector3>();

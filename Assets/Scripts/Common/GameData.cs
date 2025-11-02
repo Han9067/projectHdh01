@@ -34,11 +34,11 @@ public interface ICharData
 public class StatData
 {
     public int StatID;
-    public string StatName;
+    public string Name;
     public StatData(int id, string name)
     {
         this.StatID = id;
-        this.StatName = name;
+        this.Name = name;
     }
 }
 
@@ -222,7 +222,7 @@ public class ShopItemData
 public class ItemData
 {
     public string Name, Res;
-    public int ItemId, Type, Price, W, H, Dur, X, Y, Grade;
+    public int ItemId, Type, Price, W, H, Dur, MaxDur, X, Y, Grade;
     public int Dir, Uid; //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
     public int Both; // 0: 한손무기, 1: 양손무기 // 무기에만 적용
     public Dictionary<int, int> Stat;
@@ -239,6 +239,7 @@ public class ItemData
             W = this.W,
             H = this.H,
             Dur = this.Dur,
+            MaxDur = this.Dur,
             X = this.X,
             Y = this.Y,
             Dir = this.Dir,

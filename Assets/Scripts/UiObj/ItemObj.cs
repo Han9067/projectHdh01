@@ -38,12 +38,18 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // 마우스가 버튼 위에 올라왔을 때 한 번 실행
         UIManager.ShowPopup("ItemInfoPop");
         Presenter.Send("ItemInfoPop", "OnItemInfo", itemData);
+
         RectTransform rect = GetComponent<RectTransform>();
-        int dir = rect.anchoredPosition.x < 0 ? -1 : 1;
-        Presenter.Send("ItemInfoPop", "OnItemPos", new Vector3(rect.position.x + (dir * (rect.sizeDelta.x / 2 + 154)), rect.position.y, 0));
+        Canvas canvas = GetComponentInParent<Canvas>();
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+
+        // 캔버스 크기
+        Vector2 canvasSize = canvasRect.rect.size;
+        int dir = rect.position.x < canvasSize.x / 2f ? 1 : -1;
+        Vector3 pos = new Vector3(rect.position.x + (dir * (rect.sizeDelta.x / 2 + 202)), rect.position.y, 0);
+        Presenter.Send("ItemInfoPop", "OnItemPos", pos);
     }
 
     public void OnPointerExit(PointerEventData eventData)
