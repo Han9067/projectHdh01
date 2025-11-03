@@ -44,8 +44,8 @@ public class ChatPop : UIScreen
                 GsManager.I.SetUiEqParts(NpcManager.I.NpcDataList[npcId], "", mGameObject, "Ot_");
                 GsManager.I.SetUiBaseParts(0, mGameObject, "My_");
                 GsManager.I.SetUiEqParts(PlayerManager.I.pData, "", mGameObject, "My_");
-                mTexts["OtName"].text = NpcManager.I.NpcDataList[npcId].Name;
-                mTexts["OtMent"].text = LocalizationManager.GetValue("Ment_QstG1_1");
+                mTMPText["OtName"].text = NpcManager.I.NpcDataList[npcId].Name;
+                mTMPText["OtMent"].text = LocalizationManager.GetValue("Ment_QstG1_1");
                 var obj = Instantiate(ResManager.GetGameObject("ChatMentBtn"), parent);
                 obj.GetComponent<ChatMentBtn>().SetChatMentBtn("Confirm", "Confirm", 1);
                 obj.name = "ChatMentBtn_Confirm";

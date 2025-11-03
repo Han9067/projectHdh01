@@ -16,6 +16,7 @@ namespace GB
 	public const string SelectPop =  "SelectPop"; 
 	public const string ShopInvenPop =  "ShopInvenPop"; 
 	public const string SkillPop =  "SkillPop"; 
+	public const string WorkPop =  "WorkPop"; 
 	public const string YesNoPop =  "YesNoPop"; 
 
     }

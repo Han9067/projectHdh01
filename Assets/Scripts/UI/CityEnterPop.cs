@@ -109,6 +109,7 @@ public class CityEnterPop : UIScreen
                 case "OnMake":
                     break;
                 case "OnWork":
+                    //일하기 팝업 발생
                     break;
                 case "OnGetOut":
                     StateCity(0);
@@ -136,12 +137,12 @@ public class CityEnterPop : UIScreen
                 break;
             case 1:
                 var shop = PlaceManager.I.GetShopData(shopIdList[sId]);
-                mTexts["TitleVal"].text = GetTitleName(shop.Type);
-                mTexts["JobVal"].text = GetJobName(shop.Type);
+                mTMPText["TitleVal"].text = GetTitleName(shop.Type);
+                mTMPText["JobVal"].text = GetJobName(shop.Type);
                 npcId = shop.NpcId;
                 var npc = NpcManager.I.NpcDataList[npcId];
-                mTexts["NameVal"].text = npc.Name;
-                mTexts["RlsVal"].text = npc.Rls.ToString();
+                mTMPText["NameVal"].text = npc.Name;
+                mTMPText["RlsVal"].text = GetRlsState(npc.Rls);
                 GsManager.I.SetUiBaseParts(npcId, mGameObject);
                 GsManager.I.SetUiEqParts(npc, "NpcEq", mGameObject);
                 UpdateInListPreset();
@@ -195,7 +196,7 @@ public class CityEnterPop : UIScreen
         {
             case "EnterCity":
                 cityId = data.Get<int>();
-                mTexts["CityName"].text = LocalizationManager.GetValue(PlaceManager.I.CityDic[cityId].Name);
+                mTMPText["CityName"].text = LocalizationManager.GetValue(PlaceManager.I.CityDic[cityId].Name);
                 string[] strArr = PlaceManager.I.CityDic[cityId].Place.Split('_');
                 splitData = strArr.Select(int.Parse).ToList();
                 LoadPlace();
@@ -288,6 +289,23 @@ public class CityEnterPop : UIScreen
                 return "상인";
         }
         return "길드 안내원";
+    }
+    string GetRlsState(int num)
+    {
+        if (num > 1000)
+            return "매우 좋음";
+        else if (num > 500)
+            return "좋음";
+        else if (num > 100)
+            return "약간 좋음";
+        else if (num >= 0)
+            return "보통";
+        else if (num >= -100)
+            return "약간 나쁨";
+        else if (num >= -500)
+            return "나쁨";
+        else
+            return "매우 나쁨";
     }
     public override void Refresh()
     {
