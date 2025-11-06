@@ -1,12 +1,12 @@
 --주요 능력치--
-체력 → Vitality (VIT) → 
-지구력 → Endurance (END) → 
-근력 → Strength (STR) → 
-민첩 → Agility (AGI) → 
-기력 → Force (FOR) → 
-지성 → Intelligence (INT) → 
-매력 → Charisma (CHA) → 
-행운 → Luck (LUK) → 
+체력 → Vitality (VIT)
+지구력 → Endurance (END)
+근력 → Strength (STR)
+민첩 → Agility (AGI)
+기력 → Force (FOR)
+지성 → Intelligence (INT)
+매력 → Charisma (CHA)
+행운 → Luck (LUK)
 <!-- VIT_END_STR_AGI_FOR_INT_CHA_LUK -->
 //신앙 → Faith (FAI) → 
 
