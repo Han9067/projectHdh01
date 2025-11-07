@@ -441,5 +441,9 @@ public class GsManager : AutoSingleton<GsManager>
             StatDataList[stat.StatID] = new StatData(stat.StatID, stat.Name);
         }
     }
+    public string GetSkillName(int id)
+    {
+        return StatDataList[id].Name;
+    }
     #endregion
 }

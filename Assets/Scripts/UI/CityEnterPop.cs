@@ -68,9 +68,9 @@ public class CityEnterPop : UIScreen
                 case "GoToTailor": sId = 4; sKey = "Tailor"; break;
                 case "GoToApothecary": sId = 5; sKey = "Apothecary"; break;
                 case "GoToMarket": sId = 6; sKey = "Market"; break;
-                case "GoToTG": sId = 7; sKey = "TG"; break;
+                case "GoToBook": sId = 7; sKey = "Book"; break; // 서점
                 case "GoToCath": sId = 8; sKey = "Cath"; break; // 성당
-                case "GoToBook": sId = 9; sKey = "Book"; break; // 서점
+                case "GoToTG": sId = 9; sKey = "TG"; break;
                 case "GoToArena": sId = 10; sKey = "Arena"; break; // 투기장
             }
             StateCity(1);
@@ -110,6 +110,8 @@ public class CityEnterPop : UIScreen
                     break;
                 case "OnWork":
                     //일하기 팝업 발생
+                    UIManager.ShowPopup("WorkPop");
+                    Presenter.Send("WorkPop", "SetWork", sId);
                     break;
                 case "OnGetOut":
                     StateCity(0);
