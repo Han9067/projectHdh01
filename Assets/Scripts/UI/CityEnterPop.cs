@@ -166,6 +166,7 @@ public class CityEnterPop : UIScreen
             case 1:
                 mButtons["OnJoin"].gameObject.SetActive(PlayerManager.I.pData.Grade == 0);
                 mButtons["OnQuest"].gameObject.SetActive(true);
+                mButtons["OnWork"].gameObject.SetActive(false);
                 break;
             case 2:
             case 3:

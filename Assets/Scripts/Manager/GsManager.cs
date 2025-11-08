@@ -32,8 +32,9 @@ public class GsManager : AutoSingleton<GsManager>
         SetCursor("default");
         #endregion
 
-        #region 스탯 데이터 로드
+        #region 데이터 로드
         LoadStatData();
+        LoadSkData();
         #endregion
 
         #region 매니저 스크립트 초기화
@@ -441,9 +442,25 @@ public class GsManager : AutoSingleton<GsManager>
             StatDataList[stat.StatID] = new StatData(stat.StatID, stat.Name);
         }
     }
-    public string GetSkillName(int id)
+    #endregion
+    #region 스킬 관리
+    private SkTable _skTable;
+    public SkTable SkTable => _skTable ?? (_skTable = GameDataManager.GetTable<SkTable>());
+    public Dictionary<int, SkData> SkDataList = new Dictionary<int, SkData>();
+    private void LoadSkData()
     {
-        return StatDataList[id].Name;
+        foreach (var sk in SkTable.Datas)
+        {
+            SkDataList[sk.SkID] = new SkData
+            {
+                SkID = sk.SkID,
+                Type = sk.Type,
+                Cool = sk.Cool,
+                Name = sk.Name
+            };
+        }
     }
+    // var baseSk = GsManager.SkDataList[skId];
+    // var npcSk = baseSk.Clone(); // 또는 new SkData(baseSk);
     #endregion
 }

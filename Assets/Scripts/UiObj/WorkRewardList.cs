@@ -10,25 +10,30 @@ public class WorkRewardList : MonoBehaviour
 {
     [SerializeField] private Image iconImg;
     [SerializeField] private TextMeshProUGUI Txt;
-    private int val, skId;
+    public int val, id;
     private string imgKey, txtKey;
     void Start()
     {
         iconImg.sprite = ResManager.GetSprite(imgKey);
-        if (skId == 0)
-        {
-            Txt.text = string.Format(LocalizationManager.GetValue(txtKey), val);
-        }
-        else
-        {
-            Txt.text = string.Format(LocalizationManager.GetValue(txtKey), GsManager.I.GetSkillName(skId), val);
-        }
+        UpdateText();
     }
-    public void SetWorkReward(string img, string txt, int v, int sk)
+    public void SetWorkReward(string img, string txt, int v, int i)
     {
         imgKey = img;
-        txtKey = txt;
+        txtKey = LocalizationManager.GetValue(txt);
         val = v;
-        skId = sk;
+        id = i;
+    }
+    public void UpdateVal(int v)
+    {
+        val = v;
+        UpdateText();
+    }
+    void UpdateText()
+    {
+        if (id < 10000)
+            Txt.text = string.Format(txtKey, GsManager.I.SkDataList[id].Name, val);
+        else
+            Txt.text = string.Format(txtKey, val);
     }
 }

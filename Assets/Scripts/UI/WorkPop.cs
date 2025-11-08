@@ -9,13 +9,16 @@ public class WorkPop : UIScreen
     public Transform rewardParent;
     [SerializeField] private Slider mSlider;
     [SerializeField] private List<WorkRewardList> rewardList;
-    private int daysVal, workType;
+    private int daysVal, workType, crownVal, rlsVal, skExpVal; //expVal,itemVal
+
+    private string strDays;
 
     private void Awake()
     {
         Regist();
         RegistButton();
         mSlider.onValueChanged.AddListener(OnSliderChanged);
+        strDays = LocalizationManager.GetValue("DurDays");
     }
 
     private void OnEnable()
@@ -61,56 +64,53 @@ public class WorkPop : UIScreen
                 daysVal = 1;
                 workType = data.Get<int>();
                 mSlider.value = 1;
-                mTMPText["DaysVal"].text = string.Format(LocalizationManager.GetValue("DurDays"), daysVal.ToString());
+                mTMPText["DaysVal"].text = string.Format(strDays, daysVal.ToString());
                 SetWork();
                 break;
         }
     }
     private void SetWork()
     {
-        if (workType < 100)
+        if (workType < 200)
         {
+            crownVal = GetCrownVal();
+            rlsVal = GetRlsVal();
+            skExpVal = GetSkExpVal();
             //알바 항목 -> 크라운, 호감도, 스킬 경험치
-            CreateWorkReward("Icon_coin", "AddCrown", daysVal * 100, 0); //크라운
-            CreateWorkReward("Icon_heart", "AddRls", daysVal * 10, 0); //호감도
-            int skExp = daysVal * 2;
+            CreateWorkReward("Icon_coin", "AddCrown", crownVal, 10001); //크라운
+            CreateWorkReward("Icon_heart", "AddRls", rlsVal, 10002); //호감도
             switch (workType)
             {
                 case 2:
-                    CreateWorkReward("skIcon_7", "AddSkill", skExp, 7);
+                    CreateWorkReward("skIcon_7", "AddSkill", skExpVal, 7);
                     break;
                 case 3:
-                    //대장간에서 일하기
+                    CreateWorkReward("skIcon_28", "AddSkill", skExpVal, 28);
                     break;
                 case 4:
-                    //재단소에서 일하기
+                    CreateWorkReward("skIcon_29", "AddSkill", skExpVal, 29);
                     break;
                 case 5:
-                    //약제상에서 일하기
+                    CreateWorkReward("skIcon_30", "AddSkill", skExpVal, 30);
                     break;
                 case 6:
-                    //시장에서 일하기
+                    CreateWorkReward("skIcon_27", "AddSkill", skExpVal, 27);
                     break;
                 case 7:
-                    //서점에서 일하기
+                    CreateWorkReward("skIcon_21", "AddSkill", skExpVal, 21);
                     break;
-            }
-        }
-        else if (workType < 200)
-        {
-            switch (workType)
-            {
                 case 101:
-                    //농사하기
+                    //농장
                     break;
                 case 102:
-                    //채굴하기
+                    //채굴장
+                    break;
+                case 103:
+                    //벌목장
                     break;
                 case 108:
-                    //성당에서 신앙수업
                     break;
                 case 109:
-                    //훈련장에서 훈련
                     break;
             }
         }
@@ -136,6 +136,50 @@ public class WorkPop : UIScreen
     private void OnSliderChanged(float value)
     {
         daysVal = Mathf.RoundToInt(value);
+        crownVal = GetCrownVal();
+        rlsVal = GetRlsVal();
+        skExpVal = GetSkExpVal();
+        mTMPText["DaysVal"].text = string.Format(strDays, daysVal.ToString());
+        foreach (var v in rewardList)
+        {
+            if (v.id < 10000)
+            {
+                //스킬
+                skExpVal = GetSkExpVal();
+                v.UpdateVal(skExpVal);
+            }
+            else
+            {
+                switch (v.id)
+                {
+                    case 10001:
+                        //크라운
+                        crownVal = GetCrownVal();
+                        v.UpdateVal(crownVal);
+                        break;
+                    case 10002:
+                        //호감도
+                        rlsVal = GetRlsVal();
+                        v.UpdateVal(rlsVal);
+                        break;
+                    default:
+                        // itemVal = daysVal * 10;
+                        break;
+                }
+            }
+        }
+    }
+    private int GetCrownVal()
+    {
+        return daysVal * 40;
+    }
+    private int GetRlsVal()
+    {
+        return daysVal * 10;
+    }
+    private int GetSkExpVal()
+    {
+        return daysVal * 4;
     }
     public override void Refresh() { }
 }

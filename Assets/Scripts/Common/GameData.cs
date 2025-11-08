@@ -41,6 +41,22 @@ public class StatData
         this.Name = name;
     }
 }
+[System.Serializable]
+public class SkData
+{
+    public int SkID, Type, Cool;
+    public string Name;
+    public SkData Clone()
+    {
+        return new SkData
+        {
+            SkID = this.SkID,
+            Type = this.Type,
+            Cool = this.Cool,
+            Name = this.Name
+        };
+    }
+}
 
 [System.Serializable]
 public class PlayerData : ICharData

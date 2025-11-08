@@ -31,7 +31,7 @@ public class SkTable  : GameData
 				case "SkID": return true;
 				case "Name": return true;
 				case "Type": return true;
-				case "EN": return true;
+				case "Cool": return true;
 				case "Note": return true;
 
 		  default: return false;
@@ -60,7 +60,7 @@ public class SkTable  : GameData
 				case "SkID": return data.SkID;
 				case "Name": return data.Name;
 				case "Type": return data.Type;
-				case "EN": return data.EN;
+				case "Cool": return data.Cool;
 				case "Note": return data.Note;
 
 
@@ -80,7 +80,7 @@ public class SkTable  : GameData
 				case "SkID": return data.SkID;
 				case "Name": return data.Name;
 				case "Type": return data.Type;
-				case "EN": return data.EN;
+				case "Cool": return data.Cool;
 				case "Note": return data.Note;
 
 
@@ -101,7 +101,7 @@ public class SkTable  : GameData
 				case 0: return data.SkID;
 				case 1: return data.Name;
 				case 2: return data.Type;
-				case 3: return data.EN;
+				case 3: return data.Cool;
 				case 4: return data.Note;
 
                 default: return null;
@@ -148,7 +148,7 @@ public class SkTableProb : GameDataProb
 		[JsonProperty] public readonly int SkID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
-	[JsonProperty] public readonly string EN;
+	[JsonProperty] public readonly int Cool;
 	[JsonProperty] public readonly string Note;
 
 }
