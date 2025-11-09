@@ -2,6 +2,7 @@ using GB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class CityEnterPop : UIScreen
@@ -14,6 +15,7 @@ public class CityEnterPop : UIScreen
     private int sId = 0; //상점 & 장소 ID
     private int npcId = 0; // NPC ID
     private string sKey = ""; //상점 & 장소 키
+    private CanvasGroup canvasGrp;
     #endregion
     #region 닷 관련
     private Dictionary<int, List<string>> dotList = new Dictionary<int, List<string>>();
@@ -26,6 +28,9 @@ public class CityEnterPop : UIScreen
         Regist();
         RegistButton();
         RegistText();
+        canvasGrp = GetComponent<CanvasGroup>();
+        if (canvasGrp == null)
+            canvasGrp = gameObject.AddComponent<CanvasGroup>();
     }
     private void OnEnable()
     {
@@ -209,6 +214,13 @@ public class CityEnterPop : UIScreen
                 InitAllDots();
                 UpdateInListPreset();
                 break;
+            case "StateVisiblePop":
+                StateVisiblePop(data.Get<int>());
+                break;
+            case "AddNpcRls":
+                NpcManager.I.NpcDataList[npcId].Rls += data.Get<int>();
+                mTMPText["RlsVal"].text = GetRlsState(NpcManager.I.NpcDataList[npcId].Rls);
+                break;
         }
     }
     private void LoadPlace()
@@ -254,6 +266,11 @@ public class CityEnterPop : UIScreen
                 shopIdList.Add(shop.Type, shop.Id);
             }
         }
+    }
+
+    void StateVisiblePop(int alpha)
+    {
+        canvasGrp.alpha = alpha;
     }
     string GetTitleName(int idx)
     {

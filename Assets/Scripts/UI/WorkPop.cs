@@ -10,11 +10,12 @@ public class WorkPop : UIScreen
     [SerializeField] private Slider mSlider;
     [SerializeField] private List<WorkRewardList> rewardList;
     private int daysVal, workType, crownVal, rlsVal, skExpVal; //expVal,itemVal
-
+    private bool isStart = false; //시작 여부
     private string strDays;
 
     private void Awake()
     {
+        isStart = false;
         Regist();
         RegistButton();
         mSlider.onValueChanged.AddListener(OnSliderChanged);
@@ -25,17 +26,18 @@ public class WorkPop : UIScreen
     {
         Presenter.Bind("WorkPop", this);
         daysVal = 1;
-        foreach (var v in rewardList)
-        {
-            Destroy(v.gameObject);
-        }
-        rewardList.Clear();
     }
 
     private void OnDisable()
     {
         Presenter.UnBind("WorkPop", this);
-
+        if (!isStart)
+        {
+            workType = 0;
+            foreach (var v in rewardList)
+                Destroy(v.gameObject);
+            rewardList.Clear();
+        }
     }
 
     public void RegistButton()
@@ -53,6 +55,14 @@ public class WorkPop : UIScreen
                 Close();
                 break;
             case "ClickStart":
+                isStart = true;
+                Presenter.Send("WorldMainUI", "StartWork", daysVal);
+                Close();
+                break;
+            case "ClickConfirm":
+                isStart = false;
+                SetWorkReward(); //플레이어가 받을 보상 적용
+                Close();
                 break;
         }
     }
@@ -61,13 +71,23 @@ public class WorkPop : UIScreen
         switch (key)
         {
             case "SetWork":
+                StatePop(0);
                 daysVal = 1;
                 workType = data.Get<int>();
                 mSlider.value = 1;
                 mTMPText["DaysVal"].text = string.Format(strDays, daysVal.ToString());
                 SetWork();
                 break;
+            case "EndWork":
+                StatePop(1);
+                break;
         }
+    }
+    private void StatePop(int type)
+    {
+        mGameObject["Pop1"].SetActive(type == 0);
+        mGameObject["Pop2"].SetActive(type == 1);
+        mGameObject["RwdBox"].GetComponent<RectTransform>().anchoredPosition = new Vector2(0, type == 0 ? -100 : 20);
     }
     private void SetWork()
     {
@@ -180,6 +200,45 @@ public class WorkPop : UIScreen
     private int GetSkExpVal()
     {
         return daysVal * 4;
+    }
+    private void SetWorkReward()
+    {
+        if (workType < 200)
+        {
+            // crownVal = GetCrownVal();
+            // rlsVal = GetRlsVal();
+            // skExpVal = GetSkExpVal();
+            PlayerManager.I.pData.Crown += crownVal; //크라운 보상 적용
+            Presenter.Send("CityEnterPop", "AddNpcRls", rlsVal);
+            switch (workType)
+            {
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 101:
+                    //농장
+                    break;
+                case 102:
+                    //채굴장
+                    break;
+                case 103:
+                    //벌목장
+                    break;
+                case 108:
+                    break;
+                case 109:
+                    break;
+            }
+        }
     }
     public override void Refresh() { }
 }

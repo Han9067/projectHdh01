@@ -6,13 +6,20 @@ using UnityEngine.UI;
 
 public class WorldMainUI : UIScreen
 {
-    private int currentSpeed = 1; // 현재 활성화된 속도 (기본값 1)
+    [SerializeField] private Slider mIngGg;
+    private float wTime = 0, workTime, endWorkTime;
+    private int tDay = 0, wYear, wMonth, wDay;
+    private bool isWork = false; //일하기 상태 유무
+
     private void Awake()
     {
         Regist();
         RegistButton();
     }
-
+    private void Start()
+    {
+        mGameObject["IngPop"].SetActive(false);
+    }
     private void OnEnable()
     {
         Presenter.Bind("WorldMainUI", this);
@@ -38,17 +45,45 @@ public class WorldMainUI : UIScreen
         }
         else
         {
-            stateGameSpd(key);
+            if (CityEnterPop.isActive) return;
+            StateGameSpd(key);
         }
     }
 
-    public void stateGameSpd(string key)
+    private void Update()
     {
-        if (CityEnterPop.isActive) return;
+        wTime += Time.deltaTime;
+        if (wTime >= 40.0f)
+        {
+            wTime = 0;
+            AddDay();
+        }
+        if (isWork)
+        {
+            UpdateWorkGg();
+            if (workTime >= endWorkTime)
+            {
+                isWork = false; workTime = 0; endWorkTime = 0;
+                mIngGg.value = 0;
+                StateWork(false);
+                UIManager.ShowPopup("WorkPop");
+                Presenter.Send("WorkPop", "EndWork");
+                StateGameSpd("X0");
+                Presenter.Send("CityEnterPop", "StateVisiblePop", 1);
+            }
+        }
+    }
+    private void AddDay()
+    {
+        tDay++;
+        CalcCalender();
+    }
+    public void StateGameSpd(string key)
+    {
         string numberStr = key.Replace("X", "");
         int val = int.Parse(numberStr);
         Time.timeScale = val;
-        currentSpeed = val;
+        GsManager.I.worldSpd = val;
 
         // 버튼 이미지 업데이트
         UpdateSpdBtnImg();
@@ -70,7 +105,7 @@ public class WorldMainUI : UIScreen
         }
 
         // 현재 활성화된 속도 버튼만 노란색 이미지로 변경
-        string curSpdKey = "X" + currentSpeed.ToString();
+        string curSpdKey = "X" + GsManager.I.worldSpd.ToString();
         if (mButtons.ContainsKey(curSpdKey))
         {
             Image curBtnImg = mButtons[curSpdKey].GetComponent<Image>();
@@ -89,8 +124,22 @@ public class WorldMainUI : UIScreen
                 UpdateCrownTxt();
                 break;
             case "UpdateCrownTxt": mTexts["MainCrownTxt"].text = data.Get<string>(); break;
-            case "UpdateTime":
+            case "UpdateAllTime":
+                tDay = GsManager.I.tDay;
+                wTime = GsManager.I.wTime;
+                wYear = GsManager.I.wYear;
+                wMonth = GsManager.I.wMonth;
+                wDay = GsManager.I.wDay;
                 UpdateTime();
+                break;
+            case "ChangeGameSpd":
+                StateGameSpd(data.Get<string>());
+                break;
+            case "StartWork":
+                StartWork(data.Get<int>());
+                break;
+            case "SaveAllTime":
+                GsManager.I.SetAllTime(tDay, wYear, wMonth, wDay, wTime);
                 break;
         }
     }
@@ -98,11 +147,39 @@ public class WorldMainUI : UIScreen
     {
         mTexts["MainCrownTxt"].text = PlayerManager.I.pData.Crown.ToString();
     }
+    private void CalcCalender()
+    {
+        wYear = tDay / 360;
+        wMonth = tDay % 360 / 30;
+        wDay = tDay % 30 + 1;
+        UpdateTime();
+    }
     private void UpdateTime()
     {
-        mTexts["YearVal"].text = GsManager.I.wYear.ToString();
-        mTexts["MonVal"].text = GsManager.I.wMonth.ToString();
-        mTexts["DayVal"].text = GsManager.I.wDay.ToString();
+        mTexts["YearVal"].text = wYear.ToString();
+        mTexts["MonVal"].text = wMonth.ToString();
+        mTexts["DayVal"].text = wDay.ToString();
+    }
+
+    private void StartWork(int day)
+    {
+        isWork = true;
+        workTime = 0;
+        endWorkTime = day * 40;
+        mIngGg.maxValue = endWorkTime;
+        mIngGg.value = 0;
+        StateWork(true);
+        Presenter.Send("CityEnterPop", "StateVisiblePop", 0);
+    }
+    private void StateWork(bool on)
+    {
+        StateGameSpd(on ? "X4" : "X0");
+        mGameObject["IngPop"].SetActive(on);
+    }
+    private void UpdateWorkGg()
+    {
+        workTime += Time.deltaTime;
+        mIngGg.value = workTime;
     }
     public override void Refresh()
     {

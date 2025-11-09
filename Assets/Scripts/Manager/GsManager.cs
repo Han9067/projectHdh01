@@ -8,7 +8,7 @@ using System.Linq;
 //GameSystemManager
 public class GsManager : AutoSingleton<GsManager>
 {
-    // Vector2 _csOffset = new Vector2(50, 50);
+    public int worldSpd = 1; //월드맵 속도
     private void Awake()
     {
         #region 초기화
@@ -49,17 +49,15 @@ public class GsManager : AutoSingleton<GsManager>
     }
     void Start()
     {
-        wTime = 0; //wTime의 수치가 일정 이상 올라가면 일차가 올라감.
-        CalcCalender();
-    }
-    void Update()
-    {
-        wTime += Time.deltaTime;
-        if (wTime >= 120.0f)
+        if (tDay < 113850)
         {
-            wTime = 0;
-            AddDay();
+            tDay = 113850;
+            wTime = 20f;
         }
+        wYear = tDay / 360;
+        wMonth = tDay % 360 / 30;
+        wDay = tDay % 30 + 1;
+        Presenter.Send("WorldMainUI", "UpdateAllTime");
     }
     #region 메뉴 팝업 상태
     public void StateMenuPopup(string key)
@@ -76,6 +74,8 @@ public class GsManager : AutoSingleton<GsManager>
             case "StateInvenPop":
                 go = GameObject.Find("InvenPop");
                 str = "InvenPop";
+                if (GameObject.Find("SkillPop") != null && GameObject.Find("SkillPop").activeSelf)
+                    UIManager.ClosePopup("SkillPop");
                 break;
             case "StateJournalPop":
                 go = GameObject.Find("JournalPop");
@@ -84,6 +84,8 @@ public class GsManager : AutoSingleton<GsManager>
             case "StateSkillPop":
                 go = GameObject.Find("SkillPop");
                 str = "SkillPop";
+                if (GameObject.Find("InvenPop") != null && GameObject.Find("InvenPop").activeSelf)
+                    UIManager.ClosePopup("InvenPop");
                 break;
         }
 
@@ -143,22 +145,15 @@ public class GsManager : AutoSingleton<GsManager>
 
     #region 시간 관리
     public int tDay = 0;
+    public float wTime = 0;
     public int wYear, wMonth, wDay;
-    public float wTime;
-    public void CalcCalender()
+    public void SetAllTime(int tot, int y, int m, int d, float t)
     {
-        //해당 세계관은 1달에 30일이라 총 360일이 1년
-        if (tDay < 113850)
-            tDay = 113850;
-        wYear = tDay / 360;
-        wMonth = tDay % 360 / 30;
-        wDay = tDay % 30 + 1;
-        Presenter.Send("WorldMainUI", "UpdateTime");
-    }
-    public void AddDay()
-    {
-        tDay++;
-        CalcCalender();
+        tDay = tot;
+        wYear = y;
+        wMonth = m;
+        wDay = d;
+        wTime = t;
     }
     #endregion
 
@@ -451,13 +446,7 @@ public class GsManager : AutoSingleton<GsManager>
     {
         foreach (var sk in SkTable.Datas)
         {
-            SkDataList[sk.SkID] = new SkData
-            {
-                SkID = sk.SkID,
-                Type = sk.Type,
-                Cool = sk.Cool,
-                Name = sk.Name
-            };
+            SkDataList[sk.SkID] = new SkData { SkId = sk.SkID, Type = sk.Type, Cool = sk.Cool, Name = sk.Name };
         }
     }
     // var baseSk = GsManager.SkDataList[skId];

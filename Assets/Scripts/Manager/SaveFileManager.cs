@@ -9,7 +9,8 @@ using Newtonsoft.Json;
 [System.Serializable]
 public class GameSaveData
 {
-    public int day;
+    public int curDay;
+    public float curTime;
     public Vector3 playerPos;
     public PlayerData playerData;
     public Dictionary<int, Dictionary<int, QuestInstData>> CityQuest;
@@ -36,7 +37,8 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
         saveData.playerData = PlayerManager.I.pData;
         saveData.CityQuest = QuestManager.I.CityQuest;
         saveData.worldMonDataList = WorldObjManager.I.worldMonDataList;
-        saveData.day = GsManager.I.tDay;
+        saveData.curDay = GsManager.I.tDay;
+        saveData.curTime = GsManager.I.wTime;
         #endregion
 
         // ⭐ 여기가 핵심!
@@ -69,7 +71,8 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
                 PlayerManager.I.ApplyPlayerData(loadedData.playerData, loadedData.playerPos);
                 QuestManager.I.CityQuest = loadedData.CityQuest;
                 WorldObjManager.I.worldMonDataList = loadedData.worldMonDataList;
-                GsManager.I.tDay = loadedData.day;
+                GsManager.I.tDay = loadedData.curDay;
+                GsManager.I.wTime = loadedData.curTime;
                 PlayerManager.I.isObjCreated = true; //WorldObjManager.I.worldMonDataList 에 데이터가 있기떄문에 덮여씌어지지 않도록 isObjCreated 를 true 로 설정
                 Debug.Log("=== 게임 데이터 로드 완료 ===");
             }

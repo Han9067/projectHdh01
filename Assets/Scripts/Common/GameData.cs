@@ -44,16 +44,17 @@ public class StatData
 [System.Serializable]
 public class SkData
 {
-    public int SkID, Type, Cool;
+    public int SkId, Type, Cool, Exp;
     public string Name;
     public SkData Clone()
     {
         return new SkData
         {
-            SkID = this.SkID,
+            SkId = this.SkId,
             Type = this.Type,
             Cool = this.Cool,
-            Name = this.Name
+            Name = this.Name,
+            Exp = 0,
         };
     }
 }
@@ -76,6 +77,7 @@ public class PlayerData : ICharData
     public List<QuestInstData> QuestList;
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
+    public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
     #region ICharData
     public int Gen { get; set; }
     public int Skin { get; set; }
@@ -104,6 +106,7 @@ public class NpcData : ICharData
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
+    public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     #region ICharData
     public int Gen { get; set; }
@@ -129,6 +132,7 @@ public class MonData
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public int W, H; // 몬스터 오브젝트 크기
     public float SdwScr, GgY; // 몬스터 그림자 스케일, 몬스터 그림자 Y 좌표
+    public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>(); //추후 적용 251109
     public MonData Clone()
     {
         return new MonData

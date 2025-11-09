@@ -26,7 +26,6 @@ public class WorldCore : AutoSingleton<WorldCore>
     private TileBase lastTile = null;
     [Header("Player")]
     [SerializeField] private wPlayer player;
-    public WorldMainUI mainUI;
     private float pSpd = 5f; //플레이어 이동 속도
     private Vector2 pPos;
     private bool isMove = false;
@@ -42,7 +41,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         //월드맵 시작
         cam = Camera.main;
-        mainUI.stateGameSpd("X0");
+        Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
         if (blackImg.gameObject.activeSelf)
             blackImg.gameObject.SetActive(false);
 
@@ -139,7 +138,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             {
                 player.transform.DOKill();
                 isMove = false;
-                mainUI.stateGameSpd("X0");
+                Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
             }
             List<Vector3> path = WorldObjManager.I.FindPathOptimized(startCell, endCell);
             path.RemoveAt(0);
@@ -154,7 +153,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         pPos = path[path.Count - 1];
         isMove = true;
-        mainUI.stateGameSpd("X1");
+        Presenter.Send("WorldMainUI", "ChangeGameSpd", "X1");
         DOVirtual.DelayedCall(0.08f, () =>
         {
             player.transform.DOPath(path.ToArray(), pSpd, PathType.Linear)
@@ -181,7 +180,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     public void StopPlayer()
     {
         isMove = false;
-        mainUI.stateGameSpd("X0");
+        Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
 
         if (PlayerManager.I.currentCity > 0)
         {
@@ -286,7 +285,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         List<Vector3> road = PlaceManager.I.CityDic[s].Road[$"{s}_{e}"];
         player.transform.position = road[0];
         MoveCamera(player.transform.position);
-        mainUI.stateGameSpd("X1");
+        Presenter.Send("WorldMainUI", "ChangeGameSpd", "X1");
         MoveObjectAlongPath(player.transform, road, true, () =>
         {
             Debug.Log("도착 완료!");
@@ -314,6 +313,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         PlayerManager.I.worldPos = player.transform.position;
         WorldObjManager.I.UpdateWorldMonData(wMonObj);
+        Presenter.Send("WorldMainUI", "SaveAllTime");
         UIManager.ChangeScene("Battle");
         // blackImg.gameObject.SetActive(true);
         // blackImg.color = new Color(0, 0, 0, 0f);

@@ -91,6 +91,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         // pData.QuestMax = data.QuestMax;
         pData.QuestMax = 5;
 
+        pData.SkList = data.SkList;
+
         CalcPlayerStat();
 
         isObjCreated = true; //저장된 데이터이기에 해당 불대수 true로 설정
@@ -134,6 +136,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
         pData.QuestList = new List<QuestInstData>();
         pData.QuestMax = 5;
+
+        // pData.SkList = new Dictionary<int, SkData>();
     }
     private void CalcPlayerStat()
     {
@@ -242,6 +246,20 @@ public class PlayerManager : AutoSingleton<PlayerManager>
                 q.State = 2;
                 break;
             }
+        }
+    }
+
+    public void AddSkExp(int skId, int val)
+    {
+        if (pData.SkList.ContainsKey(skId))
+        {
+            pData.SkList[skId].Exp += val;
+        }
+        else
+        {
+            pData.SkList[skId] = GsManager.I.SkDataList[skId].Clone();
+            pData.SkList[skId].Exp = val;
+            //새로 획득한 스킬이라 팝업을 표시...표시는 메세지박스에 언급되도록
         }
     }
     #region 🎨 TESTING

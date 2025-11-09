@@ -74,7 +74,7 @@ public class CharInfoPop : UIScreen
         {
             switch (key)
             {
-                case "CharInfoPopClose":
+                case "Close":
                     Close();
                     break;
             }
