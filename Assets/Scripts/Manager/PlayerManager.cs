@@ -258,7 +258,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         else
         {
             pData.SkList[skId] = GsManager.I.SkDataList[skId].Clone();
+            pData.SkList[skId].Lv = 1;
             pData.SkList[skId].Exp = val;
+            pData.SkList[skId].NextExp = GsManager.I.GetSkNextExp(1);
             //새로 획득한 스킬이라 팝업을 표시...표시는 메세지박스에 언급되도록
         }
     }

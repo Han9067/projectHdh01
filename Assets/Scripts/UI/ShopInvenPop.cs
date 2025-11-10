@@ -227,13 +227,12 @@ public class ShopInvenPop : UIScreen
             rt.anchoredPosition = new Vector2(0, sy + (y * -64));
         }
         // Content 높이 자동 조정
-        content.sizeDelta = new Vector2(content.sizeDelta.x, (gh * 64) + 6);
+        content.sizeDelta = new Vector2(content.sizeDelta.x, gh * 64);
     }
     public void CreateShopItem(List<ItemPos> itemPosList)
     {
         float sy = gh * 32f;
         float sx = -320f;
-        Debug.Log(sx + " " + sy);
         foreach (var data in itemPosList)
         {
             // 프리팹 인스턴스화

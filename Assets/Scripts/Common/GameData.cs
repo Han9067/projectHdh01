@@ -44,7 +44,7 @@ public class StatData
 [System.Serializable]
 public class SkData
 {
-    public int SkId, Type, Cool, Exp;
+    public int SkId, Type, Cool, Exp, NextExp, Lv;
     public string Name;
     public SkData Clone()
     {
@@ -55,6 +55,8 @@ public class SkData
             Cool = this.Cool,
             Name = this.Name,
             Exp = 0,
+            NextExp = 0,
+            Lv = 1,
         };
     }
 }

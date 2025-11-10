@@ -449,6 +449,14 @@ public class GsManager : AutoSingleton<GsManager>
             SkDataList[sk.SkID] = new SkData { SkId = sk.SkID, Type = sk.Type, Cool = sk.Cool, Name = sk.Name };
         }
     }
+    public int GetSkNextExp(int lv)
+    {
+        int[] limitExp = new int[] { 0, 100, 200, 300, 400, 500, 600, 700, 800, 1000 };
+        if (lv < 10)
+            return limitExp[lv];
+        else
+            return lv * 10000;
+    }
     // var baseSk = GsManager.SkDataList[skId];
     // var npcSk = baseSk.Clone(); // 또는 new SkData(baseSk);
     #endregion
