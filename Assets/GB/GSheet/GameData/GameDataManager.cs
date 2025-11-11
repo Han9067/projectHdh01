@@ -50,12 +50,12 @@ public class GameDataManager : AutoSingleton<GameDataManager>
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<SpawnMonTable>(SpawnMonTabledata,(result)=>{ I._Tables[TABLE.SpawnMonTable] = result;}));
                 string MonGrpTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/MonGrpTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<MonGrpTable>(MonGrpTabledata,(result)=>{ I._Tables[TABLE.MonGrpTable] = result;}));
-                string SkTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/SkTable").text);
-            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<SkTable>(SkTabledata,(result)=>{ I._Tables[TABLE.SkTable] = result;}));
                 string QuestTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/QuestTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<QuestTable>(QuestTabledata,(result)=>{ I._Tables[TABLE.QuestTable] = result;}));
                 string StatTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/StatTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<StatTable>(StatTabledata,(result)=>{ I._Tables[TABLE.StatTable] = result;}));
+                string SkTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/SkTable").text);
+            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<SkTable>(SkTabledata,(result)=>{ I._Tables[TABLE.SkTable] = result;}));
                 
 
         gbCoroutine.OnComplete(()=>{complete?.Invoke();}).Play();
@@ -166,11 +166,6 @@ case TABLE.MonGrpTable:
         d_MonGrpTable.SetJson(data);
         obj  = d_MonGrpTable;
         break;
-case TABLE.SkTable:
-        SkTable d_SkTable = new SkTable();
-        d_SkTable.SetJson(data);
-        obj  = d_SkTable;
-        break;
 case TABLE.QuestTable:
         QuestTable d_QuestTable = new QuestTable();
         d_QuestTable.SetJson(data);
@@ -180,6 +175,11 @@ case TABLE.StatTable:
         StatTable d_StatTable = new StatTable();
         d_StatTable.SetJson(data);
         obj  = d_StatTable;
+        break;
+case TABLE.SkTable:
+        SkTable d_SkTable = new SkTable();
+        d_SkTable.SetJson(data);
+        obj  = d_SkTable;
         break;
         }
 
@@ -291,8 +291,8 @@ public enum TABLE
 	MonTable,
 	SpawnMonTable,
 	MonGrpTable,
-	SkTable,
 	QuestTable,
 	StatTable,
+	SkTable,
 
 }
