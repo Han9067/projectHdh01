@@ -11,8 +11,6 @@ public class SkObj : MonoBehaviour
     [SerializeField] private SkData data;
     void Start()
     {
-        // mainImg.sprite = ResManager.GetSprite(skData.MainImg);
-        // iconImg.sprite = ResManager.GetSprite(skData.IconImg);
         iconImg.sprite = ResManager.GetSprite("skIcon_" + data.SkId);
         GetComponent<Button>().onClick.AddListener(OnButtonClick);
     }
@@ -22,6 +20,6 @@ public class SkObj : MonoBehaviour
     }
     void OnButtonClick()
     {
-        // Presenter.Send("SkillPop", "SelectSk", data);
+        Presenter.Send("SkillPop", "SelectSk", data);
     }
 }

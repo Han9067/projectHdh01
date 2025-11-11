@@ -52,10 +52,10 @@ public class GameDataManager : AutoSingleton<GameDataManager>
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<MonGrpTable>(MonGrpTabledata,(result)=>{ I._Tables[TABLE.MonGrpTable] = result;}));
                 string QuestTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/QuestTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<QuestTable>(QuestTabledata,(result)=>{ I._Tables[TABLE.QuestTable] = result;}));
-                string StatTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/StatTable").text);
-            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<StatTable>(StatTabledata,(result)=>{ I._Tables[TABLE.StatTable] = result;}));
                 string SkTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/SkTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<SkTable>(SkTabledata,(result)=>{ I._Tables[TABLE.SkTable] = result;}));
+                string AttTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/AttTable").text);
+            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<AttTable>(AttTabledata,(result)=>{ I._Tables[TABLE.AttTable] = result;}));
                 
 
         gbCoroutine.OnComplete(()=>{complete?.Invoke();}).Play();
@@ -171,15 +171,15 @@ case TABLE.QuestTable:
         d_QuestTable.SetJson(data);
         obj  = d_QuestTable;
         break;
-case TABLE.StatTable:
-        StatTable d_StatTable = new StatTable();
-        d_StatTable.SetJson(data);
-        obj  = d_StatTable;
-        break;
 case TABLE.SkTable:
         SkTable d_SkTable = new SkTable();
         d_SkTable.SetJson(data);
         obj  = d_SkTable;
+        break;
+case TABLE.AttTable:
+        AttTable d_AttTable = new AttTable();
+        d_AttTable.SetJson(data);
+        obj  = d_AttTable;
         break;
         }
 
@@ -292,7 +292,7 @@ public enum TABLE
 	SpawnMonTable,
 	MonGrpTable,
 	QuestTable,
-	StatTable,
 	SkTable,
+	AttTable,
 
 }

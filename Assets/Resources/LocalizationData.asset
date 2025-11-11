@@ -14,16 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Datas:
     list:
-    - key: test
-      value:
-        list:
-        - key: 23
-          value: "\uD14C\uC2A4\uD2B8"
-          duplicatedKey: 0
-        - key: 10
-          value: test
-          duplicatedKey: 0
-      duplicatedKey: 0
     - key: Jan
       value:
         list:
@@ -302,66 +292,6 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Durability
-          duplicatedKey: 0
-      duplicatedKey: 0
-    - key: Dmg
-      value:
-        list:
-        - key: 23
-          value: "\uD53C\uD574"
-          duplicatedKey: 0
-        - key: 10
-          value: Damage
-          duplicatedKey: 0
-      duplicatedKey: 0
-    - key: MagicDmg
-      value:
-        list:
-        - key: 23
-          value: "\uB9C8\uBC95 \uD53C\uD574"
-          duplicatedKey: 0
-        - key: 10
-          value: Magic Damage
-          duplicatedKey: 0
-      duplicatedKey: 0
-    - key: Bleeding
-      value:
-        list:
-        - key: 23
-          value: "\uCD9C\uD608"
-          duplicatedKey: 0
-        - key: 10
-          value: Bleeding
-          duplicatedKey: 0
-      duplicatedKey: 0
-    - key: Stun
-      value:
-        list:
-        - key: 23
-          value: "\uAE30\uC808"
-          duplicatedKey: 0
-        - key: 10
-          value: Stun
-          duplicatedKey: 0
-      duplicatedKey: 0
-    - key: MinorInjury
-      value:
-        list:
-        - key: 23
-          value: "\uACBD\uC0C1"
-          duplicatedKey: 0
-        - key: 10
-          value: Minor Injury
-          duplicatedKey: 0
-      duplicatedKey: 0
-    - key: SeriousInjury
-      value:
-        list:
-        - key: 23
-          value: "\uC911\uC0C1"
-          duplicatedKey: 0
-        - key: 10
-          value: Serious Injury
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Caelgrad
@@ -724,6 +654,76 @@ MonoBehaviour:
           value: Sp Regen
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: Dmg
+      value:
+        list:
+        - key: 23
+          value: "\uD53C\uD574"
+          duplicatedKey: 0
+        - key: 10
+          value: Damage
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: MagicDmg
+      value:
+        list:
+        - key: 23
+          value: "\uB9C8\uBC95 \uD53C\uD574"
+          duplicatedKey: 0
+        - key: 10
+          value: Magic Damage
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Defense
+      value:
+        list:
+        - key: 23
+          value: "\uBC29\uC5B4"
+          duplicatedKey: 0
+        - key: 10
+          value: Defense
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Bleeding
+      value:
+        list:
+        - key: 23
+          value: "\uCD9C\uD608"
+          duplicatedKey: 0
+        - key: 10
+          value: Bleeding
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Stun
+      value:
+        list:
+        - key: 23
+          value: "\uAE30\uC808"
+          duplicatedKey: 0
+        - key: 10
+          value: Stun
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: MinorInjury
+      value:
+        list:
+        - key: 23
+          value: "\uACBD\uC0C1"
+          duplicatedKey: 0
+        - key: 10
+          value: Minor Injury
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SeriousInjury
+      value:
+        list:
+        - key: 23
+          value: "\uC911\uC0C1"
+          duplicatedKey: 0
+        - key: 10
+          value: Serious Injury
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: Indomitable
       value:
         list:
@@ -1064,21 +1064,21 @@ MonoBehaviour:
           value: Water Magic
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: LightningMagic
+    - key: ElectricMagic
       value:
         list:
         - key: 23
           value: "\uC804\uAE30 \uB9C8\uBC95"
           duplicatedKey: 0
         - key: 10
-          value: Lightning Magic
+          value: Electric Magic
           duplicatedKey: 0
       duplicatedKey: 0
     - key: EarthMagic
       value:
         list:
         - key: 23
-          value: "\uB545 \uB9C8\uBC95"
+          value: "\uB300\uC9C0 \uB9C8\uBC95"
           duplicatedKey: 0
         - key: 10
           value: Earth Magic
@@ -1094,14 +1094,14 @@ MonoBehaviour:
           value: Wind Magic
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: LightMagic
+    - key: HolyMagic
       value:
         list:
         - key: 23
-          value: "\uBE5B \uB9C8\uBC95"
+          value: "\uC2E0\uC131 \uB9C8\uBC95"
           duplicatedKey: 0
         - key: 10
-          value: Light Magic
+          value: Holy Magic
           duplicatedKey: 0
       duplicatedKey: 0
     - key: DarkMagic
@@ -1622,6 +1622,36 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: '{0} : {1}'
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AvalB
+      value:
+        list:
+        - key: 23
+          value: "{0} : {1} \uC99D\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: '{0} : {1} Increase'
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AperB
+      value:
+        list:
+        - key: 23
+          value: "{0} : {1}% \uC99D\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: '{0} : {1}% Increase'
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: LvisA
+      value:
+        list:
+        - key: 23
+          value: 'Lv : {0}'
+          duplicatedKey: 0
+        - key: 10
+          value: 'Lv : {0}'
           duplicatedKey: 0
       duplicatedKey: 0
     - key: AddCrown

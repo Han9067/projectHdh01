@@ -30,6 +30,7 @@ public class InvenPop : UIScreen
     private Dictionary<string, Image> eqBox = new Dictionary<string, Image>(); // 장비 슬롯 박스 이미지
     private Dictionary<string, GameObject> eqMain = new Dictionary<string, GameObject>(); // 장비 슬롯 메인 이미지
     public Sprite gridSprite; // 클래스 멤버 변수로 캐싱
+    public static bool isActive = false;
     private void Awake()
     {
         Regist();
@@ -43,9 +44,11 @@ public class InvenPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("InvenPop", this);
+        isActive = true;
     }
     private void OnDisable()
     {
+        isActive = false;
         ResetAllEq();
         ResetAllGrids();
         if (moveOn)

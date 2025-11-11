@@ -213,16 +213,22 @@ public class WorkPop : UIScreen
             switch (workType)
             {
                 case 2:
+                    PlayerManager.I.AddSkExp(7, skExpVal);
                     break;
                 case 3:
+                    PlayerManager.I.AddSkExp(28, skExpVal);
                     break;
                 case 4:
+                    PlayerManager.I.AddSkExp(29, skExpVal);
                     break;
                 case 5:
+                    PlayerManager.I.AddSkExp(30, skExpVal);
                     break;
                 case 6:
+                    PlayerManager.I.AddSkExp(27, skExpVal);
                     break;
                 case 7:
+                    PlayerManager.I.AddSkExp(21, skExpVal);
                     break;
                 case 101:
                     //농장

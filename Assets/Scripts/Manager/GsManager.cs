@@ -33,7 +33,7 @@ public class GsManager : AutoSingleton<GsManager>
         #endregion
 
         #region 데이터 로드
-        LoadStatData();
+        LoadAttData();
         LoadSkData();
         #endregion
 
@@ -62,43 +62,33 @@ public class GsManager : AutoSingleton<GsManager>
     #region 메뉴 팝업 상태
     public void StateMenuPopup(string key)
     {
-        GameObject go = null;
-        string str = "";
-
-        switch (key)
+        string str = key.Replace("State", "");
+        switch (str)
         {
-            case "StateCharInfoPop":
-                go = GameObject.Find("CharInfoPop");
-                str = "CharInfoPop";
+            case "CharInfoPop":
+                if (CharInfoPop.isActive)
+                    UIManager.ClosePopup("CharInfoPop");
+                else
+                    UIManager.ShowPopup("CharInfoPop");
                 break;
-            case "StateInvenPop":
-                go = GameObject.Find("InvenPop");
-                str = "InvenPop";
-                if (GameObject.Find("SkillPop") != null && GameObject.Find("SkillPop").activeSelf)
-                    UIManager.ClosePopup("SkillPop");
-                break;
-            case "StateJournalPop":
-                go = GameObject.Find("JournalPop");
-                str = "JournalPop";
-                break;
-            case "StateSkillPop":
-                go = GameObject.Find("SkillPop");
-                str = "SkillPop";
-                if (GameObject.Find("InvenPop") != null && GameObject.Find("InvenPop").activeSelf)
+            case "InvenPop":
+                if (InvenPop.isActive)
                     UIManager.ClosePopup("InvenPop");
+                else
+                    UIManager.ShowPopup("InvenPop");
                 break;
-        }
-
-        if (go == null)
-        {
-            UIManager.ShowPopup(str);
-        }
-        else
-        {
-            if (go.gameObject.activeSelf)
-                UIManager.ClosePopup(str);
-            else
-                UIManager.ShowPopup(str);
+            case "JournalPop":
+                if (JournalPop.isActive)
+                    UIManager.ClosePopup("JournalPop");
+                else
+                    UIManager.ShowPopup("JournalPop");
+                break;
+            case "SkillPop":
+                if (SkillPop.isActive)
+                    UIManager.ClosePopup("SkillPop");
+                else
+                    UIManager.ShowPopup("SkillPop");
+                break;
         }
     }
     #endregion
@@ -425,17 +415,21 @@ public class GsManager : AutoSingleton<GsManager>
     }
     #endregion
 
-    #region 스탯 관리
-    private StatTable _statTable;
-    public StatTable StatTable => _statTable ?? (_statTable = GameDataManager.GetTable<StatTable>());
-    public Dictionary<int, StatData> StatDataList = new Dictionary<int, StatData>();
+    #region 특성 관리
+    private AttTable _attTable;
+    public AttTable AttTable => _attTable ?? (_attTable = GameDataManager.GetTable<AttTable>());
+    public Dictionary<int, AttData> AttDataList = new Dictionary<int, AttData>();
 
-    private void LoadStatData()
+    private void LoadAttData()
     {
-        foreach (var stat in StatTable.Datas)
+        foreach (var att in AttTable.Datas)
         {
-            StatDataList[stat.StatID] = new StatData(stat.StatID, stat.Name);
+            AttDataList[att.AttID] = new AttData(att.AttID, att.Name);
         }
+    }
+    public string GetAttName(int attId)
+    {
+        return AttDataList[attId].Name;
     }
     #endregion
     #region 스킬 관리
@@ -446,7 +440,14 @@ public class GsManager : AutoSingleton<GsManager>
     {
         foreach (var sk in SkTable.Datas)
         {
-            SkDataList[sk.SkID] = new SkData { SkId = sk.SkID, Type = sk.Type, Cool = sk.Cool, Name = sk.Name };
+            string[] att = sk.Att.Split('/');
+            List<SkAttData> attList = new List<SkAttData>();
+            foreach (var v in att)
+            {
+                SkAttData attData = new SkAttData(v);
+                attList.Add(attData);
+            }
+            SkDataList[sk.SkID] = new SkData { SkId = sk.SkID, Type = sk.Type, Cool = sk.Cool, Name = sk.Name, Att = attList };
         }
     }
     public int GetSkNextExp(int lv)

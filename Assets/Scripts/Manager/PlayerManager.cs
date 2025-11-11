@@ -51,8 +51,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     }
     private void CheckCharInfoPop()
     {
-        if (GameObject.Find("CharInfoPop") && GameObject.Find("CharInfoPop").GetComponent<CharInfoPop>().isActive)
-            GameObject.Find("CharInfoPop").GetComponent<CharInfoPop>().UpdateCharInfo();
+        if (CharInfoPop.isActive)
+            Presenter.Send("CharInfoPop", "UpdateCharInfo");
     }
     // 플레이어 데이터 초기화
     public void ApplyPlayerData(PlayerData data, Vector3 pos)
@@ -279,6 +279,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.HairColor = testHairColor;
         Presenter.Send("CharInfoPop", "UpdateCharAppearance");
     }
+    public void TestAddSkExp()
+    {
+        AddSkExp(1, 20);
+    }
     #endregion
 }
 
@@ -298,6 +302,10 @@ public class PlayerManagerEditor : Editor
         if (GUILayout.Button("플레이어 머리 색상 변경"))
         {
             myScript.ChangePlayerHairColor();
+        }
+        if (GUILayout.Button("스킬 추가"))
+        {
+            myScript.TestAddSkExp();
         }
     }
 }

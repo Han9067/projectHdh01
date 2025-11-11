@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 557004803284952123}
   - component: {fileID: 853715154777317542}
   m_Layer: 5
-  m_Name: SkBtn
+  m_Name: SkObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.54901963, g: 0.627451, b: 0.3137255, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -287,3 +287,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainImg: {fileID: 473698077085296674}
   iconImg: {fileID: 4341942608386795715}
+  data:
+    SkId: 0
+    Type: 0
+    Cool: 0
+    Exp: 0
+    NextExp: 0
+    Lv: 0
+    Name: 

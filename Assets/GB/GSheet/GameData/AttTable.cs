@@ -4,21 +4,21 @@ using Newtonsoft.Json;
 
 
 [Serializable]
-public class StatTable  : GameData
+public class AttTable  : GameData
 {	
-	 [JsonProperty] public StatTableProb[] Datas{get; private set;}
-	 IReadOnlyDictionary<string, StatTableProb> _DicDatas;
+	 [JsonProperty] public AttTableProb[] Datas{get; private set;}
+	 IReadOnlyDictionary<string, AttTableProb> _DicDatas;
 
 	public void SetJson(string json)
     {
-        var data = JsonConvert.DeserializeObject <StatTable> (json);
-        StatTableProb[] arr = data.Datas;
+        var data = JsonConvert.DeserializeObject <AttTable> (json);
+        AttTableProb[] arr = data.Datas;
         Datas = arr;
 
-		var dic = new Dictionary<string, StatTableProb>();
+		var dic = new Dictionary<string, AttTableProb>();
 
         for (int i = 0; i < Datas.Length; ++i)
-            dic[Datas[i].StatID.ToString()] = Datas[i];
+            dic[Datas[i].AttID.ToString()] = Datas[i];
 
         _DicDatas = dic;
 
@@ -28,7 +28,7 @@ public class StatTable  : GameData
     {
         switch (name)
         {
-				case "StatID": return true;
+				case "AttID": return true;
 				case "Name": return true;
 				case "Note": return true;
 
@@ -52,10 +52,10 @@ public class StatTable  : GameData
     {
         get
         {
-            StatTableProb data = this[row];
+            AttTableProb data = this[row];
             switch (col)
             {
-				case "StatID": return data.StatID;
+				case "AttID": return data.AttID;
 				case "Name": return data.Name;
 				case "Note": return data.Note;
 
@@ -70,10 +70,10 @@ public class StatTable  : GameData
     {
         get
         {
-             StatTableProb data = this[row];
+             AttTableProb data = this[row];
             switch (col)
             {
-				case "StatID": return data.StatID;
+				case "AttID": return data.AttID;
 				case "Name": return data.Name;
 				case "Note": return data.Note;
 
@@ -88,11 +88,11 @@ public class StatTable  : GameData
     {
         get
         {
-            StatTableProb data = Datas[row];
+            AttTableProb data = Datas[row];
 
             switch (col)
             {
-				case 0: return data.StatID;
+				case 0: return data.AttID;
 				case 1: return data.Name;
 				case 2: return data.Note;
 
@@ -101,7 +101,7 @@ public class StatTable  : GameData
         }
     }
 
-    public StatTableProb this[string name]
+    public AttTableProb this[string name]
     {
         get
         {
@@ -110,7 +110,7 @@ public class StatTable  : GameData
     }
 
 
-    public StatTableProb this[int index]
+    public AttTableProb this[int index]
     {
         get
         {
@@ -135,9 +135,9 @@ public class StatTable  : GameData
 }
 
 [Serializable]
-public class StatTableProb : GameDataProb
+public class AttTableProb : GameDataProb
 {
-		[JsonProperty] public readonly int StatID;
+		[JsonProperty] public readonly int AttID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly string Note;
 

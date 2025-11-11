@@ -59,7 +59,7 @@ public class ItemInfoPop : UIScreen
                 float h1 = 40f;
                 foreach (var v in itemData.Stat)
                 {
-                    stat += $"{LocalizationManager.GetValue(GsManager.I.StatDataList[v.Key].Name)}: {v.Value}\n";
+                    stat += $"{LocalizationManager.GetValue(GsManager.I.AttDataList[v.Key].Name)}: {v.Value}\n";
                     h1 += 30;
                 }
                 if (itemData.ItemId < 60000)

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class JournalPop : UIScreen
 {
+    public static bool isActive = false;
     [SerializeField] private Transform qListParent;
     private List<GameObject> qBtnList = new List<GameObject>();
     private string curTab = "OnTabQuest";
@@ -17,6 +18,7 @@ public class JournalPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("JournalPop", this);
+        isActive = true;
         StatePannel(curTab);
         StateTabsColor(curTab);
     }
@@ -24,6 +26,7 @@ public class JournalPop : UIScreen
     private void OnDisable()
     {
         Presenter.UnBind("JournalPop", this);
+        isActive = false;
         InitJournalPop();
     }
     public void RegistButton()

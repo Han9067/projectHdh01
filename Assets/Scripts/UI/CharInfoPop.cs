@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 public class CharInfoPop : UIScreen
 {
-    public bool isActive { get; private set; } = false;
+    public static bool isActive = false;
     private string curBodyKey = "";
     private void Awake()
     {
@@ -86,6 +86,9 @@ public class CharInfoPop : UIScreen
         {
             case "UpdateCharAppearance":
                 GsManager.I.SetUiBaseParts(0, mGameObject);
+                break;
+            case "UpdateCharInfo":
+                UpdateCharInfo();
                 break;
         }
     }

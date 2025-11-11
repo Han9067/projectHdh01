@@ -4,6 +4,7 @@ using UnityEngine;
 using GB;
 using UnityEngine.UI;
 using System.Linq;
+using JetBrains.Annotations;
 
 [System.Serializable]
 public enum PtType
@@ -31,11 +32,11 @@ public interface ICharData
 }
 
 [System.Serializable]
-public class StatData
+public class AttData
 {
     public int StatID;
     public string Name;
-    public StatData(int id, string name)
+    public AttData(int id, string name)
     {
         this.StatID = id;
         this.Name = name;
@@ -46,6 +47,7 @@ public class SkData
 {
     public int SkId, Type, Cool, Exp, NextExp, Lv;
     public string Name;
+    public List<SkAttData> Att;
     public SkData Clone()
     {
         return new SkData
@@ -57,7 +59,30 @@ public class SkData
             Exp = 0,
             NextExp = 0,
             Lv = 1,
+            Att = this.Att,
         };
+    }
+}
+[System.Serializable]
+public class SkAttData
+{
+    //0 : AttID -> 특성ID, 1 : Val -> 스킬 내 특성 초기값, 2 : Lim -> 특성 활성 레벨, 3 : Itv -> 레벨별 특성값 증가치
+    public int AttID, Val, Lim, Itv;
+    public string Name, Str;
+    public SkAttData(string att)
+    {
+        if (att == "0")
+        {
+            AttID = 0; Val = 0; Lim = 0; Itv = 0;
+            return;
+        }
+        string[] attVal = att.Split('_');
+        AttID = int.Parse(attVal[0]);
+        Name = GsManager.I.GetAttName(AttID);
+        Val = int.Parse(attVal[1]);
+        Lim = int.Parse(attVal[2]);
+        Itv = int.Parse(attVal[3]);
+        Str = attVal[4];
     }
 }
 
