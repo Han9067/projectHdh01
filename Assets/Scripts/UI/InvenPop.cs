@@ -45,6 +45,8 @@ public class InvenPop : UIScreen
     {
         Presenter.Bind("InvenPop", this);
         isActive = true;
+        if (SkillPop.isActive)
+            UIManager.ClosePopup("SkillPop");
     }
     private void OnDisable()
     {
@@ -58,6 +60,8 @@ public class InvenPop : UIScreen
             ReturnItem();
         }
         InitCurData();
+        if (ShopInvenPop.isActive)
+            UIManager.ClosePopup("ShopInvenPop");
         Presenter.UnBind("InvenPop", this);
     }
     public void RegistButton()

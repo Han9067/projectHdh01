@@ -19,6 +19,12 @@ public class JournalPop : UIScreen
     {
         Presenter.Bind("JournalPop", this);
         isActive = true;
+        if (InvenPop.isActive)
+            UIManager.ClosePopup("InvenPop");
+        if (SkillPop.isActive)
+            UIManager.ClosePopup("SkillPop");
+        if (CharInfoPop.isActive)
+            UIManager.ClosePopup("CharInfoPop");
         StatePannel(curTab);
         StateTabsColor(curTab);
     }

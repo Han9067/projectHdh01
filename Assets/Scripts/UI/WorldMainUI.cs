@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class WorldMainUI : UIScreen
 {
-    [SerializeField] private Slider mIngGg;
+    [SerializeField] private Slider mIngGg, mHpGg, mMpGg, mSpGg, mFatGg;
     private float wTime = 0, workTime, endWorkTime;
     private int tDay = 0, wYear, wMonth, wDay;
     private bool isWork = false; //일하기 상태 유무
@@ -121,9 +121,11 @@ public class WorldMainUI : UIScreen
         switch (key)
         {
             case "UpdateInfo":
+                UpdateState();
                 UpdateCrownTxt();
                 break;
-            case "UpdateCrownTxt": mTexts["MainCrownTxt"].text = data.Get<string>(); break;
+            case "UpdateCrownTxt": UpdateCrownTxt(); break;
+            case "UpdateState": UpdateState(); break;
             case "UpdateAllTime":
                 tDay = GsManager.I.tDay;
                 wTime = GsManager.I.wTime;
@@ -143,9 +145,16 @@ public class WorldMainUI : UIScreen
                 break;
         }
     }
+    private void UpdateState()
+    {
+        mTMPText["HpVal"].text = PlayerManager.I.pData.HP.ToString() + "/" + PlayerManager.I.pData.MaxHP.ToString();
+        mTMPText["MpVal"].text = PlayerManager.I.pData.MP.ToString() + "/" + PlayerManager.I.pData.MaxMP.ToString();
+        mTMPText["SpVal"].text = PlayerManager.I.pData.SP.ToString() + "/" + PlayerManager.I.pData.MaxSP.ToString();
+        // mTMPText["FatVal"].text = PlayerManager.I.pData.Fat.ToString() + "/" + PlayerManager.I.pData.MaxFat.ToString();
+    }
     private void UpdateCrownTxt()
     {
-        mTexts["MainCrownTxt"].text = PlayerManager.I.pData.Crown.ToString();
+        mTMPText["CrownVal"].text = PlayerManager.I.pData.Crown.ToString();
     }
     private void CalcCalender()
     {

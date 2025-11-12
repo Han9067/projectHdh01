@@ -79,7 +79,7 @@ public class SelectPop : UIScreen
                     return;
                 }
                 PlayerManager.I.pData.Crown -= selItem.Price;
-                Presenter.Send("WorldMainUI", "UpdateCrownTxt", PlayerManager.I.pData.Crown.ToString());
+                Presenter.Send("WorldMainUI", "UpdateCrownTxt");
                 Vector2 pos = PlayerManager.I.CanAddItem(selItem.W, selItem.H);
                 ItemManager.I.CreateInvenItem(selItem.ItemId, (int)pos.x, (int)pos.y);
                 Presenter.Send("InvenPop", "AddItem", PlayerManager.I.pData.Inven[PlayerManager.I.pData.Inven.Count - 1]);

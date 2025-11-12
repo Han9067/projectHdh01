@@ -30,6 +30,8 @@ public class SkillPop : UIScreen
     {
         Presenter.Bind("SkillPop", this);
         isActive = true;
+        if (InvenPop.isActive)
+            UIManager.ClosePopup("InvenPop");
         InitPop();
     }
 

@@ -8,6 +8,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
     [Header("플레이어 데이터")]
     public int currentCity = 0;
+    public int fatigue = 0; // 피로도
     public PlayerData pData;
     public List<List<InvenGrid>> grids;
     public Vector3 worldPos = new Vector3(0, 0, 0);
@@ -137,6 +138,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.QuestList = new List<QuestInstData>();
         pData.QuestMax = 5;
 
+        fatigue = 100; //기본이 100
         // pData.SkList = new Dictionary<int, SkData>();
     }
     private void CalcPlayerStat()

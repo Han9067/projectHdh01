@@ -48,6 +48,8 @@ public class ShopInvenPop : UIScreen
     {
         Presenter.UnBind("ShopInvenPop", this);
         isActive = false;
+        if (InvenPop.isActive)
+            UIManager.ClosePopup("InvenPop");
     }
 
     public void RegistButton()
