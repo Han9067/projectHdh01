@@ -37,8 +37,6 @@ public class ItemTable  : GameData
 				case "W": return true;
 				case "H": return true;
 				case "Res": return true;
-				case "KR": return true;
-				case "EN": return true;
 
 		  default: return false;
 
@@ -72,8 +70,6 @@ public class ItemTable  : GameData
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Res": return data.Res;
-				case "KR": return data.KR;
-				case "EN": return data.EN;
 
 
                 default: return null;
@@ -98,8 +94,6 @@ public class ItemTable  : GameData
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Res": return data.Res;
-				case "KR": return data.KR;
-				case "EN": return data.EN;
 
 
                 default: return null;
@@ -125,8 +119,6 @@ public class ItemTable  : GameData
 				case 6: return data.W;
 				case 7: return data.H;
 				case 8: return data.Res;
-				case 9: return data.KR;
-				case 10: return data.EN;
 
                 default: return null;
             }
@@ -178,7 +170,5 @@ public class ItemTableProb : GameDataProb
 	[JsonProperty] public readonly int W;
 	[JsonProperty] public readonly int H;
 	[JsonProperty] public readonly string Res;
-	[JsonProperty] public readonly string KR;
-	[JsonProperty] public readonly string EN;
 
 }
