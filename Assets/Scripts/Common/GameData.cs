@@ -153,6 +153,16 @@ public class NpcData : ICharData
 [System.Serializable]
 public class MonData
 {
+    public class DropData
+    {
+        public int ItemId;
+        public float Rate;
+        public DropData(int itemId, float rate)
+        {
+            this.ItemId = itemId;
+            this.Rate = rate;
+        }
+    }
     public int MonId, MonType, Lv, Exp, NextExp, GainExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;
     public string Name;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
@@ -160,6 +170,7 @@ public class MonData
     public int W, H; // 몬스터 오브젝트 크기
     public float SdwScr, GgY; // 몬스터 그림자 스케일, 몬스터 그림자 Y 좌표
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>(); //추후 적용 251109
+    public List<DropData> DropList = new List<DropData>();
     public MonData Clone()
     {
         return new MonData
@@ -202,7 +213,9 @@ public class MonData
             W = this.W,
             H = this.H,
             SdwScr = this.SdwScr,
-            GgY = this.GgY
+            GgY = this.GgY,
+
+            DropList = this.DropList
         };
     }
 }
