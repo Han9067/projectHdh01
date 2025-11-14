@@ -34,6 +34,8 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 Presenter.Send("SelectPop", "SetList", 0);
                 Presenter.Send("SelectPop", "SetItemData", itemData);
                 break;
+            case 2:
+                break;
         }
     }
     public void OnPointerEnter(PointerEventData eventData)

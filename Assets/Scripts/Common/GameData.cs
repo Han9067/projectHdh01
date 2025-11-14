@@ -7,6 +7,13 @@ using System.Linq;
 using JetBrains.Annotations;
 
 [System.Serializable]
+public class InvenGrid
+{
+    public int x;
+    public int y;
+    public int slotId = -1; // -1이면 비어있음
+}
+[System.Serializable]
 public enum PtType
 {
     Face, Eyebrow, Eye1, Eye2, Ear, Nose, Mouth,
@@ -155,12 +162,13 @@ public class MonData
 {
     public class DropData
     {
-        public int ItemId;
+        public int ItemId, Val;
         public float Rate;
-        public DropData(int itemId, float rate)
+        public DropData(int itemId, float rate, int val)
         {
             this.ItemId = itemId;
             this.Rate = rate;
+            this.Val = val;
         }
     }
     public int MonId, MonType, Lv, Exp, NextExp, GainExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;

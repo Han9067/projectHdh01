@@ -15,7 +15,6 @@ public class InvenPop : UIScreen
     [SerializeField] private Transform slotParent; // 슬롯 부모
     [SerializeField] private Transform eqParent; // 장비 부모
     [SerializeField] private Transform itemParent; // 아이템 부모
-    [SerializeField] public GameObject popPrefab; // 팝업 프리팹
     public Image[,] gridObj; // 그리드 게임오브젝트
     private List<List<InvenGrid>> pGrids; // 플레이어 그리드
     private List<GameObject> curItem = new List<GameObject>(); // 현재 선택된 아이템
@@ -186,7 +185,7 @@ public class InvenPop : UIScreen
         slotEdge[0] = grid00.position.y + grid00.sizeDelta.y / 2; slotEdge[1] = grid99.position.y - grid99.sizeDelta.y / 2;
         slotEdge[2] = grid00.position.x - grid00.sizeDelta.x / 2; slotEdge[3] = grid99.position.x + grid99.sizeDelta.x / 2;
 
-        RectTransform pop = popPrefab.GetComponent<RectTransform>();
+        RectTransform pop = mGameObject["Pop"].GetComponent<RectTransform>();
         popEdge[0] = pop.position.y + pop.sizeDelta.y / 2; popEdge[1] = pop.position.y - pop.sizeDelta.y / 2;
         popEdge[2] = pop.position.x - pop.sizeDelta.x / 2; popEdge[3] = pop.position.x + pop.sizeDelta.x / 2;
 

@@ -40,7 +40,8 @@ public class MonManager : AutoSingleton<MonManager>
             string[] arr = d.Split('_');
             int itemId = int.Parse(arr[0]);
             float rate = float.Parse(arr[1]);
-            dList.Add(new MonData.DropData(itemId, rate));
+            int val = arr.Length > 2 ? int.Parse(arr[2]) : 0;
+            dList.Add(new MonData.DropData(itemId, rate, val));
         }
         int hp = VIT * 4, sp = END * 4, mp = INT * 4;
         return new MonData

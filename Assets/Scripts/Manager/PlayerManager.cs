@@ -122,8 +122,6 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Nose = 1; pData.Mouth = 1;
         pData.Hair = 1; pData.HairColor = 1;
 
-        // ItemManager.I.CreateInvenItem(30002, 1, 0);
-        // ItemManager.I.CreateInvenItem(10002, 3, 0);
         ItemManager.I.CreateInvenItem(30001, -1, -1); //옷, 장착 아이템은 -1, -1로 설정
         ItemManager.I.CreateInvenItem(10001, -1, -1); //무기
 
@@ -285,6 +283,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     {
         AddSkExp(1, 20);
     }
+    public void TestDropItem()
+    {
+        ItemManager.I.TestDropItem();
+    }
     #endregion
 }
 
@@ -308,6 +310,10 @@ public class PlayerManagerEditor : Editor
         if (GUILayout.Button("스킬 추가"))
         {
             myScript.TestAddSkExp();
+        }
+        if (GUILayout.Button("아이템 드랍"))
+        {
+            myScript.TestDropItem();
         }
     }
 }
