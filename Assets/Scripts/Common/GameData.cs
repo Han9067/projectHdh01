@@ -272,7 +272,7 @@ public class ItemData
     public int ItemId, Type, Price, W, H, Dur, MaxDur, X, Y, Grade;
     public int Dir, Uid; //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
     public int Both; // 0: 한손무기, 1: 양손무기 // 무기에만 적용
-    public Dictionary<int, int> Stat;
+    public Dictionary<int, int> Att;
     public ItemData Clone()
     {
         return new ItemData
@@ -282,7 +282,7 @@ public class ItemData
             ItemId = this.ItemId,
             Type = this.Type,
             Price = this.Price,
-            Stat = this.Stat,
+            Att = this.Att,
             W = this.W,
             H = this.H,
             Dur = this.Dur,

@@ -47,11 +47,11 @@ public class ItemManager : AutoSingleton<ItemManager>
         int g = GetGrade(price);
         string[] kArr = keys.Split('_');
         string[] vArr = vals.Split('_');
-        Dictionary<int, int> stat = new Dictionary<int, int>();
+        Dictionary<int, int> att = new Dictionary<int, int>();
         for (int i = 0; i < kArr.Length; i++)
-            stat[int.Parse(kArr[i])] = int.Parse(vArr[i]);
+            att[int.Parse(kArr[i])] = int.Parse(vArr[i]);
 
-        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Stat = stat, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = g };
+        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Att = att, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = g };
     }
     public void CreateInvenItem(int id, int x, int y)
     {
