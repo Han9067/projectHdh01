@@ -19,12 +19,10 @@ public class JournalPop : UIScreen
     {
         Presenter.Bind("JournalPop", this);
         isActive = true;
-        if (InvenPop.isActive)
-            UIManager.ClosePopup("InvenPop");
-        if (SkillPop.isActive)
-            UIManager.ClosePopup("SkillPop");
-        if (CharInfoPop.isActive)
-            UIManager.ClosePopup("CharInfoPop");
+        if (InvenPop.isActive) UIManager.ClosePopup("InvenPop");
+        if (SkillPop.isActive) UIManager.ClosePopup("SkillPop");
+        if (CharInfoPop.isActive) UIManager.ClosePopup("CharInfoPop");
+
         StatePannel(curTab);
         StateTabsColor(curTab);
     }
@@ -39,7 +37,6 @@ public class JournalPop : UIScreen
     {
         foreach (var v in mButtons)
             v.Value.onClick.AddListener(() => { OnButtonClick(v.Key); });
-
     }
     public void OnButtonClick(string key)
     {

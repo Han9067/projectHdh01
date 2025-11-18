@@ -11,21 +11,21 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public string eq = "";
     public ItemData itemData;
     [SerializeField] private Button button;
+    [SerializeField] private Image img;
     // Start is called before the first frame update
     void Start()
     {
         button.onClick.AddListener(OnButtonClick);
-        GetComponent<Image>().sprite = ResManager.GetSprite(itemData.Res);
+        img.sprite = ResManager.GetSprite(itemData.Res);
     }
 
     public void OnButtonClick()
     {
-        string str;
         switch (ivType)
         {
             case 0:
-                str = $"{itemData.Uid}_{itemData.ItemId}_{itemData.Type}";
-                Presenter.Send("InvenPop", "ClickObj", str);
+                // str = $"{itemData.Uid}_{itemData.ItemId}_{itemData.Type}";
+                Presenter.Send("InvenPop", "ClickItem", itemData.Uid);
                 if (ItemInfoPop.isActive)
                     UIManager.ClosePopup("ItemInfoPop");
                 break;
@@ -40,6 +40,7 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (InvenPop.moveOn) return;
         UIManager.ShowPopup("ItemInfoPop");
         Presenter.Send("ItemInfoPop", "OnItemInfo", itemData);
 
@@ -53,7 +54,6 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         Vector3 pos = new Vector3(rect.position.x + (dir * (rect.sizeDelta.x / 2 + 202)), rect.position.y, 0);
         Presenter.Send("ItemInfoPop", "OnItemPos", pos);
     }
-
     public void OnPointerExit(PointerEventData eventData)
     {
         UIManager.ClosePopup("ItemInfoPop");
@@ -69,5 +69,9 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         itemData = data;
         x = xx; y = yy; uid = data.Uid;
         ivType = type;
+    }
+    public void SetRaycastTarget(bool isActive)
+    {
+        img.raycastTarget = isActive;
     }
 }

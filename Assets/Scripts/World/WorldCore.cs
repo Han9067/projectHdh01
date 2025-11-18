@@ -69,8 +69,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     void Update()
     {
-        // if(CityEnterPop.isActive)return;
-        // 일시정지 상태에서도 카메라 이동이 가능하도록 Input 처리
+        if (InvenPop.isActive || CityEnterPop.isActive || CharInfoPop.isActive || SkillPop.isActive || JournalPop.isActive) return;
 
         #region Player Act
         Vector3 moveDirection = Vector3.zero;

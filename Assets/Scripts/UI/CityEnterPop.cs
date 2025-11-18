@@ -37,7 +37,6 @@ public class CityEnterPop : UIScreen
         Presenter.Bind("CityEnterPop", this);
         isActive = true;
         cityId = 0; // 초기화
-        WorldCore.I.enabled = false; // 월드맵 카메라 이동 비활성화
         splitData.Clear();
         shopIdList.Clear();
         sId = 0; sKey = "";
@@ -47,7 +46,6 @@ public class CityEnterPop : UIScreen
         Presenter.UnBind("CityEnterPop", this);
         isActive = false;
         InitQuestCheck(); // 퀘스트 체크 초기화
-        WorldCore.I.enabled = true; // 월드맵 카메라 이동 활성화
         //도시 안으로 들어간 플레이어 활성화
         WorldCore.I.StatePlayer(true);
     }

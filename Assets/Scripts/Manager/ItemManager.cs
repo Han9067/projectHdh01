@@ -150,8 +150,8 @@ public class ItemManager : AutoSingleton<ItemManager>
         CalcDropItem(68001, 100);
         CalcDropItem(68002, 100);
 
-        UIManager.ShowPopup("BattleRewardPop");
-        Presenter.Send("BattleRewardPop", "SetReward");
+        // UIManager.ShowPopup("BattleRewardPop");
+        // Presenter.Send("BattleRewardPop", "SetReward");
     }
     public int GetUid()
     {

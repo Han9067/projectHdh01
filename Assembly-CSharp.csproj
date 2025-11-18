@@ -67,12 +67,12 @@
     <Compile Include="Assets\Scripts\Battle\bMonster.cs" />
     <Compile Include="Assets\Scripts\World\WorldCore.cs" />
     <Compile Include="Assets\Scripts\UI\JournalPop.cs" />
+    <Compile Include="Assets\Scripts\UiObj\EqSlot.cs" />
     <Compile Include="Assets\Scripts\Battle\BattleCore.cs" />
     <Compile Include="Assets\Scripts\Manager\BattlePathManager.cs" />
     <Compile Include="Assets\GB\ResManager\ObjectPooling\PoolingType.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\WpTable.cs" />
     <Compile Include="Assets\GB\Localization\LocalizationManager.cs" />
-    <Compile Include="Assets\Scripts\UI\BattleRewardPop.cs" />
     <Compile Include="Assets\GB\ResManager\SoundManager.cs" />
     <Compile Include="Assets\Scripts\UiObj\WorkRewardList.cs" />
     <Compile Include="Assets\Scripts\Manager\GsManager.cs" />
@@ -80,6 +80,7 @@
     <Compile Include="Assets\GB\GSheet\GameData\ShopTable.cs" />
     <Compile Include="Assets\Scripts\Manager\NpcManager.cs" />
     <Compile Include="Assets\GB\ResManager\ResManager.cs" />
+    <Compile Include="Assets\Scripts\UiObj\GridBox.cs" />
     <Compile Include="Assets\Scripts\UI\CityEnterPop.cs" />
     <Compile Include="Assets\Scripts\UiObj\SelectList.cs" />
     <Compile Include="Assets\Scripts\UI\ShopInvenPop.cs" />
@@ -131,7 +132,6 @@
     <Compile Include="Assets\Scripts\UI\CharInfoPop.cs" />
     <Compile Include="Assets\Scripts\UI\OneBtnPop.cs" />
     <Compile Include="Assets\GB\Localization\LocalizationData.cs" />
-    <Compile Include="Assets\Scripts\UiObj\GridObj.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\AttTable.cs" />
     <Compile Include="Assets\GB\ResManager\ObjectPooling\ObjectPooling.cs" />
   </ItemGroup>

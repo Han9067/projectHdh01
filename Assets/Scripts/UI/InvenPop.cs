@@ -1,35 +1,26 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Xml.Serialization;
 using GB;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 public class InvenPop : UIScreen
 {
-    class EdgePos
-    {
-        public float u, d, l, r;
-        public EdgePos(float u, float d, float l, float r) { this.u = u; this.d = d; this.l = l; this.r = r; }
-    }
-    [SerializeField] private Transform slotParent; // 슬롯 부모
-    [SerializeField] private Transform eqParent; // 장비 부모
-    [SerializeField] private Transform itemParent; // 아이템 부모
-    public Image[,] gridObj; // 그리드 게임오브젝트
-    private List<List<InvenGrid>> pGrids; // 플레이어 그리드
-    private List<GameObject> curItem = new List<GameObject>(); // 현재 선택된 아이템
-    private bool moveOn = false; // 이동 중인지 체크
-    private int curIdx = -1, curState = 0; // 현재 선택된 아이템 인덱스, 상태
-    private ItemObj curItemObj; // 현재 선택된 아이템의 오브젝트 스크립트
-    private string[] curEq; // 현재 선택된 장비
-    private int curItemX, curItemY; // 현재 선택된 아이템의 위치
-    private float[] popEdge = new float[4]; // 팝업 경계
-    private float[] slotEdge = new float[4]; // 슬롯 경계
-    private Dictionary<string, EdgePos> eqEdge = new Dictionary<string, EdgePos>(); // 장비 경계
-    private Dictionary<string, Image> eqBox = new Dictionary<string, Image>(); // 장비 슬롯 박스 이미지
-    private Dictionary<string, GameObject> eqMain = new Dictionary<string, GameObject>(); // 장비 슬롯 메인 이미지
-    public Sprite gridSprite; // 클래스 멤버 변수로 캐싱
-    public static bool isActive = false;
+    private Image[,] ivGridImg;
+    private RectTransform[,] ivGridRect;
+    [SerializeField] private List<ItemObj> itemList; //item object 인벤토리 아이템 리스트
+    private List<List<InvenGrid>> pGrids; //플레이어 인벤토리 그리드
+    private Transform sPrt1, iPrt1, eqPrt;
+    // private RectTransform sResct1, eqRect1;
+    public static bool isActive = false, moveOn = false, intoIvGrids = false;
+    public static string[] curEq;
+    private int curIdx = -1, curState = 0, curItemX = -1, curItemY = -1;
+    private RectTransform curItemRect;
+    private ItemObj curItem;
+    private Dictionary<string, EqSlot> eqSlots = new Dictionary<string, EqSlot>();
+    // private float[] popEdge = new float[4];
+    // private float[] slotEdge = new float[4];
+    private Vector2 ivPos, itemBasePos;
     private void Awake()
     {
         Regist();
@@ -37,6 +28,13 @@ public class InvenPop : UIScreen
     }
     private void Start()
     {
+        sPrt1 = mGameObject["Slot1"].transform;
+        iPrt1 = mGameObject["Item1"].transform;
+        eqPrt = mGameObject["Eq"].transform;
+        // sResct1 = mGameObject["Slot1"].GetComponent<RectTransform>();
+        // eqRect1 = mGameObject["Eq1"].GetComponent<RectTransform>();
+        pGrids = PlayerManager.I.grids;
+        ivPos = new Vector2(sPrt1.position.x - 288, sPrt1.position.y + 288);
         InitGrid();
         LoadInven();
     }
@@ -50,15 +48,6 @@ public class InvenPop : UIScreen
     private void OnDisable()
     {
         isActive = false;
-        ResetAllEq();
-        ResetAllGrids();
-        if (moveOn)
-        {
-            //강제 팝업 종료시 대응
-            moveOn = false;
-            ReturnItem();
-        }
-        InitCurData();
         if (ShopInvenPop.isActive)
             UIManager.ClosePopup("ShopInvenPop");
         Presenter.UnBind("InvenPop", this);
@@ -73,11 +62,6 @@ public class InvenPop : UIScreen
         switch (key)
         {
             case "Close":
-                if (ShopInvenPop.isActive)
-                {
-                    UnityEngine.Debug.Log("ShopInvenPop이 활성화되어 있어서 InvenPop을 닫을 수 없습니다.");
-                    return;
-                }
                 Close();
                 break;
         }
@@ -86,267 +70,341 @@ public class InvenPop : UIScreen
     {
         switch (key)
         {
-            case "ClickObj":
+            case "ClickItem":
                 if (!moveOn)
-                {
-                    InitCurData();
-                    string[] str = data.Get<string>().Split('_');
-                    int uid = int.Parse(str[0]), id = int.Parse(str[1]), type = int.Parse(str[2]);
-                    CheckCurEq(id, type);
-                    foreach (var v in curItem)
-                    {
-                        ItemObj iObj = v.GetComponent<ItemObj>();
-                        if (iObj.uid == uid)
-                        {
-                            curIdx = curItem.IndexOf(v);
-                            curItemObj = iObj;
-                            curItemObj.transform.SetAsLastSibling();
-                            curItemObj.transform.position = Input.mousePosition;
-                            break;
-                        }
-                    }
-                    moveOn = true;
-                    //클릭된 아이템이 장착 중이였다면 장착 해제가 될텐데 그떄, 해당 장착칸이 비어있다면 초기화를 해준다.
-                    if (curItemObj.eq != "")
-                    {
-                        if (PlayerManager.I.pData.EqSlot[curItemObj.eq] != null &&
-                        PlayerManager.I.pData.EqSlot[curItemObj.eq].Uid == curItemObj.uid)
-                        {
-                            PlayerManager.I.TakeoffEq(curItemObj.eq);
-                            eqMain[curItemObj.eq].SetActive(true);
-                        }
-                        curItemObj.eq = "";
-                    }
-                    CheckOverlapWithGrid();
-                }
-                else
-                {
-                    ResetAllGrids();
-                    ResetAllEq();
-                    moveOn = false;
-                    switch (curState)
-                    {
-                        case 0:
-                            MoveItem(curItemObj.x, curItemObj.y, curItemObj.itemData.W, curItemObj.itemData.H, curItemX, curItemY);
-                            break;
-                        case 1:
-                            ChangeItem(curItemObj.x, curItemObj.y, curItemObj.itemData.W, curItemObj.itemData.H, curItemX, curItemY);
-                            return;
-                        case 2:
-                            return; // 겹치는 아이템이 여러 개이며 이동이 불가능
-                        case 3:
-                            bool on = false;
-                            float x = curItem[curIdx].transform.position.x, y = curItem[curIdx].transform.position.y;
-                            for (int i = 0; i < curEq.Length; i++)
-                            {
-                                if (eqEdge[curEq[i]].u >= y && eqEdge[curEq[i]].d <= y && eqEdge[curEq[i]].l <= x && eqEdge[curEq[i]].r >= x)
-                                {
-                                    on = true;
-                                    //선택 아이템 장착
-                                    EquipItem(curEq[i], curItemObj.x, curItemObj.y, curItemObj.itemData.W, curItemObj.itemData.H);
-                                    break;
-                                }
-                            }
-                            if (!on) ReturnItem();
-                            break; // 아이템 그리드 영역 밖에 있을때 또는 장비 칸 영역에 있을때
-                    }
-                }
+                    SelectItemObj(data.Get<int>());
+                break;
+            case "EquipItem":
+                EquipItem(data.Get<string>(), curItem);
                 break;
             case "AddItem":
-                ItemData addItem = data.Get<ItemData>();
-                PlaceInvenItem(addItem.X, addItem.Y, addItem.W, addItem.H, addItem, false);
+
                 break;
+            case "ResetAllGrids":
+                ResetAllGrids();
+                break;
+
         }
-    }
-    public override void Refresh() { }
-    private void InitCurData()
-    {
-        curEq = new string[] { }; curIdx = -1;
-        curItemX = -1; curItemY = -1; curState = 0;
-        if (curItemObj != null) curItemObj = null;
     }
     private void InitGrid()
     {
-        // 10x10 배열 초기화
-        gridObj = new Image[10, 10];
-        // grid_0_0부터 grid_9_9까지 찾아서 배열에 할당
+        ivGridImg = new Image[10, 10];
+        ivGridRect = new RectTransform[10, 10];
         for (int y = 0; y < 10; y++)
         {
             for (int x = 0; x < 10; x++)
             {
-                string gridName = $"grid_{y}_{x}";
-                Transform grid = slotParent.Find(gridName);
-                gridObj[y, x] = grid.GetComponent<Image>(); // 그리드 이미지 배열에 할당
+                string gName = $"grid_{y}_{x}";
+                var obj = sPrt1.Find(gName);
+                ivGridImg[y, x] = obj.GetComponent<Image>();
+                ivGridRect[y, x] = obj.transform as RectTransform;
             }
         }
-        pGrids = PlayerManager.I.grids;
-        RectTransform grid00 = gridObj[0, 0].rectTransform;
-        RectTransform grid99 = gridObj[9, 9].rectTransform;
-        slotEdge[0] = grid00.position.y + grid00.sizeDelta.y / 2; slotEdge[1] = grid99.position.y - grid99.sizeDelta.y / 2;
-        slotEdge[2] = grid00.position.x - grid00.sizeDelta.x / 2; slotEdge[3] = grid99.position.x + grid99.sizeDelta.x / 2;
-
-        RectTransform pop = mGameObject["Pop"].GetComponent<RectTransform>();
-        popEdge[0] = pop.position.y + pop.sizeDelta.y / 2; popEdge[1] = pop.position.y - pop.sizeDelta.y / 2;
-        popEdge[2] = pop.position.x - pop.sizeDelta.x / 2; popEdge[3] = pop.position.x + pop.sizeDelta.x / 2;
-
         string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Helmet", "Shoes", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
-        foreach (var v in eq)
+        for (int i = 0; i < eq.Length; i++)
         {
-            eqBox[v] = mGameObject[v].transform.Find("Box").GetComponent<Image>();
-            eqMain[v] = mGameObject[v].transform.Find("Main").gameObject;
-            RectTransform rt = eqBox[v].rectTransform;
-            float w = rt.sizeDelta.x / 2, h = rt.sizeDelta.y / 2;
-            eqEdge[v] = new EdgePos(rt.position.y + h, rt.position.y - h, rt.position.x - w, rt.position.x + w);
+            string eqName = eq[i];
+            eqSlots[eqName] = eqPrt.Find(eqName).GetComponent<EqSlot>();
         }
     }
     private void LoadInven()
     {
+        itemList = new List<ItemObj>();
         for (int i = 0; i < PlayerManager.I.pData.Inven.Count; i++)
         {
             ItemData item = PlayerManager.I.pData.Inven[i];
             PlaceInvenItem(item.X, item.Y, item.W, item.H, item, item.X == -1 && item.Y == -1);
         }
-        curItemObj = null;
+        curItem = null;
         curIdx = -1;
     }
-    string GetEquipBody(int uId)
+    private void SelectItemObj(int uid, bool isEq = false)
     {
-        string result = "";
-        string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Helmet", "Shoes", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
-        foreach (var v in eq)
+        for (int i = 0; i < itemList.Count; i++)
         {
-            if (PlayerManager.I.pData.EqSlot[v] != null && PlayerManager.I.pData.EqSlot[v].Uid == uId)
+            if (itemList[i].uid == uid)
             {
-                result = v;
-                break;
+                curIdx = i;
+                itemList[i].gameObject.transform.SetAsLastSibling();
+                curItem = itemList[i];
+                curItemRect = curItem.transform as RectTransform;
+                itemBasePos = curItem.transform.position;
             }
         }
-        return result;
-    }
-    private void SetGridPos(RectTransform rect, int type, int x, int y, int w, int h)
-    {
-        if (x > -1 && y > -1)
+        StateItemRaycast(false);
+        moveOn = true;
+        CheckCurEq(curItem.itemData.ItemId, curItem.itemData.Type);
+        if (curItem.x > -1 && curItem.y > -1)
+            CheckGrids();
+        else
         {
-            float cx = gridObj[y, x].rectTransform.anchoredPosition.x + ((w - 1) * 32);
-            float cy = gridObj[y, x].rectTransform.anchoredPosition.y - ((h - 1) * 32) + slotParent.localPosition.y;
-            rect.anchoredPosition = new Vector2(cx, cy);
+            if (isEq) return;
+            //장착 중이던 아이템일 경우 장착 해제시켜야함
+            string eq = GetEquipBody(curItem.itemData.Uid);
+            eqSlots[eq].StateMain(true);
+            PlayerManager.I.TakeoffEq(eq);
         }
-        rect.sizeDelta = new Vector2(w * 64, h * 64);
-        if (type == 0) rect.localScale = new Vector3(1, 1, 1);
     }
     private void PlaceInvenItem(int sx, int sy, int wid, int hei, ItemData item, bool isEq)
     {
-        GameObject itemObj = Instantiate(ResManager.GetGameObject("ItemObj"), itemParent);
-        itemObj.name = $"Item_{item.Name}";
-        ItemObj ItemObj = itemObj.GetComponent<ItemObj>();
-        ItemObj.SetItemData(item, sx, sy, 0);
-        RectTransform rectTransform = itemObj.transform as RectTransform;
-        SetGridPos(rectTransform, 0, sx, sy, wid, hei);
-        curItem.Add(itemObj);
+        GameObject obj = Instantiate(ResManager.GetGameObject("ItemObj"), iPrt1);
+        obj.name = $"Item_{item.Uid}";
+        ItemObj itemObj = obj.GetComponent<ItemObj>();
+        itemObj.SetItemData(item, sx, sy, 0);
+        itemList.Add(itemObj);
+
+        RectTransform rect = obj.transform as RectTransform;
+        rect.sizeDelta = new Vector2(wid * 64, hei * 64);
+        rect.position = GetItemPos(sx, sy, wid, hei);
+
         if (isEq)
         {
             string eq = GetEquipBody(item.Uid);
             PlayerManager.I.pData.EqSlot[eq] = null;
-            curItemObj = ItemObj;
-            curIdx = curItem.Count - 1;
-            EquipItem(eq, item.X, item.Y, item.W, item.H);
+            EquipItem(eq, itemObj);
         }
         else
         {
             for (int y = sy; y < sy + hei; y++)
             {
                 for (int x = sx; x < sx + wid; x++)
-                {
                     pGrids[y][x].slotId = item.Uid;
-                }
             }
         }
     }
-    private void CheckOverlapWithGrid()
+    private void ReturnItem()
     {
-        ResetAllGrids(); // 그리드 초기화
+        curItem.transform.position = itemBasePos;
+        EndMovingItem();
+    }
+    private Vector3 GetItemPos(int sx, int sy, int wid, int hei)
+    {
+        int w = (wid - 1) * 32, h = (hei - 1) * 32;
+        float x = ivPos.x + (sx * 64) + w, y = ivPos.y - (sy * 64) - h;
+        return new Vector3(x, y, 0);
+    }
 
-        RectTransform itemRect = curItem[curIdx].transform as RectTransform;
-        float wid = itemRect.sizeDelta.x - 32, hei = itemRect.sizeDelta.y - 32;
-        float minX = itemRect.position.x - wid / 2, minY = itemRect.position.y - hei / 2;
-        float maxX = itemRect.position.x + wid / 2, maxY = itemRect.position.y + hei / 2;
+    private void CheckGrids()
+    {
+        float wid = curItemRect.sizeDelta.x - 32, hei = curItemRect.sizeDelta.y - 32;
+        float minX = curItemRect.position.x - wid / 2, minY = curItemRect.position.y - hei / 2;
+        float maxX = curItemRect.position.x + wid / 2, maxY = curItemRect.position.y + hei / 2;
 
-        int myUid = curItemObj.itemData.Uid, maxCnt = curItemObj.itemData.W * curItemObj.itemData.H;
+        int myUid = curItem.itemData.Uid, maxCnt = curItem.itemData.W * curItem.itemData.H;
         int gx = 0, gy = 0;
-        int[] gridX = new int[maxCnt], gridY = new int[maxCnt];
-        List<int> gridUid = new List<int>();
+
         for (int y = 0; y < 10; y++)
         {
             bool isOverlapping = false;
             for (int x = 0; x < 10; x++)
             {
-                RectTransform gRect = gridObj[y, x].transform as RectTransform;
-                float gw = gRect.sizeDelta.x, gh = gRect.sizeDelta.y;
-                float gMinX = gRect.position.x - gw / 2, gMinY = gRect.position.y - gh / 2, gMaxX = gRect.position.x + gw / 2, gMaxY = gRect.position.y + gh / 2;
+                RectTransform gRect = ivGridRect[y, x];
+                float gMinX = gRect.position.x - 32, gMinY = gRect.position.y - 32, gMaxX = gRect.position.x + 32, gMaxY = gRect.position.y + 32;
                 isOverlapping = !(maxX < gMinX || minX > gMaxX || maxY < gMinY || minY > gMaxY);
                 if (isOverlapping)
                 {
+                    // Debug.Log(x + " " + y);
                     gx = x; gy = y;
                     break;
                 }
             }
             if (isOverlapping) break;
         }
+        if (gx == curItemX && gy == curItemY) return;
+        ResetAllGrids();
+        int[] gridX = new int[maxCnt], gridY = new int[maxCnt];
+        List<int> gridUid = new List<int>();
         int cnt = 0;
-        for (int h = 0; h < curItemObj.itemData.H; h++)
+        int cw = curItem.itemData.W, ch = curItem.itemData.H;
+        if (gx + cw > 9) gx = 10 - cw;
+        if (gy + ch > 9) gy = 10 - ch;
+        for (int h = 0; h < ch; h++)
         {
-            for (int w = 0; w < curItemObj.itemData.W; w++)
+            for (int w = 0; w < cw; w++)
             {
                 gridX[cnt] = gx + w;
                 gridY[cnt] = gy + h;
                 cnt++;
-
-                if (gx + w > 9 || gy + h > 9) return; // 그리드 범위 초과시 리턴
-
                 if (gridUid.IndexOf(PlayerManager.I.grids[gy + h][gx + w].slotId) == -1 &&
-                PlayerManager.I.grids[gy + h][gx + w].slotId != -1 &&
-                PlayerManager.I.grids[gy + h][gx + w].slotId != myUid)
+                        PlayerManager.I.grids[gy + h][gx + w].slotId != -1 &&
+                        PlayerManager.I.grids[gy + h][gx + w].slotId != myUid)
                 {
                     gridUid.Add(PlayerManager.I.grids[gy + h][gx + w].slotId);
                 }
             }
         }
+
         curItemX = gx; curItemY = gy; // 현재 선택된 아이템의 위치 설정
         curState = gridUid.Count == 0 ? 0 : (gridUid.Count > 1 ? 2 : 1); // 상태 설정
-        void ChangeGridColor(int x, int y, int type)
+        void ChangeGridColor(int x, int y)
         {
-            switch (type)
+            switch (curState)
             {
-                case 0: gridObj[y, x].color = new Color(129 / 255f, 183 / 255f, 127 / 255f, 1); break; // 초록색
-                case 1: gridObj[y, x].color = new Color(255 / 255f, 250 / 255f, 101 / 255f, 1); break; // 노란색
-                case 2: gridObj[y, x].color = new Color(255 / 255f, 105 / 255f, 101 / 255f, 1); break; // 빨간색
+                case 0: ivGridImg[y, x].color = new Color(129 / 255f, 183 / 255f, 127 / 255f, 1); break; // 초록색
+                case 1: ivGridImg[y, x].color = new Color(255 / 255f, 250 / 255f, 101 / 255f, 1); break; // 노란색
+                case 2: ivGridImg[y, x].color = new Color(255 / 255f, 105 / 255f, 101 / 255f, 1); break; // 빨간색
             }
         }
         // 겹치는 그리드 색상 변경
         for (int i = 0; i < maxCnt; i++)
-            ChangeGridColor(gridX[i], gridY[i], curState);
+            ChangeGridColor(gridX[i], gridY[i]);
     }
-    private void ResetAllGrids()
+    private void MoveItem(int sx, int sy, int w, int h, int ex, int ey)
     {
-        Color whiteColor = Color.white;
-        for (int y = 0; y < 10; y++)
+        if (curItem.x > -1 && curItem.y > -1)
         {
-            for (int x = 0; x < 10; x++)
+            for (int y = sy; y < sy + h; y++)
             {
-                if (gridObj[y, x].color != whiteColor)
-                    gridObj[y, x].color = whiteColor;
+                for (int x = sx; x < sx + w; x++)
+                    pGrids[y][x].slotId = -1;
             }
         }
-    }
-    private void ResetAllEq()
-    {
-        Color grayColor = new Color(192 / 255f, 192 / 255f, 192 / 255f, 1);
-        foreach (var v in eqBox)
+        curItemRect.position = GetItemPos(ex, ey, w, h);
+
+        int uid = curItem.itemData.Uid;
+        for (int y = ey; y < ey + h; y++)
         {
-            if (v.Value.color != grayColor)
-                v.Value.color = grayColor;
+            for (int x = ex; x < ex + w; x++)
+                pGrids[y][x].slotId = uid;
+        }
+        curItem.x = ex; curItem.y = ey; curItem.eq = "";
+        EndMovingItem();
+    }
+    private void ChangeItem(int sx, int sy, int w, int h, int ex, int ey)
+    {
+        int uId = 0;
+        for (int y = ey; y < ey + h; y++)
+        {
+            for (int x = ex; x < ex + w; x++)
+            {
+                if (pGrids[y][x].slotId != -1)
+                {
+                    uId = pGrids[y][x].slotId;
+                    break;
+                }
+            }
+        }
+        ItemObj tg = GetItemObj(uId);
+        if (tg != null)
+        {
+            int tx = tg.x, ty = tg.y;
+            int tw = tg.itemData.W, th = tg.itemData.H;
+            for (int y = ty; y < ty + th; y++)
+            {
+                for (int x = tx; x < tx + tw; x++)
+                    pGrids[y][x].slotId = -1;
+            }
+            tg.x = -1; tg.y = -1;
+            MoveItem(sx, sy, w, h, ex, ey);
+            SelectItemObj(uId);
         }
     }
+
+    private void EquipItem(string eq, ItemObj itemObj)
+    {
+        #region eqState 설명
+        // 0 : 비어있으며 해당 칸에만 적용되는 한손 무기 및 일반 장비
+        // 1 : 비어있지 않으며 해당 장비칸에만 적용되는 한손 무기 및 일반 장비
+        // 2 : 손1,손2만 해당 => 둘 다 비어있으며 해당 무기가 양손일 경우
+        // 3 : 손1,손2만 해당 => 둘 중 한 곳이 한손무기이고 해당 무기가 양손일 경우(장착된 한손 무기를 제거하고 양손무기 장착)
+        // 4 : 손1,손2만 해당 => 장착된 무기가 양손무기이고 해당 무기가 한손일 경우(장착된 양손 무기를 제거하고 해당 칸에 한손무기 장착)
+        // 5 : 손1,손2만 해당 => 장착된 무기가 양손무기이고 해당 무기가 양손일 경우(장착된 양손 무기를 제거하고 해당 무기를 장착)
+        // 6 : 손1,손2만 해당 => 장착된 무기가 한손무기 두 개이며 해당 무기가 양손일 경우(해당 무기를 장착하지 못하게 예외처리) 
+        // 손1, 손2 착용된 장비에 대한 체크
+        #endregion
+        int eqState;
+        switch (eq)
+        {
+            case "Hand1":
+            case "Hand2":
+                //해당 무기가 한손무기인지 양손무기인지 체크
+                bool one = itemObj.itemData.Both == 0;
+                Debug.Log(itemObj.itemData.ItemId + " " + itemObj.itemData.Both);
+                ItemData curSlot = PlayerManager.I.pData.EqSlot[eq]; //장착하려는 슬롯의 정보
+                ItemData reSlot = PlayerManager.I.pData.EqSlot[eq == "Hand1" ? "Hand2" : "Hand1"];//반대쪽 슬롯의 정보
+                if (curSlot == null)//해당 칸이 비어있을때
+                    eqState = one ? 0 : (reSlot == null ? 2 : 3); //착용 예정 무기가 한손이면 0번, 양손이면 반대 손을 체크하여 비어있으면 2번, 비어있지 않으면 3번
+                else
+                {
+                    //해당 칸이 비어 있지 않을때
+                    if (one)//예정 무기가 한손일때
+                        eqState = curSlot.Both == 0 ? 1 : 4; //착용 예정 무기가 한손이면 1번, 양손이면 4번
+                    else//예정 무기가 양손일때
+                        eqState = reSlot == null ? 3 : (curSlot.Both == 1 ? 5 : 6); //착용 예정 무기가 양손이면 3번, 양손이면 5번, 양손이 아니면 둘 다 한손 무기이기에 착용 불가능으로 6번
+                }
+                break;
+            default:
+                eqState = PlayerManager.I.pData.EqSlot[eq] == null ? 0 : 1;
+                break;
+        }
+        int sx = itemObj.x, sy = itemObj.y, w = itemObj.itemData.W, h = itemObj.itemData.H;
+        if (sx > -1 && sy > -1)
+        {
+            for (int y = sy; y < sy + h; y++)
+            {
+                for (int x = sx; x < sx + w; x++)
+                    pGrids[y][x].slotId = -1;
+            }
+        }
+        switch (eqState)
+        {
+            case 0:
+                eqSlots[eq].StateMain(false);
+                PlaceEqItem(eq, itemObj);
+                break;
+            case 1:
+                int backUid = PlayerManager.I.pData.EqSlot[eq].Uid;
+                PlaceEqItem(eq, itemObj);
+                SelectItemObj(backUid, true);
+                break;
+            case 6:
+                return;
+            default:
+                string otherEq = eq == "Hand1" ? "Hand2" : "Hand1";
+                switch (eqState)
+                {
+                    case 2: //손1,손2 비어있으며 양손무기 착용
+                        Debug.Log("2");
+                        eqSlots[eq].StateMain(false);
+                        eqSlots[otherEq].StateMain(false);
+                        PlaceEqItem(eq, itemObj);
+                        break;
+                    case 3:
+                        // if (eqMain[eq].activeSelf)
+                        // {
+                        //     eqMain[eq].SetActive(false);
+                        //     SendMessageEqItem(eq);
+                        // }
+                        // else
+                        // {
+                        //     eqMain[otherEq].SetActive(false);
+                        //     SendMessageEqItem(otherEq);
+                        // }
+                        //양손착용
+                        break;
+                    case 4:
+                    case 5:
+                        // if (PlayerManager.I.pData.EqSlot[eq] != null)
+                        //     SendMessageEqItem(eq);
+                        // else
+                        //     SendMessageEqItem(otherEq);
+                        // if (eqState == 4)
+                        //     eqMain[otherEq].SetActive(true);
+                        // //
+                        break;
+                }
+                break;
+        }
+    }
+
+    private void PlaceEqItem(string eq, ItemObj itemObj)
+    {
+        itemObj.transform.position = eqSlots[eq].transform.position;
+        itemObj.x = -1; itemObj.y = -1; itemObj.eq = eq;
+        PlayerManager.I.ApplyEqSlot(eq, itemObj.itemData);
+        EndMovingItem();
+    }
+
     private void CheckCurEq(int id, int type)
     {
         if (id > 60000)
@@ -372,217 +430,93 @@ public class InvenPop : UIScreen
                 case 9: curEq = new string[] { "Hand1", "Hand2" }; break; //방패
             }
         }
-
         foreach (var v in curEq)
-            eqBox[v].color = new Color(129 / 255f, 183 / 255f, 127 / 255f, 1);
+            eqSlots[v].StatePossible(true);
     }
-    private void MoveItem(int sx, int sy, int w, int h, int ex, int ey)
-    {
-        ItemObj iObj = curItem[curIdx].GetComponent<ItemObj>();
-        if (iObj.x > -1 && iObj.y > -1)
-        {
-            for (int y = sy; y < sy + h; y++)
-            {
-                for (int x = sx; x < sx + w; x++)
-                    pGrids[y][x].slotId = -1;
-            }
-        }
 
-        RectTransform rect = curItem[curIdx].transform as RectTransform;
-        SetGridPos(rect, 1, ex, ey, w, h);
-
-        int uid = curItemObj.itemData.Uid;
-        for (int y = ey; y < ey + h; y++)
-        {
-            for (int x = ex; x < ex + w; x++)
-                pGrids[y][x].slotId = uid;
-        }
-        iObj.x = ex; iObj.y = ey; iObj.eq = "";
-    }
-    private void ChangeItem(int sx, int sy, int w, int h, int ex, int ey)
-    {
-        int uId = 0;
-        for (int y = ey; y < ey + h; y++)
-        {
-            for (int x = ex; x < ex + w; x++)
-            {
-                if (pGrids[y][x].slotId != -1)
-                {
-                    uId = pGrids[y][x].slotId;
-                    break;
-                }
-            }
-        }
-        ItemObj otherItem = GetItem(uId);
-        int ox = otherItem.x, oy = otherItem.y;
-        int ow = otherItem.itemData.W, oh = otherItem.itemData.H;
-        for (int y = oy; y < oy + oh; y++)
-        {
-            for (int x = ox; x < ox + ow; x++)
-                pGrids[y][x].slotId = -1;
-        }
-        otherItem.x = -1; otherItem.y = -1; // 원래 위치에 있던 아이템을 이동한 아이템의 위치로 설정
-        MoveItem(sx, sy, w, h, ex, ey); // 이동 예정인 아이템을 이동
-
-        Presenter.Send("InvenPop", "ClickObj", $"{otherItem.uid}_{otherItem.itemData.ItemId}_{otherItem.itemData.Type}"); //send 하여 원래 위치한 아이템을 움직이도록 전달
-    }
-    private void ReturnItem()
-    {
-        RectTransform rect = curItem[curIdx].transform as RectTransform;
-        SetGridPos(rect, 1, curItemObj.itemData.X, curItemObj.itemData.Y, curItemObj.itemData.W, curItemObj.itemData.H);
-    }
-    private void EquipItem(string eq, int sx, int sy, int w, int h)
-    {
-        ///한손이든 양손이든 한칸에만 적용시킬지 아니면 양손이면 두칸 한손이면 정해진 한칸 이렇게 적용할지 고민좀...ㅎㅎ
-        int eqState = 0;
-        // 0 : 비어있으며 해당 칸에만 적용되는 한손 무기 및 일반 장비
-        // 1 : 비어있지 않으며 해당 장비칸에만 적용되는 한손 무기 및 일반 장비
-        // 2 : 손1,손2만 해당 => 둘 다 비어있으며 해당 무기가 양손일 경우
-        // 3 : 손1,손2만 해당 => 둘 중 한 곳이 한손무기이고 해당 무기가 양손일 경우(장착된 한손 무기를 제거하고 양손무기 장착)
-        // 4 : 손1,손2만 해당 => 장착된 무기가 양손무기이고 해당 무기가 한손일 경우(장착된 양손 무기를 제거하고 해당 칸에 한손무기 장착)
-        // 5 : 손1,손2만 해당 => 장착된 무기가 양손무기이고 해당 무기가 양손일 경우(장착된 양손 무기를 제거하고 해당 무기를 장착)
-        // 6 : 손1,손2만 해당 => 장착된 무기가 한손무기 두 개이며 해당 무기가 양손일 경우(해당 무기를 장착하지 못하게 예외처리) 
-        //손1, 손2 착용된 장비에 대한 체크
-        switch (eq)
-        {
-            case "Hand1":
-            case "Hand2":
-                //해당 무기가 한손무기인지 양손무기인지 체크
-                bool one = curItemObj.itemData.Both == 0;
-                ItemData curSlot = PlayerManager.I.pData.EqSlot[eq]; //장착하려는 슬롯의 정보
-                ItemData reSlot = PlayerManager.I.pData.EqSlot[eq == "Hand1" ? "Hand2" : "Hand1"];//반대쪽 슬롯의 정보
-                if (curSlot == null)
-                {
-                    //해당 칸이 비어있을때
-                    eqState = one ? 0 : (reSlot == null ? 2 : 3);//착용 예정 무기가 한손이면 0번, 양손이면 반대 손을 체크하여 비어있으면 2번, 비어있지 않으면 3번
-                }
-                else
-                {
-                    //해당 칸이 비어 있지 않을때
-                    if (one)
-                    {
-                        //예정 무기가 한손일때
-                        eqState = curSlot.Both == 0 ? 1 : 4; //착용 예정 무기가 한손이면 1번, 양손이면 4번
-                    }
-                    else
-                    {
-                        //예정 무기가 양손일때
-                        eqState = reSlot == null ? 3 : (curSlot.Both == 1 ? 5 : 6); //착용 예정 무기가 양손이면 3번, 양손이면 5번, 양손이 아니면 둘 다 한손 무기이기에 착용 불가능으로 6번
-                    }
-                }
-                break;
-            default:
-                eqState = PlayerManager.I.pData.EqSlot[eq] == null ? 0 : 1;
-                break;
-        }
-        //포커싱 된 아이템의 좌표 및 장착 상태 설정
-        ItemObj iObj = curItem[curIdx].GetComponent<ItemObj>();
-        if (iObj.x > -1 && iObj.y > -1)
-        {
-            for (int y = sy; y < sy + h; y++)
-            {
-                for (int x = sx; x < sx + w; x++)
-                    pGrids[y][x].slotId = -1;
-            }
-        }
-        switch (eqState)
-        {
-            case 0:
-                eqMain[eq].SetActive(false);
-                PlaceSelectedItem(eq);
-                break;
-            case 1:
-                SendMessageEqItem(eq);
-                break;
-            case 6:
-                return;
-            default:
-                string otherEq = eq == "Hand1" ? "Hand2" : "Hand1";
-                switch (eqState)
-                {
-                    case 2:
-                        eqMain[eq].SetActive(false);
-                        eqMain[otherEq].SetActive(false);
-                        //
-                        break;
-                    case 3:
-                        if (eqMain[eq].activeSelf)
-                        {
-                            eqMain[eq].SetActive(false);
-                            SendMessageEqItem(eq);
-                        }
-                        else
-                        {
-                            eqMain[otherEq].SetActive(false);
-                            SendMessageEqItem(otherEq);
-                        }
-                        //양손착용
-                        break;
-                    case 4:
-                    case 5:
-                        if (PlayerManager.I.pData.EqSlot[eq] != null)
-                            SendMessageEqItem(eq);
-                        else
-                            SendMessageEqItem(otherEq);
-                        if (eqState == 4)
-                            eqMain[otherEq].SetActive(true);
-                        //
-                        break;
-                }
-                break;
-        }
-    }
-    private void PlaceSelectedItem(string eq)
-    {
-        //포커싱 된 아이템의 위치 설정
-        curItem[curIdx].transform.position = new Vector3(eqBox[eq].transform.position.x, eqBox[eq].transform.position.y, 0f);
-        ItemObj iObj = curItem[curIdx].GetComponent<ItemObj>();
-        iObj.x = -1; iObj.y = -1; iObj.eq = eq;
-        PlayerManager.I.ApplyEqSlot(eq, curItemObj.itemData);
-    }
-    private ItemObj GetItem(int id)
-    {
-        foreach (var v in curItem)
-        {
-            ItemObj iObj = v.GetComponent<ItemObj>();
-            if (iObj.uid == id) return iObj;
-        }
-        return null;
-    }
-    private void SendMessageEqItem(string eq)
-    {
-        int uid = PlayerManager.I.pData.EqSlot[eq].Uid;
-        ItemObj item = GetItem(uid);
-        string str = $"{item.uid}_{item.itemData.ItemId}_{item.itemData.Type}";
-        PlayerManager.I.TakeoffEq(eq); //장착 중이던 장비를 해제시킴
-        PlaceSelectedItem(eq);
-        Presenter.Send("InvenPop", "ClickObj", str);
-    }
     private void Update()
     {
         if (moveOn)
         {
-            //추후에 키보드 입력을 추가하여 아이템이 회전되도록 구현 예정
-            curItem[curIdx].transform.position = Input.mousePosition; // 아이템 위치 업데이트
-            float x = curItem[curIdx].transform.position.x, y = curItem[curIdx].transform.position.y;
-            if (x <= popEdge[2] || x >= popEdge[3] || y <= popEdge[1] || y >= popEdge[0])
+            curItem.transform.position = Input.mousePosition;
+            if (intoIvGrids)
             {
-                curState = 3;
-            }
-            else
-            {
-                if (y <= slotEdge[0] && y >= slotEdge[1] && x >= slotEdge[2] && x <= slotEdge[3])
+                CheckGrids();
+                if (Input.GetMouseButtonDown(0))
                 {
-                    CheckOverlapWithGrid();
-                }
-                else
-                {
-                    curState = 3;
-                    ResetAllGrids();
+                    switch (curState)
+                    {
+                        case 0:
+                            MoveItem(curItem.x, curItem.y, curItem.itemData.W, curItem.itemData.H, curItemX, curItemY);
+                            break;
+                        case 1:
+                            ChangeItem(curItem.x, curItem.y, curItem.itemData.W, curItem.itemData.H, curItemX, curItemY);
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                    }
                 }
             }
         }
     }
+    private void EndMovingItem()
+    {
+        StateItemRaycast(true);
+        ResetAllGrids();
+        ResetAllEq();
+        moveOn = false;
+        curItem = null; curIdx = -1;
+        curItemRect = null; itemBasePos = Vector3.zero;
+        curItemX = -1; curItemY = -1;
+        curEq = new string[] { };
+    }
+    private void StateItemRaycast(bool isActive)
+    {
+        foreach (var v in itemList)
+            v.SetRaycastTarget(isActive);
+    }
+    private void ResetAllGrids()
+    {
+        Color whiteColor = Color.white;
+        for (int y = 0; y < 10; y++)
+        {
+            for (int x = 0; x < 10; x++)
+            {
+                if (ivGridImg[y, x].color != whiteColor)
+                    ivGridImg[y, x].color = whiteColor;
+            }
+        }
+    }
+    private ItemObj GetItemObj(int id)
+    {
+        foreach (var v in itemList)
+        {
+            if (v.uid == id) return v;
+        }
+        return null;
+    }
+    string GetEquipBody(int uId)
+    {
+        string result = "";
+        string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Helmet", "Shoes", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
+        foreach (var v in eq)
+        {
+            if (PlayerManager.I.pData.EqSlot[v] != null && PlayerManager.I.pData.EqSlot[v].Uid == uId)
+            {
+                result = v;
+                break;
+            }
+        }
+        return result;
+    }
+    private void ResetAllEq()
+    {
+        foreach (var v in eqSlots)
+            v.Value.StatePossible(false);
+    }
+    public override void Refresh() { }
 }
 
 // private bool CanPlaceItem(int sx, int sy, int wid, int hei)

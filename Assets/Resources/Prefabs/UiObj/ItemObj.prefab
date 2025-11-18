@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -144,13 +144,15 @@ MonoBehaviour:
     ItemId: 0
     Type: 0
     Price: 0
-    Val: 0
     W: 0
     H: 0
     Dur: 0
+    MaxDur: 0
     X: 0
     Y: 0
+    Grade: 0
     Dir: 0
     Uid: 0
     Both: 0
   button: {fileID: 5323895489048119563}
+  img: {fileID: 9027306420610550995}

@@ -95,7 +95,7 @@ namespace GB
         }
 
 
-   
+
         public void Clear()
         {
             _UIScreenList.Clear();
@@ -106,7 +106,7 @@ namespace GB
         }
 
 
-     
+
         public static void ChangeScene(string sceneName)
         {
             I.Clear();
@@ -114,7 +114,7 @@ namespace GB
             SceneManager.LoadScene(sceneName);
         }
 
-      
+
         public void RegistUIScreen(UIScreen UIScreen)
         {
             if (_UIScreenList.ContainsKey(UIScreen.gameObject.name))
@@ -126,7 +126,7 @@ namespace GB
                 _scene = UIScreen;
         }
 
-     
+
         public static void Refresh(string name)
         {
             if (I._UIScreenList.ContainsKey(name))
@@ -144,7 +144,7 @@ namespace GB
         }
 
 
- 
+
         public static void RefreshAll()
         {
 
@@ -159,14 +159,14 @@ namespace GB
         {
             UIScreen screen = null;
             if (I._UIScreenList.ContainsKey(name))
-                screen =  I._UIScreenList[name];
+                screen = I._UIScreenList[name];
 
-            if(screen != null && !screen.gameObject.activeSelf) screen = null;
+            if (screen != null && !screen.gameObject.activeSelf) screen = null;
 
             return screen;
         }
 
-   
+
         public static UIScreen FindUIScreen(string name)
         {
             if (I._UIScreenList.ContainsKey(name))
@@ -205,7 +205,7 @@ namespace GB
             else
                 I._popupList[0].GetComponent<RectTransform>().SetAsLastSibling();
 
-            
+
             I.SortingPopup();
 
         }
@@ -340,13 +340,13 @@ namespace GB
             _popupList.Sort((s1, s2) => s2.Weight.CompareTo(s1.Weight));
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                OnBackKey();
-            }
-        }
+        // private void Update()
+        // {
+        //     if (Input.GetKeyDown(KeyCode.Escape))
+        //     {
+        //         OnBackKey();
+        //     }
+        // }
 
     }
 

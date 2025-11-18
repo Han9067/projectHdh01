@@ -4,7 +4,6 @@ namespace GB
     public static class POPUP
     {
 	public const string BattleReadyPop =  "BattleReadyPop"; 
-	public const string BattleRewardPop =  "BattleRewardPop"; 
 	public const string CharInfoPop =  "CharInfoPop"; 
 	public const string ChatPop =  "ChatPop"; 
 	public const string CityEnterPop =  "CityEnterPop"; 
