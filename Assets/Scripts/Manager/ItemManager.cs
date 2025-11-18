@@ -31,8 +31,8 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var wp in WpTable.Datas)
         {
-            ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.AttKey, wp.AttVal, wp.W, wp.H, wp.Res, wp.Dur);
-            ItemDataList[wp.ItemID].Both = wp.Both;
+            ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.AttKey, wp.AttVal, wp.W, wp.H, wp.Res, wp.Dur, wp.Both);
+            // ItemDataList[wp.ItemID].Both = wp.Both;
         }
     }
     private void LoadItemData()
@@ -42,16 +42,15 @@ public class ItemManager : AutoSingleton<ItemManager>
             ItemDataList[item.ItemID] = CreateItemData(item.ItemID, item.Name, item.Type, item.Price, item.AttKey, item.AttVal, item.W, item.H, item.Res, 0);
         }
     }
-    private ItemData CreateItemData(int id, string name, int type, int price, string keys, string vals, int w, int h, string res, int dur)
+    private ItemData CreateItemData(int id, string name, int type, int price, string keys, string vals, int w, int h, string res, int dur, int both = 0)
     {
-        int g = GetGrade(price);
         string[] kArr = keys.Split('_');
         string[] vArr = vals.Split('_');
         Dictionary<int, int> att = new Dictionary<int, int>();
         for (int i = 0; i < kArr.Length; i++)
             att[int.Parse(kArr[i])] = int.Parse(vArr[i]);
 
-        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Att = att, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = g };
+        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Att = att, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = 1, Both = both };
     }
     public void CreateInvenItem(int id, int x, int y)
     {
@@ -156,28 +155,5 @@ public class ItemManager : AutoSingleton<ItemManager>
     public int GetUid()
     {
         return 10000000 + Random.Range(0, 89999999);
-    }
-    public int GetGrade(int price)
-    {
-        if (price > 5000000)
-            return 10;
-        else if (price > 2000000)
-            return 9;
-        else if (price > 800000)
-            return 8;
-        else if (price > 400000)
-            return 7;
-        else if (price > 200000)
-            return 6;
-        else if (price > 100000)
-            return 5;
-        else if (price > 50000)
-            return 4;
-        else if (price > 20000)
-            return 3;
-        else if (price > 5000)
-            return 2;
-        else
-            return 1;
     }
 }

@@ -19,6 +19,10 @@ public class EqSlot : MonoBehaviour
     {
         main.gameObject.SetActive(isActive);
     }
+    public bool IsActive()
+    {
+        return main.gameObject.activeSelf;
+    }
     public void StatePossible(bool on)
     {
         isPossible = on;

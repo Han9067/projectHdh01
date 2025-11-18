@@ -311,7 +311,8 @@ public class ItemData
             X = this.X,
             Y = this.Y,
             Dir = this.Dir,
-            Grade = this.Grade
+            Grade = this.Grade,
+            Both = this.Both,
         };
     }
 }

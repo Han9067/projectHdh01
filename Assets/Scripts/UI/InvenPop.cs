@@ -203,7 +203,6 @@ public class InvenPop : UIScreen
                 isOverlapping = !(maxX < gMinX || minX > gMaxX || maxY < gMinY || minY > gMaxY);
                 if (isOverlapping)
                 {
-                    // Debug.Log(x + " " + y);
                     gx = x; gy = y;
                     break;
                 }
@@ -305,36 +304,51 @@ public class InvenPop : UIScreen
         #region eqState 설명
         // 0 : 비어있으며 해당 칸에만 적용되는 한손 무기 및 일반 장비
         // 1 : 비어있지 않으며 해당 장비칸에만 적용되는 한손 무기 및 일반 장비
-        // 2 : 손1,손2만 해당 => 둘 다 비어있으며 해당 무기가 양손일 경우
-        // 3 : 손1,손2만 해당 => 둘 중 한 곳이 한손무기이고 해당 무기가 양손일 경우(장착된 한손 무기를 제거하고 양손무기 장착)
-        // 4 : 손1,손2만 해당 => 장착된 무기가 양손무기이고 해당 무기가 한손일 경우(장착된 양손 무기를 제거하고 해당 칸에 한손무기 장착)
-        // 5 : 손1,손2만 해당 => 장착된 무기가 양손무기이고 해당 무기가 양손일 경우(장착된 양손 무기를 제거하고 해당 무기를 장착)
-        // 6 : 손1,손2만 해당 => 장착된 무기가 한손무기 두 개이며 해당 무기가 양손일 경우(해당 무기를 장착하지 못하게 예외처리) 
+        // 2 : 손1,손2만 해당 => 착용된 양손 무기 빼고 한손 무기 착용
+        // 3 : 손1,손2만 해당 => 둘 다 비어있으며 해당 무기가 양손일 경우
+        // 4 : 착용된 한손,양손 무기 빼고 양손 무기 착용
+        // 5 : 양손에 한 손 무기가 착용되어 예외처리
+        // 양손 착용시 무조건 손1로 무기는 이동된다.
         // 손1, 손2 착용된 장비에 대한 체크
         #endregion
         int eqState;
+        Dictionary<string, ItemData> myEqSlots = PlayerManager.I.pData.EqSlot;
         switch (eq)
         {
             case "Hand1":
             case "Hand2":
-                //해당 무기가 한손무기인지 양손무기인지 체크
-                bool one = itemObj.itemData.Both == 0;
-                Debug.Log(itemObj.itemData.ItemId + " " + itemObj.itemData.Both);
+                bool one = itemObj.itemData.Both == 0; //해당 무기가 한손무기인지 양손무기인지 체크
+                if (myEqSlots["Hand1"] != null && myEqSlots["Hand1"].Both == 1)
+                {
+                    //양손 무기 착용중 (양손무기는 무조건 손1에만 적용)
+                    eqState = one ? 2 : 4;
+                    break;
+                }
                 ItemData curSlot = PlayerManager.I.pData.EqSlot[eq]; //장착하려는 슬롯의 정보
-                ItemData reSlot = PlayerManager.I.pData.EqSlot[eq == "Hand1" ? "Hand2" : "Hand1"];//반대쪽 슬롯의 정보
-                if (curSlot == null)//해당 칸이 비어있을때
-                    eqState = one ? 0 : (reSlot == null ? 2 : 3); //착용 예정 무기가 한손이면 0번, 양손이면 반대 손을 체크하여 비어있으면 2번, 비어있지 않으면 3번
+                ItemData revSlot;
+                if (curSlot == null)
+                {
+                    if (one)
+                        eqState = 0;
+                    else
+                    {
+                        revSlot = myEqSlots[eq == "Hand1" ? "Hand2" : "Hand1"];//반대쪽 슬롯의 정보
+                        eqState = revSlot == null ? 3 : 4;
+                    }
+                }
                 else
                 {
-                    //해당 칸이 비어 있지 않을때
-                    if (one)//예정 무기가 한손일때
-                        eqState = curSlot.Both == 0 ? 1 : 4; //착용 예정 무기가 한손이면 1번, 양손이면 4번
-                    else//예정 무기가 양손일때
-                        eqState = reSlot == null ? 3 : (curSlot.Both == 1 ? 5 : 6); //착용 예정 무기가 양손이면 3번, 양손이면 5번, 양손이 아니면 둘 다 한손 무기이기에 착용 불가능으로 6번
+                    if (one)
+                        eqState = 1;
+                    else
+                    {
+                        revSlot = myEqSlots[eq == "Hand1" ? "Hand2" : "Hand1"];//반대쪽 슬롯의 정보
+                        eqState = revSlot == null ? 4 : 5;
+                    }
                 }
                 break;
             default:
-                eqState = PlayerManager.I.pData.EqSlot[eq] == null ? 0 : 1;
+                eqState = myEqSlots[eq] == null ? 0 : 1;
                 break;
         }
         int sx = itemObj.x, sy = itemObj.y, w = itemObj.itemData.W, h = itemObj.itemData.H;
@@ -353,44 +367,37 @@ public class InvenPop : UIScreen
                 PlaceEqItem(eq, itemObj);
                 break;
             case 1:
-                int backUid = PlayerManager.I.pData.EqSlot[eq].Uid;
+                int uid1 = myEqSlots[eq].Uid;
                 PlaceEqItem(eq, itemObj);
-                SelectItemObj(backUid, true);
+                SelectItemObj(uid1, true);
                 break;
-            case 6:
-                return;
+            case 5: return;
             default:
-                string otherEq = eq == "Hand1" ? "Hand2" : "Hand1";
+                Debug.Log(eqState);
+                string oEq = eq == "Hand1" ? "Hand2" : "Hand1"; //otherEq
                 switch (eqState)
                 {
-                    case 2: //손1,손2 비어있으며 양손무기 착용
-                        Debug.Log("2");
+                    case 2: //착용된 양손 무기 빼고 한손 무기 착용
+                        int uid2 = myEqSlots["Hand1"].Uid;
+                        PlayerManager.I.TakeoffEq("Hand1");
+                        eqSlots[oEq].StateMain(true);
+                        PlaceEqItem(eq, itemObj);
+                        SelectItemObj(uid2, true);
+                        break;
+                    case 3: //손1,손2 비어있으며 양손무기 착용
                         eqSlots[eq].StateMain(false);
-                        eqSlots[otherEq].StateMain(false);
+                        eqSlots[oEq].StateMain(false);
                         PlaceEqItem(eq, itemObj);
                         break;
-                    case 3:
-                        // if (eqMain[eq].activeSelf)
-                        // {
-                        //     eqMain[eq].SetActive(false);
-                        //     SendMessageEqItem(eq);
-                        // }
-                        // else
-                        // {
-                        //     eqMain[otherEq].SetActive(false);
-                        //     SendMessageEqItem(otherEq);
-                        // }
-                        //양손착용
-                        break;
-                    case 4:
-                    case 5:
-                        // if (PlayerManager.I.pData.EqSlot[eq] != null)
-                        //     SendMessageEqItem(eq);
-                        // else
-                        //     SendMessageEqItem(otherEq);
-                        // if (eqState == 4)
-                        //     eqMain[otherEq].SetActive(true);
-                        // //
+                    case 4: //착용된 한손,양손 무기 빼고 양손 무기 착용
+                        int uid3 = myEqSlots["Hand1"] != null ? myEqSlots["Hand1"].Uid : myEqSlots["Hand2"].Uid;
+                        if (myEqSlots["Hand1"] != null) PlayerManager.I.TakeoffEq("Hand1");
+                        else if (myEqSlots["Hand2"] != null) PlayerManager.I.TakeoffEq("Hand2");
+
+                        eqSlots[eq].StateMain(false); eqSlots[oEq].StateMain(false);
+
+                        PlaceEqItem("Hand1", itemObj);
+                        SelectItemObj(uid3, true);
                         break;
                 }
                 break;
