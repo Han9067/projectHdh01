@@ -246,7 +246,7 @@ public class ShopInvenPop : UIScreen
             Vector2 iPos = new Vector2(dPos.x + (data.itemData.W * 32), dPos.y - (data.itemData.H * 32)); //item position
             rt.anchoredPosition = iPos;
             shopItem.name = $"ItemObj_{data.itemData.ItemId}";
-            shopItem.GetComponent<ItemObj>().SetItemData(data.itemData, 1);
+            shopItem.GetComponent<ItemObj>().SetItemData(data.itemData, 10);
         }
     }
     public override void Refresh() { }

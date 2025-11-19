@@ -7,23 +7,15 @@ public class GridBox : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public int type;
     public void OnPointerEnter(PointerEventData eventData)
     {
-        switch (type)
-        {
-            case 0:
-                InvenPop.intoIvGrids = true;
-                break;
-        }
+        InvenPop.posType = type;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        switch (type)
+        if (InvenPop.moveOn)
         {
-            case 0:
-                InvenPop.intoIvGrids = false;
-                if (InvenPop.moveOn)
-                    Presenter.Send("InvenPop", "ResetAllGrids");
-                break;
+            InvenPop.posType = -1;
+            Presenter.Send("InvenPop", "ResetAllGrids");
         }
     }
 }

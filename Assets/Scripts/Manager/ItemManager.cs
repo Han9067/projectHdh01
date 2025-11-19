@@ -14,6 +14,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     public Dictionary<int, ItemData> ItemDataList = new Dictionary<int, ItemData>();
     // 필요시 아이템 관련 메서드 추가 가능
     public List<int> RewardItemIdList = new List<int>();
+    public bool isDrop = false;
     public void LoadItemManager()
     {
         LoadEqData();
@@ -42,7 +43,8 @@ public class ItemManager : AutoSingleton<ItemManager>
             ItemDataList[item.ItemID] = CreateItemData(item.ItemID, item.Name, item.Type, item.Price, item.AttKey, item.AttVal, item.W, item.H, item.Res, 0);
         }
     }
-    private ItemData CreateItemData(int id, string name, int type, int price, string keys, string vals, int w, int h, string res, int dur, int both = 0)
+    private ItemData CreateItemData(int id, string name, int type, int price, string keys,
+                                            string vals, int w, int h, string res, int dur, int both = 0)
     {
         string[] kArr = keys.Split('_');
         string[] vArr = vals.Split('_');
@@ -136,8 +138,19 @@ public class ItemManager : AutoSingleton<ItemManager>
     public void CalcDropItem(int itemId, int rate)
     {
         int ran = Random.Range(0, 100);
-        if (ran > rate)
+        if (ran <= rate)
             RewardItemIdList.Add(itemId);
+    }
+    public void ClearDropItem()
+    {
+        isDrop = false;
+        RewardItemIdList.Clear();
+    }
+    public void SaveDropItem(int id, int rate)
+    {
+        CalcDropItem(id, rate);
+        if (RewardItemIdList.Count > 0 && !isDrop)
+            isDrop = true;
     }
     public void TestDropItem()
     {
@@ -149,8 +162,8 @@ public class ItemManager : AutoSingleton<ItemManager>
         CalcDropItem(68001, 100);
         CalcDropItem(68002, 100);
 
-        // UIManager.ShowPopup("BattleRewardPop");
-        // Presenter.Send("BattleRewardPop", "SetReward");
+        UIManager.ShowPopup("InvenPop");
+        Presenter.Send("InvenPop", "OpenRwdPop");
     }
     public int GetUid()
     {

@@ -162,9 +162,8 @@ public class MonData
 {
     public class DropData
     {
-        public int ItemId, Val;
-        public float Rate;
-        public DropData(int itemId, float rate, int val)
+        public int ItemId, Val, Rate;
+        public DropData(int itemId, int rate, int val)
         {
             this.ItemId = itemId;
             this.Rate = rate;

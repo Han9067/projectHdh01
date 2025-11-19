@@ -11,7 +11,6 @@ public class ItemInfoPop : UIScreen
     private void Awake()
     {
         Regist();
-        RegistButton();
         pop.transform.position = new Vector3(0, 2000, 0);
         statRect = mTMPText["Stat"].GetComponent<RectTransform>();
         popRect = pop.GetComponent<RectTransform>();
@@ -30,12 +29,6 @@ public class ItemInfoPop : UIScreen
         pop.transform.position = new Vector3(0, 2000, 0);
         isActive = false;
     }
-    public void RegistButton()
-    {
-        foreach (var v in mButtons)
-            v.Value.onClick.AddListener(() => { OnButtonClick(v.Key); });
-    }
-    public void OnButtonClick(string key) { }
     public override void ViewQuick(string key, IOData data)
     {
         switch (key)
@@ -51,7 +44,10 @@ public class ItemInfoPop : UIScreen
                 float h1 = 30f;
                 foreach (var v in itemData.Att)
                 {
-                    stat += $"{LocalizationManager.GetValue(GsManager.I.AttDataList[v.Key].Name)}: {v.Value}\n";
+                    if (v.Key == 0)
+                        stat = LocalizationManager.GetValue("None");
+                    else
+                        stat += $"{LocalizationManager.GetValue(GsManager.I.AttDataList[v.Key].Name)}: {v.Value}\n";
                     h1 += 30;
                 }
                 if (itemData.ItemId < 60000)

@@ -39,7 +39,7 @@ public class MonManager : AutoSingleton<MonManager>
         {
             string[] arr = d.Split('_');
             int itemId = int.Parse(arr[0]);
-            float rate = float.Parse(arr[1]);
+            int rate = int.Parse(arr[1]);
             int val = arr.Length > 2 ? int.Parse(arr[2]) : 0;
             dList.Add(new MonData.DropData(itemId, rate, val));
         }

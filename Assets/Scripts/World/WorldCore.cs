@@ -66,6 +66,13 @@ public class WorldCore : AutoSingleton<WorldCore>
         LoadCityObj();
 
         MoveCamera(player.transform.position);
+
+        if (ItemManager.I.isDrop)
+        {
+            UIManager.ShowPopup("InvenPop");
+            Presenter.Send("InvenPop", "OpenRwdPop");
+            ItemManager.I.isDrop = false;
+        }
     }
     void Update()
     {

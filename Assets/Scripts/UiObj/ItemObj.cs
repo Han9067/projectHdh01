@@ -6,35 +6,37 @@ using GB;
 using UnityEngine.EventSystems;
 public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public int ivType; //inven type -> 팝업에 따라 해당 타입이 바뀜. 0: 유저 인벤, 1: 상점 인벤
+    public int iType; //item type -> 팝업에 따라 해당 타입이 바뀜. 0: 유저 인벤, 1: 상점 인벤
     public int x, y, uid;
     public string eq = "";
     public ItemData itemData;
     [SerializeField] private Button button;
-    [SerializeField] private Image img;
+    [SerializeField] private Image bg, main;
+    private float bgAlpha = 1f;
     // Start is called before the first frame update
     void Start()
     {
         button.onClick.AddListener(OnButtonClick);
-        img.sprite = ResManager.GetSprite(itemData.Res);
+        main.sprite = ResManager.GetSprite(itemData.Res);
+        bg.color = ColorData.GetItemGradeColor(itemData.Grade);
+        if (bg.color.a != bgAlpha)
+            bg.color = new Color(bg.color.r, bg.color.g, bg.color.b, bgAlpha);
     }
 
     public void OnButtonClick()
     {
-        switch (ivType)
+        switch (iType)
         {
             case 0:
-                // str = $"{itemData.Uid}_{itemData.ItemId}_{itemData.Type}";
+            case 1:
                 Presenter.Send("InvenPop", "ClickItem", itemData.Uid);
                 if (ItemInfoPop.isActive)
                     UIManager.ClosePopup("ItemInfoPop");
                 break;
-            case 1:
+            case 10:
                 UIManager.ShowPopup("SelectPop");
                 Presenter.Send("SelectPop", "SetList", 0);
                 Presenter.Send("SelectPop", "SetItemData", itemData);
-                break;
-            case 2:
                 break;
         }
     }
@@ -62,16 +64,21 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void SetItemData(ItemData data, int type)
     {
         itemData = data;
-        ivType = type;
+        iType = type;
     }
     public void SetItemData(ItemData data, int xx, int yy, int type)
     {
         itemData = data;
         x = xx; y = yy; uid = data.Uid;
-        ivType = type;
+        iType = type;
     }
     public void SetRaycastTarget(bool isActive)
     {
-        img.raycastTarget = isActive;
+        bg.raycastTarget = isActive;
+    }
+    public void SetBgAlpha(float alpha)
+    {
+        bgAlpha = alpha;
+        bg.color = new Color(bg.color.r, bg.color.g, bg.color.b, bgAlpha);
     }
 }

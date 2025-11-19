@@ -119,6 +119,7 @@ public class BattleCore : AutoSingleton<BattleCore>
 
         //ps. 여기에서는 아니지만 나중에 맵이 변경 또는 이동되는 특수 지형 및 던전도 대응해야함....ㅠㅠ
         bloodScreen.gameObject.SetActive(false);
+        ItemManager.I.ClearDropItem(); // 전투 시작 전 드랍 아이템 초기화
     }
     void Start()
     {
@@ -650,11 +651,12 @@ public class BattleCore : AutoSingleton<BattleCore>
         RemoveGridId(objId);
         if (attacker == BtFaction.ALLY)
         {
-            Debug.Log("경험치: " + mData[objId].gainExp);
-            //경험치 획득
-            GetExp(mData[objId].gainExp, attacker);
-            //아이템 드롭
-
+            GetExp(mData[objId].gainExp, attacker);//경험치 획득
+            List<MonData.DropData> dropList = mData[objId].monData.DropList;
+            for (int i = 0; i < dropList.Count; i++)
+            {
+                ItemManager.I.SaveDropItem(dropList[i].ItemId, dropList[i].Rate);
+            }
         }
         CheckGameClear();
     }
