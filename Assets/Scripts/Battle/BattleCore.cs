@@ -5,10 +5,11 @@ using Random = UnityEngine.Random;
 using GB;
 using UnityEngine.UI;
 using DG.Tweening;
-using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
 using System;
+using TMPro;
+using UnityEditor;
 
 public class BtGrid
 {
@@ -57,11 +58,12 @@ public class BattleCore : AutoSingleton<BattleCore>
 {
     #region ==== Global Variable ====
     [Header("====Camera====")]
-    public Camera cmr; // 전투씬 메인 카메라
+    [SerializeField] private Camera cmr; // 전투씬 메인 카메라
     private Vector3 velocity = Vector3.zero; //카메라 속도
     [Header("====UI====")]
     public GameObject dmgTxtParent;
-    private List<Text> dmgTxtList = new List<Text>();
+    // private List<TextMeshProUGUI> dmgTxtList = new List<TextMeshProUGUI>();
+    private List<TextMeshProUGUI> dmgTxtList = new List<TextMeshProUGUI>();
     public Image bloodScreen;
     [Header("====Map====")]
     [SerializeField] private GameObject tileMapObj; // 맵 타일 오브젝트
@@ -132,6 +134,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (EventSystem.current.IsPointerOverGameObject())
         {
+            // Debug.Log("UI 오버레이 영역에서는 포커스 커서 비활성화");
             // UI 오버레이 영역에서는 포커스 커서 비활성화
             if (!GsManager.I.IsCursor("default")) GsManager.I.SetCursor("default");
             if (focus.activeSelf) focus.SetActive(false);
@@ -312,7 +315,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void LoadEnemyGrp()
     {
-        // WorldObjManager.I.TestCreateMon(); //테스트용
+        WorldObjManager.I.TestCreateMon(); //테스트용
 
         if (WorldObjManager.I.btMonList.Count > 0)
         {
@@ -449,7 +452,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 int mId = ot.objId;
                 if (ot.tgId == 0)
                 {
-                    tgId = SearchNearbyAiObj(ot.pos, ot.faction, BtObjType.MONSTER);
+                    tgId = SearchNearbyAiObj(ot.pos, ot.faction);
                     if (tgId != 0)
                         ot.tgId = tgId;
                     //추후에 버그 발생을 대응하기 위해 타깃이 없으면 해당 타입을 제외한 다른 타입들을 검색하여 씬을 종료시키든 마무리해야함.
@@ -609,7 +612,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         float dist = Vector3.Distance(myPos, tgPos);
         return myPos + (dir * (dist * 0.1f));
     }
-    int SearchNearbyAiObj(Vector2Int pos, BtFaction faction, BtObjType myType)
+    int SearchNearbyAiObj(Vector2Int pos, BtFaction faction)
     {
         int oId = 0;
         float minDist = float.MaxValue;
@@ -708,26 +711,25 @@ public class BattleCore : AutoSingleton<BattleCore>
         var txt = GetDmgTxt();
         if (txt == null)
         {
-            txt = Instantiate(ResManager.GetGameObject("DmgTxt"), dmgTxtParent.transform).GetComponent<Text>();
+            txt = Instantiate(ResManager.GetGameObject("DmgTxt"), dmgTxtParent.transform).GetComponent<TextMeshProUGUI>();
             dmgTxtList.Add(txt);
         }
-        float yyy = pos.y + 0.6f;
-        txt.transform.position = new Vector3(pos.x, yyy, 0);
+        else
+            txt.gameObject.SetActive(true);
+        txt.transform.position = pos;
         txt.text = dmg.ToString();
-        var damageSequence = DOTween.Sequence();
-        damageSequence.SetAutoKill(true);
-        damageSequence.Append(txt.transform.DOMoveY(yyy + 0.6f, 0.5f).SetEase(Ease.OutQuad))
-                    .Join(txt.DOFade(0f, 1f))
-                    .Join(txt.transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack))
-                    .Append(txt.transform.DOScale(1f, 0.2f))
-                    .OnComplete(() =>
-                    {
-                        txt.gameObject.SetActive(false);
-                        txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, 1f);
-                        txt.transform.localScale = Vector3.one;
-                    });
+
+        DOTween.Sequence().SetAutoKill(true).Append(txt.transform.DOMoveY(txt.transform.position.y + 0.6f, 0.5f).SetEase(Ease.OutQuad))
+        .Join(txt.DOFade(0f, 1f))
+        .Join(txt.transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack))
+        .Append(txt.transform.DOScale(1f, 0.2f))
+        .OnComplete(() =>
+        {
+            txt.color = new Color(1f, 1f, 1f, 1f);
+            txt.gameObject.SetActive(false);
+        });
     }
-    Text GetDmgTxt()
+    TextMeshProUGUI GetDmgTxt()
     {
         foreach (var txt in dmgTxtList)
         {
@@ -805,7 +807,27 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (GameObject.Find("Manager") == null)
         {
-            Instantiate(ResManager.GetGameObject("Manager"), GameObject.Find("Battle").transform);
+            GameObject managerPrefab = ResManager.GetGameObject("Manager");
+            if (managerPrefab != null)
+            {
+                GameObject battleParent = GameObject.Find("Battle");
+                if (battleParent != null)
+                    Instantiate(managerPrefab, battleParent.transform);
+            }
+        }
+    }
+}
+[CustomEditor(typeof(BattleCore))]
+public class BattleCoreEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+        BattleCore myScript = (BattleCore)target;
+
+        if (GUILayout.Button("데미지 텍스트 테스트"))
+        {
+            myScript.ShowDmgTxt(100, new Vector3(0, 0, 0));
         }
     }
 }

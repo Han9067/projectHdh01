@@ -6,6 +6,10 @@ using UnityEngine.UI;
 using System.Linq;
 using JetBrains.Annotations;
 
+public enum GameState
+{
+    Menu, World, Battle
+}
 [System.Serializable]
 public class InvenGrid
 {

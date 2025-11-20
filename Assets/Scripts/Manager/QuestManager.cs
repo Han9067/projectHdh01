@@ -5,6 +5,7 @@ using GB;
 
 public class QuestManager : AutoSingleton<QuestManager>
 {
+    // private bool isLoad = false;
     private QuestTable _questTable;
     public QuestTable QuestTable => _questTable ?? (_questTable = GameDataManager.GetTable<QuestTable>());
     public Dictionary<int, QuestData> QuestData = new Dictionary<int, QuestData>();
@@ -15,7 +16,17 @@ public class QuestManager : AutoSingleton<QuestManager>
     }
     private void Start()
     {
+        if (GsManager.I.gameState == GameState.Battle)
+        {
+            // LoadQst();
+            return;
+        }
         //최초 시작시 로드된 CityQuest가 없을 경우 새로 만들어줌
+        LoadQst();
+    }
+    public void LoadQst()
+    {
+        // isLoad = true;
         if (CityQuest.Count == 0)
         {
             for (int i = 1; i <= 5; i++)

@@ -1,13 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
 using GB;
 using UnityEngine.UI;
-using System.Linq;
+using UnityEngine.SceneManagement;
 //GameSystemManager
 public class GsManager : AutoSingleton<GsManager>
 {
+    public GameState gameState;
     public int worldSpd = 1; //월드맵 속도
     private void Awake()
     {
@@ -58,6 +58,18 @@ public class GsManager : AutoSingleton<GsManager>
         wMonth = tDay % 360 / 30;
         wDay = tDay % 30 + 1;
         Presenter.Send("WorldMainUI", "UpdateAllTime");
+        switch (SceneManager.GetActiveScene().name)
+        {
+            case "World":
+                gameState = GameState.World;
+                break;
+            case "Battle":
+                gameState = GameState.Battle;
+                break;
+            default:
+                gameState = GameState.Menu;
+                break;
+        }
     }
     #region 메뉴 팝업 상태
     public void StateMenuPopup(string key)
