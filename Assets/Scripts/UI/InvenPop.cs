@@ -197,7 +197,8 @@ public class InvenPop : UIScreen
             }
         }
         StateItemRaycast(false);
-        StateItemBgAlpha(0f);
+        curItem.SetBgAlpha(0f);
+        // StateItemBgAlpha(0f);
         moveOn = true;
         CheckCurEq(curItem.itemData.ItemId, curItem.itemData.Type);
         if (curItem.x > -1 && curItem.y > -1)
@@ -300,7 +301,6 @@ public class InvenPop : UIScreen
                 isOverlapping = !(maxX < gMinX || minX > gMaxX || maxY < gMinY || minY > gMaxY);
                 if (isOverlapping)
                 {
-                    // Debug.Log(x + " " + y);
                     gx = x; gy = y;
                     break;
                 }
@@ -346,6 +346,16 @@ public class InvenPop : UIScreen
         // 겹치는 그리드 색상 변경
         for (int i = 0; i < maxCnt; i++)
             ChangeGridColor(gridX[i], gridY[i]);
+        foreach (var v in itemList)
+        {
+            if (v.x > -1 && v.y > -1)
+            {
+                if (gridUid.IndexOf(v.itemData.Uid) != -1)
+                    v.SetBgAlpha(0f);
+                else
+                    v.SetBgAlpha(1f);
+            }
+        }
     }
     private void MoveItem(int w, int h, int ex, int ey)
     {
@@ -359,8 +369,9 @@ public class InvenPop : UIScreen
         }
         curItem.iType = posType;
         curItem.x = ex; curItem.y = ey; curItem.eq = "";
+        curItem.SetBgAlpha(1f);
         EndMovingItem();
-        StateItemBgAlpha(1f);
+        // StateItemBgAlpha(1f);
     }
     private void ChangeItem(int w, int h, int ex, int ey)
     {
@@ -658,14 +669,14 @@ public class InvenPop : UIScreen
         }
         return new Vector2Int(-1, -1);
     }
-    private void StateItemBgAlpha(float alpha)
-    {
-        for (int i = 0; i < itemList.Count; i++)
-        {
-            if (itemList[i].x > -1 && itemList[i].y > -1)
-                itemList[i].SetBgAlpha(alpha);
-        }
-    }
+    // private void StateItemBgAlpha(float alpha)
+    // {
+    //     for (int i = 0; i < itemList.Count; i++)
+    //     {
+    //         if (itemList[i].x > -1 && itemList[i].y > -1)
+    //             itemList[i].SetBgAlpha(alpha);
+    //     }
+    // }
     private void DeleteRwdItems()
     {
         for (int i = itemList.Count - 1; i >= 0; i--)

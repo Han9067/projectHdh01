@@ -13,14 +13,14 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] private Button button;
     [SerializeField] private Image bg, main;
     private float bgAlpha = 1f;
+    private Color bgColor;
     // Start is called before the first frame update
     void Start()
     {
         button.onClick.AddListener(OnButtonClick);
         main.sprite = ResManager.GetSprite(itemData.Res);
-        bg.color = ColorData.GetItemGradeColor(itemData.Grade);
-        if (bg.color.a != bgAlpha)
-            bg.color = new Color(bg.color.r, bg.color.g, bg.color.b, bgAlpha);
+        bgColor = ColorData.GetItemGradeColor(itemData.Grade);
+        bg.color = new Color(bgColor.r, bgColor.g, bgColor.b, bgAlpha);
     }
 
     public void OnButtonClick()
@@ -43,6 +43,12 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (InvenPop.moveOn) return;
+        #region 아이템 체크
+        if (bgAlpha > 0f)
+            bg.color = new Color(125f / 255f, 1f, 210 / 255f, 1f);
+        // SetBgAlpha(0.5f);
+        #endregion
+        #region 아이템 정보 팝업업
         UIManager.ShowPopup("ItemInfoPop");
         Presenter.Send("ItemInfoPop", "OnItemInfo", itemData);
 
@@ -55,9 +61,12 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         int dir = rect.position.x < canvasSize.x / 2f ? 1 : -1;
         Vector3 pos = new Vector3(rect.position.x + (dir * (rect.sizeDelta.x / 2 + 202)), rect.position.y, 0);
         Presenter.Send("ItemInfoPop", "OnItemPos", pos);
+        #endregion
     }
     public void OnPointerExit(PointerEventData eventData)
     {
+        bg.color = new Color(bgColor.r, bgColor.g, bgColor.b, bgAlpha);
+        // SetBgAlpha(1f);
         UIManager.ClosePopup("ItemInfoPop");
         // 마우스가 버튼 밖으로 나갔을 때 한 번 실행
     }

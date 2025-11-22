@@ -127,10 +127,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         ItemManager.I.CreateInvenItem(10001, -1, -1); //옷
         pData.EqSlot["Hand1"] = pData.Inven[0]; // 손1
         pData.EqSlot["Armor"] = pData.Inven[1]; // 갑옷
-        // ItemManager.I.CreateInvenItem(68001, 0, 0);
+        ItemManager.I.CreateInvenItem(60001, 0, 0); //물약
         // ItemManager.I.CreateInvenItem(68001, 0, 1);
-        // ItemManager.I.CreateInvenItem(30002, 2, 0);
-        // ItemManager.I.CreateInvenItem(32001, 3, 0);
+        ItemManager.I.CreateInvenItem(30001, 2, 0); //무기
+        ItemManager.I.CreateInvenItem(32001, 3, 0);
 
         CalcPlayerStat();
         pData.HP = pData.MaxHP;

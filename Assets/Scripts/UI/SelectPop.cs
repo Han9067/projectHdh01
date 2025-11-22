@@ -51,7 +51,7 @@ public class SelectPop : UIScreen
             case "SetList":
                 int idx = 1;
                 //순차적으로 0 :구매, 1: 판매, 2: 정보, 3: 버리기, 4: 취소
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < selList.Count; i++)
                     selList[i].SetActive(false);
                 switch (data.Get<int>())
                 {
@@ -88,6 +88,12 @@ public class SelectPop : UIScreen
             case "OnSell":
                 break;
             case "OnInfo":
+                break;
+            case "OnDrink":
+                break;
+            case "OnEat":
+                break;
+            case "OnEq":
                 break;
             case "OnDrop":
                 break;
