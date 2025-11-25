@@ -17,6 +17,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     private Camera cam;
     private float moveSpd = 20f, zoomSpd = 10f; // 카메라 이동 속도, 줌 속도
     private float minZoom = 5f, maxZoom = 10f;  // 줌 범위
+    public static int intoCity = 0;
     [Header("City")]
     [SerializeField] private Transform cityParent;
     [SerializeField] private Dictionary<int, GameObject> cityObjList = new Dictionary<int, GameObject>();
@@ -27,7 +28,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     [Header("Player")]
     [SerializeField] private wPlayer player;
     private float pSpd = 5f; //플레이어 이동 속도
-    private Vector2 pPos;
+    // private Vector2 pPos;
     private bool isMove = false;
     [Header("Monster")]
     [SerializeField] private Transform wMonParent;
@@ -84,7 +85,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         if (Input.GetKey(KeyCode.S)) moveDirection.y -= 1; // 아래로 이동
         if (Input.GetKey(KeyCode.A)) moveDirection.x -= 1; // 왼쪽 이동
         if (Input.GetKey(KeyCode.D)) moveDirection.x += 1; // 오른쪽 이동
-        InputPlayerAct();
+        if (Input.GetMouseButtonDown(0)) InputPlayerAct();
         #endregion
         #region Camera Act
         // Time.unscaledDeltaTime을 사용하여 일시정지 상태에서도 일정한 속도로 이동
@@ -128,36 +129,42 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     private void InputPlayerAct()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (CityEnterPop.isActive) return;
+        if (GsManager.I.IsCursor("notMove")) return;
+        Vector2 clickWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 playerWorldPos = player.transform.position;
+
+        Vector3Int startCell = worldMapTile.WorldToCell(playerWorldPos);
+        Vector3Int endCell = worldMapTile.WorldToCell(clickWorldPos);
+
+        // 기존 이동 취소
+        if (isMove)
         {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
-            if (CityEnterPop.isActive) return;
-            if (GsManager.I.IsCursor("notMove")) return;
-            Vector2 clickWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 playerWorldPos = player.transform.position;
-
-            Vector3Int startCell = worldMapTile.WorldToCell(playerWorldPos);
-            Vector3Int endCell = worldMapTile.WorldToCell(clickWorldPos);
-
-            // 기존 이동 취소
-            if (isMove)
-            {
-                player.transform.DOKill();
-                isMove = false;
-                Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
-            }
-            List<Vector3> path = WorldObjManager.I.FindPathOptimized(startCell, endCell);
-            path.RemoveAt(0);
-            path.RemoveAt(path.Count - 1);
-            path.Add(clickWorldPos);
-            path.Insert(0, playerWorldPos);
-            MovePlayerPath(path);
+            player.transform.DOKill();
+            isMove = false;
+            Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
         }
+        wmPath path1 = WorldObjManager.I.FindPathOptimized(startCell, endCell);
+        path1.pos.RemoveAt(0);
+        path1.pos.RemoveAt(path1.pos.Count - 1);
+        path1.pos.Add(clickWorldPos);
+        path1.pos.Insert(0, playerWorldPos);
+        if (intoCity > 0)
+        {
+            wmPath path2 = WorldObjManager.I.FindPathToCity(intoCity);
+            if (path1.cost < path2.cost)
+                MovePlayerPath(path1.pos);
+            else
+                MovePlayerPath(path2.pos);
+        }
+        else
+            MovePlayerPath(path1.pos);
     }
     // 경로 이동
     private void MovePlayerPath(List<Vector3> path)
     {
-        pPos = path[path.Count - 1];
+        // pPos = path[path.Count - 1];
         isMove = true;
         Presenter.Send("WorldMainUI", "ChangeGameSpd", "X1");
         DOVirtual.DelayedCall(0.08f, () =>

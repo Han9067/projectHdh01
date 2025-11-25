@@ -1,45 +1,61 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GB;
 using UnityEngine.EventSystems;
-public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+
+public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public int iType; //item type -> 팝업에 따라 해당 타입이 바뀜. 0: 유저 인벤, 1: 상점 인벤
     public int x, y, uid;
     public string eq = "";
     public ItemData itemData;
-    [SerializeField] private Button button;
     [SerializeField] private Image bg, main;
     private float bgAlpha = 1f;
     private Color bgColor;
     // Start is called before the first frame update
     void Start()
     {
-        button.onClick.AddListener(OnButtonClick);
         main.sprite = ResManager.GetSprite(itemData.Res);
         bgColor = ColorData.GetItemGradeColor(itemData.Grade);
         bg.color = new Color(bgColor.r, bgColor.g, bgColor.b, bgAlpha);
     }
 
-    public void OnButtonClick()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        switch (iType)
+        switch (eventData.button)
         {
-            case 0:
-            case 1:
-                Presenter.Send("InvenPop", "ClickItem", itemData.Uid);
-                if (ItemInfoPop.isActive)
-                    UIManager.ClosePopup("ItemInfoPop");
+            case PointerEventData.InputButton.Left:
+                switch (iType)
+                {
+                    case 0:
+                    case 1:
+                        Presenter.Send("InvenPop", "ClickItem", itemData.Uid);
+                        if (ItemInfoPop.isActive)
+                            UIManager.ClosePopup("ItemInfoPop");
+                        break;
+                    case 10:
+                        UIManager.ShowPopup("SelectPop");
+                        Presenter.Send("SelectPop", "SetList", 0);
+                        Presenter.Send("SelectPop", "SetItemData", itemData);
+                        break;
+                }
                 break;
-            case 10:
+            case PointerEventData.InputButton.Right:
                 UIManager.ShowPopup("SelectPop");
-                Presenter.Send("SelectPop", "SetList", 0);
                 Presenter.Send("SelectPop", "SetItemData", itemData);
+                if (itemData.ItemId > 60000)
+                {
+                    if (itemData.ItemId < 64001)
+                        Presenter.Send("SelectPop", "SetList", 3); //소모형 아이템
+                }
+                else
+                {
+
+                }
                 break;
         }
     }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (InvenPop.moveOn) return;

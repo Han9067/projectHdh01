@@ -103,6 +103,9 @@ public class InvenPop : UIScreen
             case "OpenRwdPop":
                 StartCoroutine(WaitLoadInven(isLoadInven ? 0f : 0.1f));
                 break;
+            case "DeleteItem":
+                DeleteItem(data.Get<int>());
+                break;
         }
     }
     private void InitGrid()
@@ -198,7 +201,6 @@ public class InvenPop : UIScreen
         }
         StateItemRaycast(false);
         curItem.SetBgAlpha(0f);
-        // StateItemBgAlpha(0f);
         moveOn = true;
         CheckCurEq(curItem.itemData.ItemId, curItem.itemData.Type);
         if (curItem.x > -1 && curItem.y > -1)
@@ -371,7 +373,6 @@ public class InvenPop : UIScreen
         curItem.x = ex; curItem.y = ey; curItem.eq = "";
         curItem.SetBgAlpha(1f);
         EndMovingItem();
-        // StateItemBgAlpha(1f);
     }
     private void ChangeItem(int w, int h, int ex, int ey)
     {
@@ -669,14 +670,6 @@ public class InvenPop : UIScreen
         }
         return new Vector2Int(-1, -1);
     }
-    // private void StateItemBgAlpha(float alpha)
-    // {
-    //     for (int i = 0; i < itemList.Count; i++)
-    //     {
-    //         if (itemList[i].x > -1 && itemList[i].y > -1)
-    //             itemList[i].SetBgAlpha(alpha);
-    //     }
-    // }
     private void DeleteRwdItems()
     {
         for (int i = itemList.Count - 1; i >= 0; i--)
@@ -694,6 +687,17 @@ public class InvenPop : UIScreen
         mGameObject["RwdPop"].SetActive(false);
         if (mGameObject["RwdCheck"].activeSelf)
             Close();
+    }
+    private void DeleteItem(int uid)
+    {
+        for (int i = itemList.Count - 1; i >= 0; i--)
+        {
+            if (itemList[i].uid == uid)
+            {
+                Destroy(itemList[i].gameObject);
+                itemList.RemoveAt(i);
+            }
+        }
     }
     public override void Refresh() { }
 }

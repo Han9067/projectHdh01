@@ -28,6 +28,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         public int y;
         public string tName;
         public Vector3 worldPos;
+        public float tCost; //타일 비용
     }
     private static readonly Vector3Int[] v3Dir8 = new Vector3Int[]
     {
@@ -44,6 +45,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
     private bool isCreate = false;
     public Dictionary<int, List<Vector3>> wAreaPos = new Dictionary<int, List<Vector3>>(); //영역 내 타일들의 월드 좌표
     public Dictionary<(int x, int y), wmGrid> wGridDic = new Dictionary<(int, int), wmGrid>(); //월드맵 그리드
+    Dictionary<int, Vector3Int> wRoadSpotPos = new Dictionary<int, Vector3Int>();
     public void CreateWorldMapGrid(Tilemap tilemap)
     {
         if (isCreate) return;
@@ -64,12 +66,11 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
                 grid.y = y;
                 grid.tName = tile != null ? tile.name : "wt_o";
                 grid.worldPos = tilemap.CellToWorld(tPos) + tilemap.cellSize * 0.5f;  // 월드 좌표도 저장
-
+                grid.tCost = GetCost(grid.tName);
                 wGridDic[(x, y)] = grid;
             }
         }
         #region 월드맵 그리드 전체 체크
-        Dictionary<int, Vector3Int> wRoadSpotPos = new Dictionary<int, Vector3Int>();
         foreach (var kvp in wGridDic)
         {
             int x = kvp.Key.Item1;
@@ -103,7 +104,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         CreateWorldAreaData(); //월드맵 지역 데이터 생성
         #endregion
         #region 월드맵 도로 생성
-        int[,] root = { { 1, 2 }, { 1, 3 } };
+        int[,] root = { { 1, 2 }, { 1, 3 }, { 1, 4 }, { 1, 5 }, { 1, 6 }, { 1, 7 } };
         int cnt = root.GetLength(0);
         for (int i = 0; i < cnt; i++)
         {
@@ -173,69 +174,102 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
 
         return new List<Vector3Int>();
     }
-
+    private float GetCost(string tileName)
+    {
+        switch (tileName.Substring(0, 4))
+        {
+            case "wt_r":
+                return 0.6f;
+            case "wt_n":
+                return 1f;
+            case "wt_f":
+                return 1.4f;
+            default:
+                return 999f;
+        }
+    }
     #endregion
-    #region A* 길찾기 + 경로 최적화
+    #region A* 일반 필드 길찾기
     public class PathNode
     {
-        public Vector3Int position;
-        public float gCost;
-        public float hCost;
+        public Vector3Int pos;
+        public Vector3 worldPos; // 월드 좌표 캐싱
+        public float gCost, hCost;
         public float fCost => gCost + hCost;
         public PathNode parent;
 
-        public PathNode(Vector3Int pos, float g, float h, PathNode p = null)
+        public PathNode(Vector3Int p, Vector3 wPos, float g, float h, PathNode n = null)
         {
-            position = pos;
+            pos = p;
+            worldPos = wPos;
             gCost = g;
             hCost = h;
-            parent = p;
+            parent = n;
         }
     }
 
     // 메인 길찾기 함수 (A* + 경로 최적화)
-    public List<Vector3> FindPathOptimized(Vector3Int startCell, Vector3Int endCell)
+    public wmPath FindPathOptimized(Vector3Int startCell, Vector3Int endCell)
     {
-        List<Vector3> rawPath = FindPathAStar(startCell, endCell);
+        wmPath rawPath = FindPathAStar(startCell, endCell);
+        if (rawPath == null || rawPath.pos == null || rawPath.pos.Count == 0)
+            return null;
+
         // 경로 최적화 (불필요한 웨이포인트 제거)
-        List<Vector3> smoothPath = SmoothPath(rawPath);
+        wmPath smoothPath = SmoothPath(rawPath);
 
         return smoothPath;
     }
 
-    // A* 알고리즘
-    private List<Vector3> FindPathAStar(Vector3Int startCell, Vector3Int endCell)
+    // A* 알고리즘 (최적화 버전)
+    private wmPath FindPathAStar(Vector3Int startCell, Vector3Int endCell)
     {
-        List<PathNode> openList = new List<PathNode>();
+        // openList를 Dictionary로 관리하여 O(1) 조회
+        Dictionary<Vector3Int, PathNode> openDict = new Dictionary<Vector3Int, PathNode>();
+        List<PathNode> openList = new List<PathNode>(); // 정렬된 리스트 유지
         HashSet<Vector3Int> closedList = new HashSet<Vector3Int>();
 
-        PathNode startNode = new PathNode(startCell, 0, GetHeuristic(startCell, endCell));
+        // 시작 노드 생성
+        if (!wGridDic.TryGetValue((startCell.x, startCell.y), out var startGrid))
+            return null;
+
+        PathNode startNode = new PathNode(startCell, startGrid.worldPos, 0, GetHeuristic(startCell, endCell));
         openList.Add(startNode);
+        openDict[startCell] = startNode;
 
         while (openList.Count > 0)
         {
-            // fCost가 가장 낮은 노드 선택
-            PathNode currentNode = openList[0];
+            // fCost가 가장 낮은 노드 선택 (정렬된 리스트의 마지막 요소 사용)
+            int bestIndex = 0;
+            float bestFCost = openList[0].fCost;
+            float bestHCost = openList[0].hCost;
+
             for (int i = 1; i < openList.Count; i++)
             {
-                if (openList[i].fCost < currentNode.fCost ||
-                    (openList[i].fCost == currentNode.fCost && openList[i].hCost < currentNode.hCost))
+                if (openList[i].fCost < bestFCost ||
+                    (openList[i].fCost == bestFCost && openList[i].hCost < bestHCost))
                 {
-                    currentNode = openList[i];
+                    bestIndex = i;
+                    bestFCost = openList[i].fCost;
+                    bestHCost = openList[i].hCost;
                 }
             }
 
-            openList.Remove(currentNode);
-            closedList.Add(currentNode.position);
+            PathNode currentNode = openList[bestIndex];
+            // 마지막 요소와 교체 후 제거 (O(1))
+            openList[bestIndex] = openList[openList.Count - 1];
+            openList.RemoveAt(openList.Count - 1);
+            openDict.Remove(currentNode.pos);
+            closedList.Add(currentNode.pos);
 
             // 목적지 도착
-            if (currentNode.position == endCell)
-                return RetracePath(currentNode);
+            if (currentNode.pos == endCell)
+                return RetracePathWithCost(currentNode);
 
             // 인접한 8방향 타일 탐색
             foreach (Vector3Int dir in v3Dir8)
             {
-                Vector3Int neighborPos = currentNode.position + dir;
+                Vector3Int neighborPos = currentNode.pos + dir;
 
                 if (closedList.Contains(neighborPos))
                     continue;
@@ -246,94 +280,132 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
                 if (!IsWalkable(grid.tName))
                     continue;
 
-                // 대각선 이동 비용 계산
-                float moveCost = (dir.x != 0 && dir.y != 0) ? 1.414f : 1f;
+                // 대각선 이동 비용 계산 + 타일 cost 적용
+                float baseMoveCost = (dir.x != 0 && dir.y != 0) ? 1.414f : 1f;
+                float moveCost = baseMoveCost * grid.tCost;
                 float newGCost = currentNode.gCost + moveCost;
 
-                PathNode existingNode = openList.Find(n => n.position == neighborPos);
-
-                if (existingNode == null)
+                // Dictionary로 O(1) 조회
+                if (openDict.TryGetValue(neighborPos, out PathNode existingNode))
+                {
+                    if (newGCost < existingNode.gCost)
+                    {
+                        existingNode.gCost = newGCost;
+                        existingNode.parent = currentNode;
+                    }
+                }
+                else
                 {
                     PathNode newNode = new PathNode(
                         neighborPos,
+                        grid.worldPos,
                         newGCost,
                         GetHeuristic(neighborPos, endCell),
                         currentNode
                     );
                     openList.Add(newNode);
-                }
-                else if (newGCost < existingNode.gCost)
-                {
-                    existingNode.gCost = newGCost;
-                    existingNode.parent = currentNode;
+                    openDict[neighborPos] = newNode;
                 }
             }
         }
-        Debug.Log("경로를 찾을 수 없습니다!");
         return null;
     }
-
-    // 경로 역추적
-    private List<Vector3> RetracePath(PathNode endNode)
+    // 경로 역추적 + 가중치 계산
+    private wmPath RetracePathWithCost(PathNode endNode)
     {
         List<Vector3> path = new List<Vector3>();
+        List<PathNode> nodePath = new List<PathNode>();
         PathNode currentNode = endNode;
+        float totalCost = 0f;
 
+        // 경로 역추적
         while (currentNode != null)
         {
-            if (wGridDic.TryGetValue((currentNode.position.x, currentNode.position.y), out var grid))
-            {
-                path.Add(grid.worldPos);
-            }
+            path.Add(currentNode.worldPos);
+            nodePath.Add(currentNode);
             currentNode = currentNode.parent;
         }
 
         path.Reverse();
-        return path;
-    }
+        nodePath.Reverse();
 
-    // 경로 최적화: Line of Sight를 이용한 웨이포인트 제거
-    private List<Vector3> SmoothPath(List<Vector3> path)
+        // 가중치 계산 (각 노드 간 이동 비용 합산)
+        for (int i = 0; i < nodePath.Count - 1; i++)
+        {
+            PathNode current = nodePath[i];
+            PathNode next = nodePath[i + 1];
+
+            // 방향 계산
+            Vector3Int dir = next.pos - current.pos;
+            bool isDiagonal = (dir.x != 0 && dir.y != 0);
+
+            // 다음 타일의 비용 가져오기
+            if (wGridDic.TryGetValue((next.pos.x, next.pos.y), out var nextGrid))
+            {
+                // float baseMoveCost = isDiagonal ? 1.414f : 1f;
+                // float moveCost = baseMoveCost * nextGrid.tCost;
+                totalCost += nextGrid.tCost;
+            }
+        }
+
+        wmPath result = new wmPath();
+        result.pos = path;
+        result.cost = totalCost;
+
+        return result;
+    }
+    private wmPath SmoothPath(wmPath path)
     {
-        if (path == null || path.Count <= 2)
+        if (path == null || path.pos == null || path.pos.Count <= 2)
             return path;
 
         List<Vector3> smoothedPath = new List<Vector3>();
-        smoothedPath.Add(path[0]); // 시작점
+        smoothedPath.Add(path.pos[0]); // 시작점
 
         int currentIndex = 0;
+        float totalCost = 0f;
 
-        while (currentIndex < path.Count - 1)
+        while (currentIndex < path.pos.Count - 1)
         {
             int farthestIndex = currentIndex + 1;
 
             // 현재 위치에서 가장 멀리 직선으로 갈 수 있는 지점 찾기
-            for (int i = currentIndex + 2; i < path.Count; i++)
+            for (int i = currentIndex + 2; i < path.pos.Count; i++)
             {
-                if (HasLineOfSight(path[currentIndex], path[i]))
-                {
+                if (HasLineOfSight(path.pos[currentIndex], path.pos[i]))
                     farthestIndex = i;
-                }
                 else
-                {
                     break; // 장애물이 있으면 중단
-                }
             }
 
-            smoothedPath.Add(path[farthestIndex]);
+            smoothedPath.Add(path.pos[farthestIndex]);
+
+            // 스무딩된 경로의 가중치 계산 (직선 거리 기반)
+            Vector3Int fromCell = WorldToCellOptimized(path.pos[currentIndex]);
+            Vector3Int toCell = WorldToCellOptimized(path.pos[farthestIndex]);
+
+            if (wGridDic.TryGetValue((toCell.x, toCell.y), out var grid))
+            {
+                float distance = Vector3.Distance(path.pos[currentIndex], path.pos[farthestIndex]);
+                totalCost += distance * grid.tCost;
+            }
+
             currentIndex = farthestIndex;
         }
 
-        return smoothedPath;
+        wmPath result = new wmPath();
+        result.pos = smoothedPath;
+        result.cost = totalCost;
+
+        return result;
     }
 
     // 두 점 사이에 장애물이 없는지 확인 (Bresenham's Line Algorithm)
     private bool HasLineOfSight(Vector3 fromWorld, Vector3 toWorld)
     {
-        // 월드 좌표를 셀 좌표로 변환 (Tilemap 필요 - WorldCore에서 전달받거나 참조)
-        // 임시로 wGridDic를 역으로 찾는 방식 사용
-        Vector3Int fromCell = WorldToCell(fromWorld);
-        Vector3Int toCell = WorldToCell(toWorld);
+        // 월드 좌표를 셀 좌표로 변환 (최적화: 직접 계산)
+        Vector3Int fromCell = WorldToCellOptimized(fromWorld);
+        Vector3Int toCell = WorldToCellOptimized(toWorld);
 
         // Bresenham's Line Algorithm
         int dx = Mathf.Abs(toCell.x - fromCell.x);
@@ -374,21 +446,44 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         return true;
     }
 
-    // 월드 좌표를 셀 좌표로 변환 (가장 가까운 그리드 찾기)
+    // 월드 좌표를 셀 좌표로 변환 (가장 가까운 그리드 찾기 - 최적화 버전)
     private Vector3Int WorldToCell(Vector3 worldPos)
     {
+        return WorldToCellOptimized(worldPos);
+    }
+
+    // 최적화된 월드 좌표 -> 셀 좌표 변환 (캐싱 활용)
+    private Dictionary<Vector3, Vector3Int> worldToCellCache = new Dictionary<Vector3, Vector3Int>();
+    private Vector3Int WorldToCellOptimized(Vector3 worldPos)
+    {
+        // 정밀도를 낮춰서 캐싱 효율 향상 (0.1 단위로 반올림)
+        Vector3 roundedPos = new Vector3(
+            Mathf.Round(worldPos.x * 10f) / 10f,
+            Mathf.Round(worldPos.y * 10f) / 10f,
+            worldPos.z
+        );
+
+        if (worldToCellCache.TryGetValue(roundedPos, out Vector3Int cached))
+            return cached;
+
+        // 캐시에 없으면 계산
         float minDistance = float.MaxValue;
         Vector3Int closestCell = Vector3Int.zero;
 
         foreach (var kvp in wGridDic)
         {
-            float distance = Vector3.Distance(worldPos, kvp.Value.worldPos);
-            if (distance < minDistance)
+            float sqrDistance = (worldPos - kvp.Value.worldPos).sqrMagnitude; // SqrMagnitude 사용 (제곱근 계산 제거)
+            if (sqrDistance < minDistance)
             {
-                minDistance = distance;
+                minDistance = sqrDistance;
                 closestCell = new Vector3Int(kvp.Value.x, kvp.Value.y, 0);
             }
         }
+
+        // 캐시에 저장 (캐시 크기 제한)
+        if (worldToCellCache.Count > 1000)
+            worldToCellCache.Clear(); // 캐시가 너무 커지면 초기화
+        worldToCellCache[roundedPos] = closestCell;
 
         return closestCell;
     }
@@ -410,7 +505,91 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         return (dx + dy) + (1.414f - 2f) * Mathf.Min(dx, dy);
     }
     #endregion
+    #region 마을 이동 길찾기
+    public wmPath FindPathToCity(int tgCity)
+    {
+        Vector3 pPos = WorldCore.I.GetPlayerPos();
+        Vector3Int sRoadPos = WorldToCell(FindAroundRoad(pPos)); //타일 위치
+        wmPath total = new wmPath();
+        total.pos = new List<Vector3>();
+        total.cost = 0f;
+        total.pos.Add(pPos);
 
+        wmPath path1 = FindPathOptimized(WorldToCell(pPos), sRoadPos);
+        // path1.pos.RemoveAt(0);
+        path1.pos.RemoveAt(path1.pos.Count - 1);
+        foreach (var v in path1.pos)
+        {
+            total.pos.Add(v);
+            total.cost += wGridDic[(WorldToCell(v).x, WorldToCell(v).y)].tCost;
+        }
+        List<Vector3Int> roadPath = FindRoadPath(sRoadPos, wRoadSpotPos[tgCity]);
+        foreach (var v in roadPath)
+        {
+            total.pos.Add(wGridDic[(v.x, v.y)].worldPos);
+            total.cost += wGridDic[(v.x, v.y)].tCost;
+        }
+        return total;
+    }
+    private Vector3 FindAroundRoad(Vector3 pPos)
+    {
+        Vector3Int playerCell = WorldToCell(pPos);
+
+        // BFS를 위한 큐와 방문 체크
+        Queue<Vector3Int> queue = new Queue<Vector3Int>();
+        HashSet<Vector3Int> visited = new HashSet<Vector3Int>();
+
+        queue.Enqueue(playerCell);
+        visited.Add(playerCell);
+
+        // 최대 검색 범위 제한 (성능 최적화)
+        int maxSearchRadius = 50; // 필요에 따라 조정 가능
+        int currentRadius = 0;
+
+        while (queue.Count > 0 && currentRadius < maxSearchRadius)
+        {
+            int levelSize = queue.Count; // 현재 레벨의 노드 개수
+            currentRadius++;
+
+            // 현재 레벨의 모든 노드 처리
+            for (int i = 0; i < levelSize; i++)
+            {
+                Vector3Int current = queue.Dequeue();
+
+                // 도로 타일인지 체크 (wt_r로 시작하는 타일)
+                if (wGridDic.TryGetValue((current.x, current.y), out wmGrid grid))
+                {
+                    if (grid.tName.StartsWith("wt_r"))
+                    {
+                        // 도로를 찾았으면 월드 좌표 반환
+                        return grid.worldPos;
+                    }
+                }
+
+                // 8방향 인접 타일 탐색
+                foreach (Vector3Int dir in v3Dir8)
+                {
+                    Vector3Int next = current + dir;
+
+                    if (visited.Contains(next))
+                        continue;
+
+                    // 그리드에 존재하는지 체크
+                    if (!wGridDic.TryGetValue((next.x, next.y), out wmGrid nextGrid))
+                        continue;
+
+                    // 이동 가능한 타일인지 체크 (도로 또는 이동 가능한 타일)
+                    if (IsWalkable(nextGrid.tName) || nextGrid.tName.StartsWith("wt_r"))
+                    {
+                        visited.Add(next);
+                        queue.Enqueue(next);
+                    }
+                }
+            }
+        }
+        return Vector3.zero;
+    }
+    #endregion
 
     #region 월드맵 몬스터 스폰 관련
     private SpawnMonTable _spawnMonTable;

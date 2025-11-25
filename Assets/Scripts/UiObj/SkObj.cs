@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GB;
+using UnityEngine.EventSystems;
 
-public class SkObj : MonoBehaviour
+public class SkObj : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Image mainImg;
     [SerializeField] private Image iconImg;
@@ -12,14 +11,16 @@ public class SkObj : MonoBehaviour
     void Start()
     {
         iconImg.sprite = ResManager.GetSprite("skIcon_" + data.SkId);
-        GetComponent<Button>().onClick.AddListener(OnButtonClick);
     }
     public void SetSk(SkData skData)
     {
         data = skData;
     }
-    void OnButtonClick()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        Presenter.Send("SkillPop", "SelectSk", data);
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            Presenter.Send("SkillPop", "SelectSk", data);
+        }
     }
 }

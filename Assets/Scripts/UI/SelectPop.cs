@@ -50,14 +50,28 @@ public class SelectPop : UIScreen
         {
             case "SetList":
                 int idx = 1;
-                //순차적으로 0 :구매, 1: 판매, 2: 정보, 3: 버리기, 4: 취소
+                //순차적으로 0 :구매, 1: 판매, 2: 정보, 3: 사용하기, 4: 장착하기, 5: 버리기
                 for (int i = 0; i < selList.Count; i++)
                     selList[i].SetActive(false);
                 switch (data.Get<int>())
                 {
-                    case 0:
+                    case 0: //구매
                         selList[0].SetActive(true);
                         idx = 2;
+                        break;
+                    case 1: //판매
+                        selList[1].SetActive(true);
+                        idx = 2;
+                        break;
+                    case 2:
+                        //전투 화면에서 몬스터, NPC 확인?
+                        break;
+                    case 3:
+                        //해당 아이템이 내부 인벤에 있으며 소모형 아이템일 경우
+                        selList[2].SetActive(true);
+                        selList[3].SetActive(true);
+                        selList[4].SetActive(true);
+                        idx = 4;
                         break;
                 }
                 RectTransform popRect = pop.GetComponent<RectTransform>();
@@ -89,9 +103,39 @@ public class SelectPop : UIScreen
                 break;
             case "OnInfo":
                 break;
-            case "OnDrink":
-                break;
-            case "OnEat":
+            case "OnUse":
+                foreach (var v in selItem.Att)
+                {
+                    switch (v.Key)
+                    {
+                        case 201:
+                            PlayerManager.I.pData.HP += v.Value;
+                            if (PlayerManager.I.pData.HP > PlayerManager.I.pData.MaxHP)
+                                PlayerManager.I.pData.HP = PlayerManager.I.pData.MaxHP;
+                            break;
+                        case 202:
+                            PlayerManager.I.pData.MP += v.Value;
+                            if (PlayerManager.I.pData.MP > PlayerManager.I.pData.MaxMP)
+                                PlayerManager.I.pData.MP = PlayerManager.I.pData.MaxMP;
+                            break;
+                        case 203:
+                            PlayerManager.I.pData.SP += v.Value;
+                            if (PlayerManager.I.pData.SP > PlayerManager.I.pData.MaxSP)
+                                PlayerManager.I.pData.SP = PlayerManager.I.pData.MaxSP;
+                            break;
+                    }
+                }
+                switch (GsManager.I.gameState)
+                {
+                    case GameState.World:
+                        Presenter.Send("WorldMainUI", "UpdateInfo");
+                        break;
+                    case GameState.Battle:
+                        Presenter.Send("BattleMainUI", "UpdateInfo");
+                        break;
+                }
+                Presenter.Send("InvenPop", "DeleteItem", selItem.Uid);
+                Close();
                 break;
             case "OnEq":
                 break;

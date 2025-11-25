@@ -17,9 +17,9 @@ public class BattleMainUI : UIScreen
     }
     private void Start()
     {
-        SetHp();
-        SetMp();
-        SetSp();
+        UpdateHp();
+        UpdateMp();
+        UpdateSp();
         // mButtons["GoToWorld"].gameObject.SetActive(false); //테스트 후 정상화
     }
     private void OnEnable()
@@ -58,15 +58,14 @@ public class BattleMainUI : UIScreen
     {
         switch (key)
         {
-            case "GetPlayerHp":
-                SetHp();
+            case "UpdateInfo":
+                UpdateHp();
+                UpdateMp();
+                UpdateSp();
                 break;
-            case "GetPlayerMp":
-                SetMp();
-                break;
-            case "GetPlayerSp":
-                SetSp();
-                break;
+            case "GetPlayerHp": UpdateHp(); break;
+            case "GetPlayerMp": UpdateMp(); break;
+            case "GetPlayerSp": UpdateSp(); break;
             case "OnGameClear":
                 UnityEngine.Debug.Log("GameClear");
                 mButtons["GoToWorld"].gameObject.SetActive(true);
@@ -83,17 +82,17 @@ public class BattleMainUI : UIScreen
     {
     }
 
-    public void SetHp()
+    public void UpdateHp()
     {
         mSlider_HP.value = (float)PlayerManager.I.pData.HP / PlayerManager.I.pData.MaxHP * 100f;
         mTMPText["GgHpVal"].text = PlayerManager.I.pData.HP.ToString() + " / " + PlayerManager.I.pData.MaxHP.ToString();
     }
-    public void SetMp()
+    public void UpdateMp()
     {
         mSlider_MP.value = (float)PlayerManager.I.pData.MP / PlayerManager.I.pData.MaxMP * 100;
         mTMPText["GgMpVal"].text = PlayerManager.I.pData.MP.ToString() + " / " + PlayerManager.I.pData.MaxMP.ToString();
     }
-    public void SetSp()
+    public void UpdateSp()
     {
         mSlider_SP.value = (float)PlayerManager.I.pData.SP / PlayerManager.I.pData.MaxSP * 100;
         mTMPText["GgSpVal"].text = PlayerManager.I.pData.SP.ToString() + " / " + PlayerManager.I.pData.MaxSP.ToString();
