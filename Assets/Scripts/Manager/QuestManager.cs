@@ -29,14 +29,14 @@ public class QuestManager : AutoSingleton<QuestManager>
         // isLoad = true;
         if (CityQuest.Count == 0)
         {
-            for (int i = 1; i <= 5; i++)
+            for (int i = 1; i <= 3; i++)
                 SetQuestsInCity(i);
         }
     }
     private void LoadQuestData()
     {
         foreach (var quest in QuestTable.Datas)
-            QuestData[quest.QuestID] = new QuestData(quest.QuestID, quest.Name, quest.Days, quest.Type);
+            QuestData[quest.QuestID] = new QuestData(quest.QuestID, quest.Name, quest.Type);
     }
     private void SetQuestsInCity(int cityID)
     {
@@ -51,7 +51,7 @@ public class QuestManager : AutoSingleton<QuestManager>
             switch (i)
             {
                 case 1:
-                    List<int> tgCity = new List<int> { 1, 2, 3, 4, 5 };
+                    List<int> tgCity = new List<int> { 1, 2, 3 };
                     tgCity.Remove(cityID);
                     tg = tgCity[Random.Range(0, tgCity.Count)];
                     desc = string.Format(LocalizationManager.GetValue("QstG_Delivery_Desc"), PlaceManager.I.GetCityName(tg));

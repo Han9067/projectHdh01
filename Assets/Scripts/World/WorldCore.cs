@@ -146,20 +146,28 @@ public class WorldCore : AutoSingleton<WorldCore>
             Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
         }
         wmPath path1 = WorldObjManager.I.FindPathOptimized(startCell, endCell);
-        path1.pos.RemoveAt(0);
-        path1.pos.RemoveAt(path1.pos.Count - 1);
-        path1.pos.Add(clickWorldPos);
-        path1.pos.Insert(0, playerWorldPos);
-        if (intoCity > 0)
+        if (path1.pos.Count > 1)
         {
-            wmPath path2 = WorldObjManager.I.FindPathToCity(intoCity);
-            if (path1.cost < path2.cost)
-                MovePlayerPath(path1.pos);
-            else
-                MovePlayerPath(path2.pos);
+            path1.pos.RemoveAt(0);
+            path1.pos.RemoveAt(path1.pos.Count - 1);
+            path1.pos.Add(clickWorldPos);
+            path1.pos.Insert(0, playerWorldPos);
+            MovePlayerPath(path1.pos);
         }
         else
-            MovePlayerPath(path1.pos);
+        {
+            MovePlayerPath(new List<Vector3> { playerWorldPos, clickWorldPos });
+        }
+        // if (intoCity > 0)
+        // {
+        //     wmPath path2 = WorldObjManager.I.FindPathToCity(intoCity);
+        //     if (path1.cost < path2.cost)
+        //         MovePlayerPath(path1.pos);
+        //     else
+        //         MovePlayerPath(path2.pos);
+        // }
+        // else
+        //     MovePlayerPath(path1.pos);
     }
     // 경로 이동
     private void MovePlayerPath(List<Vector3> path)

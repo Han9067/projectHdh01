@@ -329,13 +329,12 @@ public class ItemData
 [System.Serializable]
 public class QuestData
 {
-    public int QuestID, Days, Type;
+    public int QuestID, Type;
     public string Name;
-    public QuestData(int id, string name, int days, int type)
+    public QuestData(int id, string name, int type)
     {
         this.QuestID = id;
         this.Name = name;
-        this.Days = days;
         this.Type = type;
     }
 }

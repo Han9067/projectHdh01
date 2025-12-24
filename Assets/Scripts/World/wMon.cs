@@ -52,8 +52,8 @@ public class wMon : MonoBehaviour
     public void SetObjLayer(int y)
     {
         frmBack.sortingOrder = y + 40;
-        frmFront.sortingOrder = y + 41;
-        frmDeco.sortingOrder = y + 42;
-        mainSpr.sortingOrder = y + 43;
+        frmDeco.sortingOrder = y + 41;
+        mainSpr.sortingOrder = y + 42;
+        frmFront.sortingOrder = y + 43;
     }
 }

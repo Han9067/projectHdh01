@@ -31,7 +31,6 @@ public class QuestTable  : GameData
 				case "QuestID": return true;
 				case "Type": return true;
 				case "Name": return true;
-				case "Days": return true;
 				case "Note": return true;
 
 		  default: return false;
@@ -60,7 +59,6 @@ public class QuestTable  : GameData
 				case "QuestID": return data.QuestID;
 				case "Type": return data.Type;
 				case "Name": return data.Name;
-				case "Days": return data.Days;
 				case "Note": return data.Note;
 
 
@@ -80,7 +78,6 @@ public class QuestTable  : GameData
 				case "QuestID": return data.QuestID;
 				case "Type": return data.Type;
 				case "Name": return data.Name;
-				case "Days": return data.Days;
 				case "Note": return data.Note;
 
 
@@ -101,8 +98,7 @@ public class QuestTable  : GameData
 				case 0: return data.QuestID;
 				case 1: return data.Type;
 				case 2: return data.Name;
-				case 3: return data.Days;
-				case 4: return data.Note;
+				case 3: return data.Note;
 
                 default: return null;
             }
@@ -148,7 +144,6 @@ public class QuestTableProb : GameDataProb
 		[JsonProperty] public readonly int QuestID;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly string Name;
-	[JsonProperty] public readonly int Days;
 	[JsonProperty] public readonly string Note;
 
 }

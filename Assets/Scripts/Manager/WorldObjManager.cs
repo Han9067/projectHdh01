@@ -104,7 +104,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         CreateWorldAreaData(); //월드맵 지역 데이터 생성
         #endregion
         #region 월드맵 도로 생성
-        int[,] root = { { 1, 2 }, { 1, 3 }, { 1, 4 }, { 1, 5 }, { 1, 6 }, { 1, 7 } };
+        int[,] root = { { 1, 2 } };
         int cnt = root.GetLength(0);
         for (int i = 0; i < cnt; i++)
         {
