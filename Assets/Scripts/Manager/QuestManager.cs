@@ -5,7 +5,7 @@ using GB;
 
 public class QuestManager : AutoSingleton<QuestManager>
 {
-    // private bool isLoad = false;
+    #region 퀘스트 관련
     private QuestTable _questTable;
     public QuestTable QuestTable => _questTable ?? (_questTable = GameDataManager.GetTable<QuestTable>());
     public Dictionary<int, QuestData> QuestData = new Dictionary<int, QuestData>();
@@ -36,17 +36,17 @@ public class QuestManager : AutoSingleton<QuestManager>
     private void LoadQuestData()
     {
         foreach (var quest in QuestTable.Datas)
-            QuestData[quest.QuestID] = new QuestData(quest.QuestID, quest.Name, quest.Type);
+            QuestData[quest.QuestID] = new QuestData(quest.QuestID, quest.Name, quest.Type, quest.Trace == 0);
     }
     private void SetQuestsInCity(int cityID)
     {
         CityQuest[cityID] = new Dictionary<int, QuestInstData>();
         for (int i = 1; i <= 2; i++)
         {
-            CityQuest[cityID][i] = new QuestInstData(i, cityID, QuestData[i].Type, QuestData[i].Name);
+            CityQuest[cityID][i] = new QuestInstData(i, cityID, QuestData[i].Type, QuestData[i].Name, QuestData[i].IsTrace);
             string desc = ""; //퀘스트 설명
             int tg = 0; //타겟 ID
-            int days = 1, star = 1, exp = 0, crown = 0, gradeExp = 0; //별, 경험치, 왕관, 등급 경험치
+            int star = 1, exp = 0, crown = 0, gradeExp = 0; //별, 경험치, 왕관, 등급 경험치
 
             switch (i)
             {
@@ -56,8 +56,8 @@ public class QuestManager : AutoSingleton<QuestManager>
                     tg = tgCity[Random.Range(0, tgCity.Count)];
                     desc = string.Format(LocalizationManager.GetValue("QstG_Delivery_Desc"), PlaceManager.I.GetCityName(tg));
                     star = 1;
-                    days = 30; exp = 200; crown = 500; gradeExp = 100;
-                    CityQuest[cityID][i].SetQuestBase(desc, days, star, exp, crown, gradeExp);
+                    exp = 200; crown = 500; gradeExp = 100;
+                    CityQuest[cityID][i].SetQuestBase(desc, star, exp, crown, gradeExp);
                     CityQuest[cityID][i].CityId = tg;
                     break; //다른 도시에 편지 전달 퀘스트
                 case 2:
@@ -89,8 +89,8 @@ public class QuestManager : AutoSingleton<QuestManager>
                     int cnt = Random.Range(10, 30);
                     desc = string.Format(LocalizationManager.GetValue("QstG_KillMon_Desc"), cnt, MonManager.I.MonDataList[tg].Name);
                     star = GetStarToMon(tg);
-                    days = 30; exp = star * cnt * 50; crown = star * cnt * 40; gradeExp = star * cnt * 10;
-                    CityQuest[cityID][i].SetQuestBase(desc, days, star, exp, crown, gradeExp);
+                    exp = star * cnt * 50; crown = star * cnt * 40; gradeExp = star * cnt * 10;
+                    CityQuest[cityID][i].SetQuestBase(desc, star, exp, crown, gradeExp);
                     CityQuest[cityID][i].MonId = tg;
                     CityQuest[cityID][i].CurCnt = 0;
                     CityQuest[cityID][i].TgCnt = cnt;
@@ -130,4 +130,8 @@ public class QuestManager : AutoSingleton<QuestManager>
             val = 10;
         return val;
     }
+    #endregion
+    #region 마커 관련
+
+    #endregion
 }

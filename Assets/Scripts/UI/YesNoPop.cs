@@ -1,5 +1,6 @@
 using System.Collections;
 using GB;
+using Unity.Mathematics;
 
 
 public class YesNoPop : UIScreen
@@ -37,6 +38,8 @@ public class YesNoPop : UIScreen
                 switch (callKey)
                 {
                     case "GuildJoin":
+                        if (PlayerManager.I.pData.QuestList.FindIndex(q => q.Qid == 101) != -1)
+                            PlayerManager.I.NextQuestOrder(101);
                         UIManager.ShowPopup("OneBtnPop");
                         Presenter.Send("OneBtnPop", "GuildJoin");
                         break;

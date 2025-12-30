@@ -19,6 +19,10 @@ public class WorldMainUI : UIScreen
     private void Start()
     {
         mGameObject["IngPop"].SetActive(false);
+        if (PlayerManager.I.pData.TraceQId == 0)
+            mGameObject["QstBox"].SetActive(false);
+        else
+            SetTraceQst();
     }
     private void OnEnable()
     {
@@ -72,7 +76,27 @@ public class WorldMainUI : UIScreen
                 Presenter.Send("CityEnterPop", "StateVisiblePop", 1);
             }
         }
+
+        // I 키 입력 감지
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            GsManager.I.StateMenuPopup("StateInvenPop");
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            GsManager.I.StateMenuPopup("StateCharInfoPop");
+        }
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            GsManager.I.StateMenuPopup("StateJournalPop");
+        }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            GsManager.I.StateMenuPopup("StateSkillPop");
+        }
     }
+
+    // I 키를 눌렀을 때 호출되는 함수 (예제)
     private void AddDay()
     {
         tDay++;
@@ -143,6 +167,9 @@ public class WorldMainUI : UIScreen
             case "SaveAllTime":
                 GsManager.I.SetAllTime(tDay, wYear, wMonth, wDay, wTime);
                 break;
+            case "SetTraceQst":
+                SetTraceQst();
+                break;
         }
     }
     private void UpdateState()
@@ -189,6 +216,20 @@ public class WorldMainUI : UIScreen
     {
         workTime += Time.deltaTime;
         mIngGg.value = workTime;
+    }
+    private void SetTraceQst()
+    {
+        mGameObject["QstBox"].SetActive(true);
+        int qid = PlayerManager.I.pData.TraceQId;
+        foreach (var v in PlayerManager.I.pData.QuestList)
+        {
+            if (qid == v.Qid)
+            {
+                mTMPText["QstName"].text = LocalizationManager.GetValue(v.Name);
+                mTMPText["QstDesc"].text = v.Desc;
+                break;
+            }
+        }
     }
     public override void Refresh()
     {

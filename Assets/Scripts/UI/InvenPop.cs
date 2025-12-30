@@ -549,6 +549,15 @@ public class InvenPop : UIScreen
 
     private void Update()
     {
+        // if (Input.GetKey(KeyCode.LeftControl) && Input.GetMouseButtonDown(0))
+        // {
+        //     Debug.Log("Control + Left Click");
+        //     return;
+        // }
+        if (mGameObject["RwdPop"].activeSelf)
+        {
+
+        }
         if (moveOn)
         {
             curItem.transform.position = Input.mousePosition;

@@ -116,8 +116,9 @@ public class PlayerData : ICharData
     public int Att, Def;
     public int Crt, CrtRate, Hit, Eva; // 치명타율, 치명타확률, 명중, 회피
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
-    public int QuestMax;
+    public int QuestMax, TraceQId;
     public List<QuestInstData> QuestList;
+    public List<int> QuestClearList;
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
@@ -330,12 +331,14 @@ public class ItemData
 public class QuestData
 {
     public int QuestID, Type;
+    public bool IsTrace;
     public string Name;
-    public QuestData(int id, string name, int type)
+    public QuestData(int id, string name, int type, bool isTrace)
     {
         this.QuestID = id;
         this.Name = name;
         this.Type = type;
+        this.IsTrace = isTrace;
     }
 }
 
@@ -349,19 +352,21 @@ public class QuestInstData
     public int sDay, eDay; //퀘스트 시작일, 종료일
     public string Name, Desc;
     public int CurCnt, TgCnt, MonId, ItemId, CityId, RoadId, NpcGrpId;
-    public int State; //0: 미수락, 1: 수락, 2: 완료
-    public QuestInstData(int qid, int qscid, int qtype, string name)
+    public int State, Order; //0: 미수락, 1: 수락, 2: 완료 //Order: 퀘스트 순서
+    public bool IsTrace;
+    public QuestInstData(int qid, int qscid, int qtype, string name, bool isTrace)
     {
         this.Qid = qid;
         this.QSCid = qscid;
         this.QType = qtype;
         this.Name = name;
+        this.IsTrace = isTrace;
         this.State = 0;
+        this.Order = 0;
     }
-    public void SetQuestBase(string desc, int days, int star, int exp, int crown, int gradeExp)
+    public void SetQuestBase(string desc, int star, int exp, int crown, int gradeExp)
     {
         this.Desc = desc;
-        this.Days = days;
         this.Star = star;
         this.Exp = exp;
         this.Crown = crown;

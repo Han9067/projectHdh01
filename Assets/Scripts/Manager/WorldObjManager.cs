@@ -714,6 +714,11 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         str = str.TrimEnd('_');
         return str;
     }
+    public void TutoMon()
+    {
+        btMonList.Clear();
+        btMonList.Add(1);
+    }
     public void TestCreateMon()
     {
         btMonList.Clear();

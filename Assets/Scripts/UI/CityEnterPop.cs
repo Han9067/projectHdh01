@@ -21,7 +21,7 @@ public class CityEnterPop : UIScreen
     private Dictionary<int, List<string>> dotList = new Dictionary<int, List<string>>();
     #endregion
     #region 퀘스트 관련
-    private bool isChatGQst1 = false; // 편지 전달 퀘스트 체크
+    private List<int> tGQstList = new List<int>(); // 길드 안내원과의 대화를 통해 완료 및 진행이 되는 퀘스트들을 담아두는 리스트//변수명의 약자는 talk to the guild guide about my quest
     #endregion
     private void Awake()
     {
@@ -39,13 +39,13 @@ public class CityEnterPop : UIScreen
         cityId = 0; // 초기화
         splitData.Clear();
         shopIdList.Clear();
+        tGQstList.Clear();
         sId = 0; sKey = "";
     }
     private void OnDisable()
     {
         Presenter.UnBind("CityEnterPop", this);
         isActive = false;
-        InitQuestCheck(); // 퀘스트 체크 초기화
         //도시 안으로 들어간 플레이어 활성화
         WorldCore.I.StatePlayer(true);
     }
@@ -90,15 +90,24 @@ public class CityEnterPop : UIScreen
                     }
                     break;
                 case "OnChat":
+                    List<int> list = new List<int>();
                     switch (sId)
                     {
                         case 1:
-                            if (isChatGQst1)
+                            if (tGQstList.Contains(101))
                             {
-                                isChatGQst1 = false;
-                                UIManager.ShowPopup("ChatPop");
-                                Presenter.Send("ChatPop", "ChatGQst1", npcId);
+                                int n = tGQstList.IndexOf(101);
+                                list.Add(101); list.Add(npcId); list.Add(PlayerManager.I.pData.QuestList[n].Order);
                             }
+                            else if (tGQstList.Contains(1))
+                            {
+                                int num = tGQstList.IndexOf(1);
+                                tGQstList.RemoveAt(num);
+                                list.Add(1); list.Add(npcId); list.Add(0);
+                            }
+                            mGameObject["DI_Chat"].SetActive(false);
+                            UIManager.ShowPopup("ChatPop");
+                            Presenter.Send("ChatPop", "ChatStart", list);
                             break;
                     }
                     break;
@@ -168,8 +177,28 @@ public class CityEnterPop : UIScreen
         {
             case 1:
                 mButtons["OnJoin"].gameObject.SetActive(PlayerManager.I.pData.Grade == 0);
-                mButtons["OnQuest"].gameObject.SetActive(true);
+                mButtons["OnQuest"].gameObject.SetActive(PlayerManager.I.pData.Grade > 0);
                 mButtons["OnWork"].gameObject.SetActive(false);
+                if (tGQstList.Contains(101)) //튜토리얼
+                {
+                    // int n = tGQstList.IndexOf(101);
+                    switch (PlayerManager.I.pData.QuestList.Find(q => q.Qid == 101).Order)
+                    {
+                        case 1:
+                            mButtons["OnJoin"].gameObject.SetActive(false);
+                            mButtons["OnGetOut"].gameObject.SetActive(false);
+                            break;
+                        case 2:
+                            mButtons["OnChat"].gameObject.SetActive(false);
+                            mButtons["OnGetOut"].gameObject.SetActive(false);
+                            break;
+                        case 3:
+                        case 5:
+                            mButtons["OnQuest"].gameObject.SetActive(false);
+                            mButtons["OnGetOut"].gameObject.SetActive(false);
+                            break;
+                    }
+                }
                 break;
             case 2:
             case 3:
@@ -185,7 +214,7 @@ public class CityEnterPop : UIScreen
     }
     void StateBaseInList()
     {
-        string[] keys = { "OnChat", "OnWork", "OnGetOut", "OnSend" };
+        string[] keys = { "OnChat", "OnWork", "OnGetOut" };
         foreach (var key in keys)
             mButtons[key].gameObject.SetActive(true);
     }
@@ -219,13 +248,19 @@ public class CityEnterPop : UIScreen
                 NpcManager.I.NpcDataList[npcId].Rls += data.Get<int>();
                 mTMPText["RlsVal"].text = GetRlsState(NpcManager.I.NpcDataList[npcId].Rls);
                 break;
+            case "Tuto_Join":
+                mButtons["OnJoin"].gameObject.SetActive(true);
+                tGQstList.Clear();
+                InitAllDots();
+                UpdateInListPreset();
+                break;
         }
     }
     private void LoadPlace()
     {
-        string[] keys = { "GoToGuild", "GoToInn", "GoToSmith", "GoToTailor", "GoToApothecary", "GoToMarket", "GoToTG", "GoToArena" };
-        foreach (var key in keys)
-            mButtons[key].gameObject.SetActive(false);
+        foreach (var btn in mButtons.Where(b => b.Key.StartsWith("GoTo")))
+            btn.Value.gameObject.SetActive(false);
+
         int y = 350;
         foreach (var v in splitData)
         {
@@ -263,6 +298,13 @@ public class CityEnterPop : UIScreen
             {
                 shopIdList.Add(shop.Type, shop.Id);
             }
+        }
+        //튜토리얼 체크
+        if (PlayerManager.I.pData.QuestList.FindIndex(q => q.Qid == 101) != -1)
+        {
+            foreach (var btn in mButtons.Where(b => b.Key.StartsWith("GoTo")))
+                btn.Value.gameObject.SetActive(false);
+            mButtons["GoToGuild"].gameObject.SetActive(true);
         }
     }
 
@@ -349,8 +391,21 @@ public class CityEnterPop : UIScreen
                             case 1:
                                 if (q.State == 1 && q.CityId == cityId)
                                 {
-                                    isChatGQst1 = true;
-                                    dotList[idx].Add("DI_Chat");
+                                    tGQstList.Add(1);
+                                    if (!dotList[idx].Contains("DI_Chat"))
+                                        dotList[idx].Add("DI_Chat");
+                                }
+                                break;
+                            case 101:
+                                tGQstList.Add(101);
+                                switch (q.Order)
+                                {
+                                    case 1:
+                                    case 3:
+                                    case 5:
+                                        if (!dotList[idx].Contains("DI_Chat"))
+                                            dotList[idx].Add("DI_Chat");
+                                        break;
                                 }
                                 break;
                         }
@@ -392,10 +447,6 @@ public class CityEnterPop : UIScreen
                 }
             }
         }
-    }
-    void InitQuestCheck()
-    {
-        isChatGQst1 = false;
     }
     #endregion
 }

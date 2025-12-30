@@ -10,22 +10,22 @@ public class ChatMentBtn : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private Text mTxtName;
     [SerializeField] private Button btn;
     private int idx;
-    string sKey, tName;
+    string sKey, tMent;
     public void OnButtonClick()
     {
         Presenter.Send("ChatPop", "ChatMentBtn", sKey);
     }
-    public void SetChatMentBtn(string key, string name, int i)
+    public void SetChatMentBtn(string key, string ment, int i)
     {
         sKey = key;
-        tName = LocalizationManager.GetValue(name);
+        tMent = LocalizationManager.GetValue(ment);
         idx = i;
     }
     private void Start()
     {
         btn.onClick.AddListener(OnButtonClick);
 
-        mTxtName.text = $"{idx}. {tName}";
+        mTxtName.text = $"{idx}. {tMent}";
     }
 
     public void OnPointerEnter(PointerEventData eventData)

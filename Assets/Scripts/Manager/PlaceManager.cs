@@ -14,7 +14,6 @@ public class PlaceManager : AutoSingleton<PlaceManager>
         //     CityDic[city.CityID] = new CityData(city.CityID, city.Name, city.Place);
         for (int i = 0; i < 3; i++)
         {
-            Debug.Log(CityTable.Datas[i].Name);
             CityDic[CityTable.Datas[i].CityID] = new CityData(CityTable.Datas[i].CityID, CityTable.Datas[i].Name, CityTable.Datas[i].Place, CityTable.Datas[i].Area);
         }
     }

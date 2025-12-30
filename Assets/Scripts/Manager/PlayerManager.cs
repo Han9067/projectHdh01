@@ -2,7 +2,7 @@ using GB;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
-using Unity.VisualScripting;
+using System.Collections;
 public class PlayerManager : AutoSingleton<PlayerManager>
 {
 
@@ -89,8 +89,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.HairColor = data.HairColor;
 
         pData.QuestList = data.QuestList;
+        pData.QuestClearList = data.QuestClearList;
         // pData.QuestMax = data.QuestMax;
         pData.QuestMax = 5;
+        pData.TraceQId = data.TraceQId;
 
         pData.SkList = data.SkList;
 
@@ -106,7 +108,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Age = 17;
         pData.Gen = 0;
         pData.Crown = 2000;
-        pData.Grade = 1;
+        pData.Grade = 0;
         pData.GradeExp = 0;
         pData.GradeNext = 1000;
         pData.Lv = 1;
@@ -138,10 +140,14 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.SP = pData.MaxSP;
 
         pData.QuestList = new List<QuestInstData>();
+        pData.QuestClearList = new List<int>();
         pData.QuestMax = 5;
+        pData.TraceQId = 0;
 
         fatigue = 100; //기본이 100
         // pData.SkList = new Dictionary<int, SkData>();
+
+        // StartCoroutine(DelayedStartTutorial(0.2f)); //추후 튜토리얼 조건이 된다면 튜토리얼을 시작시킴
     }
     private void CalcPlayerStat()
     {
@@ -240,8 +246,20 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
         // 추후에는 빈칸일때 회전된 상태로도 검색하는 기능도 추가해야함
     }
-
-    public void CompleteQuest(int qid)
+    public void CompleteMainQuest(int qid)
+    {
+        pData.QuestClearList.Add(qid);
+        pData.QuestList.Sort((a, b) => a.Qid.CompareTo(b.Qid)); //혹시 몰라 클리어 퀘스트 정렬
+        foreach (var q in pData.QuestList)
+        {
+            if (q.Qid == qid)
+            {
+                pData.QuestList.Remove(q);
+                break;
+            }
+        }
+    }
+    public void CompleteGuildQuest(int qid)
     {
         foreach (var q in pData.QuestList)
         {
@@ -252,7 +270,13 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             }
         }
     }
-
+    public void NextQuestOrder(int qid)
+    {
+        int n = pData.QuestList.FindIndex(q => q.Qid == qid);
+        pData.QuestList[n].Order++;
+        pData.QuestList[n].Desc = LocalizationManager.GetValue($"{pData.QuestList[n].Name}_{pData.QuestList[n].Order}_Desc");
+        Presenter.Send("WorldMainUI", "SetTraceQst");
+    }
     public void AddSkExp(int skId, int val)
     {
         if (pData.SkList.ContainsKey(skId))
@@ -267,6 +291,24 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             pData.SkList[skId].NextExp = GsManager.I.GetSkNextExp(1);
             //새로 획득한 스킬이라 팝업을 표시...표시는 메세지박스에 언급되도록
         }
+    }
+    private IEnumerator DelayedStartTutorial(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        StartTutorial();
+    }
+    public void StartTutorial()
+    {
+        QuestData qData = QuestManager.I.QuestData[101];
+        pData.QuestList.Add(new QuestInstData(qData.QuestID, 0, qData.Type, qData.Name, qData.IsTrace));
+        int n = pData.QuestList.Count - 1;
+        pData.QuestList[n].SetQuestBase(LocalizationManager.GetValue("QstM_Tuto_1_Desc"), 1, 1000, 1000, 100);
+        pData.QuestList[n].Order = 1;
+        pData.TraceQId = 101;
+
+        Presenter.Send("WorldMainUI", "SetTraceQst");
+
+        WorldCore.I.SetWorldCoreForTutorial();
     }
     #region 🎨 TESTING
     public void ChangePlayerSkin()
@@ -318,6 +360,10 @@ public class PlayerManagerEditor : Editor
         if (GUILayout.Button("아이템 드랍"))
         {
             myScript.TestDropItem();
+        }
+        if (GUILayout.Button("튜토리얼 시작"))
+        {
+            myScript.StartTutorial();
         }
     }
 }

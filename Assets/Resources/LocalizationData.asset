@@ -154,7 +154,7 @@ MonoBehaviour:
           value: Year
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Yes1
+    - key: Yes
       value:
         list:
         - key: 23
@@ -164,14 +164,14 @@ MonoBehaviour:
           value: Yes
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Yes2
+    - key: Okay
       value:
         list:
         - key: 23
           value: "\uC54C\uC558\uC5B4"
           duplicatedKey: 0
         - key: 10
-          value: Yes
+          value: Okay
           duplicatedKey: 0
       duplicatedKey: 0
     - key: No1
@@ -2047,6 +2047,17 @@ MonoBehaviour:
           value: Congratulations, you've become a new adventurer!
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: One_GradeUp
+      value:
+        list:
+        - key: 23
+          value: "\uCD95\uD558\uD569\uB2C8\uB2E4. \uBAA8\uD5D8\uAC00 \uB4F1\uAE09\uC774
+            \uC0C1\uC2B9\uD558\uC168\uC2B5\uB2C8\uB2E4!"
+          duplicatedKey: 0
+        - key: 10
+          value: Congratulations! Adventurer Rank Up!
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: QstG_Delivery
       value:
         list:
@@ -2125,6 +2136,26 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Kill Boss
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: QstM_Tuto
+      value:
+        list:
+        - key: 23
+          value: "\uD29C\uD1A0\uB9AC\uC5BC"
+          duplicatedKey: 0
+        - key: 10
+          value: Tutorial
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: QstM_PassGate
+      value:
+        list:
+        - key: 23
+          value: "\uAD00\uBB38 \uD1B5\uD589"
+          duplicatedKey: 0
+        - key: 10
+          value: Gate Passage
           duplicatedKey: 0
       duplicatedKey: 0
     - key: QstG_Delivery_Desc
@@ -2208,7 +2239,81 @@ MonoBehaviour:
           value: Kill Boss
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Ment_QstG1_1
+    - key: QstM_Tuto_1_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC544\uB974\uB378\uB780\uC73C\uB85C \uC774\uB3D9\uD558\uC5EC \uAE38\uB4DC
+            \uC548\uB0B4\uC6D0\uACFC \uB300\uD654\uD558\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Go to Ardelan and talk to the Guild Receptionist.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: QstM_Tuto_2_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uAE38\uB4DC\uC5D0 \uAC00\uC785\uD558\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Join the Guild
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: QstM_Tuto_3_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uAE38\uB4DC \uC548\uB0B4\uC6D0\uACFC \uB300\uD654\uD558\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Talk to Guild Receptionist.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: QstM_Tuto_4_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB9C8\uCEE4\uAC00 \uC788\uB294 \uACF3\uC73C\uB85C \uAC00\uC11C
+            \uC2AC\uB77C\uC784 \uCC98\uCE58"
+          duplicatedKey: 0
+        - key: 10
+          value: Go to the marker and defeat slimes.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: QstM_Tuto_5_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC544\uB974\uB378\uB780 \uAE38\uB4DC \uC548\uB0B4\uC6D0\uACFC
+            \uB300\uD654\uD558\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Talk to the Guild Receptionist in Ardelan
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: QstM_PassGate1_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB374\uC6B0\uB4DC \uB0A8\uCABD\uC232\uC5D0\uC11C \uC218\uBC30\uC911\uC778
+            \uBAA8\uD5D8\uAC00 \uCC98\uCE58"
+          duplicatedKey: 0
+        - key: 10
+          value: Defeat the corrupted NPC in Denwood South Forest.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: QstM_PassGate2_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uACBD\uBE44\uB300\uC7A5 \uC544\uB180\uB4DC\uC640 \uB300\uD654\uD558\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Talk to Guard Captain Arnold.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstG1_1
       value:
         list:
         - key: 23
@@ -2217,6 +2322,135 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: "So, you\u2019ve come to deliver the letter. Thank you."
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstM_Tuto_1
+      value:
+        list:
+        - key: 23
+          value: "\uC5B4\uC11C \uC624\uC138\uC694! \uC5B4\uB77C...? \uCC98\uC74C
+            \uBD59\uB294 \uBD84\uC774\uC2E0\uB370 \uAE38\uB4DC\uC5D0 \uAC00\uC785\uD558\uB7EC
+            \uC624\uC168\uB098\uC694? \uAE38\uB4DC \uAC00\uC785\uC744 \uC6D0\uD558\uC2DC\uBA74
+            \"\uAC00\uC785\" \uBC84\uD2BC\uC744 \uB204\uB974\uC2DC\uACE0 \uC9C4\uD589\uD558\uC2DC\uBA74
+            \uB429\uB2C8\uB2E4!"
+          duplicatedKey: 0
+        - key: 10
+          value: Welcome! Huh...? You're new here, aren't you? Looking to sign up?
+            Just hit that 'Join' button and we'll get you sorted!
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstM_Tuto_2_1
+      value:
+        list:
+        - key: 23
+          value: "\uBAA8\uD5D8\uAC00\uAC00 \uB418\uC2E0 \uAC83\uC744 \uCD95\uD558\uD569\uB2C8\uB2E4!
+            \uBAA8\uD5D8\uC5D0 \uC55E\uC11C \uAC04\uB2E8\uD55C \uC758\uB8B0\uB97C
+            \uD55C \uBC88 \uB9E1\uC544\uBCF4\uC2DC\uB294 \uAC74 \uC5B4\uB5A0\uC2E0\uAC00\uC694?
+            \uB9C8\uCE68 \uBAA8\uD5D8\uAC00\uB2D8\uC5D0\uAC8C \uC801\uB2F9\uD55C
+            \uC758\uB8B0\uAC00 \uC788\uAC70\uB4E0\uC694!"
+          duplicatedKey: 0
+        - key: 10
+          value: Congratulations on becoming an adventurer! Before you set out, how
+            about taking on a simple quest? I have one right here that's perfect
+            for you!
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstM_Tuto_2_2
+      value:
+        list:
+        - key: 23
+          value: "\uC758\uB8B0 \uB0B4\uC6A9\uC740 \uD2B9\uC815 \uC9C0\uC5ED\uC5D0
+            \uB098\uD0C0\uB09C \uC2AC\uB77C\uC784\uB4E4\uC744 \uCC98\uCE58\uD558\uB294
+            \uAC83\uC785\uB2C8\uB2E4. \uC704\uCE58\uAC00 \uC6D4\uB4DC\uB9F5\uC5D0
+            \uD45C\uC2DC\uB418\uC5B4 \uC788\uC73C\uB2C8, \uC27D\uAC8C \uCC3E\uC73C\uC2E4
+            \uC218 \uC788\uC744 \uAC70\uC608\uC694! \uD589\uC6B4\uC744 \uBE55\uB2C8\uB2E4!"
+          duplicatedKey: 0
+        - key: 10
+          value: The request is to defeat some slimes that have appeared in a specific
+            area. The location is marked on your world map, so it should be easy
+            to find! Best of luck!
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstM_Tuto_5
+      value:
+        list:
+        - key: 23
+          value: "\uC2AC\uB77C\uC784\uB4E4\uC744 \uCC98\uCE58\uD558\uC168\uAD70\uC694!
+            \uC758\uB8B0 \uC644\uB8CC\uC785\uB2C8\uB2E4. \uC55E\uC73C\uB85C \uBA4B\uC9C4
+            \uBAA8\uD5D8 \uD558\uC2DC\uAE38 \uBC14\uB784\uAC8C\uC694. \uC5EC\uAE30
+            \uBCF4\uC0C1\uC785\uB2C8\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: You've defeated the slimes! The request is complete. I hope you
+            have a wonderful adventure ahead. Here is your reward.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_StopPassGate
+      value:
+        list:
+        - key: 23
+          value: "\uD1B5\uD589\uC99D\uC774 \uC5C6\uC73C\uBA74 \uC9C0\uB098\uAC08
+            \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: Stop! A pass is required to pass through here.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstM_PassGate1_1
+      value:
+        list:
+        - key: 23
+          value: "\uBAA8\uD5D8\uAC00\uB2D8, \uD1B5\uD589\uC99D\uC774 \uD544\uC694\uD558\uC2DC\uB2E4\uBA74
+            \uC81C \uC758\uB8B0\uB97C \uB9E1\uC544 \uD574\uACB0\uD574\uC8FC\uC2DC\uBA74
+            \uBC1C\uAE09\uD574\uB4DC\uB9AC\uACA0\uC2B5\uB2C8\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: Adventurer, if you need a pass, take on my request and resolve it,
+            and I will issue it to you.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstM_PassGate1_2
+      value:
+        list:
+        - key: 23
+          value: "\uC778\uC0AC\uAC00 \uB2A6\uC5C8\uAD70\uC694.\uC800\uB294 \uAD00\uBB38\uC744
+            \uC9C0\uD0A4\uB294 \uACBD\uBE44\uB300\uC7A5 \uC544\uB180\uB4DC\uB77C\uACE0
+            \uD569\uB2C8\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: My introduction is late. I am Guard Captain Arnold, guarding the
+            gate.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstM_PassGate1_3
+      value:
+        list:
+        - key: 23
+          value: "\uC218\uB3C4\uC5D0\uC11C \uC218\uBC30 \uC911\uC778 \uBAA8\uD5D8\uAC00\uAC00
+            \uCD5C\uADFC \uC774\uACF3\uC5D0 \uB098\uD0C0\uB098, \uC800\uC640 \uC81C
+            \uBD80\uD558\uB4E4\uACFC \uC2F8\uC6CC \uB9CE\uC740 \uC0AC\uC0C1\uC790\uB97C
+            \uB0B4\uACE0 \uB374\uC6B0\uB4DC \uB0A8\uCABD \uC232\uC73C\uB85C \uB3C4\uB9DD\uCCE4\uC2B5\uB2C8\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: An adventurer wanted in the Capital appeared here recently, fought
+            with me and my men, caused many casualties, and fled to Denwood South
+            Forest.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstM_PassGate1_4
+      value:
+        list:
+        - key: 23
+          value: "\uADF8\uB294 \uC9C0\uAE08\uB3C4 \uB374\uC6B0\uB4DC\uC758 \uBAA9\uC218\uB4E4\uACFC
+            \uBAA8\uD5D8\uAC00\uB4E4\uC5D0\uAC8C \uD53C\uD574\uB97C \uC8FC\uACE0
+            \uC788\uB2E4\uACE0 \uD558\uB294\uB370 \uB374\uC6B0\uB4DC \uC0AC\uB78C\uB4E4\uACFC
+            \uC81C \uBD80\uD558\uB4E4\uC744 \uC704\uD574 \uADF8 \uBAA8\uD5D8\uAC00\uB97C
+            \uCC98\uCE58\uD574\uC8FC\uC2ED\uC2DC\uC624."
+          duplicatedKey: 0
+        - key: 10
+          value: I hear he is still causing harm to the carpenters and adventurers
+            of Denwood. Please defeat that adventurer for the people of Denwood and
+            my men.
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_10001_Desc

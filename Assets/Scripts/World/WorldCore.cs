@@ -10,6 +10,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
 using System.Linq;
 using UnityEditor;
+using Unity.VisualScripting;
 public class WorldCore : AutoSingleton<WorldCore>
 {
     [Header("Main")]
@@ -33,7 +34,9 @@ public class WorldCore : AutoSingleton<WorldCore>
     [Header("Monster")]
     [SerializeField] private Transform wMonParent;
     private Dictionary<int, GameObject> wMonObj = new Dictionary<int, GameObject>();
-
+    [Header("Marker")]
+    [SerializeField] private Transform wMarkerParent;
+    private Dictionary<int, GameObject> wMarkerObj = new Dictionary<int, GameObject>();
     void Awake()
     {
         WorldObjManager.I.CreateWorldMapGrid(worldMapTile); //월드맵 그리드부터 지역, 도로 등 생성
@@ -46,25 +49,18 @@ public class WorldCore : AutoSingleton<WorldCore>
         if (blackImg.gameObject.activeSelf)
             blackImg.gameObject.SetActive(false);
 
+        LoadCityObj();
+
         if (!PlayerManager.I.isObjCreated)
         {
             PlayerManager.I.isObjCreated = true;
-            foreach (var area in WorldObjManager.I.areaDataList)
-            {
-                if (area.Value.curCnt < area.Value.maxCnt)
-                {
-                    CreateWorldMon(area.Value.areaID, area.Value.maxCnt - area.Value.curCnt);
-                    area.Value.curCnt = area.Value.maxCnt;
-                }
-            }
+            CreateAllAreaWorldMon();
         }
         else
         {
             LoadPlayerPos();
             LoadWorldMon();
         }
-
-        LoadCityObj();
 
         MoveCamera(player.transform.position);
 
@@ -220,6 +216,11 @@ public class WorldCore : AutoSingleton<WorldCore>
         if (player == null) return;
         player.gameObject.SetActive(on);
     }
+    public void SetWorldCoreForTutorial()
+    {
+        AllRemoveWorldMon();
+        MoveCamera(new Vector3(-12f, -37f, -10f));
+    }
     #endregion
     #region 월드맵 도시 관련
     void LoadCityObj()
@@ -233,6 +234,17 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     #endregion
     #region 월드맵 몬스터 체크 및 생성
+    public void CreateAllAreaWorldMon()
+    {
+        foreach (var area in WorldObjManager.I.areaDataList)
+        {
+            if (area.Value.curCnt < area.Value.maxCnt)
+            {
+                CreateWorldMon(area.Value.areaID, area.Value.maxCnt - area.Value.curCnt);
+                area.Value.curCnt = area.Value.maxCnt;
+            }
+        }
+    }
     void CreateWorldMon(int areaID, int remain)
     {
         int[] grpList = WorldObjManager.I.areaDataList[areaID].grpByGrade[PlayerManager.I.pData.Grade].ToArray();
@@ -283,6 +295,15 @@ public class WorldCore : AutoSingleton<WorldCore>
             WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.transform.position);
         }
     }
+    public void AllRemoveWorldMon()
+    {
+        foreach (var wMon in wMonObj)
+            Destroy(wMon.Value);
+        wMonObj.Clear();
+        WorldObjManager.I.worldMonDataList.Clear();
+        foreach (var area in WorldObjManager.I.areaDataList)
+            area.Value.curCnt = 0;
+    }
     void LoadWorldMon()
     {
         foreach (var wMon in WorldObjManager.I.worldMonDataList)
@@ -327,6 +348,17 @@ public class WorldCore : AutoSingleton<WorldCore>
                     MoveCamera(target.position);
             })
             .OnComplete(() => onComplete?.Invoke());
+    }
+    #endregion
+    #region 월드맵 마커
+    public void CreateTutoMarker()
+    {
+        var obj = Instantiate(ResManager.GetGameObject("wMarker"), wMarkerParent);
+        obj.name = "TutoMarker";
+        obj.transform.position = new Vector3(-9.65f, -35.2f, 0);
+        var wm = obj.GetComponent<wMarker>();
+        wm.SetMarkerData(0, 99);
+        wMarkerObj.Add(0, obj);
     }
     #endregion
     #region 씬 이동
