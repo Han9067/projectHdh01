@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using GB;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
@@ -29,9 +30,15 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
                 {
                     case 0:
                     case 1:
-                        Presenter.Send("InvenPop", "ClickItem", itemData.Uid);
+                        if (InvenPop.isInstantMove)
+                        {
+                            InvenPop.isInstantMove = false;
+                            Presenter.Send("InvenPop", "MoveItemToOppositeInven", new List<int> { uid, iType, itemData.W, itemData.H, x, y });
+                            return;
+                        }
                         if (ItemInfoPop.isActive)
                             UIManager.ClosePopup("ItemInfoPop");
+                        Presenter.Send("InvenPop", "ClickItem", itemData.Uid);
                         break;
                     case 10:
                         UIManager.ShowPopup("SelectPop");

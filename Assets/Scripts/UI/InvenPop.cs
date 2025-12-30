@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 
 public class InvenPop : UIScreen
 {
+    #region 변수
     private Image[,] ivGridImg, rwdGridImg;
     private RectTransform[,] ivGridRect, rwdGridRect;
     [SerializeField] private List<ItemObj> itemList = new List<ItemObj>(); //item object 인벤토리 아이템 리스트
@@ -14,13 +15,15 @@ public class InvenPop : UIScreen
     private Transform ivSlot, iPrt, eqPrt, rwdSlot;
     public static bool isActive = false, moveOn = false, isLoadRwd = false, isLoadInven = false;
     public static string[] curEq;
-    public static int posType = 0;
+    public static int posType = -1;
     private int curState = 0, curItemX = -1, curItemY = -1;
     private RectTransform curItemRect;
     private ItemObj curItem;
     private Dictionary<string, EqSlot> eqSlots = new Dictionary<string, EqSlot>();
     private Vector2 ivPos, rwdPos, itemBasePos;
     private Color gridColor, greenColor, yellowColor, redColor;
+    public static bool isInstantMove = false; //왼쪽 컨트롤키+마우스왼쪽 클릭시 활성화되는 버튼으로 클릭되는 아이템을 반대쪽 인벤토리로 빠르게 이동시키는 변수
+    #endregion
     private void Awake()
     {
         Regist();
@@ -106,6 +109,10 @@ public class InvenPop : UIScreen
             case "DeleteItem":
                 DeleteItem(data.Get<int>());
                 break;
+            case "MoveItemToOppositeInven":
+                List<int> list = data.Get<List<int>>();
+                MoveItemToOppositeInven(list[0], list[1], list[2], list[3], list[4], list[5]);
+                break;
         }
     }
     private void InitGrid()
@@ -189,23 +196,15 @@ public class InvenPop : UIScreen
     }
     private void SelectItemObj(int uid, bool isEq = false)
     {
-        for (int i = 0; i < itemList.Count; i++)
-        {
-            if (itemList[i].uid == uid)
-            {
-                itemList[i].gameObject.transform.SetAsLastSibling();
-                curItem = itemList[i];
-                curItemRect = curItem.transform as RectTransform;
-                itemBasePos = curItem.transform.position;
-            }
-        }
+        SetCurItem(uid);
+
         StateItemRaycast(false);
         curItem.SetBgAlpha(0f);
         moveOn = true;
         CheckCurEq(curItem.itemData.ItemId, curItem.itemData.Type);
         if (curItem.x > -1 && curItem.y > -1)
         {
-            InitItemGrid(curItem.x, curItem.y, curItem.itemData.W, curItem.itemData.H);
+            InitItemGrid(curItem.iType, curItem.x, curItem.y, curItem.itemData.W, curItem.itemData.H);
             curItem.x = -1; curItem.y = -1;
             CheckGrids(curItem.iType);
         }
@@ -218,6 +217,15 @@ public class InvenPop : UIScreen
             eqSlots[eq].StateMain(true);
             PlayerManager.I.TakeoffEq(eq);
         }
+    }
+    private void SetCurItem(int uid)
+    {
+        var itemObj = itemList.Find(x => x.uid == uid);
+        if (itemObj == null) return;
+        itemObj.gameObject.transform.SetAsLastSibling();
+        curItem = itemObj;
+        curItemRect = curItem.transform as RectTransform;
+        itemBasePos = curItem.transform.position;
     }
     private void PlaceInvenItem(int sx, int sy, int wid, int hei, ItemData item, bool isEq)
     {
@@ -248,8 +256,8 @@ public class InvenPop : UIScreen
     }
     private void PlaceRwdItem(ItemData item)
     {
-        Vector2Int pos = GetRwdPos(item.W, item.H);
-        if (pos.x == -1 && pos.y == -1) return; //추후 예외처리
+        Vector2Int pos = GetEmptyPos(1, item.W, item.H);
+        if (pos.x == -1 && pos.y == -1) return; //추후 예외처리..빈공간이 없다는 것이니까 맞춰서 작업
         item.X = pos.x; item.Y = pos.y;
         GameObject obj = Instantiate(ResManager.GetGameObject("ItemObj"), iPrt);
         obj.name = $"Item_{item.Uid}";
@@ -324,11 +332,24 @@ public class InvenPop : UIScreen
                 gridX[cnt] = gx + w;
                 gridY[cnt] = gy + h;
                 cnt++;
-                if (gridUid.IndexOf(PlayerManager.I.grids[gy + h][gx + w].slotId) == -1 &&
-                        PlayerManager.I.grids[gy + h][gx + w].slotId != -1 &&
-                        PlayerManager.I.grids[gy + h][gx + w].slotId != myUid)
+                switch (type)
                 {
-                    gridUid.Add(PlayerManager.I.grids[gy + h][gx + w].slotId);
+                    case 0:
+                        if (gridUid.IndexOf(pGrids[gy + h][gx + w].slotId) == -1 &&
+                                pGrids[gy + h][gx + w].slotId != -1 &&
+                                pGrids[gy + h][gx + w].slotId != myUid)
+                        {
+                            gridUid.Add(pGrids[gy + h][gx + w].slotId);
+                        }
+                        break;
+                    case 1:
+                        if (gridUid.IndexOf(rwdGrids[gy + h][gx + w].slotId) == -1 &&
+                                    rwdGrids[gy + h][gx + w].slotId != -1 &&
+                                    rwdGrids[gy + h][gx + w].slotId != myUid)
+                        {
+                            gridUid.Add(rwdGrids[gy + h][gx + w].slotId);
+                        }
+                        break;
                 }
             }
         }
@@ -362,12 +383,12 @@ public class InvenPop : UIScreen
     private void MoveItem(int w, int h, int ex, int ey)
     {
         curItemRect.position = GetItemPos(posType, ex, ey, w, h);
-
+        var grids = posType == 0 ? pGrids : rwdGrids;
         int uid = curItem.itemData.Uid;
         for (int y = ey; y < ey + h; y++)
         {
             for (int x = ex; x < ex + w; x++)
-                pGrids[y][x].slotId = uid;
+                grids[y][x].slotId = uid;
         }
         curItem.iType = posType;
         curItem.x = ex; curItem.y = ey; curItem.eq = "";
@@ -376,7 +397,7 @@ public class InvenPop : UIScreen
     }
     private void ChangeItem(int w, int h, int ex, int ey)
     {
-        List<List<InvenGrid>> grids = posType == 0 ? pGrids : rwdGrids;
+        var grids = posType == 0 ? pGrids : rwdGrids;
         int uId = 0;
         for (int y = ey; y < ey + h; y++)
         {
@@ -404,7 +425,17 @@ public class InvenPop : UIScreen
             SelectItemObj(uId, true);
         }
     }
-
+    private void MoveItemToOppositeInven(int uid, int type, int w, int h, int ex, int ey)
+    {
+        //선택된 아이템을 반대편에 있는 인벤토리(또는 창고, 보상 인벤토리 등)으로 이동시키는 함수
+        SetCurItem(uid);
+        posType = type == 0 ? 1 : 0;
+        Vector2Int pos = GetEmptyPos(posType, w, h);
+        if (pos.x == -1 && pos.y == -1) return;
+        InitItemGrid(type, ex, ey, w, h);
+        MoveItem(w, h, pos.x, pos.y);
+        posType = -1;
+    }
     private void EquipItem(string eq, ItemObj itemObj)
     {
         #region eqState 설명
@@ -549,14 +580,13 @@ public class InvenPop : UIScreen
 
     private void Update()
     {
-        // if (Input.GetKey(KeyCode.LeftControl) && Input.GetMouseButtonDown(0))
-        // {
-        //     Debug.Log("Control + Left Click");
-        //     return;
-        // }
         if (mGameObject["RwdPop"].activeSelf)
         {
-
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetMouseButtonDown(0))
+            {
+                isInstantMove = true;
+                return;
+            }
         }
         if (moveOn)
         {
@@ -579,10 +609,10 @@ public class InvenPop : UIScreen
             }
         }
     }
-    private void InitItemGrid(int sx, int sy, int w, int h)
+    private void InitItemGrid(int type, int sx, int sy, int w, int h)
     {
         //아이템 클릭 하여 이동시 아이템이 있던 그리드에서 아이템의 그리드를 제외시킴
-        List<List<InvenGrid>> grids = posType == 0 ? pGrids : rwdGrids;
+        List<List<InvenGrid>> grids = type == 0 ? pGrids : rwdGrids;
         for (int y = sy; y < sy + h; y++)
         {
             for (int x = sx; x < sx + w; x++)
@@ -654,21 +684,22 @@ public class InvenPop : UIScreen
         foreach (var v in eqSlots)
             v.Value.StatePossible(false);
     }
-    private Vector2Int GetRwdPos(int wid, int hei)
+    private Vector2Int GetEmptyPos(int type, int wid, int hei)
     {
+        var grids = type == 0 ? pGrids : rwdGrids;
         for (int y = 0; y < 10; y++)
         {
             for (int x = 0; x < 10; x++)
             {
-                if (rwdGrids[y][x].slotId == -1)
+                if (grids[y][x].slotId == -1)
                 {
                     int cnt = wid * hei;
-                    if (x + wid > 9 || y + hei > 9) continue;
+                    if (x + wid > 10 || y + hei > 10) continue;
                     for (int h = y; h < y + hei; h++)
                     {
                         for (int w = x; w < x + wid; w++)
                         {
-                            if (rwdGrids[h][w].slotId == -1)
+                            if (grids[h][w].slotId == -1)
                                 cnt--;
                         }
                     }
