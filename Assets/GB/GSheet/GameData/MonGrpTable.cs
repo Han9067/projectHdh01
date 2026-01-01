@@ -35,6 +35,7 @@ public class MonGrpTable  : GameData
 				case "Max": return true;
 				case "LeaderID": return true;
 				case "List": return true;
+				case "Note": return true;
 
 		  default: return false;
 
@@ -66,6 +67,7 @@ public class MonGrpTable  : GameData
 				case "Max": return data.Max;
 				case "LeaderID": return data.LeaderID;
 				case "List": return data.List;
+				case "Note": return data.Note;
 
 
                 default: return null;
@@ -88,6 +90,7 @@ public class MonGrpTable  : GameData
 				case "Max": return data.Max;
 				case "LeaderID": return data.LeaderID;
 				case "List": return data.List;
+				case "Note": return data.Note;
 
 
                 default: return null;
@@ -111,6 +114,7 @@ public class MonGrpTable  : GameData
 				case 4: return data.Max;
 				case 5: return data.LeaderID;
 				case 6: return data.List;
+				case 7: return data.Note;
 
                 default: return null;
             }
@@ -160,5 +164,6 @@ public class MonGrpTableProb : GameDataProb
 	[JsonProperty] public readonly int Max;
 	[JsonProperty] public readonly int LeaderID;
 	[JsonProperty] public readonly string List;
+	[JsonProperty] public readonly string Note;
 
 }

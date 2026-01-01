@@ -268,7 +268,7 @@ public class MonGrpData
         this.Min = min;
         this.Max = max;
         this.LeaderID = leaderID;
-        this.List = list.Split(',').Select(int.Parse).ToList();
+        this.List = list.Split('_').Select(int.Parse).ToList();
     }
 }
 
@@ -351,7 +351,7 @@ public class QuestInstData
     public int Exp, Crown, GradeExp;
     public int sDay, eDay; //퀘스트 시작일, 종료일
     public string Name, Desc;
-    public int CurCnt, TgCnt, MonId, ItemId, CityId, RoadId, NpcGrpId;
+    public int CurCnt, TgCnt, MonId, ItemId, CityId, RoadId, NpcGrpId; //현재 횟수, 목표 횟수, 몬스터 ID, 아이템 ID, 도시 ID, 도로 ID, NPC 그룹 ID
     public int State, Order; //0: 미수락, 1: 수락, 2: 완료 //Order: 퀘스트 순서
     public bool IsTrace;
     public QuestInstData(int qid, int qscid, int qtype, string name, bool isTrace)

@@ -14,6 +14,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public Vector3 worldPos = new Vector3(0, 0, 0);
     [Header("기타")]
     public bool isObjCreated = false; // 월드 오브젝트 생성 여부
+    public bool isGate1Open = false; // 관문 1 통행 여부
 
     [Header("테스트")]
     public int testSkin = 1;

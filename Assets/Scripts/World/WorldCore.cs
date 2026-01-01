@@ -13,6 +13,7 @@ using UnityEditor;
 using Unity.VisualScripting;
 public class WorldCore : AutoSingleton<WorldCore>
 {
+    #region ==== Global Variable ====
     [Header("Main")]
     [SerializeField] private Image blackImg;
     private Camera cam;
@@ -33,10 +34,12 @@ public class WorldCore : AutoSingleton<WorldCore>
     private bool isMove = false;
     [Header("Monster")]
     [SerializeField] private Transform wMonParent;
-    private Dictionary<int, GameObject> wMonObj = new Dictionary<int, GameObject>();
+    // private Dictionary<int, GameObject> wMonObj = new Dictionary<int, GameObject>();
+    private Dictionary<int, wMon> wMonObj = new Dictionary<int, wMon>();
     [Header("Marker")]
     [SerializeField] private Transform wMarkerParent;
     private Dictionary<int, GameObject> wMarkerObj = new Dictionary<int, GameObject>();
+    #endregion
     void Awake()
     {
         WorldObjManager.I.CreateWorldMapGrid(worldMapTile); //월드맵 그리드부터 지역, 도로 등 생성
@@ -70,11 +73,14 @@ public class WorldCore : AutoSingleton<WorldCore>
             Presenter.Send("InvenPop", "OpenRwdPop");
             ItemManager.I.isDrop = false;
         }
+
+        //오브젝트 거리 체크
+        StartCoroutine(CheckObjDistCoroutine());
     }
     void Update()
     {
-        if (InvenPop.isActive || CityEnterPop.isActive || CharInfoPop.isActive || SkillPop.isActive || JournalPop.isActive) return;
 
+        if (InvenPop.isActive || CityEnterPop.isActive || CharInfoPop.isActive || SkillPop.isActive || JournalPop.isActive) return;
         #region Player Act
         Vector3 moveDirection = Vector3.zero;
         if (Input.GetKey(KeyCode.W)) moveDirection.y += 1; // 위로 이동
@@ -233,7 +239,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         }
     }
     #endregion
-    #region 월드맵 몬스터 체크 및 생성
+    #region 월드맵 몬스터 관련
     public void CreateAllAreaWorldMon()
     {
         foreach (var area in WorldObjManager.I.areaDataList)
@@ -244,6 +250,7 @@ public class WorldCore : AutoSingleton<WorldCore>
                 area.Value.curCnt = area.Value.maxCnt;
             }
         }
+        //wAreaPos
     }
     void CreateWorldMon(int areaID, int remain)
     {
@@ -287,12 +294,14 @@ public class WorldCore : AutoSingleton<WorldCore>
             var obj = Instantiate(ResManager.GetGameObject("wMonObj"), wMonParent);
             obj.name = "wMon_" + uId;
             var wm = obj.GetComponent<wMon>();
-            wm.SetMonData(uId, leaderID, mList);
+            wm.SetMonData(uId, areaID, leaderID, mList);
             wm.transform.position = WorldObjManager.I.GetSpawnPos(areaID); //구역에 맞춰 몬스터 좌표 갱신
             wm.SetObjLayer(GsManager.I.GetObjLayer(wm.transform.position.y));
-            wMonObj.Add(uId, obj);
+            wm.tgPos = SetWorldMonNextPos(wm);
 
-            WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.transform.position);
+            wMonObj.Add(uId, wm);
+
+            WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.transform.position, wm.tgPos);
         }
     }
     public void AllRemoveWorldMon()
@@ -311,10 +320,14 @@ public class WorldCore : AutoSingleton<WorldCore>
             var obj = Instantiate(ResManager.GetGameObject("wMonObj"), wMonParent);
             obj.name = "wMon_" + wMon.Key;
             var wm = obj.GetComponent<wMon>();
-            wm.SetMonData(wMon.Key, wMon.Value.ldID, wMon.Value.monList);
+            wm.SetMonData(wMon.Key, wMon.Value.areaID, wMon.Value.ldID, wMon.Value.monList);
             wm.transform.position = wMon.Value.pos;
-            wMonObj.Add(wMon.Key, obj);
+            wMonObj.Add(wMon.Key, wm);
         }
+    }
+    Vector3 SetWorldMonNextPos(wMon wm)
+    {
+        return WorldObjManager.I.wAreaPos[wm.areaID][Random.Range(0, WorldObjManager.I.wAreaPos[wm.areaID].Count)];
     }
     void ReCreateWorldMon()
     {
@@ -361,6 +374,36 @@ public class WorldCore : AutoSingleton<WorldCore>
         wMarkerObj.Add(0, obj);
     }
     #endregion
+    #region 오브젝트 거리 체크
+    IEnumerator CheckObjDistCoroutine()
+    {
+        //활성/비활성화의 임계거리를 두개로 선정한 이유는 한개로 설정한 경우, 경계선에 있는 오브젝트가 무한정으로 활성화/비활성화 되는 현상이 발생하기 때문에 두개의 거리로 해당 문제를 해결
+        float deactDist = 4f, actDist = deactDist * 0.9f; //deactivateDistance , activateDistance
+        float sqrDeactDist = deactDist * deactDist, sqrActDist = actDist * actDist;
+        int type = 0;
+        while (true)
+        {
+            Vector3 pPos = player.transform.position;
+
+            // 단순하게 모든 오브젝트 체크 (400~500개는 전혀 문제 없음)
+            foreach (var mon in wMonObj)
+            {
+                if (mon.Value == null || mon.Value.transform == null) continue;
+
+                Vector3 mPos = mon.Value.transform.position;
+                float sqrDist = (mPos - pPos).sqrMagnitude;
+                bool isObjActive = mon.Value.gameObject.activeSelf;
+
+                if (!isObjActive && sqrDist <= sqrActDist)
+                    mon.Value.SetActiveTween(true, type);
+                else if (isObjActive && sqrDist > sqrDeactDist)
+                    mon.Value.SetActiveTween(false, type);
+            }
+            if (type == 0) type = 1;
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+    #endregion
     #region 씬 이동
     public void SceneFadeOut()
     {
@@ -390,6 +433,9 @@ public class WorldCoreEditor : Editor
         {
             myScript.MoveRoad(1, 2);
         }
+        if (GUILayout.Button("몬스터 AI 테스트"))
+        {
 
+        }
     }
 }

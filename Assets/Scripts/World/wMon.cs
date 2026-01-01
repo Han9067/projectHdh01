@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using GB;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class wMon : MonoBehaviour
 {
-    public int monIdx; //배열 인덱스
+    public int monIdx, areaID; //배열 인덱스
     [SerializeField] private int monId;
     public List<int> monGrp = new List<int>();
     [SerializeField] private SpriteRenderer frmBack, frmFront, frmDeco, mainSpr;
     public MonData[] monData;
     [SerializeField] private int uId;
+    private float alpha = 1f;
+    public Vector3 tgPos;
     void Start()
     {
 
@@ -21,19 +24,18 @@ public class wMon : MonoBehaviour
             frmFront.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("frm_front");
         int mType = monId < 1000 ? 0 : 1;
         float[] rgb = mType == 0 ? new float[] { 112 / 255f, 122 / 255f, 92 / 255f } : new float[] { 180 / 255f, 50 / 255f, 60 / 255f };
-        frmBack.GetComponent<SpriteRenderer>().color = new Color(rgb[0], rgb[1], rgb[2], 1);
-        frmFront.GetComponent<SpriteRenderer>().color = new Color(rgb[0], rgb[1], rgb[2], 1);
+        frmBack.GetComponent<SpriteRenderer>().color = new Color(rgb[0], rgb[1], rgb[2], alpha);
+        frmFront.GetComponent<SpriteRenderer>().color = new Color(rgb[0], rgb[1], rgb[2], alpha);
         mainSpr.sprite = ResManager.GetSprite("mIcon_" + monId);
         monData = new MonData[monGrp.Count];
         for (int i = 0; i < monGrp.Count; i++)
-        {
             monData[i] = MonManager.I.MonDataList[monGrp[i]].Clone();
-        }
     }
 
-    public void SetMonData(int uid, int mId, List<int> mList)
+    public void SetMonData(int uid, int area, int mId, List<int> mList)
     {
         uId = uid;
+        areaID = area;
         monId = mId;
         monGrp = mList;
     }
@@ -55,5 +57,40 @@ public class wMon : MonoBehaviour
         frmDeco.sortingOrder = y + 41;
         mainSpr.sortingOrder = y + 42;
         frmFront.sortingOrder = y + 43;
+    }
+    public void SetActiveTween(bool isActive, int type)
+    {
+        SpriteRenderer[] arr = { frmBack, frmFront, frmDeco, mainSpr };
+        alpha = isActive ? 0f : 1f;
+        foreach (var s in arr)
+        {
+            Color c = s.color;
+            c.a = alpha;
+            s.color = c;
+        }
+        switch (type)
+        {
+            case 0:
+                gameObject.SetActive(isActive);
+                break;
+            case 1:
+                int cnt = 0;
+                float tgAlpha = isActive ? 1f : 0f;
+                if (isActive)
+                    gameObject.SetActive(true);
+                foreach (var s in arr)
+                {
+                    s.DOFade(tgAlpha, 0.5f).SetUpdate(true)
+                    .OnComplete(() =>
+                    {
+                        if (!isActive)
+                        {
+                            cnt++;
+                            if (cnt == 4) gameObject.SetActive(false);
+                        }
+                    });
+                }
+                break;
+        }
     }
 }
