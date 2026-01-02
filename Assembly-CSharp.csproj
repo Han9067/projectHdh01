@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Battle\bMonster.cs" />
+    <Compile Include="Assets\GB\SPRAnimation\SPRAnimationClip.cs" />
     <Compile Include="Assets\Scripts\World\WorldCore.cs" />
     <Compile Include="Assets\Scripts\UI\JournalPop.cs" />
     <Compile Include="Assets\Scripts\UiObj\EqSlot.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Assets\GB\Localization\LocalizationFontView.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\GameDataManager.cs" />
     <Compile Include="Assets\Scripts\Manager\WorldObjManager.cs" />
+    <Compile Include="Assets\GB\SPRAnimation\SPRAnimation.cs" />
     <Compile Include="Assets\Scripts\UI\InvenPop.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\ShopItemTable.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\MonTable.cs" />
@@ -168,6 +170,7 @@
     <None Include="Assets\Resources\Json\WpTable.txt" />
     <None Include="Assets\Resources\Json\ShopTable.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\GB\Version\SPRAnimation.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Resources\Json\QuestTable.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />

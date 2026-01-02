@@ -722,8 +722,8 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
     public void TestCreateMon()
     {
         btMonList.Clear();
-        btMonList.Add(2);
-        btMonList.Add(2);
+        btMonList.Add(1);
+        // btMonList.Add(2);
         // btMonList.Add(1);
         // btMonList.Add(1);
     }

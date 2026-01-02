@@ -315,7 +315,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void LoadEnemyGrp()
     {
-        // WorldObjManager.I.TestCreateMon(); //테스트용
+        WorldObjManager.I.TestCreateMon(); //테스트용
 
         if (WorldObjManager.I.btMonList.Count > 0)
         {
@@ -704,6 +704,14 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
     }
     #endregion
+    #region ==== 애니메이션 ====
+    public SPRAnimationClip testAnimation;
+    public void ShowTestAnimation()
+    {
+        // var animation = Instantiate(testAnimation, transform);
+        // animation.GetComponent<SPRAnimation>().Play();
+    }
+    #endregion
     #region ==== UI Action ====
     public void ShowDmgTxt(int dmg, Vector3 pos)
     {
@@ -827,6 +835,10 @@ public class BattleCoreEditor : Editor
         if (GUILayout.Button("데미지 텍스트 테스트"))
         {
             myScript.ShowDmgTxt(100, new Vector3(0, 0, 0));
+        }
+        if (GUILayout.Button("공격 애니메이션 테스트"))
+        {
+
         }
     }
 }
