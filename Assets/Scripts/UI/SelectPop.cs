@@ -53,25 +53,29 @@ public class SelectPop : UIScreen
                 //순차적으로 0 :구매, 1: 판매, 2: 정보, 3: 사용하기, 4: 장착하기, 5: 버리기
                 for (int i = 0; i < selList.Count; i++)
                     selList[i].SetActive(false);
-                switch (data.Get<int>())
+                int n = data.Get<int>();
+                switch (n)
                 {
                     case 0: //구매
-                        selList[0].SetActive(true);
-                        idx = 2;
-                        break;
                     case 1: //판매
-                        selList[1].SetActive(true);
-                        idx = 2;
-                        break;
                     case 2:
                         //전투 화면에서 몬스터, NPC 확인?
+                        selList[n].SetActive(true);
                         break;
                     case 3:
-                        //해당 아이템이 내부 인벤에 있으며 소모형 아이템일 경우
-                        selList[2].SetActive(true);
-                        selList[3].SetActive(true);
+                        //무기, 장비 아이템
                         selList[4].SetActive(true);
+                        selList[5].SetActive(true);
+                        break;
+                    case 4:
+                        //해당 아이템이 내부 인벤에 있으며 소모형 아이템일 경우
+                        selList[3].SetActive(true);
+                        selList[5].SetActive(true);
                         idx = 4;
+                        break;
+                    case 5:
+                        //기타 아이템
+                        selList[5].SetActive(true);
                         break;
                 }
                 RectTransform popRect = pop.GetComponent<RectTransform>();
@@ -86,7 +90,6 @@ public class SelectPop : UIScreen
                 selItem = data.Get<ItemData>();
                 break;
             case "OnBuy":
-                Debug.Log("OnBuy");
                 if (PlayerManager.I.pData.Crown < selItem.Price)
                 {
                     Debug.Log("돈이 부족합니다.");
@@ -102,6 +105,9 @@ public class SelectPop : UIScreen
             case "OnSell":
                 break;
             case "OnInfo":
+                //전투 상황에서 오브젝트의 정보
+                BattleCore.I.ShowObjInfo();
+                Close();
                 break;
             case "OnUse":
                 foreach (var v in selItem.Att)

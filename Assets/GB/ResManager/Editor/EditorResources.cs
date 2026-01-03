@@ -231,7 +231,7 @@ namespace GB
             string[] files = Directory.GetFiles(Application.dataPath + "/" + folderPath, "*.*", SearchOption.AllDirectories);
 
             UnityDictionary<string, T> dict = new UnityDictionary<string, T>();
-            string[] excludeFolders = { "WorldMap", "UI", "SprSheet" };
+            string[] excludeFolders = { "WorldMap", "UI", "BattleEff" };
 
             foreach (var file in files)
             {

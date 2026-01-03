@@ -97,7 +97,9 @@ public class BattleCore : AutoSingleton<BattleCore>
     // Dictionary<int, GameObject> nObj = new Dictionary<int, GameObject>();
     // Dictionary<int, bNPC> nData = new Dictionary<int, bNPC>();
     // public Transform npcParent;
-
+    [Header("====Effect====")]
+    public GameObject effParent;
+    public Dictionary<string, List<SkEffObj>> effList = new Dictionary<string, List<SkEffObj>>();
     [Header("====Common====")]
     [SerializeField] private int objId;
     [SerializeField] private int curSelObjId = 0;
@@ -212,11 +214,8 @@ public class BattleCore : AutoSingleton<BattleCore>
             {
                 if (curSelObjId != 0)
                 {
-                    // UIManager.ShowPopup("SelectPop");
-                    // string data = "";
-                    // data += mData[curSelObjId].mName + "_" + mData[curSelObjId].hp + " / " + mData[curSelObjId].maxHp + "_"
-                    //  + mData[curSelObjId].att + "_" + mData[curSelObjId].def;
-                    // Presenter.Send("ObjInfoPop", "ObjInfoPop", data);
+                    UIManager.ShowPopup("SelectPop");
+                    Presenter.Send("SelectPop", "SetList", 2);
                 }
             }
 
@@ -568,6 +567,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         {
                             case BtObjType.MONSTER:
                                 mData[tgId].OnDamaged(PlayerManager.I.pData.Att, BtFaction.ALLY);
+                                ShowEff("N_Att", tgPos, myObj.transform.localScale.x);
                                 break;
                             case BtObjType.NPC:
                                 break;
@@ -578,6 +578,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         {
                             case BtObjType.PLAYER:
                                 pData.OnDamaged(mData[myId].att);
+                                ShowEff("N_Att", tgPos, myObj.transform.localScale.x);
                                 break;
                             case BtObjType.MONSTER:
                                 break;
@@ -705,11 +706,38 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     #endregion
     #region ==== 애니메이션 ====
-    public SPRAnimationClip testAnimation;
-    public void ShowTestAnimation()
+    public void ShowEff(string effName, Vector3 pos, float dir)
     {
-        // var animation = Instantiate(testAnimation, transform);
-        // animation.GetComponent<SPRAnimation>().Play();
+        var eff = GetEffIdx(effName);
+        if (eff != null)
+        {
+            eff.transform.position = pos;
+            eff.anim.Play();
+        }
+        else
+        {
+            var obj = Instantiate(ResManager.GetGameObject(effName), effParent.transform);
+            eff = obj.GetComponent<SkEffObj>();
+            if (!effList.ContainsKey(effName))
+                effList[effName] = new List<SkEffObj>();
+            effList[effName].Add(eff);
+            eff.transform.position = pos;
+            eff.anim.Play();
+        }
+    }
+    SkEffObj GetEffIdx(string effName)
+    {
+        if (!effList.ContainsKey(effName) || effList[effName].Count == 0)
+            return null;
+        foreach (var t in effList[effName])
+        {
+            if (!t.gameObject.activeSelf)
+            {
+                t.gameObject.SetActive(true);
+                return t;
+            }
+        }
+        return null;
     }
     #endregion
     #region ==== UI Action ====
@@ -776,6 +804,15 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         curSelObjId = 0;
     }
+
+    public void ShowObjInfo()
+    {
+        UIManager.ShowPopup("ObjInfoPop");
+        string data = "";
+        data += mData[curSelObjId].mName + "_" + mData[curSelObjId].hp + " / " + mData[curSelObjId].maxHp + "_"
+         + mData[curSelObjId].att + "_" + mData[curSelObjId].def;
+        Presenter.Send("ObjInfoPop", "ObjInfoData", data);
+    }
     #endregion
     #region ==== Data Action ====
     public void GetExp(int exp, BtFaction attacker)
@@ -836,9 +873,9 @@ public class BattleCoreEditor : Editor
         {
             myScript.ShowDmgTxt(100, new Vector3(0, 0, 0));
         }
-        if (GUILayout.Button("공격 애니메이션 테스트"))
-        {
-
-        }
+        // if (GUILayout.Button("공격 애니메이션 테스트"))
+        // {
+        //     myScript.ShowTestAnimation("N_Att");
+        // }
     }
 }

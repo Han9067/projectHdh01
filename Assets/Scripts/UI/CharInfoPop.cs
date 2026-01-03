@@ -98,30 +98,30 @@ public class CharInfoPop : UIScreen
         var pData = PlayerManager.I.pData;
         //string text = GB.LocalizationManager.GetValue("0"); //로컬라이즈 매니저에서 사용되는 언어 호출....추후 소제목들 이걸로 대응
         #region 기본 정보
-        mTexts["NameVal"].text = pData.Name;
-        mTexts["AgeVal"].text = pData.Age.ToString();
-        mTexts["LvVal"].text = pData.Lv.ToString();
-        mTexts["ExpVal"].text = pData.Exp.ToString();
-        mTexts["NextExpVal"].text = pData.NextExp.ToString();
+        mTMPText["NameVal"].text = pData.Name;
+        mTMPText["AgeVal"].text = pData.Age.ToString();
+        mTMPText["LvVal"].text = pData.Lv.ToString();
+        mTMPText["ExpVal"].text = pData.Exp.ToString();
+        mTMPText["NextExpVal"].text = pData.NextExp.ToString();
 
-        mTexts["HpVal"].text = pData.HP.ToString() + "/" + pData.MaxHP.ToString();
-        mTexts["MpVal"].text = pData.MP.ToString() + "/" + pData.MaxMP.ToString();
-        mTexts["SpVal"].text = pData.SP.ToString() + "/" + pData.MaxSP.ToString();
-        mTexts["AttVal"].text = pData.Att.ToString();
-        mTexts["DefVal"].text = pData.Def.ToString();
-        mTexts["CrtVal"].text = pData.Crt.ToString() + "%";
-        mTexts["CrtRateVal"].text = pData.CrtRate.ToString() + "%";
-        mTexts["HitVal"].text = pData.Hit.ToString() + "%";
-        mTexts["EvaVal"].text = pData.Eva.ToString() + "%";
+        mTMPText["HpVal"].text = pData.HP.ToString() + "/" + pData.MaxHP.ToString();
+        mTMPText["MpVal"].text = pData.MP.ToString() + "/" + pData.MaxMP.ToString();
+        mTMPText["SpVal"].text = pData.SP.ToString() + "/" + pData.MaxSP.ToString();
+        mTMPText["AttVal"].text = pData.Att.ToString();
+        mTMPText["DefVal"].text = pData.Def.ToString();
+        mTMPText["CrtVal"].text = pData.Crt.ToString() + "%";
+        mTMPText["CrtRateVal"].text = pData.CrtRate.ToString() + "%";
+        mTMPText["HitVal"].text = pData.Hit.ToString() + "%";
+        mTMPText["EvaVal"].text = pData.Eva.ToString() + "%";
 
-        mTexts["VitVal"].text = pData.VIT.ToString();
-        mTexts["EndVal"].text = pData.END.ToString();
-        mTexts["StrVal"].text = pData.STR.ToString();
-        mTexts["AgiVal"].text = pData.AGI.ToString();
-        mTexts["ForVal"].text = pData.FOR.ToString();
-        mTexts["IntVal"].text = pData.INT.ToString();
-        mTexts["ChaVal"].text = pData.CHA.ToString();
-        mTexts["LukVal"].text = pData.LUK.ToString();
+        mTMPText["VitVal"].text = pData.VIT.ToString();
+        mTMPText["EndVal"].text = pData.END.ToString();
+        mTMPText["StrVal"].text = pData.STR.ToString();
+        mTMPText["AgiVal"].text = pData.AGI.ToString();
+        mTMPText["ForVal"].text = pData.FOR.ToString();
+        mTMPText["IntVal"].text = pData.INT.ToString();
+        mTMPText["ChaVal"].text = pData.CHA.ToString();
+        mTMPText["LukVal"].text = pData.LUK.ToString();
         #endregion
         GsManager.I.SetUiEqParts(pData, curBodyKey, mGameObject);
         if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)
@@ -140,8 +140,8 @@ public class CharInfoPop : UIScreen
     void UpdateGrade()
     {
         int g = PlayerManager.I.pData.Grade;
-        mTexts["GradeVal"].text = GetGradeName(g);
-        mTexts["GradeVal"].transform.localPosition = g == 0 ? new Vector3(0, -48f, 0) : new Vector3(20f, -48f, 0);
+        mTMPText["GradeVal"].text = GetGradeName(g);
+        mTMPText["GradeVal"].transform.localPosition = g == 0 ? new Vector3(0, -48f, 0) : new Vector3(20f, -48f, 0);
         mImages["BadgeIcon"].gameObject.SetActive(g != 0);
         if (g > 0)
         {

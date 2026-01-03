@@ -53,12 +53,12 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
                 if (itemData.ItemId > 60000)
                 {
                     if (itemData.ItemId < 64001)
-                        Presenter.Send("SelectPop", "SetList", 3); //소모형 아이템
+                        Presenter.Send("SelectPop", "SetList", 4); //소모형 아이템
+                    else
+                        Presenter.Send("SelectPop", "SetList", 5);
                 }
                 else
-                {
-
-                }
+                    Presenter.Send("SelectPop", "SetList", 3);
                 break;
         }
     }
