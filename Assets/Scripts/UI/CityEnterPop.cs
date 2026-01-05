@@ -70,11 +70,8 @@ public class CityEnterPop : UIScreen
                 case "GoToSmith": sId = 3; sKey = "Smith"; break;
                 case "GoToTailor": sId = 4; sKey = "Tailor"; break;
                 case "GoToApothecary": sId = 5; sKey = "Apothecary"; break;
-                case "GoToMarket": sId = 6; sKey = "Market"; break;
-                case "GoToBook": sId = 7; sKey = "Book"; break; // 서점
-                case "GoToCath": sId = 8; sKey = "Cath"; break; // 성당
-                case "GoToTG": sId = 9; sKey = "TG"; break;
-                case "GoToArena": sId = 10; sKey = "Arena"; break; // 투기장
+                case "GoToBook": sId = 6; sKey = "Book"; break; // 서점
+                case "GoToMarket": sId = 7; sKey = "Market"; break; // 시장
             }
             StateCity(1);
         }
@@ -208,6 +205,7 @@ public class CityEnterPop : UIScreen
                 mButtons["OnMake"].gameObject.SetActive(true);
                 break;
             case 6:
+            case 7:
                 mButtons["OnTrade"].gameObject.SetActive(true);
                 break;
         }
@@ -272,11 +270,8 @@ public class CityEnterPop : UIScreen
                 case 3: btnKey = "GoToSmith"; break;
                 case 4: btnKey = "GoToTailor"; break;
                 case 5: btnKey = "GoToApothecary"; break;
-                case 6: btnKey = "GoToMarket"; break;
-                case 7: btnKey = "GoToTG"; break;
-                case 8: btnKey = "GoToCath"; break;
-                case 9: btnKey = "GoToBook"; break;
-                case 10: btnKey = "GoToArena"; break;
+                case 6: btnKey = "GoToBook"; break;
+                case 7: btnKey = "GoToMarket"; break;
             }
 
             if (btnKey != null && mButtons.ContainsKey(btnKey))
