@@ -79,21 +79,21 @@ public class WorldMainUI : UIScreen
 
         // I 키 입력 감지
         if (Input.GetKeyDown(KeyCode.I))
-        {
             GsManager.I.StateMenuPopup("StateInvenPop");
-        }
         if (Input.GetKeyDown(KeyCode.C))
-        {
             GsManager.I.StateMenuPopup("StateCharInfoPop");
-        }
         if (Input.GetKeyDown(KeyCode.J))
-        {
             GsManager.I.StateMenuPopup("StateJournalPop");
-        }
         if (Input.GetKeyDown(KeyCode.K))
-        {
             GsManager.I.StateMenuPopup("StateSkillPop");
-        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            StateGameSpd("X0");
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            StateGameSpd("X1");
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            StateGameSpd("X2");
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+            StateGameSpd("X4");
     }
 
     // I 키를 눌렀을 때 호출되는 함수 (예제)
@@ -101,6 +101,7 @@ public class WorldMainUI : UIScreen
     {
         tDay++;
         CalcCalender();
+        UnityEngine.Debug.Log("tDay: " + wDay);
     }
     public void StateGameSpd(string key)
     {

@@ -712,6 +712,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (eff != null)
         {
             eff.transform.position = pos;
+            eff.transform.localScale = new Vector3(dir, 1, 1);
             eff.anim.Play();
         }
         else
@@ -722,6 +723,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 effList[effName] = new List<SkEffObj>();
             effList[effName].Add(eff);
             eff.transform.position = pos;
+            eff.transform.localScale = new Vector3(dir, 1, 1);
             eff.anim.Play();
         }
     }
@@ -845,6 +847,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     public void MoveToWorld()
     {
+        DOTween.KillAll();
         UIManager.ChangeScene("World");
     }
     void CheckMainManager()

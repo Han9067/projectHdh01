@@ -50,7 +50,7 @@ public class SelectPop : UIScreen
         {
             case "SetList":
                 int idx = 1;
-                //순차적으로 0 :구매, 1: 판매, 2: 정보, 3: 사용하기, 4: 장착하기, 5: 버리기
+                //순차적으로 0 :구매, 1: 판매, 2: 정보, 3: 사용하기, 4: 장착하기
                 for (int i = 0; i < selList.Count; i++)
                     selList[i].SetActive(false);
                 int n = data.Get<int>();
@@ -75,14 +75,14 @@ public class SelectPop : UIScreen
                         break;
                     case 5:
                         //기타 아이템
-                        selList[5].SetActive(true);
+                        selList[5].SetActive(true); //버리기
                         break;
                 }
                 RectTransform popRect = pop.GetComponent<RectTransform>();
                 if (popRect != null)
                 {
                     Vector2 newSize = popRect.sizeDelta;
-                    newSize.y = (idx * 40) + 20;
+                    newSize.y = (idx * 40) + 60;
                     popRect.sizeDelta = newSize;
                 }
                 break;

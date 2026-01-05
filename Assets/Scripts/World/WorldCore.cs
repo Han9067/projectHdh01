@@ -378,8 +378,24 @@ public class WorldCore : AutoSingleton<WorldCore>
     IEnumerator CheckObjDistCoroutine()
     {
         //활성/비활성화의 임계거리를 두개로 선정한 이유는 한개로 설정한 경우, 경계선에 있는 오브젝트가 무한정으로 활성화/비활성화 되는 현상이 발생하기 때문에 두개의 거리로 해당 문제를 해결
-        float deactDist = 4f, actDist = deactDist * 0.9f; //deactivateDistance , activateDistance
-        float sqrDeactDist = deactDist * deactDist, sqrActDist = actDist * actDist;
+
+        float deactDist = 4f, actDist = deactDist * 0.9f; //deactivateDistance , activateDistance -> 체크용 거리
+
+        // 16:9 비율 고정
+        float ellipseAspect = 16f / 9f; // 가로/세로 비율
+
+        // 타원의 반지름: a(가로) = deactDist * ellipseAspect, b(세로) = deactDist
+        float a = deactDist * ellipseAspect; // 가로 반지름 (16:9 비율로 더 길게)
+        float b = deactDist; // 세로 반지름
+
+        // 활성화 거리도 동일한 비율로 계산
+        float aAct = actDist * ellipseAspect;
+        float bAct = actDist;
+
+        // 제곱값을 미리 계산 (타원 방정식에서 사용)
+        float sqrA = a * a, sqrB = b * b;
+        float sqrAAct = aAct * aAct, sqrBAct = bAct * bAct;
+
         int type = 0;
         while (true)
         {
@@ -391,12 +407,23 @@ public class WorldCore : AutoSingleton<WorldCore>
                 if (mon.Value == null || mon.Value.transform == null) continue;
 
                 Vector3 mPos = mon.Value.transform.position;
-                float sqrDist = (mPos - pPos).sqrMagnitude;
+
+                // 타원형 거리 계산: (dx/a)² + (dy/b)² 형태
+                float dx = mPos.x - pPos.x;
+                float dy = mPos.y - pPos.y;
+
+                // 타원 방정식: (x/a)² + (y/b)² = 1
+                // 값이 1보다 작거나 같으면 타원 내부, 1보다 크면 타원 외부
+                float ellipseValue = (dx * dx) / sqrA + (dy * dy) / sqrB;
+                float ellipseValueAct = (dx * dx) / sqrAAct + (dy * dy) / sqrBAct;
+
                 bool isObjActive = mon.Value.gameObject.activeSelf;
 
-                if (!isObjActive && sqrDist <= sqrActDist)
+                // 타원 내부에 있으면 활성화 (ellipseValue <= 1)
+                if (!isObjActive && ellipseValueAct <= 1f)
                     mon.Value.SetActiveTween(true, type);
-                else if (isObjActive && sqrDist > sqrDeactDist)
+                // 타원 외부에 있으면 비활성화 (ellipseValue > 1)
+                else if (isObjActive && ellipseValue > 1f)
                     mon.Value.SetActiveTween(false, type);
             }
             if (type == 0) type = 1;
@@ -410,6 +437,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         PlayerManager.I.worldPos = player.transform.position;
         WorldObjManager.I.UpdateWorldMonData(wMonObj);
         Presenter.Send("WorldMainUI", "SaveAllTime");
+        DOTween.KillAll();
         UIManager.ChangeScene("Battle");
         // blackImg.gameObject.SetActive(true);
         // blackImg.color = new Color(0, 0, 0, 0f);
