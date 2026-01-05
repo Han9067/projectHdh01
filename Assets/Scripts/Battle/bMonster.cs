@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GB;
 using DG.Tweening;
+using UnityEngine.Rendering;
 public class bMonster : MonoBehaviour
 {
     public int objId, monsterId;
@@ -17,6 +18,7 @@ public class bMonster : MonoBehaviour
     private MaterialPropertyBlock mProp;
     public bool isOutline = false;
     private Color redColor = new Color(1, 0.5f, 0.5f, 1);
+    [SerializeField] private SortingGroup sGrp;
     void Start()
     {
         monData = MonManager.I.MonDataList[monsterId].Clone();
@@ -56,9 +58,7 @@ public class bMonster : MonoBehaviour
     }
     public void SetObjLayer(int y)
     {
-        int ly = y * 100;
-        shdObj.GetComponent<SpriteRenderer>().sortingOrder = ly;
-        bodyObj.GetComponent<SpriteRenderer>().sortingOrder = ly + 1;
+        sGrp.sortingOrder = y;
     }
     public void OnDamaged(int dmg, BtFaction attacker)
     {

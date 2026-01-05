@@ -61,6 +61,7 @@ public class ItemInfoPop : UIScreen
                 // int cnt = desc.Count(c => c == '\n');
                 mTMPText["Desc"].text = LocalizationManager.GetValue($"{itemData.Res}_Desc");
                 popRect.sizeDelta = new Vector2(400, tot);
+                mTMPText["CrownVal"].text = itemData.Price.ToString();
                 break;
             case "OnItemPos":
                 Vector3 pos = data.Get<Vector3>();

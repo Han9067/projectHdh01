@@ -126,14 +126,14 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Hair = 1; pData.HairColor = 1;
 
         // ItemManager.I.CreateInvenItem(30001, -1, -1); //옷, 장착 아이템은 -1, -1로 설정
-        ItemManager.I.CreateInvenItem(30002, -1, -1); //무기
+        ItemManager.I.CreateInvenItem(32001, -1, -1); //무기
         ItemManager.I.CreateInvenItem(10001, -1, -1); //옷
         pData.EqSlot["Hand1"] = pData.Inven[0]; // 손1
         pData.EqSlot["Armor"] = pData.Inven[1]; // 갑옷
         ItemManager.I.CreateInvenItem(60001, 0, 0); //물약
         // ItemManager.I.CreateInvenItem(68001, 0, 1);
-        ItemManager.I.CreateInvenItem(30001, 2, 0); //무기
-        ItemManager.I.CreateInvenItem(32001, 3, 0);
+        ItemManager.I.CreateInvenItem(32001, 3, 0); //무기
+        ItemManager.I.CreateInvenItem(60101, 1, 0); //스킬북
 
         CalcPlayerStat();
         pData.HP = pData.MaxHP;
@@ -188,64 +188,6 @@ public class PlayerManager : AutoSingleton<PlayerManager>
                 }
             }
         }
-    }
-    public Vector2 CanAddItem(int w, int h)
-    {
-        // 1. 매개변수 유효성 검사
-        if (w <= 0 || h <= 0 || w > 10 || h > 10)
-        {
-            Debug.LogWarning($"CanAddItem: 잘못된 크기 입력 w={w}, h={h}");
-            return new Vector2(-1, -1);
-        }
-
-        // 3. 빈 공간 탐색
-        for (int y = 0; y < 10; y++)
-        {
-            // 세로 범위 체크 (경계 초과 시 더 이상 탐색 불필요)
-            if (y + h > 10) break;
-
-            // grids[y]가 null이거나 크기가 맞지 않는 경우 방어
-            if (grids[y] == null || grids[y].Count != 10)
-            {
-                Debug.LogError($"CanAddItem: grids[{y}]가 초기화되지 않았습니다!");
-                continue;
-            }
-
-            for (int x = 0; x < 10; x++)
-            {
-                // 가로 범위 체크
-                if (x + w > 10) break;
-
-                bool isAdd = true;
-
-                // 아이템이 들어갈 영역 검사
-                for (int i = y; i < y + h; i++)
-                {
-                    for (int j = x; j < x + w; j++)
-                    {
-                        if (grids[i][j].slotId != -1)
-                        {
-                            isAdd = false;
-                            break; // 안쪽 j 루프 탈출
-                        }
-                    }
-                    if (!isAdd) break;
-                }
-
-                // 빈 공간을 찾았다면 해당 좌표 반환
-                if (isAdd)
-                {
-                    // Debug.Log($"빈 공간 발견: ({x}, {y}), 크기: {w}x{h}");
-                    return new Vector2(x, y);
-                }
-            }
-        }
-
-        // 빈 공간을 찾지 못함
-        // Debug.Log($"빈 공간 없음: 크기 {w}x{h}");
-        return new Vector2(-1, -1);
-
-        // 추후에는 빈칸일때 회전된 상태로도 검색하는 기능도 추가해야함
     }
     public void CompleteMainQuest(int qid)
     {

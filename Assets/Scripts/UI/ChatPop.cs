@@ -41,10 +41,10 @@ public class ChatPop : UIScreen
             case "ChatStart":
                 List<int> list = data.Get<List<int>>();//퀘스트 ID, NPC ID, Order ID
                 int qid = list[0], npcId = list[1], order = list[2];
-                GsManager.I.SetUiBaseParts(npcId, mGameObject, "Ot_");
-                GsManager.I.SetUiEqParts(NpcManager.I.NpcDataList[npcId], "", mGameObject, "Ot_");
-                GsManager.I.SetUiBaseParts(0, mGameObject, "My_");
-                GsManager.I.SetUiEqParts(PlayerManager.I.pData, "", mGameObject, "My_");
+                GsManager.I.SetUiBaseParts(npcId, mGameObject, true, "Ot_");
+                GsManager.I.SetUiEqParts(NpcManager.I.NpcDataList[npcId], "", mGameObject, true, "Ot_");
+                GsManager.I.SetUiBaseParts(0, mGameObject, true, "My_");
+                GsManager.I.SetUiEqParts(PlayerManager.I.pData, "", mGameObject, true, "My_");
                 mTMPText["OtName"].text = NpcManager.I.NpcDataList[npcId].Name;
                 string mentId = "";
                 switch (qid)

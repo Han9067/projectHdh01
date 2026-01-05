@@ -75,7 +75,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         }
 
         //오브젝트 거리 체크
-        StartCoroutine(CheckObjDistCoroutine());
+        // StartCoroutine(CheckObjDistCoroutine());
     }
     void Update()
     {
@@ -182,10 +182,6 @@ public class WorldCore : AutoSingleton<WorldCore>
             player.transform.DOPath(path.ToArray(), pSpd, PathType.Linear)
             .SetEase(Ease.Linear)
             .SetSpeedBased(true)
-            .OnUpdate(() =>
-            {
-                player.SetObjLayer(GsManager.I.GetObjLayer(player.transform.position.y));
-            })
             .OnComplete(() =>
             {
                 StopPlayer();
@@ -296,9 +292,8 @@ public class WorldCore : AutoSingleton<WorldCore>
             var wm = obj.GetComponent<wMon>();
             wm.SetMonData(uId, areaID, leaderID, mList);
             wm.transform.position = WorldObjManager.I.GetSpawnPos(areaID); //구역에 맞춰 몬스터 좌표 갱신
-            wm.SetObjLayer(GsManager.I.GetObjLayer(wm.transform.position.y));
             wm.tgPos = SetWorldMonNextPos(wm);
-
+            wm.SetObjLayer(wm.transform.position.y);
             wMonObj.Add(uId, wm);
 
             WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.transform.position, wm.tgPos);

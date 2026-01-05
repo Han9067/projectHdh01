@@ -123,7 +123,7 @@ public class CharInfoPop : UIScreen
         mTMPText["ChaVal"].text = pData.CHA.ToString();
         mTMPText["LukVal"].text = pData.LUK.ToString();
         #endregion
-        GsManager.I.SetUiEqParts(pData, curBodyKey, mGameObject);
+        GsManager.I.SetUiAllEqParts(pData, curBodyKey, mGameObject);
         if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)
             curBodyKey = mGameObject["EqBody"].GetComponent<Image>().sprite.name;
 

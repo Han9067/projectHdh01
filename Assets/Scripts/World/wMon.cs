@@ -4,6 +4,7 @@ using UnityEngine;
 using GB;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.Rendering;
 
 public class wMon : MonoBehaviour
 {
@@ -13,11 +14,12 @@ public class wMon : MonoBehaviour
     [SerializeField] private SpriteRenderer frmBack, frmFront, frmDeco, mainSpr;
     public MonData[] monData;
     [SerializeField] private int uId;
+    [SerializeField] private SortingGroup sGrp;
     private float alpha = 1f;
     public Vector3 tgPos;
     void Start()
     {
-
+        sGrp = GetComponent<SortingGroup>();
         if (frmBack.GetComponent<SpriteRenderer>().sprite == null)
             frmBack.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("frm_back");
         if (frmFront.GetComponent<SpriteRenderer>().sprite == null)
@@ -31,7 +33,10 @@ public class wMon : MonoBehaviour
         for (int i = 0; i < monGrp.Count; i++)
             monData[i] = MonManager.I.MonDataList[monGrp[i]].Clone();
     }
-
+    public void SetObjLayer(float y)
+    {
+        sGrp.sortingOrder = (int)((80 - y) * 10);
+    }
     public void SetMonData(int uid, int area, int mId, List<int> mList)
     {
         uId = uid;
@@ -50,13 +55,6 @@ public class wMon : MonoBehaviour
             UIManager.ShowPopup("BattleReadyPop");
             Presenter.Send("BattleReadyPop", "MonInfo", result);
         }
-    }
-    public void SetObjLayer(int y)
-    {
-        frmBack.sortingOrder = y + 40;
-        frmDeco.sortingOrder = y + 41;
-        mainSpr.sortingOrder = y + 42;
-        frmFront.sortingOrder = y + 43;
     }
     public void SetActiveTween(bool isActive, int type)
     {

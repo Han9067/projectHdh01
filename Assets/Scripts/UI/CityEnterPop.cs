@@ -154,8 +154,8 @@ public class CityEnterPop : UIScreen
                 var npc = NpcManager.I.NpcDataList[npcId];
                 mTMPText["NameVal"].text = npc.Name;
                 mTMPText["RlsVal"].text = GetRlsState(npc.Rls);
-                GsManager.I.SetUiBaseParts(npcId, mGameObject);
-                GsManager.I.SetUiEqParts(npc, "NpcEq", mGameObject);
+                GsManager.I.SetUiBaseParts(npcId, mGameObject, true);
+                GsManager.I.SetUiEqParts(npc, "NpcEq", mGameObject, true);
                 UpdateInListPreset();
                 break;
         }

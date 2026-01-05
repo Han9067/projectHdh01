@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GB;
 using UnityEditor;
+using UnityEngine.Rendering;
 
 public class bPlayer : MonoBehaviour
 {
@@ -10,14 +11,16 @@ public class bPlayer : MonoBehaviour
     Dictionary<PtType, SpriteRenderer> ptSpr = new Dictionary<PtType, SpriteRenderer>();
     public GameObject ptMain;
     private PlayerData pData;
+    [SerializeField] private SortingGroup sGrp;
     void Awake()
     {
-        GsManager.I.InitParts(ptSpr, ptMain);
+        GsManager.I.SetObjParts(ptSpr, ptMain);
     }
     void Start()
     {
         pData = PlayerManager.I.pData;
         GsManager.I.SetObjAppearance(0, ptSpr);
+        GsManager.I.SetObjAllEqParts(0, ptSpr);
     }
     public void OnDamaged(int dmg)
     {
@@ -36,27 +39,7 @@ public class bPlayer : MonoBehaviour
     #region ==== 🎨 ORDERING IN LAYER ====
     public void SetObjLayer(int y)
     {
-        int layer = y * 100;
-
-        int childCount = ptMain.transform.childCount;
-        PtType[] layerOrder = new PtType[childCount];
-
-        for (int i = 0; i < childCount; i++)
-        {
-            Transform child = ptMain.transform.GetChild(i);
-            string childName = child.name;
-
-            // 자식 오브젝트 이름을 PtType으로 파싱
-            if (System.Enum.TryParse<PtType>(childName, out PtType ptType))
-                layerOrder[i] = ptType;
-        }
-
-        // 순서대로 레이어 설정
-        for (int i = 0; i < layerOrder.Length; i++)
-        {
-            if (ptSpr.ContainsKey(layerOrder[i]))
-                ptSpr[layerOrder[i]].sortingOrder = layer + i;
-        }
+        sGrp.sortingOrder = y;
     }
     #endregion
 }

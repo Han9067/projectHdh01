@@ -10,11 +10,9 @@ public class wPlayer : MonoBehaviour
     Dictionary<PtType, SpriteRenderer> ptSpr = new Dictionary<PtType, SpriteRenderer>();
     public GameObject ptMain;
 
-    private PtType[] sOrder; // 레이어 순서
-
     void Awake()
     {
-        GsManager.I.InitParts(ptSpr, ptMain);
+        GsManager.I.SetObjParts(ptSpr, ptMain, true);
     }
     void Start()
     {
@@ -23,29 +21,7 @@ public class wPlayer : MonoBehaviour
         if (frmFront.sprite == null)
             frmFront.sprite = ResManager.GetSprite("frm_front");
 
-        GsManager.I.SetObjAppearance(0, ptSpr);
-
-        CacheLayerOrder();
-        SetObjLayer(GsManager.I.GetObjLayer(transform.position.y));
-    }
-    void CacheLayerOrder()
-    {
-        int childCount = ptMain.transform.childCount;
-        sOrder = new PtType[childCount];
-
-        for (int i = 0; i < childCount; i++)
-        {
-            Transform child = ptMain.transform.GetChild(i);
-            if (System.Enum.TryParse<PtType>(child.name, out PtType ptType))
-                sOrder[i] = ptType;
-        }
-    }
-    public void SetObjLayer(int y)
-    {
-        frmBack.sortingOrder = y++;
-        frmFront.sortingOrder = y++;
-
-        for (int i = 0; i < sOrder.Length; i++)
-            ptSpr[sOrder[i]].sortingOrder = y + i;
+        GsManager.I.SetObjAppearance(0, ptSpr, true);
+        GsManager.I.SetObjAllEqParts(0, ptSpr);
     }
 }

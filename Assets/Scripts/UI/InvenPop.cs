@@ -98,7 +98,10 @@ public class InvenPop : UIScreen
                 EquipItem(data.Get<string>(), curItem);
                 break;
             case "AddItem":
-
+                ItemData item = data.Get<ItemData>(); //아이템 데이터 가져오기
+                Vector2Int pos = GetEmptyPos(0, item.W, item.H); //플레이어 인벤에 빈 공간 찾기
+                ItemManager.I.CreateInvenItem(item.ItemId, pos.x, pos.y); //플레이어 인벤토리에 아이템 추가
+                PlaceInvenItem(pos.x, pos.y, item.W, item.H, item, false); //플레이어 인벤토리에 아이템 실체화
                 break;
             case "ResetAllGrids":
                 ResetAllGrids();
