@@ -5,6 +5,7 @@ using GB;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEditor.ShaderGraph.Internal;
+using Unity.VisualScripting;
 //GameSystemManager
 public class GsManager : AutoSingleton<GsManager>
 {
@@ -428,62 +429,95 @@ public class GsManager : AutoSingleton<GsManager>
     }
     public void SetObjAllEqParts(int uid, Dictionary<PtType, SpriteRenderer> ptSpr)
     {
-        PtType[] eqParts = new PtType[] {
+        PtType[] bodyParts = new PtType[] {
             PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth,
             PtType.EqBody, PtType.EqHand1A, PtType.EqHand1B, PtType.EqHand2, PtType.EqBoth,
             PtType.OneWp1, PtType.OneWp2, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
         };
 
-        foreach (PtType eqPart in eqParts) ptSpr[eqPart].gameObject.SetActive(false);
+        foreach (PtType b in bodyParts) ptSpr[b].gameObject.SetActive(false);
 
-        ICharData data = uid == 0 ? PlayerManager.I.pData : NpcManager.I.NpcDataList[uid];
-        int[] handState = new int[2] { -1, -1 };
-        string[] handKeys = new string[] { "Hand1", "Hand2" };
-        for (int i = 0; i < 2; i++)
+        var slot = uid == 0 ? PlayerManager.I.pData.EqSlot : NpcManager.I.NpcDataList[uid].EqSlot;
+        int wpState = -1; //0: 맨손. 1 : 손1에 한손 착용. 2 : 손2에 한손 착용. 3 : 손1,2 각각 한손 착용. 4 : 양손검,도끼,둔기. 5 : 창, 지팡이
+        //손1 체크
+        if (slot["Hand1"] != null)
         {
-            if (data.EqSlot[handKeys[i]] != null)
+            //손1 착용 상태
+            int both1 = slot["Hand1"].Both;
+            switch (both1)
             {
-                handState[i] = data.EqSlot[handKeys[i]].Both;
-                SetHandSprite(ptSpr, data.EqSlot[handKeys[i]], handState[i]);
+                case 0:
+                    wpState = 1;
+                    ptSpr[PtType.OneWp1].gameObject.SetActive(true);
+                    ptSpr[PtType.OneWp1].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
+                    break; //손1에 한손 착용
+                case 1:
+                    wpState = 4;
+                    ptSpr[PtType.TwoWp1].gameObject.SetActive(true);
+                    ptSpr[PtType.TwoWp1].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
+                    break; //양손검,도끼,둔기
+                case 2:
+                    wpState = 5;
+                    ptSpr[PtType.TwoWp2].gameObject.SetActive(true);
+                    ptSpr[PtType.TwoWp2].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
+                    break; //창, 지팡이
             }
         }
-
-        if (data.EqSlot["Armor"] != null)
+        //손1에 양손무기가 있을경우 스킵하기 위한 조건문
+        if (wpState < 2)
         {
-            string eqStr = data.EqSlot["Armor"].ItemId.ToString();
-            ptSpr[PtType.EqBody].sprite = ResManager.GetSprite(eqStr + "_body");
-            ptSpr[PtType.EqHand1A].sprite = ResManager.GetSprite(eqStr + "_hand1A");
-            ptSpr[PtType.EqHand1B].sprite = ResManager.GetSprite(eqStr + "_hand1B");
-            ptSpr[PtType.EqHand2].sprite = ResManager.GetSprite(eqStr + "_hand2");
-            ptSpr[PtType.EqBoth].sprite = ResManager.GetSprite(eqStr + "_both");
-
+            if (slot["Hand2"] != null) //손2 체크
+            {
+                int both2 = slot["Hand2"].Both;
+                switch (both2)
+                {
+                    case 0:
+                        if (wpState == 1)
+                            wpState = 3; //손1,2 각각 한손 착용
+                        else
+                            wpState = 2; //손2에 한손 착용
+                        ptSpr[PtType.OneWp2].gameObject.SetActive(true);
+                        ptSpr[PtType.OneWp2].sprite = ResManager.GetSprite("wp" + slot["Hand2"].ItemId.ToString());
+                        break;
+                    case 1:
+                        wpState = 4;
+                        ptSpr[PtType.TwoWp1].gameObject.SetActive(true);
+                        ptSpr[PtType.TwoWp1].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
+                        break; //양손검,도끼,둔기
+                    case 2:
+                        wpState = 5;
+                        ptSpr[PtType.TwoWp2].gameObject.SetActive(true);
+                        ptSpr[PtType.TwoWp2].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
+                        break; //창, 지팡이
+                }
+            }
+        }
+        //0: 맨손. 1 : 손1에 한손 착용. 2 : 손2에 한손 착용. 3 : 손1,2 각각 한손 착용. 4 : 양손검,도끼,둔기. 5 : 창, 지팡이
+        PtType[] arr = null;
+        bool hasArmor = slot["Armor"] != null;
+        switch (wpState)
+        {
+            case 0: case 2: arr = hasArmor ? new PtType[] { PtType.BaseHand1A, PtType.BaseHand2, PtType.EqHand1A, PtType.EqHand2 } : new PtType[] { PtType.BaseHand1A, PtType.BaseHand2 }; break;
+            case 1: case 3: arr = hasArmor ? new PtType[] { PtType.BaseHand1B, PtType.BaseHand2, PtType.EqHand1B, PtType.EqHand2 } : new PtType[] { PtType.BaseHand1B, PtType.BaseHand2 }; break;
+            case 4: arr = hasArmor ? new PtType[] { PtType.BaseBoth, PtType.EqBoth } : new PtType[] { PtType.BaseBoth }; break;
+            case 5: arr = hasArmor ? new PtType[] { PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand2, PtType.EqHand1A, PtType.EqHand2 } : new PtType[] { PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand2 }; break;
+        }
+        if (arr != null)
+        {
+            for (int i = 0; i < arr.Length; i++)
+                ptSpr[arr[i]].gameObject.SetActive(true);
+        }
+        if (hasArmor)
+        {
+            ptSpr[PtType.EqBody].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_body");
+            ptSpr[PtType.EqHand1A].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_hand1A");
+            ptSpr[PtType.EqHand1B].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_hand1B");
+            ptSpr[PtType.EqHand2].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_hand2");
+            ptSpr[PtType.EqBoth].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_both");
             ptSpr[PtType.EqBody].gameObject.SetActive(true);
-            switch (handState[0])
-            {
-                case -1: ptSpr[PtType.BaseHand1A].gameObject.SetActive(true); ptSpr[PtType.EqHand1A].gameObject.SetActive(true); break;
-                case 0: ptSpr[PtType.BaseHand1B].gameObject.SetActive(true); ptSpr[PtType.EqHand1B].gameObject.SetActive(true); break;
-                case 1: ptSpr[PtType.BaseBoth].gameObject.SetActive(true); ptSpr[PtType.EqBoth].gameObject.SetActive(true); break;
-                case 2: ptSpr[PtType.BaseHand1A].gameObject.SetActive(true); ptSpr[PtType.BaseHand1A2].gameObject.SetActive(true); ptSpr[PtType.EqHand1A].gameObject.SetActive(true); break;
-            }
-            if (handState[1] != 1)
-            {
-                ptSpr[PtType.BaseHand2].gameObject.SetActive(true);
-                ptSpr[PtType.EqHand2].gameObject.SetActive(true);
-            }
         }
     }
-    private void SetHandSprite(Dictionary<PtType, SpriteRenderer> ptSpr, ItemData data, int handIndex)
-    {
-        var sprType = data.Both switch
-        {
-            0 => handIndex == 0 ? PtType.OneWp1 : PtType.OneWp2,
-            1 => (handIndex == 0 && data.Type == 2) ? PtType.TwoWp1 : PtType.TwoWp2,
-            _ => PtType.TwoWp3
-        };
-
-        ptSpr[sprType].gameObject.SetActive(true);
-        ptSpr[sprType].sprite = ResManager.GetSprite("wp" + data.ItemId.ToString());
-    }
+    // private void 
     #endregion
 
     #region 특성 관리
