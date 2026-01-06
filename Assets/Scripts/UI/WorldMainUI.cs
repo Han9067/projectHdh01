@@ -28,6 +28,7 @@ public class WorldMainUI : UIScreen
     {
         Presenter.Bind("WorldMainUI", this);
         UpdateCrownTxt();
+        UpdateState();
     }
 
     private void OnDisable()
@@ -101,7 +102,17 @@ public class WorldMainUI : UIScreen
     {
         tDay++;
         CalcCalender();
-        UnityEngine.Debug.Log("tDay: " + wDay);
+        if (wDay % 2 == 0)
+        {
+            //몬스터 리스폰
+            UnityEngine.Debug.Log("몬스터 리스폰");
+            WorldCore.I.CheckAllAreaWorldMon();
+        }
+        if (wDay % 7 == 0)
+        {
+            //도시 퀘스트 재생성
+            UnityEngine.Debug.Log("도시 퀘스트 재생성");
+        }
     }
     public void StateGameSpd(string key)
     {
@@ -178,7 +189,11 @@ public class WorldMainUI : UIScreen
         mTMPText["HpVal"].text = PlayerManager.I.pData.HP.ToString() + "/" + PlayerManager.I.pData.MaxHP.ToString();
         mTMPText["MpVal"].text = PlayerManager.I.pData.MP.ToString() + "/" + PlayerManager.I.pData.MaxMP.ToString();
         mTMPText["SpVal"].text = PlayerManager.I.pData.SP.ToString() + "/" + PlayerManager.I.pData.MaxSP.ToString();
-        // mTMPText["FatVal"].text = PlayerManager.I.pData.Fat.ToString() + "/" + PlayerManager.I.pData.MaxFat.ToString();
+        mTMPText["FatVal"].text = PlayerManager.I.fatigue.ToString();
+        mHpGg.value = (float)PlayerManager.I.pData.HP / PlayerManager.I.pData.MaxHP * 100f;
+        mMpGg.value = (float)PlayerManager.I.pData.MP / PlayerManager.I.pData.MaxMP * 100f;
+        mSpGg.value = (float)PlayerManager.I.pData.SP / PlayerManager.I.pData.MaxSP * 100f;
+        mFatGg.value = PlayerManager.I.fatigue / 100f;
     }
     private void UpdateCrownTxt()
     {

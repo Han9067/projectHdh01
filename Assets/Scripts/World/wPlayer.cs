@@ -22,6 +22,6 @@ public class wPlayer : MonoBehaviour
             frmFront.sprite = ResManager.GetSprite("frm_front");
 
         GsManager.I.SetObjAppearance(0, ptSpr, true);
-        GsManager.I.SetObjAllEqParts(0, ptSpr);
+        GsManager.I.SetObjBodyEqParts(0, ptSpr);
     }
 }

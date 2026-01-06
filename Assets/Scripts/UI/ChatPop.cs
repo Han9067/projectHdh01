@@ -98,7 +98,7 @@ public class ChatPop : UIScreen
                         PlayerManager.I.CompleteMainQuest(101);
                         Presenter.Send("WorldMainUI", "SetTraceQst");
                         UIManager.ClosePopup("CityEnterPop");
-                        WorldCore.I.CreateAllAreaWorldMon();
+                        WorldCore.I.CheckAllAreaWorldMon();
                         Close();
                         break;
                 }

@@ -314,7 +314,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void LoadEnemyGrp()
     {
-        WorldObjManager.I.TestCreateMon(); //테스트용
+        // WorldObjManager.I.TestCreateMon(); //테스트용
 
         if (WorldObjManager.I.btMonList.Count > 0)
         {
@@ -848,6 +848,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public void MoveToWorld()
     {
         DOTween.KillAll();
+        GsManager.I.gameState = GameState.World; //스테이터스 변경
         UIManager.ChangeScene("World");
     }
     void CheckMainManager()

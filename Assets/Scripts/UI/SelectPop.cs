@@ -131,6 +131,7 @@ public class SelectPop : UIScreen
                             break;
                     }
                 }
+                Debug.Log(GsManager.I.gameState);
                 switch (GsManager.I.gameState)
                 {
                     case GameState.World:

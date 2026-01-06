@@ -8,7 +8,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
     [Header("플레이어 데이터")]
     public int currentCity = 0;
-    public int fatigue = 0; // 피로도
+    public int fatigue = 100; // 피로도
     public PlayerData pData;
     public List<List<InvenGrid>> grids;
     public Vector3 worldPos = new Vector3(0, 0, 0);
@@ -276,6 +276,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     {
         ItemManager.I.TestDropItem();
     }
+    public void TestAddExp()
+    {
+        pData.Exp += 10000;
+    }
     #endregion
 }
 
@@ -289,24 +293,16 @@ public class PlayerManagerEditor : Editor
         PlayerManager myScript = (PlayerManager)target;
 
         if (GUILayout.Button("플레이어 피부 변경"))
-        {
             myScript.ChangePlayerSkin();
-        }
         if (GUILayout.Button("플레이어 머리 색상 변경"))
-        {
             myScript.ChangePlayerHairColor();
-        }
         if (GUILayout.Button("스킬 추가"))
-        {
             myScript.TestAddSkExp();
-        }
         if (GUILayout.Button("아이템 드랍"))
-        {
             myScript.TestDropItem();
-        }
         if (GUILayout.Button("튜토리얼 시작"))
-        {
             myScript.StartTutorial();
-        }
+        if (GUILayout.Button("플레이어 경험치 획득"))
+            myScript.TestAddExp();
     }
 }

@@ -13,7 +13,8 @@ public class InvenPop : UIScreen
     [SerializeField] private List<ItemObj> itemList = new List<ItemObj>(); //item object 인벤토리 아이템 리스트
     private List<List<InvenGrid>> pGrids, rwdGrids; //플레이어 인벤토리 그리드
     private Transform ivSlot, iPrt, eqPrt, rwdSlot;
-    public static bool isActive = false, moveOn = false, isLoadRwd = false, isLoadInven = false;
+    public static bool isActive = false, moveOn = false, isLoadInven = false;
+    private bool isLoadRwd = false;
     public static string[] curEq;
     public static int posType = -1;
     private int curState = 0, curItemX = -1, curItemY = -1;
@@ -147,6 +148,8 @@ public class InvenPop : UIScreen
             isLoadRwd = true;
             SetRwdPop();
         }
+        else
+            InitRwdGrid();
         mGameObject["RwdPop"].SetActive(true);
         LoadRwd();
     }
@@ -157,9 +160,7 @@ public class InvenPop : UIScreen
         {
             List<InvenGrid> row = new List<InvenGrid>();
             for (int x = 0; x < 10; x++)
-            {
                 row.Add(new InvenGrid { x = x, y = y, slotId = -1 });
-            }
             rwdGrids.Add(row);
         }
 
@@ -176,6 +177,14 @@ public class InvenPop : UIScreen
                 rwdGridImg[y, x] = obj.GetComponent<Image>();
                 rwdGridRect[y, x] = obj.transform as RectTransform;
             }
+        }
+    }
+    private void InitRwdGrid()
+    {
+        for (int y = 0; y < 10; y++)
+        {
+            for (int x = 0; x < 10; x++)
+                rwdGrids[y][x].slotId = -1;
         }
     }
     private void LoadInven()
@@ -737,6 +746,8 @@ public class InvenPop : UIScreen
         {
             if (itemList[i].uid == uid)
             {
+                InitItemGrid(0, itemList[i].x, itemList[i].y, itemList[i].itemData.W, itemList[i].itemData.H);
+                PlayerManager.I.pData.Inven.Remove(itemList[i].itemData);
                 Destroy(itemList[i].gameObject);
                 itemList.RemoveAt(i);
             }

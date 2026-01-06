@@ -57,7 +57,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         if (!PlayerManager.I.isObjCreated)
         {
             PlayerManager.I.isObjCreated = true;
-            CreateAllAreaWorldMon();
+            CheckAllAreaWorldMon();
         }
         else
         {
@@ -69,6 +69,7 @@ public class WorldCore : AutoSingleton<WorldCore>
 
         if (ItemManager.I.isDrop)
         {
+            Debug.Log(ItemManager.I.RewardItemIdList.Count);
             UIManager.ShowPopup("InvenPop");
             Presenter.Send("InvenPop", "OpenRwdPop");
             ItemManager.I.isDrop = false;
@@ -236,7 +237,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     #endregion
     #region 월드맵 몬스터 관련
-    public void CreateAllAreaWorldMon()
+    public void CheckAllAreaWorldMon()
     {
         foreach (var area in WorldObjManager.I.areaDataList)
         {
@@ -246,7 +247,6 @@ public class WorldCore : AutoSingleton<WorldCore>
                 area.Value.curCnt = area.Value.maxCnt;
             }
         }
-        //wAreaPos
     }
     void CreateWorldMon(int areaID, int remain)
     {
@@ -326,7 +326,8 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     void ReCreateWorldMon()
     {
-        //등급 상향 및 특정 조건으로 인한 몬스터 재배치
+        AllRemoveWorldMon();
+        CheckAllAreaWorldMon();
     }
     #endregion
     #region 월드맵 도로 관련
@@ -433,6 +434,8 @@ public class WorldCore : AutoSingleton<WorldCore>
         WorldObjManager.I.UpdateWorldMonData(wMonObj);
         Presenter.Send("WorldMainUI", "SaveAllTime");
         DOTween.KillAll();
+        WorldObjManager.I.RemoveWorldMonGrp();
+        GsManager.I.gameState = GameState.Battle; //스테이터스 변경
         UIManager.ChangeScene("Battle");
         // blackImg.gameObject.SetActive(true);
         // blackImg.color = new Color(0, 0, 0, 0f);
