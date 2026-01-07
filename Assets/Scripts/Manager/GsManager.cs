@@ -224,25 +224,24 @@ public class GsManager : AutoSingleton<GsManager>
         }
         img["Eye2"].color = eyeColor;
     }
-    public void SetUiEqParts(ICharData data, string backUpKey, Dictionary<string, GameObject> mGameObj, bool isPrf = false, string addKey = "")
+    public void SetUiEqParts(ICharData data, Dictionary<string, GameObject> mGameObj, string addKey = "")
     {
         var eq = data.EqSlot;
         string[] parts = new string[] { "EqBody", "EqHand1A", "EqHand2" };
         foreach (var v in parts)
-            mGameObj[v].SetActive(false);
+            mGameObj[addKey + v].SetActive(false);
 
         if (eq["Armor"] != null)
         {
             string eqStr = eq["Armor"].ItemId.ToString();
-            Debug.Log(eqStr);
-            mGameObj["EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_body");
-            mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
-            mGameObj["EqBody"].SetActive(true);
-            mGameObj["EqHand2"].SetActive(true);
+            mGameObj[addKey + "EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_body");
+            mGameObj[addKey + "EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
+            mGameObj[addKey + "EqBody"].SetActive(true);
+            mGameObj[addKey + "EqHand2"].SetActive(true);
             if (eq["Armor"].ItemId < 10501) //상점 npc 복장엔 손1번이 없다.
             {
-                mGameObj["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
-                mGameObj["EqHand1A"].SetActive(true);
+                mGameObj[addKey + "EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
+                mGameObj[addKey + "EqHand1A"].SetActive(true);
             }
         }
     }

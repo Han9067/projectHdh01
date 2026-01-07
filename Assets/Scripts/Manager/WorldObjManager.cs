@@ -24,9 +24,8 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
 {
     public class wmGrid
     {
-        public int x;
-        public int y;
-        public string tName;
+        public int x, y;
+        public string tName, tType;
         public Vector3 worldPos;
         public float tCost; //타일 비용
     }
@@ -65,6 +64,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
                 grid.x = x;
                 grid.y = y;
                 grid.tName = tile != null ? tile.name : "wt_o";
+                grid.tType = grid.tName.Substring(3, 1);
                 grid.worldPos = tilemap.CellToWorld(tPos) + tilemap.cellSize * 0.5f;  // 월드 좌표도 저장
                 grid.tCost = GetCost(grid.tName);
                 wGridDic[(x, y)] = grid;
@@ -180,12 +180,12 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         {
             case "wt_r":
                 return 0.6f;
-            case "wt_n":
-                return 1f;
+            // case "wt_n":
+            //     return 1f;
             case "wt_f":
                 return 1.4f;
             default:
-                return 999f;
+                return 1f;
         }
     }
     #endregion

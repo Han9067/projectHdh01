@@ -23,12 +23,12 @@ public class WorldMainUI : UIScreen
             mGameObject["QstBox"].SetActive(false);
         else
             SetTraceQst();
+        UpdateCrownTxt();
+        UpdateState();
     }
     private void OnEnable()
     {
         Presenter.Bind("WorldMainUI", this);
-        UpdateCrownTxt();
-        UpdateState();
     }
 
     private void OnDisable()

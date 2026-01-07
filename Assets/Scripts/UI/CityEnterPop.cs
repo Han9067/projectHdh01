@@ -31,6 +31,7 @@ public class CityEnterPop : UIScreen
         canvasGrp = GetComponent<CanvasGroup>();
         if (canvasGrp == null)
             canvasGrp = gameObject.AddComponent<CanvasGroup>();
+        InitGuildQstChatHandlers(); //길드 퀘스트 채팅 핸들러 초기화
     }
     private void OnEnable()
     {
@@ -91,18 +92,7 @@ public class CityEnterPop : UIScreen
                     switch (sId)
                     {
                         case 1:
-                            if (tGQstList.Contains(101))
-                            {
-                                int n = tGQstList.IndexOf(101);
-                                list.Add(101); list.Add(npcId); list.Add(PlayerManager.I.pData.QuestList[n].Order);
-                            }
-                            else if (tGQstList.Contains(1))
-                            {
-                                int num = tGQstList.IndexOf(1);
-                                tGQstList.RemoveAt(num);
-                                list.Add(1); list.Add(npcId); list.Add(0);
-                            }
-                            mGameObject["DI_Chat"].SetActive(false);
+                            list = GetQstChatList();
                             UIManager.ShowPopup("ChatPop");
                             Presenter.Send("ChatPop", "ChatStart", list);
                             break;
@@ -155,7 +145,7 @@ public class CityEnterPop : UIScreen
                 mTMPText["NameVal"].text = npc.Name;
                 mTMPText["RlsVal"].text = GetRlsState(npc.Rls);
                 GsManager.I.SetUiBaseParts(npcId, mGameObject, true);
-                GsManager.I.SetUiEqParts(npc, "NpcEq", mGameObject, true);
+                GsManager.I.SetUiEqParts(npc, mGameObject);
                 UpdateInListPreset();
                 break;
         }
@@ -362,9 +352,7 @@ public class CityEnterPop : UIScreen
         else
             return "매우 나쁨";
     }
-    public override void Refresh()
-    {
-    }
+    public override void Refresh() { }
     #region 기타
     void InitAllDots()
     {
@@ -442,6 +430,52 @@ public class CityEnterPop : UIScreen
                 }
             }
         }
+    }
+    #endregion
+    #region 대화 관련
+    private Dictionary<int, Func<int, List<int>>> qstChatHandlers = new Dictionary<int, Func<int, List<int>>>();
+
+    private void InitGuildQstChatHandlers()
+    {
+        // 퀘스트 ID별 처리 로직을 딕셔너리에 등록
+        qstChatHandlers.Clear();
+        qstChatHandlers[101] = hQst101;
+        qstChatHandlers[1] = hQst1;
+        // 새로운 퀘스트 추가 시 여기에만 등록하면 됨
+        // questChatHandlers[102] = HandleQuest10
+    }
+    private List<int> hQst101(int order)
+    {
+        return new List<int> { 101, npcId, order };
+    }
+    private List<int> hQst1(int order)
+    {
+        return new List<int> { 1, npcId, order };
+    }
+    private List<int> GetQstChatList()
+    {
+        List<int> priority = new List<int>();
+        switch (sId)
+        {
+            case 1:
+                priority.Add(101);
+                priority.Add(1);
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+        }
+        if (priority.Count == 0)
+            return new List<int> { 0, npcId, 0 };
+        foreach (int questId in priority)
+        {
+            if (tGQstList.Contains(questId) && qstChatHandlers.ContainsKey(questId))
+                return qstChatHandlers[questId](npcId);
+        }
+
+        // 일반 채팅
+        return new List<int> { 0, npcId, 0 };
     }
     #endregion
 }

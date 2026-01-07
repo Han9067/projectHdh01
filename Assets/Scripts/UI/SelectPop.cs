@@ -7,9 +7,7 @@ public class SelectPop : UIScreen
 {
     [SerializeField] private GameObject pop;
     public List<GameObject> selList = new List<GameObject>();
-    #region 아이템
     private ItemData selItem;
-    #endregion
 
     private void Awake()
     {
@@ -49,7 +47,7 @@ public class SelectPop : UIScreen
         switch (key)
         {
             case "SetList":
-                int idx = 1;
+                int hei = 1;
                 //순차적으로 0 :구매, 1: 판매, 2: 정보, 3: 사용하기, 4: 장착하기
                 for (int i = 0; i < selList.Count; i++)
                     selList[i].SetActive(false);
@@ -66,12 +64,13 @@ public class SelectPop : UIScreen
                         //무기, 장비 아이템
                         selList[4].SetActive(true);
                         selList[5].SetActive(true);
+                        hei = 2;
                         break;
                     case 4:
                         //해당 아이템이 내부 인벤에 있으며 소모형 아이템일 경우
                         selList[3].SetActive(true);
                         selList[5].SetActive(true);
-                        idx = 4;
+                        hei = 2;
                         break;
                     case 5:
                         //기타 아이템
@@ -82,7 +81,7 @@ public class SelectPop : UIScreen
                 if (popRect != null)
                 {
                     Vector2 newSize = popRect.sizeDelta;
-                    newSize.y = (idx * 40) + 60;
+                    newSize.y = (hei * 40) + 60;
                     popRect.sizeDelta = newSize;
                 }
                 break;
@@ -114,32 +113,32 @@ public class SelectPop : UIScreen
                 {
                     switch (v.Key)
                     {
+                        case 101: PlayerManager.I.AddSkExp(9, v.Value); break;
+                        case 102: PlayerManager.I.AddSkExp(10, v.Value); break;
+                        case 103: PlayerManager.I.AddSkExp(11, v.Value); break;
+                        case 104: PlayerManager.I.AddSkExp(12, v.Value); break;
+                        case 105: PlayerManager.I.AddSkExp(13, v.Value); break;
+                        case 106: PlayerManager.I.AddSkExp(14, v.Value); break;
+                        case 107: PlayerManager.I.AddSkExp(15, v.Value); break;
                         case 201:
                             PlayerManager.I.pData.HP += v.Value;
                             if (PlayerManager.I.pData.HP > PlayerManager.I.pData.MaxHP)
                                 PlayerManager.I.pData.HP = PlayerManager.I.pData.MaxHP;
+                            UpdateStateUI();
                             break;
                         case 202:
                             PlayerManager.I.pData.MP += v.Value;
                             if (PlayerManager.I.pData.MP > PlayerManager.I.pData.MaxMP)
                                 PlayerManager.I.pData.MP = PlayerManager.I.pData.MaxMP;
+                            UpdateStateUI();
                             break;
                         case 203:
                             PlayerManager.I.pData.SP += v.Value;
                             if (PlayerManager.I.pData.SP > PlayerManager.I.pData.MaxSP)
                                 PlayerManager.I.pData.SP = PlayerManager.I.pData.MaxSP;
+                            UpdateStateUI();
                             break;
                     }
-                }
-                Debug.Log(GsManager.I.gameState);
-                switch (GsManager.I.gameState)
-                {
-                    case GameState.World:
-                        Presenter.Send("WorldMainUI", "UpdateInfo");
-                        break;
-                    case GameState.Battle:
-                        Presenter.Send("BattleMainUI", "UpdateInfo");
-                        break;
                 }
                 Presenter.Send("InvenPop", "DeleteItem", selItem.Uid);
                 Close();
@@ -153,7 +152,18 @@ public class SelectPop : UIScreen
                 break;
         }
     }
-
+    private void UpdateStateUI()
+    {
+        switch (GsManager.I.gameState)
+        {
+            case GameState.World:
+                Presenter.Send("WorldMainUI", "UpdateInfo");
+                break;
+            case GameState.Battle:
+                Presenter.Send("BattleMainUI", "UpdateInfo");
+                break;
+        }
+    }
     public override void Refresh() { }
 
     private IEnumerator SetPos()

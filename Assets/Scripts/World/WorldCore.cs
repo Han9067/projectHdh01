@@ -89,6 +89,23 @@ public class WorldCore : AutoSingleton<WorldCore>
         if (Input.GetKey(KeyCode.A)) moveDirection.x -= 1; // 왼쪽 이동
         if (Input.GetKey(KeyCode.D)) moveDirection.x += 1; // 오른쪽 이동
         if (Input.GetMouseButtonDown(0)) InputPlayerAct();
+        if (Input.GetMouseButtonDown(1))
+        {
+            // 1. 마우스 위치를 월드 좌표로 변환
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPos.z = 0f; // z축은 0으로 설정
+
+            // 2. 월드 좌표를 셀 좌표로 변환
+            Vector3Int cellPos = worldMapTile.WorldToCell(mouseWorldPos);
+
+            // 3. wGridDic에서 타일 데이터 조회
+            if (WorldObjManager.I.wGridDic.TryGetValue((cellPos.x, cellPos.y), out WorldObjManager.wmGrid grid))
+            {
+                // grid 객체를 사용할 수 있습니다
+                // grid.x, grid.y, grid.tName, grid.worldPos, grid.tCost 등의 정보에 접근 가능
+                Debug.Log($"타일 이름: {grid.tName}, 타일 타입: {grid.tType}, 비용: {grid.tCost}");
+            }
+        }
         #endregion
         #region Camera Act
         // Time.unscaledDeltaTime을 사용하여 일시정지 상태에서도 일정한 속도로 이동
