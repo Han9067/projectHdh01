@@ -5,8 +5,6 @@ using UnityEngine;
 public class ObjInfoPop : UIScreen
 {
 
-
-
     private void Awake()
     {
         Regist();
@@ -58,9 +56,10 @@ public class ObjInfoPop : UIScreen
     {
         string[] strs = str.Split('_');
         mTMPText["ObjName"].text = LocalizationManager.GetValue(strs[0]);
-        mTMPText["ObjHpVal"].text = strs[1];
-        mTMPText["ObjAttVal"].text = strs[2];
-        mTMPText["ObjDefVal"].text = strs[3];
+        mTMPText["ObjLvVal"].text = strs[1];
+        mTMPText["ObjHpVal"].text = strs[2];
+        mTMPText["ObjAttVal"].text = strs[3];
+        mTMPText["ObjDefVal"].text = strs[4];
     }
 
 }

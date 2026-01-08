@@ -5,7 +5,7 @@ using GB;
 
 public class wMarker : MonoBehaviour
 {
-    [SerializeField] private int mkId, mkType;
+    [SerializeField] private int mkUid, mkType;
     [SerializeField] private SpriteRenderer mainSpr;
     [SerializeField] private SpriteRenderer iconSpr;
     void Start()
@@ -20,18 +20,23 @@ public class wMarker : MonoBehaviour
     }
     public void SetMarkerData(int id, int type)
     {
-        mkId = id;
+        mkUid = id; //마커 아이디디
         mkType = type;
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            WorldCore.I.StopPlayer();
-            Debug.Log("OnTriggerEnter2D");
-            WorldObjManager.I.TutoMon();
-            UIManager.ShowPopup("BattleReadyPop");
-            Presenter.Send("BattleReadyPop", "MonInfo", "1");
+            switch (mkType)
+            {
+                case 99:
+                    WorldCore.I.StopPlayer();
+                    Debug.Log("OnTriggerEnter2D");
+                    WorldObjManager.I.TutoMon();
+                    UIManager.ShowPopup("BattleReadyPop");
+                    Presenter.Send("BattleReadyPop", "MonInfo", "1");
+                    break;
+            }
         }
     }
 }

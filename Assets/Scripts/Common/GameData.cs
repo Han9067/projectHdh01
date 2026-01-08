@@ -87,13 +87,13 @@ public class SkData
 public class SkAttData
 {
     //0 : AttID -> 특성ID, 1 : Val -> 스킬 내 특성 초기값, 2 : Lim -> 특성 활성 레벨, 3 : Itv -> 레벨별 특성값 증가치
-    public int AttID, Val, Lim, Itv;
+    public int AttID, Val, Lim, ItvVal, ItvLv;
     public string Name, Str;
     public SkAttData(string att)
     {
         if (att == "0")
         {
-            AttID = 0; Val = 0; Lim = 0; Itv = 0;
+            AttID = 0; Val = 0; Lim = 0; ItvVal = 0;
             return;
         }
         string[] attVal = att.Split('_');
@@ -101,8 +101,9 @@ public class SkAttData
         Name = GsManager.I.GetAttName(AttID);
         Val = int.Parse(attVal[1]);
         Lim = int.Parse(attVal[2]);
-        Itv = int.Parse(attVal[3]);
-        Str = attVal[4];
+        ItvVal = int.Parse(attVal[3]);
+        ItvLv = int.Parse(attVal[4]);
+        Str = attVal[5];
     }
 }
 

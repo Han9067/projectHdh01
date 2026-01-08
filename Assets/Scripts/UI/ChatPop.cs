@@ -109,7 +109,7 @@ public class ChatPop : UIScreen
                         break;
                     case "QstM_Tuto_2_2":
                         PlayerManager.I.NextQuestOrder(101);
-                        WorldCore.I.CreateTutoMarker();
+                        WorldCore.I.CreateWorldMarker(new Vector3(-9.65f, -35.2f, 0), 99);
                         UIManager.ClosePopup("CityEnterPop");
                         Close();
                         break;

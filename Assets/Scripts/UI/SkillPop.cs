@@ -230,7 +230,8 @@ public class SkillPop : UIScreen
         foreach (var v in data.Att)
         {
             string name = LocalizationManager.GetValue(v.Name);
-            int val = v.Val + v.Itv * (data.Lv - 1);
+            int cnt = data.Lv / v.ItvLv;
+            int val = v.Val + (v.ItvVal * cnt);
             str += string.Format(LocalizationManager.GetValue(v.Str), name, val) + "\n";
         }
         mTMPText["AttVal"].text = str;

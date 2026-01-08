@@ -811,7 +811,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         UIManager.ShowPopup("ObjInfoPop");
         string data = "";
-        data += mData[curSelObjId].mName + "_" + mData[curSelObjId].hp + " / " + mData[curSelObjId].maxHp + "_"
+        data += mData[curSelObjId].mName + "_" + mData[curSelObjId].lv + "_" + mData[curSelObjId].hp + " / " + mData[curSelObjId].maxHp + "_"
          + mData[curSelObjId].att + "_" + mData[curSelObjId].def;
         Presenter.Send("ObjInfoPop", "ObjInfoData", data);
     }

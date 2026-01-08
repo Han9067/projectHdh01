@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GB;
-using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.Rendering;
 
@@ -11,10 +9,11 @@ public class wMon : MonoBehaviour
     public int monIdx, areaID; //배열 인덱스
     [SerializeField] private int monId;
     public List<int> monGrp = new List<int>();
-    [SerializeField] private SpriteRenderer frmBack, frmFront, frmDeco, mainSpr;
+    [SerializeField] private SpriteRenderer frmBack, frmFront, frmDeco, mainSpr, traceSpr;
     public MonData[] monData;
     [SerializeField] private int uId;
     [SerializeField] private SortingGroup sGrp;
+    public bool isOutline = false;
     private float alpha = 1f;
     public Vector3 tgPos;
     void Start()
@@ -43,6 +42,11 @@ public class wMon : MonoBehaviour
         areaID = area;
         monId = mId;
         monGrp = mList;
+    }
+
+    public void TraceObj(bool on)
+    {
+        traceSpr.gameObject.SetActive(on);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

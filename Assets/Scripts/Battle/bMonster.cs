@@ -12,7 +12,7 @@ public class bMonster : MonoBehaviour
     public GameObject shdObj, bodyObj, ggParent, ggObj;
     bool isGG = false;
     public float hp, maxHp;
-    public int att, def, crt, crtRate, hit, eva, gainExp;
+    public int att, def, crt, crtRate, hit, eva, gainExp, lv;
     public int w, h;
     [SerializeField] private SpriteRenderer bodySpr;
     private MaterialPropertyBlock mProp;
@@ -40,7 +40,7 @@ public class bMonster : MonoBehaviour
         hit = monData.Hit;
         eva = monData.Eva;
         gainExp = monData.GainExp;
-
+        lv = monData.Lv;
         mProp = new MaterialPropertyBlock();
     }
     public void SetMonData(int objId, int monId, float px, float py)

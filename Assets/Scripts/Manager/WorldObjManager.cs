@@ -20,6 +20,11 @@ public class WorldMonData
     public List<int> monList = new List<int>();
     public Vector3 pos, tgPos;
 }
+public class WorldMarkerData
+{
+    public int type;
+    public Vector3 pos;
+}
 public class WorldObjManager : AutoSingleton<WorldObjManager>
 {
     public class wmGrid
@@ -591,7 +596,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
     }
     #endregion
 
-    #region 월드맵 몬스터 스폰 관련
+    #region 월드맵 오브젝트 스폰 관련
     private SpawnMonTable _spawnMonTable;
     public SpawnMonTable SpawnMonTable => _spawnMonTable ?? (_spawnMonTable = GameDataManager.GetTable<SpawnMonTable>());
     private MonGrpTable _monGrpTable;
@@ -599,6 +604,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
     public Dictionary<int, MonGrpData> monGrpData = new Dictionary<int, MonGrpData>();
     public Dictionary<int, WorldAreaData> areaDataList = new Dictionary<int, WorldAreaData>(); //월드맵 구역 데이터
     public Dictionary<int, WorldMonData> worldMonDataList = new Dictionary<int, WorldMonData>();
+    public Dictionary<int, WorldMarkerData> worldMarkerDataList = new Dictionary<int, WorldMarkerData>();
     public void CreateWorldAreaData()
     {
         foreach (var monGrp in MonGrpTable.Datas)
@@ -681,6 +687,21 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         foreach (var t in list)
             worldMonDataList.Remove(t);
         btMonGrpUid.Clear();
+    }
+    public void AddWorldMarkerData(int uId, int type, Vector3 pos)
+    {
+        worldMarkerDataList[uId] = new WorldMarkerData
+        {
+            type = type,
+            pos = pos,
+        };
+    }
+    public void UpdateWorldMarkerData(Dictionary<int, wMarker> wMarkerObj)
+    {
+        foreach (var wMarker in wMarkerObj)
+        {
+            worldMarkerDataList[wMarker.Key].pos = wMarker.Value.transform.position;
+        }
     }
     #endregion
     #region 전투 참여 몬스터 관리
