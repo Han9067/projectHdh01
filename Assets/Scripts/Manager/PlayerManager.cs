@@ -98,6 +98,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.SkList = data.SkList;
 
         CalcPlayerStat();
+        pData.HP = data.HP;
+        pData.MP = data.MP;
+        pData.SP = data.SP;
 
         isObjCreated = true; //저장된 데이터이기에 해당 불대수 true로 설정
         worldPos = pos;
@@ -152,9 +155,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     }
     private void CalcPlayerStat()
     {
-        pData.MaxHP = pData.VIT * 4 + pData.AddHP;
-        pData.MaxMP = pData.INT * 4 + pData.AddMP;
-        pData.MaxSP = pData.END * 4 + pData.AddSP;
+        pData.MaxHP = pData.VIT * SV.HpVal + pData.AddHP;
+        pData.MaxMP = pData.INT * SV.MpVal + pData.AddMP;
+        pData.MaxSP = pData.END * SV.SpVal + pData.AddSP;
         if (pData.HP > pData.MaxHP) pData.HP = pData.MaxHP;
         if (pData.MP > pData.MaxMP) pData.MP = pData.MaxMP;
         if (pData.SP > pData.MaxSP) pData.SP = pData.MaxSP;

@@ -6,6 +6,10 @@ using UnityEngine.UI;
 using System.Linq;
 using JetBrains.Annotations;
 
+public static class SV //State Value
+{
+    public const int HpVal = 8, MpVal = 4, SpVal = 4;
+}
 public enum GameState
 {
     Menu, World, Battle

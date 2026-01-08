@@ -57,9 +57,9 @@ public class NpcManager : AutoSingleton<NpcManager>
     }
     private void CalcNpcStat(NpcData npcData)
     {
-        npcData.MaxHP = npcData.VIT * 4 + npcData.AddHP;
-        npcData.MaxMP = npcData.INT * 4 + npcData.AddMP;
-        npcData.MaxSP = npcData.END * 4 + npcData.AddSP;
+        npcData.MaxHP = npcData.VIT * SV.HpVal + npcData.AddHP;
+        npcData.MaxMP = npcData.INT * SV.MpVal + npcData.AddMP;
+        npcData.MaxSP = npcData.END * SV.SpVal + npcData.AddSP;
         if (npcData.HP > npcData.MaxHP) npcData.HP = npcData.MaxHP;
         if (npcData.MP > npcData.MaxMP) npcData.MP = npcData.MaxMP;
         if (npcData.SP > npcData.MaxSP) npcData.SP = npcData.MaxSP;

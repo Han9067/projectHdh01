@@ -10,7 +10,7 @@ public class bPlayer : MonoBehaviour
     public int objId = 1000;
     Dictionary<PtType, SpriteRenderer> ptSpr = new Dictionary<PtType, SpriteRenderer>();
     public GameObject ptMain;
-    private PlayerData pData;
+    public PlayerData pData;
     [SerializeField] private SortingGroup sGrp;
     void Awake()
     {
@@ -22,10 +22,10 @@ public class bPlayer : MonoBehaviour
         GsManager.I.SetObjAppearance(0, ptSpr);
         GsManager.I.SetObjAllEqParts(0, ptSpr);
     }
-    public void OnDamaged(int dmg)
+    public void OnDamaged(int att, int crt, int crtRate)
     {
-        //플레이어 피격!
-        dmg = dmg > pData.Def ? dmg - pData.Def : 0;
+        Debug.Log("OnDamaged: " + att + " " + crt + " " + crtRate);
+        int dmg = GsManager.I.GetDamage(att, pData.Def);
         pData.HP -= dmg;
         if (pData.HP <= 0)
         {
@@ -55,7 +55,7 @@ public class bPlayerEditor : Editor
 
         if (GUILayout.Button("체력 차감"))
         {
-            myScript.OnDamaged(2);
+            myScript.OnDamaged(2, 0, 0);
         }
     }
 }

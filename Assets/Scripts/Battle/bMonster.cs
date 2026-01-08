@@ -60,9 +60,10 @@ public class bMonster : MonoBehaviour
     {
         sGrp.sortingOrder = y;
     }
-    public void OnDamaged(int dmg, BtFaction attacker)
+    public void OnDamaged(int att, int crt, int crtRate, BtFaction attacker)
     {
-        dmg = dmg > def ? dmg - def : 0;
+        Debug.Log("OnDamaged: " + att + " " + crt + " " + crtRate);
+        int dmg = GsManager.I.GetDamage(att, def);
         hp -= dmg;
         if (hp > 0 && !isGG)
         {
@@ -71,9 +72,7 @@ public class bMonster : MonoBehaviour
         }
 
         if (hp <= 0)
-        {
             StartCoroutine(DeathMon(attacker));
-        }
         else
             ggObj.transform.localScale = new Vector3(hp / maxHp, 1, 1);
         //텍스트 연출

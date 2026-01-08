@@ -4,9 +4,8 @@ using UnityEngine;
 using GB;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEditor.ShaderGraph.Internal;
-using Unity.VisualScripting;
-//GameSystemManager
+using Random = UnityEngine.Random;
+
 public class GsManager : AutoSingleton<GsManager>
 {
     public GameState gameState;
@@ -565,5 +564,15 @@ public class GsManager : AutoSingleton<GsManager>
     }
     // var baseSk = GsManager.SkDataList[skId];
     // var npcSk = baseSk.Clone(); // 또는 new SkData(baseSk);
+    #endregion
+
+    #region 전투 관련
+    public int GetDamage(int att, int def)
+    {
+        if (att + def <= 0) return 1;
+        float result = (float)att * att / (att + def);
+        float ran = Random.Range(0.9f, 1.1f);
+        return (int)(result * ran);
+    }
     #endregion
 }

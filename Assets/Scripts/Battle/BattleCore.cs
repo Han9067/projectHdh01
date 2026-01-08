@@ -84,7 +84,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public GameObject focus, propParent; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
 
     private SpriteRenderer focusSrp;
-    private bPlayer pData;
+    private bPlayer player; //플레이어
     private bool isActionable = false, isMove = false; // 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부
 
     [Header("====Monster====")]
@@ -289,7 +289,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (pObj == null)
             pObj = GameObject.FindGameObjectWithTag("Player");
-        pData = pObj.GetComponent<bPlayer>();
+        player = pObj.GetComponent<bPlayer>();
         //추후 NPC 생성
         if (mapSeed < 1000) // 맵 시드가 1000 미만이면 일반 필드 1001부터는 특수 장소(던전이나 숲 등)
         {
@@ -308,7 +308,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             pObj.transform.position = new Vector3(gGrid[cx, cy].x, gGrid[cx, cy].y, 0);
             cpPos = new Vector2Int(cx, cy);
             gGrid[cx, cy].tId = 1000;
-            pData.SetObjLayer(mapH - cy);
+            player.SetObjLayer(mapH - cy);
             objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos));
         }
     }
@@ -433,7 +433,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         {
                             UpdateGrid(cpPos.x, cpPos.y, ot.mPath[ot.mIdx].x, ot.mPath[ot.mIdx].y, 1, 1, 1000);
                             cpPos = ot.mPath[ot.mIdx];
-                            pData.SetObjLayer(mapH - cpPos.y);
+                            player.SetObjLayer(mapH - cpPos.y);
                             ot.mIdx++;
                         }, () =>
                         {
@@ -562,22 +562,22 @@ public class BattleCore : AutoSingleton<BattleCore>
             {
                 switch (myType)
                 {
-                    case BtObjType.PLAYER:
+                    case BtObjType.PLAYER: //플레이어가 타겟에게 행동
                         switch (tgType)
                         {
                             case BtObjType.MONSTER:
-                                mData[tgId].OnDamaged(PlayerManager.I.pData.Att, BtFaction.ALLY);
+                                mData[tgId].OnDamaged(player.pData.Att, mData[tgId].crt, mData[tgId].crtRate, BtFaction.ALLY);
                                 ShowEff("N_Att", tgPos, myObj.transform.localScale.x);
                                 break;
                             case BtObjType.NPC:
                                 break;
                         }
                         break;
-                    case BtObjType.MONSTER:
+                    case BtObjType.MONSTER: //몬스터가 타겟에게 행동
                         switch (tgType)
                         {
                             case BtObjType.PLAYER:
-                                pData.OnDamaged(mData[myId].att);
+                                player.OnDamaged(mData[myId].att, mData[myId].crt, mData[myId].crtRate);
                                 ShowEff("N_Att", tgPos, myObj.transform.localScale.x);
                                 break;
                             case BtObjType.MONSTER:
@@ -586,7 +586,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                                 break;
                         }
                         break;
-                    case BtObjType.NPC:
+                    case BtObjType.NPC: //NPC가 타겟에게 행동
                         switch (tgType)
                         {
                             case BtObjType.PLAYER:
@@ -821,7 +821,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (attacker == BtFaction.ALLY)
         {
-            PlayerManager.I.pData.Exp += exp; //일단은 플레이어만 넣어두고 추후에 아군 NPC, 몬스터 경험치 획득 추가
+            player.pData.Exp += exp; //일단은 플레이어만 넣어두고 추후에 아군 NPC, 몬스터 경험치 획득 추가
         }
     }
     #endregion

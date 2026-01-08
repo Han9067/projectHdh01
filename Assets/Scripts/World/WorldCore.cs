@@ -457,7 +457,6 @@ public class WorldCore : AutoSingleton<WorldCore>
         // blackImg.gameObject.SetActive(true);
         // blackImg.color = new Color(0, 0, 0, 0f);
         // blackImg.DOFade(1f, 0.5f).SetUpdate(true).OnComplete(() => {
-        //     UIManager.ChangeScene("Battle");
         // });
     }
     #endregion

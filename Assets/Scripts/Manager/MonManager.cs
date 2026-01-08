@@ -43,7 +43,7 @@ public class MonManager : AutoSingleton<MonManager>
             int val = arr.Length > 2 ? int.Parse(arr[2]) : 0;
             dList.Add(new MonData.DropData(itemId, rate, val));
         }
-        int hp = VIT * 4, sp = END * 4, mp = INT * 4;
+        int hp = VIT * SV.HpVal, sp = END * SV.SpVal, mp = INT * SV.MpVal;
         return new MonData
         {
             MonId = id,
