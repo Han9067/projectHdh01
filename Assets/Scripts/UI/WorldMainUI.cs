@@ -105,7 +105,7 @@ public class WorldMainUI : UIScreen
         if (wDay % 2 == 0)
         {
             //몬스터 리스폰
-            UnityEngine.Debug.Log("몬스터 리스폰");
+            UnityEngine.Debug.Log("몬스터 스폰 체크");
             WorldCore.I.CheckAllAreaWorldMon();
         }
         if (wDay % 7 == 0)
@@ -119,7 +119,7 @@ public class WorldMainUI : UIScreen
         string numberStr = key.Replace("X", "");
         int val = int.Parse(numberStr);
         Time.timeScale = val;
-        GsManager.I.worldSpd = val;
+        GsManager.worldSpd = val;
 
         // 버튼 이미지 업데이트
         UpdateSpdBtnImg();
@@ -141,7 +141,7 @@ public class WorldMainUI : UIScreen
         }
 
         // 현재 활성화된 속도 버튼만 노란색 이미지로 변경
-        string curSpdKey = "X" + GsManager.I.worldSpd.ToString();
+        string curSpdKey = "X" + GsManager.worldSpd.ToString();
         if (mButtons.ContainsKey(curSpdKey))
         {
             Image curBtnImg = mButtons[curSpdKey].GetComponent<Image>();

@@ -20,7 +20,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     private float moveSpd = 20f, zoomSpd = 10f; // 카메라 이동 속도, 줌 속도
     private float minZoom = 5f, maxZoom = 10f;  // 줌 범위
     public static int intoCity = 0;
-    private int mOverObjUid = 0;
+    private int mOverObjUid = 0, mTraceObjUid = 0;
     [Header("City")]
     [SerializeField] private Transform cityParent;
     [SerializeField] private Dictionary<int, GameObject> cityObjList = new Dictionary<int, GameObject>();
@@ -30,12 +30,13 @@ public class WorldCore : AutoSingleton<WorldCore>
     private TileBase lastTile = null;
     [Header("Player")]
     [SerializeField] private wPlayer player;
-    private float pSpd = 5f; //플레이어 이동 속도
-    // private Vector2 pPos;
-    private bool isMove = false;
+    private float pSpd = 2f, traceItv = 0f; //플레이어 이동 속도
+    private bool isMove = false, isTrace = false;
+    private List<Vector3> movePath = new List<Vector3>();
+    private int movePathIdx = 0;
+    private Vector3 moveTgPos;
     [Header("Monster")]
     [SerializeField] private Transform wMonParent;
-    // private Dictionary<int, GameObject> wMonObj = new Dictionary<int, GameObject>();
     private Dictionary<int, wMon> wMonObj = new Dictionary<int, wMon>();
     [Header("Marker")]
     [SerializeField] private Transform wMarkerParent;
@@ -71,18 +72,14 @@ public class WorldCore : AutoSingleton<WorldCore>
 
         if (ItemManager.I.isDrop)
         {
-            Debug.Log(ItemManager.I.RewardItemIdList.Count);
             UIManager.ShowPopup("InvenPop");
             Presenter.Send("InvenPop", "OpenRwdPop");
             ItemManager.I.isDrop = false;
         }
-
-        //오브젝트 거리 체크
-        // StartCoroutine(CheckObjDistCoroutine());
     }
     void Update()
     {
-        if (InvenPop.isActive || CityEnterPop.isActive || CharInfoPop.isActive || SkillPop.isActive || JournalPop.isActive || EventSystem.current.IsPointerOverGameObject())
+        if (InvenPop.isActive || CityEnterPop.isActive || CharInfoPop.isActive || SkillPop.isActive || JournalPop.isActive)
         {
             if (!GsManager.I.IsCursor("default")) GsManager.I.SetCursor("default");
             return;
@@ -91,24 +88,10 @@ public class WorldCore : AutoSingleton<WorldCore>
         mPos.z = 0f;
         #region Ect Act
         if (mOverObjUid == 0)
-            CheckMouseOverObj(mPos); //오브젝트 거리 체크
+            CheckMouseOverMon(mPos);
         else
-        {
-            GameObject tObj = mOverObjUid > 9999999 ? wMonObj[mOverObjUid].gameObject : wMarkerObj[mOverObjUid].gameObject;
-            if (tObj == null)
-                mOverObjUid = 0;
-            else
-            {
-                Vector3 diff = mPos - tObj.transform.position;
-                float sqr = diff.sqrMagnitude;  // 제곱 거리
-                if (sqr > 0.4f)
-                {
-                    if (mOverObjUid > 9999999)
-                        wMonObj[mOverObjUid].TraceObj(false);
-                    mOverObjUid = 0;
-                }
-            }
-        }
+            CheckCurMouseOverMon(mPos);
+        CheckWorldObj();
         SetCursor(mPos); //커서 설정
         #endregion
         #region Player Act
@@ -117,7 +100,11 @@ public class WorldCore : AutoSingleton<WorldCore>
         if (Input.GetKey(KeyCode.S)) moveDirection.y -= 1; // 아래로 이동
         if (Input.GetKey(KeyCode.A)) moveDirection.x -= 1; // 왼쪽 이동
         if (Input.GetKey(KeyCode.D)) moveDirection.x += 1; // 오른쪽 이동
-        if (Input.GetMouseButtonDown(0)) InputPlayerAct();
+        if (Input.GetMouseButtonDown(0))
+        {
+            // if
+            InputPlayerAction();
+        }
         if (Input.GetMouseButtonDown(1))
         {
             // 월드 좌표를 셀 좌표로 변환
@@ -131,6 +118,10 @@ public class WorldCore : AutoSingleton<WorldCore>
                 Debug.Log($"타일 이름: {grid.tName}, 타일 타입: {grid.tType}, 비용: {grid.tCost}");
             }
         }
+        if (isMove)
+            MovePlayer();
+        if (isTrace)
+            TracePlayer();
         #endregion
         #region Camera Act
         // Time.unscaledDeltaTime을 사용하여 일시정지 상태에서도 일정한 속도로 이동
@@ -145,62 +136,102 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         cam.transform.position = new Vector3(v.x, v.y, -10f);
     }
-    private void InputPlayerAct()
+    private void InputPlayerAction()
     {
         if (GsManager.I.IsCursor("notMove")) return;
-        Vector2 clickWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 playerWorldPos = player.transform.position;
-
-        Vector3Int startCell = worldMapTile.WorldToCell(playerWorldPos);
-        Vector3Int endCell = worldMapTile.WorldToCell(clickWorldPos);
-
-        // 기존 이동 취소
-        if (isMove)
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (isTrace)
         {
-            player.transform.DOKill();
-            isMove = false;
-            Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
+            wMonObj[mTraceObjUid].TraceObj(false);
+            isTrace = false;
         }
-        wmPath path1 = WorldObjManager.I.FindPathOptimized(startCell, endCell);
-        if (path1.pos.Count > 1)
+        if (isMove) isMove = false;
+        mTraceObjUid = 0; //추적 몬스터 초기화
+        movePath.Clear(); //이동 경로 초기화
+        movePathIdx = 0; //이동 경로 인덱스 초기화
+        Vector2 pPos = player.transform.position; //플레이어 위치
+        if (mOverObjUid > 0)
         {
-            path1.pos.RemoveAt(0);
-            path1.pos.RemoveAt(path1.pos.Count - 1);
-            path1.pos.Add(clickWorldPos);
-            path1.pos.Insert(0, playerWorldPos);
-            MovePlayerPath(path1.pos);
+            wMonObj[mOverObjUid].OverObj(false);
+            wMonObj[mOverObjUid].TraceObj(true);
+            mTraceObjUid = mOverObjUid;
+            moveTgPos = wMonObj[mOverObjUid].transform.position;
+            mOverObjUid = 0;
+            isTrace = true;
         }
         else
         {
-            MovePlayerPath(new List<Vector3> { playerWorldPos, clickWorldPos });
+            moveTgPos = cam.ScreenToWorldPoint(Input.mousePosition);
+            isMove = true;
         }
-        // if (intoCity > 0)
-        // {
-        //     wmPath path2 = WorldObjManager.I.FindPathToCity(intoCity);
-        //     if (path1.cost < path2.cost)
-        //         MovePlayerPath(path1.pos);
-        //     else
-        //         MovePlayerPath(path2.pos);
-        // }
-        // else
-        //     MovePlayerPath(path1.pos);
+        moveTgPos.z = 0f;
+        Vector3Int start = worldMapTile.WorldToCell(pPos);
+        Vector3Int end = worldMapTile.WorldToCell(moveTgPos);
+        movePath = GetWorldMovePath(start, end, pPos, moveTgPos);
+        int xSpd = GsManager.worldSpd;
+        if (xSpd == 0)
+            Presenter.Send("WorldMainUI", "ChangeGameSpd", "X1");
+        else
+            Presenter.Send("WorldMainUI", "ChangeGameSpd", "X" + xSpd);
     }
-    // 경로 이동
-    private void MovePlayerPath(List<Vector3> path)
+    private void MovePlayer()
     {
-        // pPos = path[path.Count - 1];
-        isMove = true;
-        Presenter.Send("WorldMainUI", "ChangeGameSpd", "X1");
-        DOVirtual.DelayedCall(0.08f, () =>
+        Vector3 curPos = player.transform.position;
+        Vector3 tgPos = movePath[movePathIdx];
+
+        Vector3 dir = tgPos - curPos;
+        float distToTg = dir.magnitude; //목표 지점까지의 거리
+        float moveDist = pSpd * Time.deltaTime;
+        // 목표 지점에 도달했는지 확인 (작은 임계값 사용)
+        if (distToTg <= moveDist || distToTg < 0.01f)
         {
-            player.transform.DOPath(path.ToArray(), pSpd, PathType.Linear)
-            .SetEase(Ease.Linear)
-            .SetSpeedBased(true)
-            .OnComplete(() =>
+            movePathIdx++; // 다음 웨이포인트로
+            if (movePathIdx >= movePath.Count)
             {
+                player.transform.position = tgPos;
                 StopPlayer();
-            });
-        }, false);
+            }
+        }
+        else
+        {
+            Vector3 moveVector = dir.normalized * moveDist;
+            player.transform.position += moveVector;
+        }
+    }
+    private void TracePlayer()
+    {
+        Vector3 curPos = player.transform.position;
+        Vector3 tgPos = movePath[0];
+        Vector3 dir = tgPos - curPos;
+        Vector3 moveVector = dir.normalized * pSpd * Time.deltaTime;
+        player.transform.position += moveVector;
+        traceItv += Time.deltaTime;
+        if (traceItv >= 0.2f)
+        {
+            traceItv = 0f;
+            Vector3Int sc = worldMapTile.WorldToCell(curPos);
+            Vector3Int ec = worldMapTile.WorldToCell(wMonObj[mTraceObjUid].transform.position);
+            movePath = GetWorldMovePath(sc, ec, curPos, wMonObj[mTraceObjUid].transform.position);
+        }
+    }
+    private void InitMovingPlayer()
+    {
+        if (isTrace)
+        {
+            wMonObj[mTraceObjUid].TraceObj(false);
+            isTrace = false;
+            mTraceObjUid = 0;
+        }
+        if (isMove)
+            isMove = false;
+        movePath.Clear();
+        movePathIdx = 0;
+        moveTgPos = Vector3.zero;
+        SavePlayerPos();
+    }
+    private void SavePlayerPos()
+    {
+        PlayerManager.I.worldPos = player.transform.position;
     }
     private void LoadPlayerPos()
     {
@@ -212,7 +243,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     public void StopPlayer()
     {
-        isMove = false;
+        InitMovingPlayer();
         Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
 
         if (PlayerManager.I.currentCity > 0)
@@ -249,7 +280,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         }
     }
     #endregion
-    #region 월드맵 오브젝트 관련
+    #region 월드맵 오브젝트 생성 관련
     public void CheckAllAreaWorldMon()
     {
         foreach (var area in WorldObjManager.I.areaDataList)
@@ -261,7 +292,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             }
         }
     }
-    void CreateWorldMon(int areaID, int remain)
+    private void CreateWorldMon(int areaID, int remain)
     {
         int[] grpList = WorldObjManager.I.areaDataList[areaID].grpByGrade[PlayerManager.I.pData.Grade].ToArray();
 
@@ -304,12 +335,16 @@ public class WorldCore : AutoSingleton<WorldCore>
             obj.name = "wMon_" + uId;
             var wm = obj.GetComponent<wMon>();
             wm.SetMonData(uId, areaID, leaderID, mList);
-            wm.transform.position = WorldObjManager.I.GetSpawnPos(areaID); //구역에 맞춰 몬스터 좌표 갱신
+            wm.myPos = WorldObjManager.I.GetSpawnPos(areaID); //현재 몬스터의 위치 -> 몬스터 이동 경로 계산에 사용
             wm.tgPos = SetWorldMonNextPos(wm);
-            wm.SetObjLayer(wm.transform.position.y);
+            wm.tgPos.z = 0f;
+            wm.SetObjLayer(wm.myPos.y);
+            wm.pathIdx = 0;
             wMonObj.Add(uId, wm);
-
-            WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.transform.position, wm.tgPos);
+            wm.path = GetWorldMovePath(worldMapTile.WorldToCell(wm.myPos), worldMapTile.WorldToCell(wm.tgPos), wm.myPos, wm.tgPos); //이동경로 설정
+            WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.myPos, wm.tgPos, wm.path);
+            // wm.transform.position = wm.myPos;
+            wm.transform.position = wm.path[0];
         }
     }
     public void AllRemoveWorldMon()
@@ -321,7 +356,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         foreach (var area in WorldObjManager.I.areaDataList)
             area.Value.curCnt = 0;
     }
-    void LoadWorldMon()
+    private void LoadWorldMon()
     {
         foreach (var wMon in WorldObjManager.I.worldMonDataList)
         {
@@ -333,16 +368,15 @@ public class WorldCore : AutoSingleton<WorldCore>
             wMonObj.Add(wMon.Key, wm);
         }
     }
-    Vector3 SetWorldMonNextPos(wMon wm)
+    private Vector3 SetWorldMonNextPos(wMon wm)
     {
         return WorldObjManager.I.wAreaPos[wm.areaID][Random.Range(0, WorldObjManager.I.wAreaPos[wm.areaID].Count)];
     }
-    void ReCreateWorldMon()
+    private void ReCreateWorldMon()
     {
         AllRemoveWorldMon();
         CheckAllAreaWorldMon();
     }
-
     public void CreateWorldMarker(Vector3 pos, int type)
     {
         int uId = Random.Range(1000000, 9999999); //마커 그룹은 7자리로 구분
@@ -400,96 +434,98 @@ public class WorldCore : AutoSingleton<WorldCore>
             .OnComplete(() => onComplete?.Invoke());
     }
     #endregion
-    #region 오브젝트 제어 관련
-
-    private void CheckMouseOverObj(Vector3 mPos)
+    #region 월드맵 오브젝트 제어 관련
+    private List<Vector3> GetWorldMovePath(Vector3Int sc, Vector3Int ec, Vector3 sp, Vector3 ep)
     {
-        float val = 0.4f;
-        foreach (var obj in wMonObj)
+        //sc : 시작 셀, ec : 목표 셀, sp : 시작 월드 좌표, ep : 목표 월드 좌표
+        List<Vector3> path = WorldObjManager.I.FindPathOptimized(sc, ec);
+        if (path == null) return new List<Vector3> { ep };
+        if (path.Count > 1)
         {
-            if (obj.Value == null || obj.Value.transform == null) continue;
+            path.RemoveAt(0);
+            path.RemoveAt(path.Count - 1);
+            path.Add(ep);
+        }
+        else
+            path.Add(ep);
+        return path;
+    }
+    private void CheckWorldObj()
+    {
+        //몬스터
+        foreach (var mon in wMonObj)
+        {
+            MoveMon(mon.Value);
+            if (mon.Value.gameObject.activeSelf)
+            {
+                mon.Value.gameObject.transform.position = mon.Value.myPos;
+            }
+            // else
+            // {
 
-            Vector3 diff = mPos - obj.Value.transform.position;
+            // }
+        }
+        //마커
+        foreach (var mk in wMarkerObj)
+        {
+        }
+    }
+    private void MoveMon(wMon wm)
+    {
+        Vector3 curPos = wm.myPos;
+        Vector3 dir = wm.path[wm.pathIdx] - curPos;
+        float distToTg = dir.magnitude; //목표 지점까지의 거리
+        float moveDist = wm.mSpd * Time.deltaTime;
+        if (distToTg <= moveDist || distToTg < 0.01f)
+        {
+            wm.pathIdx++;
+            if (wm.pathIdx >= wm.path.Count)
+            {
+                wm.tgPos = SetWorldMonNextPos(wm);
+                wm.path = GetWorldMovePath(worldMapTile.WorldToCell(wm.myPos), worldMapTile.WorldToCell(wm.tgPos), wm.myPos, wm.tgPos);
+                wm.pathIdx = 0;
+            }
+        }
+        else
+            wm.myPos = curPos + dir.normalized * moveDist;
+    }
+    private void CheckMouseOverMon(Vector3 mPos)
+    {
+        float val = 0.1f;
+        foreach (var mon in wMonObj)
+        {
+            // if (mon.Value == null || mon.Value.transform == null) continue;
+            if (!mon.Value.gameObject.activeSelf || mon.Value.traceSpr.gameObject.activeSelf) continue;
+            Vector3 diff = mPos - mon.Value.transform.position;
             float sqr = diff.sqrMagnitude;  // 제곱 거리
             if (sqr <= val)  // 0.2f의 제곱값과 비교
             {
-                mOverObjUid = obj.Key;
-                obj.Value.TraceObj(true);
+                mOverObjUid = mon.Key;
+                mon.Value.TraceObj(true);
                 return;
             }
         }
-        // foreach (var marker in wMarkerObj)
-        // {
-        //     if (marker.Value == null || marker.Value.transform == null) continue;
-        //     Vector3 diff = mPos - marker.Value.transform.position;
-        //     float sqr = diff.sqrMagnitude;
-        //     if (sqr <= val)
-        //     {
-        //         mOverObjUid = marker.Key;
-        //         return;
-        //     }
-        // }
-        // mOverObjUid = 0;
+        mOverObjUid = 0;
     }
-    IEnumerator CheckObjDistCoroutine()
+    private void CheckCurMouseOverMon(Vector3 mPos)
     {
-        //활성/비활성화의 임계거리를 두개로 선정한 이유는 한개로 설정한 경우, 경계선에 있는 오브젝트가 무한정으로 활성화/비활성화 되는 현상이 발생하기 때문에 두개의 거리로 해당 문제를 해결
-
-        float deactDist = 4f, actDist = deactDist * 0.9f; //deactivateDistance , activateDistance -> 체크용 거리
-
-        // 16:9 비율 고정
-        float ellipseAspect = 16f / 9f; // 가로/세로 비율
-
-        // 타원의 반지름: a(가로) = deactDist * ellipseAspect, b(세로) = deactDist
-        float a = deactDist * ellipseAspect; // 가로 반지름 (16:9 비율로 더 길게)
-        float b = deactDist; // 세로 반지름
-
-        // 활성화 거리도 동일한 비율로 계산
-        float aAct = actDist * ellipseAspect;
-        float bAct = actDist;
-
-        // 제곱값을 미리 계산 (타원 방정식에서 사용)
-        float sqrA = a * a, sqrB = b * b;
-        float sqrAAct = aAct * aAct, sqrBAct = bAct * bAct;
-
-        int type = 0;
-        while (true)
+        Vector3 diff = mPos - wMonObj[mOverObjUid].transform.position;
+        float sqr = diff.sqrMagnitude;
+        if (sqr > 0.1f)
         {
-            Vector3 pPos = player.transform.position;
-
-            // 단순하게 모든 오브젝트 체크 (400~500개는 전혀 문제 없음)
-            foreach (var mon in wMonObj)
-            {
-                if (mon.Value == null || mon.Value.transform == null) continue;
-
-                Vector3 mPos = mon.Value.transform.position;
-
-                // 타원형 거리 계산: (dx/a)² + (dy/b)² 형태
-                float dx = mPos.x - pPos.x, dy = mPos.y - pPos.y;
-                dx *= dx;
-                dy *= dy;
-                // 타원 방정식: (x/a)² + (y/b)² = 1
-                // 값이 1보다 작거나 같으면 타원 내부, 1보다 크면 타원 외부
-                float ellipseValue = dx / sqrA + dy / sqrB;
-                float ellipseValueAct = dx / sqrAAct + dy / sqrBAct;
-
-                bool isObjActive = mon.Value.gameObject.activeSelf;
-
-                // 타원 내부에 있으면 활성화 (ellipseValue <= 1)
-                if (!isObjActive && ellipseValueAct <= 1f)
-                    mon.Value.SetActiveTween(true, type);
-                // 타원 외부에 있으면 비활성화 (ellipseValue > 1)
-                else if (isObjActive && ellipseValue > 1f)
-                    mon.Value.SetActiveTween(false, type);
-            }
-            if (type == 0) type = 1;
-            yield return new WaitForSeconds(0.2f);
+            wMonObj[mOverObjUid].TraceObj(false);
+            mOverObjUid = 0;
         }
     }
     #endregion
     #region 커서 관련
     private void SetCursor(Vector3 mPos)
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            if (!GsManager.I.IsCursor("default")) GsManager.I.SetCursor("default");
+            return;
+        }
         Vector3Int currentCellPos = worldMapTile.WorldToCell(mPos);
         if (currentCellPos != lastCellPos)
         {
@@ -509,7 +545,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     #region 씬 이동
     public void SceneFadeOut()
     {
-        PlayerManager.I.worldPos = player.transform.position;
+        SavePlayerPos();
         WorldObjManager.I.UpdateWorldMonData(wMonObj); //몬스터 위치 갱신
         WorldObjManager.I.UpdateWorldMarkerData(wMarkerObj); //마커 위치 갱신
         Presenter.Send("WorldMainUI", "SaveAllTime");

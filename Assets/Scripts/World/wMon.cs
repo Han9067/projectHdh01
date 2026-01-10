@@ -9,13 +9,17 @@ public class wMon : MonoBehaviour
     public int monIdx, areaID; //배열 인덱스
     [SerializeField] private int monId;
     public List<int> monGrp = new List<int>();
-    [SerializeField] private SpriteRenderer frmBack, frmFront, frmDeco, mainSpr, traceSpr;
+    [SerializeField] private SpriteRenderer frmBack, frmFront, frmDeco, mainSpr, overSpr;
+    public SpriteRenderer traceSpr;
     public MonData[] monData;
     [SerializeField] private int uId;
     [SerializeField] private SortingGroup sGrp;
     public bool isOutline = false;
     private float alpha = 1f;
-    public Vector3 tgPos;
+    public Vector3 tgPos, myPos;
+    public float mSpd = 0.4f; //몬스터 이동 속도
+    public List<Vector3> path = new List<Vector3>();
+    public int pathIdx = 0;
     void Start()
     {
         sGrp = GetComponent<SortingGroup>();
@@ -31,6 +35,8 @@ public class wMon : MonoBehaviour
         monData = new MonData[monGrp.Count];
         for (int i = 0; i < monGrp.Count; i++)
             monData[i] = MonManager.I.MonDataList[monGrp[i]].Clone();
+        overSpr.gameObject.SetActive(false);
+        traceSpr.gameObject.SetActive(false);
     }
     public void SetObjLayer(float y)
     {
@@ -48,7 +54,10 @@ public class wMon : MonoBehaviour
     {
         traceSpr.gameObject.SetActive(on);
     }
-
+    public void OverObj(bool on)
+    {
+        overSpr.gameObject.SetActive(on);
+    }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))

@@ -17,7 +17,7 @@ public enum GameState
 [System.Serializable]
 public class wmPath
 {
-    public List<Vector3> pos;
+    public List<Vector3> list;
     public float cost;
 }
 [System.Serializable]

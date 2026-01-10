@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class GsManager : AutoSingleton<GsManager>
 {
     public GameState gameState;
-    public int worldSpd = 1; //월드맵 속도
+    public static int worldSpd = 1; //월드맵 속도
     private void Awake()
     {
         #region 초기화
