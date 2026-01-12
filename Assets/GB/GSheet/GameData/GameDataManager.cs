@@ -56,6 +56,8 @@ public class GameDataManager : AutoSingleton<GameDataManager>
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<SkTable>(SkTabledata,(result)=>{ I._Tables[TABLE.SkTable] = result;}));
                 string AttTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/AttTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<AttTable>(AttTabledata,(result)=>{ I._Tables[TABLE.AttTable] = result;}));
+                string MakeTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/MakeTable").text);
+            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<MakeTable>(MakeTabledata,(result)=>{ I._Tables[TABLE.MakeTable] = result;}));
                 
 
         gbCoroutine.OnComplete(()=>{complete?.Invoke();}).Play();
@@ -181,6 +183,11 @@ case TABLE.AttTable:
         d_AttTable.SetJson(data);
         obj  = d_AttTable;
         break;
+case TABLE.MakeTable:
+        MakeTable d_MakeTable = new MakeTable();
+        d_MakeTable.SetJson(data);
+        obj  = d_MakeTable;
+        break;
         }
 
         return obj;
@@ -294,5 +301,6 @@ public enum TABLE
 	QuestTable,
 	SkTable,
 	AttTable,
+	MakeTable,
 
 }

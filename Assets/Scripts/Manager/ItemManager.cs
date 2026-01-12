@@ -152,6 +152,18 @@ public class ItemManager : AutoSingleton<ItemManager>
         if (RewardItemIdList.Count > 0 && !isDrop)
             isDrop = true;
     }
+    public void ShowWorkReward(int val)
+    {
+        //테스트
+        if (val < 2000)
+        {
+
+        }
+        else
+        {
+
+        }
+    }
     public void TestDropItem()
     {
         RewardItemIdList.Clear();

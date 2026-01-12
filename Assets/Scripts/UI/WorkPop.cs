@@ -9,10 +9,9 @@ public class WorkPop : UIScreen
     public Transform rewardParent;
     [SerializeField] private Slider mSlider;
     [SerializeField] private List<WorkRewardList> rewardList;
-    private int daysVal, workType, crownVal, rlsVal, skExpVal; //expVal,itemVal
+    private int daysVal, workType, crownVal, rlsVal, skExpVal, expVal, itemVal; //itemVal => 해당 수치가 높을수록 보상이 많아짐
     private bool isStart = false; //시작 여부
     private string strDays;
-
     private void Awake()
     {
         isStart = false;
@@ -26,6 +25,7 @@ public class WorkPop : UIScreen
     {
         Presenter.Bind("WorkPop", this);
         daysVal = 1;
+        mTMPText["WarningTxt"].gameObject.SetActive(false);
     }
 
     private void OnDisable()
@@ -34,6 +34,7 @@ public class WorkPop : UIScreen
         if (!isStart)
         {
             workType = 0;
+            itemVal = 0;
             foreach (var v in rewardList)
                 Destroy(v.gameObject);
             rewardList.Clear();
@@ -57,6 +58,15 @@ public class WorkPop : UIScreen
             case "ClickStart":
                 isStart = true;
                 Presenter.Send("WorldMainUI", "StartWork", daysVal);
+                if (workType > 100)
+                {
+                    switch (workType)
+                    {
+                        case 101:
+                            itemVal = GetItemVal(PlayerManager.I.GetSkLv(26)); //추후에는 사냥꾼 활 또는 사냥꾼과 관련된 아이템으로 버프를 받아 더욱 좋은 보상을 받을 수 있도록 수정
+                            break;
+                    }
+                }
                 Close();
                 break;
             case "ClickConfirm":
@@ -74,7 +84,6 @@ public class WorkPop : UIScreen
                 StatePop(0);
                 daysVal = 1;
                 workType = data.Get<int>();
-                mSlider.value = 1;
                 mTMPText["DaysVal"].text = string.Format(strDays, daysVal.ToString());
                 SetWork();
                 break;
@@ -91,14 +100,14 @@ public class WorkPop : UIScreen
     }
     private void SetWork()
     {
-        if (workType < 200)
+        skExpVal = GetSkExpVal();
+        if (workType < 101)
         {
             crownVal = GetCrownVal();
             rlsVal = GetRlsVal();
-            skExpVal = GetSkExpVal();
             //알바 항목 -> 크라운, 호감도, 스킬 경험치
-            CreateWorkReward("Icon_coin", "AddCrown", crownVal, 10001); //크라운
-            CreateWorkReward("Icon_heart", "AddRls", rlsVal, 10002); //호감도
+            CreateWorkReward("Icon_coin", "AddCrown", crownVal, 10002); //크라운
+            CreateWorkReward("Icon_heart", "AddRls", rlsVal, 10003); //호감도
             switch (workType)
             {
                 case 2:
@@ -119,33 +128,38 @@ public class WorkPop : UIScreen
                 case 7:
                     CreateWorkReward("skIcon_21", "AddSkill", skExpVal, 21);
                     break;
-                case 101:
+                case 21:
                     //농장
                     break;
-                case 102:
+                case 22:
+                    //목장
+                    break;
+                case 23:
+                    //제재소
+                    break;
+                case 24:
                     //채굴장
-                    break;
-                case 103:
-                    //벌목장
-                    break;
-                case 108:
-                    break;
-                case 109:
                     break;
             }
         }
         else
         {
+            expVal = GetExpVal();
             switch (workType)
             {
-                case 201:
+                case 101:
+                    CreateWorkReward("icon_exp", "AddExp", expVal, 10001);
+                    CreateWorkReward("skIcon_26", "AddSkill", skExpVal, 26);
                     //사냥하기
                     break;
-                case 202:
-                    //낚시하기
+                case 102:
+                    //채광하기
                     break;
             }
         }
+        mSlider.maxValue = PlayerManager.I.energy / 8f;
+        mSlider.value = 1;
+        mTMPText["EnergyTxt"].text = GetEnergyTxt(8);
     }
     private void CreateWorkReward(string img, string txt, int val, int type)
     {
@@ -173,11 +187,16 @@ public class WorkPop : UIScreen
                 switch (v.id)
                 {
                     case 10001:
+                        //경험치
+                        expVal = GetExpVal();
+                        v.UpdateVal(expVal);
+                        break;
+                    case 10002:
                         //크라운
                         crownVal = GetCrownVal();
                         v.UpdateVal(crownVal);
                         break;
-                    case 10002:
+                    case 10003:
                         //호감도
                         rlsVal = GetRlsVal();
                         v.UpdateVal(rlsVal);
@@ -188,6 +207,7 @@ public class WorkPop : UIScreen
                 }
             }
         }
+        mTMPText["EnergyTxt"].text = GetEnergyTxt(8 * daysVal); ;
     }
     private int GetCrownVal()
     {
@@ -200,6 +220,18 @@ public class WorkPop : UIScreen
     private int GetSkExpVal()
     {
         return daysVal * 4;
+    }
+    private int GetExpVal()
+    {
+        return daysVal * 100;
+    }
+    private int GetItemVal(int skLv, int addVal = 0)
+    {
+        return (daysVal * 10 * skLv) + addVal;
+    }
+    private string GetEnergyTxt(int num)
+    {
+        return string.Format(LocalizationManager.GetValue("EnergyConsumedA"), num.ToString());
     }
     private void SetWorkReward()
     {
@@ -231,17 +263,10 @@ public class WorkPop : UIScreen
                     PlayerManager.I.AddSkExp(21, skExpVal);
                     break;
                 case 101:
-                    //농장
-                    break;
-                case 102:
-                    //채굴장
-                    break;
-                case 103:
-                    //벌목장
-                    break;
-                case 108:
-                    break;
-                case 109:
+                    //사냥 후 보상
+                    PlayerManager.I.AddSkExp(26, skExpVal);
+                    ItemManager.I.ShowWorkReward(itemVal);
+                    // PlayerManager.I.AddItem(itemVal);
                     break;
             }
         }

@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 [System.Serializable]
 public class GameSaveData
 {
-    public int curDay, fatigue;
+    public int curDay, energy;
     public float curTime;
     public Vector3 playerPos;
     public PlayerData playerData;
@@ -40,7 +40,7 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
         saveData.worldMonDataList = WorldObjManager.I.worldMonDataList;
         saveData.curDay = GsManager.I.tDay;
         saveData.curTime = GsManager.I.wTime;
-        saveData.fatigue = PlayerManager.I.fatigue;
+        saveData.energy = PlayerManager.I.energy;
         #endregion
 
         // ⭐ 여기가 핵심!
@@ -71,7 +71,7 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
                 GameSaveData loadedData = JsonConvert.DeserializeObject<GameSaveData>(jsonContent, settings);
 
                 PlayerManager.I.ApplyPlayerData(loadedData.playerData, loadedData.playerPos);
-                PlayerManager.I.fatigue = loadedData.fatigue;
+                PlayerManager.I.energy = loadedData.energy;
                 QuestManager.I.CityQuest = loadedData.CityQuest;
                 WorldObjManager.I.worldMonDataList = loadedData.worldMonDataList;
                 GsManager.I.tDay = loadedData.curDay;

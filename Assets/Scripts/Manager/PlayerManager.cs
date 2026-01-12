@@ -8,7 +8,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
     [Header("플레이어 데이터")]
     public int currentCity = 0;
-    public int fatigue = 100; // 피로도
+    public int energy = 100; // 에너지
     public PlayerData pData;
     public List<List<InvenGrid>> grids;
     public Vector3 worldPos = new Vector3(0, 0, 0);
@@ -148,7 +148,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.QuestMax = 5;
         pData.TraceQId = 0;
 
-        fatigue = 100; //기본이 100
+        energy = 100; //기본이 100
         // pData.SkList = new Dictionary<int, SkData>();
 
         // StartCoroutine(DelayedStartTutorial(0.2f)); //추후 튜토리얼 조건이 된다면 튜토리얼을 시작시킴
@@ -237,6 +237,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             pData.SkList[skId].NextExp = GsManager.I.GetSkNextExp(1);
             //새로 획득한 스킬이라 팝업을 표시...표시는 메세지박스에 언급되도록
         }
+    }
+    public int GetSkLv(int skId)
+    {
+        return pData.SkList.ContainsKey(skId) ? pData.SkList[skId].Lv : 1;
     }
     private IEnumerator DelayedStartTutorial(float delay)
     {

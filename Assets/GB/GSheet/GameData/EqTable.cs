@@ -31,6 +31,7 @@ public class EqTable  : GameData
 				case "ItemID": return true;
 				case "Name": return true;
 				case "Type": return true;
+				case "Grade": return true;
 				case "Weight": return true;
 				case "Price": return true;
 				case "AttKey": return true;
@@ -67,6 +68,7 @@ public class EqTable  : GameData
 				case "ItemID": return data.ItemID;
 				case "Name": return data.Name;
 				case "Type": return data.Type;
+				case "Grade": return data.Grade;
 				case "Weight": return data.Weight;
 				case "Price": return data.Price;
 				case "AttKey": return data.AttKey;
@@ -94,6 +96,7 @@ public class EqTable  : GameData
 				case "ItemID": return data.ItemID;
 				case "Name": return data.Name;
 				case "Type": return data.Type;
+				case "Grade": return data.Grade;
 				case "Weight": return data.Weight;
 				case "Price": return data.Price;
 				case "AttKey": return data.AttKey;
@@ -122,15 +125,16 @@ public class EqTable  : GameData
 				case 0: return data.ItemID;
 				case 1: return data.Name;
 				case 2: return data.Type;
-				case 3: return data.Weight;
-				case 4: return data.Price;
-				case 5: return data.AttKey;
-				case 6: return data.AttVal;
-				case 7: return data.W;
-				case 8: return data.H;
-				case 9: return data.Dur;
-				case 10: return data.Gen;
-				case 11: return data.Res;
+				case 3: return data.Grade;
+				case 4: return data.Weight;
+				case 5: return data.Price;
+				case 6: return data.AttKey;
+				case 7: return data.AttVal;
+				case 8: return data.W;
+				case 9: return data.H;
+				case 10: return data.Dur;
+				case 11: return data.Gen;
+				case 12: return data.Res;
 
                 default: return null;
             }
@@ -176,6 +180,7 @@ public class EqTableProb : GameDataProb
 		[JsonProperty] public readonly int ItemID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
+	[JsonProperty] public readonly int Grade;
 	[JsonProperty] public readonly int Weight;
 	[JsonProperty] public readonly int Price;
 	[JsonProperty] public readonly string AttKey;

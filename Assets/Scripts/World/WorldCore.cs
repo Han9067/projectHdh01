@@ -19,8 +19,9 @@ public class WorldCore : AutoSingleton<WorldCore>
     private Camera cam;
     private float moveSpd = 20f, zoomSpd = 10f; // 카메라 이동 속도, 줌 속도
     private float minZoom = 5f, maxZoom = 10f;  // 줌 범위
-    public static int intoCity = 0;
+    public static int intoCity = 0, worldWorkId = 0;
     private int mOverObjUid = 0, mTraceObjUid = 0;
+
     [Header("City")]
     [SerializeField] private Transform cityParent;
     [SerializeField] private Dictionary<int, GameObject> cityObjList = new Dictionary<int, GameObject>();
@@ -102,7 +103,6 @@ public class WorldCore : AutoSingleton<WorldCore>
         if (Input.GetKey(KeyCode.D)) moveDirection.x += 1; // 오른쪽 이동
         if (Input.GetMouseButtonDown(0))
         {
-            // if
             InputPlayerAction();
         }
         if (Input.GetMouseButtonDown(1))
@@ -115,7 +115,12 @@ public class WorldCore : AutoSingleton<WorldCore>
             {
                 // grid 객체를 사용할 수 있습니다
                 // grid.x, grid.y, grid.tName, grid.worldPos, grid.tCost 등의 정보에 접근 가능
-                Debug.Log($"타일 이름: {grid.tName}, 타일 타입: {grid.tType}, 비용: {grid.tCost}");
+                // Debug.Log($"타일 이름: {grid.tName}, 타일 타입: {grid.tType}, 비용: {grid.tCost}");
+                if (grid.tType == "f")
+                {
+                    UIManager.ShowPopup("SelectPop");
+                    Presenter.Send("SelectPop", "SetList", 101);
+                }
             }
         }
         if (isMove)
@@ -140,6 +145,10 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         if (GsManager.I.IsCursor("notMove")) return;
         if (EventSystem.current.IsPointerOverGameObject()) return;
+        SetMovePlayer();
+    }
+    public void SetMovePlayer()
+    {
         if (isTrace)
         {
             wMonObj[mTraceObjUid].TraceObj(false);
@@ -256,6 +265,13 @@ public class WorldCore : AutoSingleton<WorldCore>
             Presenter.Send("CityEnterPop", "EnterCity", id);
             StatePlayer(false);
             GsManager.I.SetCursor("default");
+        }
+        else if (worldWorkId > 0)
+        {
+            //토스트팝업
+            UIManager.ShowPopup("WorkPop");
+            Presenter.Send("WorkPop", "SetWork", worldWorkId);
+            worldWorkId = 0;
         }
     }
     public void StatePlayer(bool on)
@@ -559,6 +575,10 @@ public class WorldCore : AutoSingleton<WorldCore>
         // });
     }
     #endregion
+    public void ShowToastPopup()
+    {
+        Presenter.Send("WorldMainUI", "ShowToastPopup", "Tst_NotEnoughEnergy");
+    }
 }
 
 [CustomEditor(typeof(WorldCore))]
@@ -574,9 +594,9 @@ public class WorldCoreEditor : Editor
         {
             myScript.MoveRoad(1, 2);
         }
-        if (GUILayout.Button("몬스터 AI 테스트"))
+        if (GUILayout.Button("토스트 팝업 테스트"))
         {
-
+            myScript.ShowToastPopup();
         }
     }
 }

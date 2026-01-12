@@ -32,7 +32,7 @@ public class WorkRewardList : MonoBehaviour
     void UpdateText()
     {
         if (id < 10000)
-            Txt.text = string.Format(txtKey, GsManager.I.SkDataList[id].Name, val);
+            Txt.text = string.Format(txtKey, LocalizationManager.GetValue(GsManager.I.SkDataList[id].Name), val);
         else
             Txt.text = string.Format(txtKey, val);
     }

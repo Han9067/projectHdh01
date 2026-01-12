@@ -814,6 +814,26 @@ MonoBehaviour:
           value: Serious Injury
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: Move
+      value:
+        list:
+        - key: 23
+          value: "\uC774\uB3D9"
+          duplicatedKey: 0
+        - key: 10
+          value: Move
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: CraftingMaterial
+      value:
+        list:
+        - key: 23
+          value: "\uC81C\uC791 \uC7AC\uB8CC"
+          duplicatedKey: 0
+        - key: 10
+          value: Crafting Material
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: Indomitable
       value:
         list:
@@ -2074,6 +2094,36 @@ MonoBehaviour:
           value: 'Lv : {0}'
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: EnergyConsumedA
+      value:
+        list:
+        - key: 23
+          value: "\uC5D0\uB108\uC9C0 \uC18C\uBAA8\uB428 : {0}"
+          duplicatedKey: 0
+        - key: 10
+          value: 'Energy Consumed : {0}'
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: NotEnoughEnergy
+      value:
+        list:
+        - key: 23
+          value: "\uC5D0\uB108\uC9C0 \uBD80\uC871"
+          duplicatedKey: 0
+        - key: 10
+          value: Not enough Energy
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddExp
+      value:
+        list:
+        - key: 23
+          value: "\uACBD\uD5D8\uCE58 : +{0}"
+          duplicatedKey: 0
+        - key: 10
+          value: 'Exp: +{0}'
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: AddCrown
       value:
         list:
@@ -2088,10 +2138,10 @@ MonoBehaviour:
       value:
         list:
         - key: 23
-          value: "{0} \uC2A4\uD0AC \uACBD\uD5D8\uCE58 : +{1}"
+          value: "[{0}] \uACBD\uD5D8\uCE58 : +{1}"
           duplicatedKey: 0
         - key: 10
-          value: '{0} Skill Exp: +{1}'
+          value: '[{0}] Exp: +{1}'
           duplicatedKey: 0
       duplicatedKey: 0
     - key: AddRls
@@ -2731,6 +2781,17 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Hello
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Tst_NotEnoughEnergy
+      value:
+        list:
+        - key: 23
+          value: "\uC9C4\uD589\uD558\uAE30\uC5D0 \uC5D0\uB108\uC9C0\uAC00 \uCDA9\uBD84\uD558\uC9C0
+            \uC54A\uC2B5\uB2C8\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: Not enough Energy to proceed.
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_10001_Desc

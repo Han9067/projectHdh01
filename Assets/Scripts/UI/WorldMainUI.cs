@@ -1,16 +1,15 @@
-using System.Diagnostics;
 using GB;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-
+using System.Collections;
+using DG.Tweening;
 public class WorldMainUI : UIScreen
 {
-    [SerializeField] private Slider mIngGg, mHpGg, mMpGg, mSpGg, mFatGg;
+    [SerializeField] private Slider mIngGg, mHpGg, mMpGg, mSpGg, mEnergyGg;
     private float wTime = 0, workTime, endWorkTime;
     private int tDay = 0, wYear, wMonth, wDay;
     private bool isWork = false; //일하기 상태 유무
-
+    private Sequence tstSqc;
     private void Awake()
     {
         Regist();
@@ -19,6 +18,7 @@ public class WorldMainUI : UIScreen
     private void Start()
     {
         mGameObject["IngPop"].SetActive(false);
+        mGameObject["TstBox"].SetActive(false);
         if (PlayerManager.I.pData.TraceQId == 0)
             mGameObject["QstBox"].SetActive(false);
         else
@@ -182,6 +182,9 @@ public class WorldMainUI : UIScreen
             case "SetTraceQst":
                 SetTraceQst();
                 break;
+            case "ShowToastPopup":
+                ShowTstBox(LocalizationManager.GetValue(data.Get<string>()));
+                break;
         }
     }
     private void UpdateState()
@@ -189,11 +192,11 @@ public class WorldMainUI : UIScreen
         mTMPText["HpVal"].text = PlayerManager.I.pData.HP.ToString() + "/" + PlayerManager.I.pData.MaxHP.ToString();
         mTMPText["MpVal"].text = PlayerManager.I.pData.MP.ToString() + "/" + PlayerManager.I.pData.MaxMP.ToString();
         mTMPText["SpVal"].text = PlayerManager.I.pData.SP.ToString() + "/" + PlayerManager.I.pData.MaxSP.ToString();
-        mTMPText["FatVal"].text = PlayerManager.I.fatigue.ToString();
+        mTMPText["FatVal"].text = PlayerManager.I.energy.ToString();
         mHpGg.value = (float)PlayerManager.I.pData.HP / PlayerManager.I.pData.MaxHP * 100f;
         mMpGg.value = (float)PlayerManager.I.pData.MP / PlayerManager.I.pData.MaxMP * 100f;
         mSpGg.value = (float)PlayerManager.I.pData.SP / PlayerManager.I.pData.MaxSP * 100f;
-        mFatGg.value = PlayerManager.I.fatigue / 100f;
+        mEnergyGg.value = PlayerManager.I.energy / 100f;
     }
     private void UpdateCrownTxt()
     {
@@ -246,6 +249,32 @@ public class WorldMainUI : UIScreen
                 break;
             }
         }
+    }
+    private void ShowTstBox(string msg)
+    {
+        GameObject tstBox = mGameObject["TstBox"];
+        CanvasGroup canvasGroup = tstBox.GetComponent<CanvasGroup>();
+
+        if (tstSqc != null && tstSqc.IsActive())
+            tstSqc.Kill();
+
+        tstBox.SetActive(true);
+        mTMPText["TstMent"].text = msg;
+
+        // 알파값 초기화
+        canvasGroup.alpha = 0f;
+
+        // Sequence로 모든 애니메이션을 한 번에 관리
+        tstSqc = DOTween.Sequence()
+            .SetUpdate(true) // 실제 시간 사용
+            .Append(canvasGroup.DOFade(1f, 0.3f).SetEase(Ease.OutQuad)) // 페이드 인
+            .AppendInterval(1.4f) // 대기 시간
+            .Append(canvasGroup.DOFade(0f, 0.3f).SetEase(Ease.InQuad)) // 페이드 아웃
+            .OnComplete(() =>
+            {
+                tstBox.SetActive(false);
+                tstSqc = null;
+            });
     }
     public override void Refresh()
     {

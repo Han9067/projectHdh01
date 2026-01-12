@@ -58,17 +58,17 @@ public class wMon : MonoBehaviour
     {
         overSpr.gameObject.SetActive(on);
     }
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            WorldCore.I.StopPlayer();
-            string result = WorldObjManager.I.GetAroundMon(monGrp, uId, other.transform.position.x, other.transform.position.y, monIdx);
+    // private void OnTriggerEnter2D(Collider2D other)
+    // {
+    //     if (other.CompareTag("Player"))
+    //     {
+    //         WorldCore.I.StopPlayer();
+    //         string result = WorldObjManager.I.GetAroundMon(monGrp, uId, other.transform.position.x, other.transform.position.y, monIdx);
 
-            UIManager.ShowPopup("BattleReadyPop");
-            Presenter.Send("BattleReadyPop", "MonInfo", result);
-        }
-    }
+    //         UIManager.ShowPopup("BattleReadyPop");
+    //         Presenter.Send("BattleReadyPop", "MonInfo", result);
+    //     }
+    // }
     public void SetActiveTween(bool isActive, int type)
     {
         SpriteRenderer[] arr = { frmBack, frmFront, frmDeco, mainSpr };

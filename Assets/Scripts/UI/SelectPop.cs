@@ -76,6 +76,13 @@ public class SelectPop : UIScreen
                         //기타 아이템
                         selList[5].SetActive(true); //버리기
                         break;
+                    case 101:
+                        //월드맵 -> 숲지역에서 사냥
+                        selList[6].SetActive(true);
+                        // selList[7].SetActive(true);
+                        selList[8].SetActive(true);
+                        hei = 2;
+                        break;
                 }
                 RectTransform popRect = pop.GetComponent<RectTransform>();
                 if (popRect != null)
@@ -146,6 +153,18 @@ public class SelectPop : UIScreen
             case "OnEq":
                 break;
             case "OnDrop":
+                break;
+            case "OnMove":
+                WorldCore.I.SetMovePlayer();
+                Close();
+                break;
+            case "OnSearch":
+                Close();
+                break;
+            case "OnHunt":
+                WorldCore.I.SetMovePlayer();
+                WorldCore.worldWorkId = 101;
+                Close();
                 break;
             case "OnQuit":
                 Close();
