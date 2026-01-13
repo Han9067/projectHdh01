@@ -90,20 +90,21 @@ public class CityEnterPop : UIScreen
                 case "OnRest":
 
                     break;
-                case "OnChat":
-                    List<int> list = new List<int>();
+                case "OnTalk":
+                    List<int> tList = new List<int>();
                     switch (sId)
                     {
                         case 1:
-                            list = GetQstChatList();
+                            tList = GetQstChatList();
                             UIManager.ShowPopup("TalkPop");
-                            Presenter.Send("TalkPop", "TalkStart", list);
+                            Presenter.Send("TalkPop", "TalkStart", tList);
                             break;
                     }
                     break;
                 case "OnQuest":
+                    List<int> qList = new List<int> { cityId, npcId };
                     UIManager.ShowPopup("GuildQuestPop");
-                    Presenter.Send("GuildQuestPop", "SettingQuestPop", cityId);
+                    Presenter.Send("GuildQuestPop", "SettingQuestPop", qList);
                     break;
                 case "OnTrade":
                     OpenTrade();
@@ -179,7 +180,7 @@ public class CityEnterPop : UIScreen
                             mButtons["OnGetOut"].gameObject.SetActive(false);
                             break;
                         case 2:
-                            mButtons["OnChat"].gameObject.SetActive(false);
+                            mButtons["OnTalk"].gameObject.SetActive(false);
                             mButtons["OnGetOut"].gameObject.SetActive(false);
                             break;
                         case 3:
@@ -206,7 +207,7 @@ public class CityEnterPop : UIScreen
     }
     void StateBaseInList()
     {
-        string[] keys = { "OnChat", "OnWork", "OnGetOut" };
+        string[] keys = { "OnTalk", "OnWork", "OnGetOut" };
         foreach (var key in keys)
             mButtons[key].gameObject.SetActive(true);
     }

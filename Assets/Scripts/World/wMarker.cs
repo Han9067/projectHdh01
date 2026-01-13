@@ -12,7 +12,11 @@ public class wMarker : MonoBehaviour
     {
         switch (mkType)
         {
-            case 99:
+            case 1:
+                mainSpr.color = Color.white;
+                iconSpr.sprite = ResManager.GetSprite("mark_e");
+                break;
+            case 999:
                 mainSpr.color = Color.yellow;
                 iconSpr.sprite = ResManager.GetSprite("mark_e");
                 break;
@@ -27,11 +31,14 @@ public class wMarker : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            WorldCore.I.StopPlayer();
             switch (mkType)
             {
-                case 99:
-                    WorldCore.I.StopPlayer();
-                    Debug.Log("OnTriggerEnter2D");
+                case 1:
+                    UIManager.ShowPopup("EventPop");
+                    Presenter.Send("EventPop", "SetEvent", new List<int> { mkType, mkUid });
+                    break;
+                case 999:
                     WorldObjManager.I.TutoMon();
                     UIManager.ShowPopup("BattleReadyPop");
                     Presenter.Send("BattleReadyPop", "MonInfo", "1");

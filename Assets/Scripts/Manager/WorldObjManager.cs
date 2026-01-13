@@ -24,6 +24,7 @@ public class WorldMonData
 public class WorldMarkerData
 {
     public int type;
+    public List<int> monList = new List<int>();
     public Vector3 pos;
 }
 public class WorldObjManager : AutoSingleton<WorldObjManager>
@@ -683,13 +684,6 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
             pos = pos,
         };
     }
-    public void UpdateWorldMarkerData(Dictionary<int, wMarker> wMarkerObj)
-    {
-        foreach (var wMarker in wMarkerObj)
-        {
-            worldMarkerDataList[wMarker.Key].pos = wMarker.Value.transform.position;
-        }
-    }
     #endregion
     #region 전투 참여 몬스터 관리
     public List<int> btMonList = new List<int>();
@@ -721,6 +715,12 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         // }
         str = str.TrimEnd('_');
         return str;
+    }
+    public void SetEventMon(List<int> list)
+    {
+        btMonList.Clear();
+        foreach (var m in list)
+            btMonList.Add(m);
     }
     public void TutoMon()
     {

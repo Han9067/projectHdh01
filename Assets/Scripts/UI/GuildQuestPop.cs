@@ -10,7 +10,7 @@ public class GuildQuestPop : UIScreen
     private List<GameObject> questBtn = new List<GameObject>(); //퀘스트 버튼 오브젝트
     private List<QuestInstData> qList = new List<QuestInstData>(); //생성된 퀘스트 데이터
 
-    private int curId = 0, cityId = 1, qIdx = 0;
+    private int curId = 0, cityId = 1, qIdx = 0, npcId = 0;
     private int qstState; //현재 퀘스트 상태 0: 수락 가능, 1: 수락 완료, 2: 퀘스트 완료
     private bool isUpgrade = false; //업그레이드 가능 여부
     private void Awake()
@@ -22,7 +22,6 @@ public class GuildQuestPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("GuildQuestPop", this);
-
     }
     private void OnDisable()
     {
@@ -30,6 +29,7 @@ public class GuildQuestPop : UIScreen
         InitQuestList();
         qstState = 0;
         cityId = 1;
+        npcId = 0;
     }
     void InitQuestList()
     {
@@ -58,23 +58,41 @@ public class GuildQuestPop : UIScreen
                 break;
             case "OnQstAccept":
                 if (qstState == 1) return;
+                if (qList[curId].Qid == 4)
+                {
+                    //마커 퀘스트라 마커 생성하고 해당 퀘스트의 정보를 갱신해줘야함
+                    WorldCore.I.CreateWorldMarker(qList[curId].TgPos, 1); //2번째 매개변수 1~10은 길드 퀘스트용 마커-> 1은 몬스터 토벌용
+                    qList[curId].MarkerUid = QuestManager.I.curMkUid;
+                    QuestManager.I.curMkUid = 0;
+                }
+                qList[curId].QNpcId = npcId;
                 PlayerManager.I.pData.QuestList.Add(qList[curId]);
                 int n = PlayerManager.I.pData.QuestList.Count - 1;
                 PlayerManager.I.pData.QuestList[n].State = 1;
-                PlayerManager.I.pData.QuestList[n].sDay = GsManager.I.tDay;
-                PlayerManager.I.pData.QuestList[n].eDay = GsManager.I.tDay + qList[curId].Days;
                 QuestManager.I.CityQuest[cityId].Remove(qList[curId].Qid);
                 UpdateQuestList(n);
                 questBtn[n].GetComponent<QuestListBtn>().OnButtonClick();
                 break;
             case "OnQstComplete":
-                //보상내역 Exp, Crown, GradeExp
-                Debug.Log("보상내역: " + qList[curId].Crown + " " + qList[curId].Exp + " " + qList[curId].GradeExp);
+                // Debug.Log("보상내역: " + qList[curId].Crown + " " + qList[curId].Exp + " " + qList[curId].GradeExp);
                 PlayerManager.I.pData.Crown += qList[curId].Crown;
                 PlayerManager.I.pData.Exp += qList[curId].Exp;
                 PlayerManager.I.pData.GradeExp += qList[curId].GradeExp;
                 //퀘스트 삭제 및 UI 갱신
-                PlayerManager.I.pData.QuestList.Remove(qList[curId]);
+                //퀘스트 완료 후 삭제 되기전에 퀘스트에 따라 NPC 호감도가 상승해야함
+                switch (qList[curId].Qid)
+                {
+                    case 1:
+                    case 2:
+                    case 3:
+                        Presenter.Send("CityEnterPop", "AddNpcRls", 2);
+                        break;
+                    case 4:
+                        NpcManager.I.AddNpcRls(qList[curId].QNpcId, qList[curId].GradeExp);//의뢰자에게 호감도 증가
+                        Presenter.Send("CityEnterPop", "AddNpcRls", 2);
+                        break;
+                }
+                PlayerManager.I.ClearGuildQst(qList[curId].QUid);
                 UpdateQuestList(curId);
                 UpdateGradeGgSlider();
                 int n2 = curId > qIdx ? qIdx - 1 : curId;
@@ -92,7 +110,9 @@ public class GuildQuestPop : UIScreen
         {
             case "SettingQuestPop":
                 //MyRankBadge
-                cityId = data.Get<int>();
+                List<int> rcv = data.Get<List<int>>(); //receive
+                cityId = rcv[0];
+                npcId = rcv[1];
                 qIdx = 0;
                 UpdateGradeGgSlider();
                 bool not = true;
@@ -118,7 +138,6 @@ public class GuildQuestPop : UIScreen
                 mTexts["ExpVal"].text = qList[curId].Exp.ToString();
                 mTexts["CrownVal"].text = qList[curId].Crown.ToString();
                 mTexts["GdExpVal"].text = qList[curId].GradeExp.ToString();
-                mTexts["DaysVal"].text = qList[curId].Days.ToString();
                 for (int i = 0; i < questBtn.Count; i++)
                 {
                     switch (qList[i].State)
@@ -146,7 +165,7 @@ public class GuildQuestPop : UIScreen
     void UpdateGradeGgSlider()
     {
         mTexts["GradeGgVal"].text = PlayerManager.I.pData.GradeExp.ToString() + " / " + PlayerManager.I.pData.GradeNext.ToString();
-        float gg = (float)PlayerManager.I.pData.GradeExp / (float)PlayerManager.I.pData.GradeNext * 100;
+        float gg = PlayerManager.I.pData.GradeExp / PlayerManager.I.pData.GradeNext * 100;
         if (gg >= 100)
         {
             isUpgrade = true;

@@ -352,13 +352,13 @@ public class QuestData
 public class QuestInstData
 {
     //Qid는 퀘스트 ID,QSCid는 퀘스트를 수락하여 시작한 도시 ID
-    public int Qid, QSCid, QType, Days, Star;
+    public int Qid, QSCid, QType, Star, QUid, QNpcId;
     public int Exp, Crown, GradeExp;
-    public int sDay, eDay; //퀘스트 시작일, 종료일
     public string Name, Desc;
-    public int CurCnt, TgCnt, MonId, ItemId, CityId, RoadId, NpcGrpId; //현재 횟수, 목표 횟수, 몬스터 ID, 아이템 ID, 도시 ID, 도로 ID, NPC 그룹 ID
+    public int CurCnt, TgCnt, MonId, ItemId, CityId, RoadId, NpcGrpId, MarkerUid; //현재 횟수, 목표 횟수, 몬스터 ID, 아이템 ID, 도시 ID, 도로 ID, NPC 그룹 ID, 마커 ID
     public int State, Order; //0: 미수락, 1: 수락, 2: 완료 //Order: 퀘스트 순서
     public bool IsTrace;
+    public Vector3 TgPos;
     public QuestInstData(int qid, int qscid, int qtype, string name, bool isTrace)
     {
         this.Qid = qid;
@@ -366,8 +366,11 @@ public class QuestInstData
         this.QType = qtype;
         this.Name = name;
         this.IsTrace = isTrace;
+        this.QUid = QuestManager.I.GetQstUid();
         this.State = 0;
         this.Order = 0;
+        this.MarkerUid = 0;
+        this.TgPos = Vector3.zero;
     }
     public void SetQuestBase(string desc, int star, int exp, int crown, int gradeExp)
     {

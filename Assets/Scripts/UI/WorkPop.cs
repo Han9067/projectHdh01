@@ -52,10 +52,10 @@ public class WorkPop : UIScreen
     {
         switch (key)
         {
-            case "ClickClose":
+            case "OnClose":
                 Close();
                 break;
-            case "ClickStart":
+            case "OnStart":
                 isStart = true;
                 Presenter.Send("WorldMainUI", "StartWork", daysVal);
                 if (workType > 100)
@@ -69,7 +69,7 @@ public class WorkPop : UIScreen
                 }
                 Close();
                 break;
-            case "ClickConfirm":
+            case "OnConfirm":
                 isStart = false;
                 SetWorkReward(); //플레이어가 받을 보상 적용
                 Close();

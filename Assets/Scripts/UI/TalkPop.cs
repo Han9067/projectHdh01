@@ -63,7 +63,14 @@ public class TalkPop : UIScreen
                         break;
                     case 1:
                         mentId = "Talk_QstG1_1";
-                        // SetMyAskPreset("Confirm");
+                        foreach (var q in PlayerManager.I.pData.QuestList)
+                        {
+                            if (q.Qid == 101 && q.CityId == WorldCore.intoCity)
+                            {
+                                PlayerManager.I.CompleteGuildQst(q.QUid);
+                                break;
+                            }
+                        }
                         break;
                     case 101:
                         switch (order)
@@ -106,12 +113,12 @@ public class TalkPop : UIScreen
                         break;
                     case "QstM_Tuto_2_2":
                         PlayerManager.I.NextQuestOrder(101);
-                        WorldCore.I.CreateWorldMarker(new Vector3(-9.65f, -35.2f, 0), 99);
+                        WorldCore.I.CreateWorldMarker(new Vector3(-9.65f, -35.2f, 0), 999);
                         UIManager.ClosePopup("CityEnterPop");
                         Close();
                         break;
                     case "QstM_Tuto_5":
-                        PlayerManager.I.CompleteMainQuest(101);
+                        PlayerManager.I.ClearMainQst(101);
                         Presenter.Send("WorldMainUI", "SetTraceQst");
                         UIManager.ClosePopup("CityEnterPop");
                         WorldCore.I.CheckAllAreaWorldMon();

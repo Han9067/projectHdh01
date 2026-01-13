@@ -94,4 +94,8 @@ public class NpcManager : AutoSingleton<NpcManager>
             }
         }
     }
+    public void AddNpcRls(int npcId, int val)
+    {
+        NpcDataList[npcId].Rls += val;
+    }
 }

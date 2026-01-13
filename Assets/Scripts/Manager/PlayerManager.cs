@@ -15,6 +15,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     [Header("기타")]
     public bool isObjCreated = false; // 월드 오브젝트 생성 여부
     public bool isGate1Open = false; // 관문 1 통행 여부
+    public int qstEventId = 0; //퀘스트 이벤트 ID
 
     [Header("테스트")]
     public int testSkin = 1;
@@ -192,7 +193,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             }
         }
     }
-    public void CompleteMainQuest(int qid)
+    public void ClearMainQst(int qid)
     {
         pData.QuestClearList.Add(qid);
         pData.QuestList.Sort((a, b) => a.Qid.CompareTo(b.Qid)); //혹시 몰라 클리어 퀘스트 정렬
@@ -205,13 +206,24 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             }
         }
     }
-    public void CompleteGuildQuest(int qid)
+    public void CompleteGuildQst(int quid)
     {
         foreach (var q in pData.QuestList)
         {
-            if (q.Qid == qid)
+            if (q.QUid == quid)
             {
                 q.State = 2;
+                break;
+            }
+        }
+    }
+    public void ClearGuildQst(int quid)
+    {
+        foreach (var q in pData.QuestList)
+        {
+            if (q.QUid == quid)
+            {
+                pData.QuestList.Remove(q);
                 break;
             }
         }
@@ -242,6 +254,17 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     {
         return pData.SkList.ContainsKey(skId) ? pData.SkList[skId].Lv : 1;
     }
+    public int CheckQstItemCnt(int itemId)
+    {
+        int cnt = 0;
+        foreach (var q in pData.QuestList)
+        {
+            if (q.ItemId == itemId)
+                cnt++;
+        }
+        return cnt;
+    }
+    #region 튜토리얼
     private IEnumerator DelayedStartTutorial(float delay)
     {
         yield return new WaitForSecondsRealtime(delay);
@@ -260,6 +283,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
         WorldCore.I.SetWorldCoreForTutorial();
     }
+    #endregion
     #region 🎨 TESTING
     public void ChangePlayerSkin()
     {

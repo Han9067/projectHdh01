@@ -402,6 +402,9 @@ public class WorldCore : AutoSingleton<WorldCore>
         var wm = obj.GetComponent<wMarker>();
         wm.SetMarkerData(uId, type);
         wMarkerObj.Add(uId, wm);
+        WorldObjManager.I.AddWorldMarkerData(uId, type, pos);
+        if (type == 1)
+            QuestManager.I.curMkUid = uId;
     }
     public void RemoveMarker(int uId)
     {
@@ -563,7 +566,6 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         SavePlayerPos();
         WorldObjManager.I.UpdateWorldMonData(wMonObj); //몬스터 위치 갱신
-        WorldObjManager.I.UpdateWorldMarkerData(wMarkerObj); //마커 위치 갱신
         Presenter.Send("WorldMainUI", "SaveAllTime");
         DOTween.KillAll();
         WorldObjManager.I.RemoveWorldMonGrp();

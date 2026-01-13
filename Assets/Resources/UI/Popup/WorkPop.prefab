@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: ClickStart
+  Key: OnStart
 --- !u!1 &457882928037233847
 GameObject:
   m_ObjectHideFlags: 0
@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: ClickClose
+  Key: OnClose
 --- !u!1 &1888613963475174075
 GameObject:
   m_ObjectHideFlags: 0
@@ -653,13 +653,13 @@ MonoBehaviour:
     list: []
   mButtons:
     list:
-    - key: ClickStart
+    - key: OnStart
       value: {fileID: 2346634498624065049}
       duplicatedKey: 0
-    - key: ClickClose
+    - key: OnClose
       value: {fileID: 4863533475084996107}
       duplicatedKey: 0
-    - key: ClickConfirm
+    - key: OnConfirm
       value: {fileID: 3052333024824295011}
       duplicatedKey: 0
   mGameObject:
@@ -1774,7 +1774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: ClickConfirm
+  Key: OnConfirm
 --- !u!1 &6750889939319675036
 GameObject:
   m_ObjectHideFlags: 0
