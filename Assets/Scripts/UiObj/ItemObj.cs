@@ -73,6 +73,7 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
         #endregion
         #region 아이템 정보 팝업업
         UIManager.ShowPopup("ItemInfoPop");
+        Presenter.Send("ItemInfoPop", "OnItemType", iType);
         Presenter.Send("ItemInfoPop", "OnItemInfo", itemData);
 
         RectTransform rect = GetComponent<RectTransform>();

@@ -152,26 +152,54 @@ public class ItemManager : AutoSingleton<ItemManager>
         if (RewardItemIdList.Count > 0 && !isDrop)
             isDrop = true;
     }
-    public void ShowWorkReward(int val)
+    public void ShowWorkReward(int val, int wType, int skLv)
     {
-        //테스트
-        if (val < 2000)
+        //val => 보상 아이템의 수량이 증가
+        //skLv => 보상 아이템의 등급이 증가
+        int cnt = GetWorkRwdItemCnt(val);
+        int[] id;
+        int[] rate;
+        switch (wType)
         {
-
+            case 101:
+                for (int i = 0; i < cnt; i++)
+                {
+                    if (skLv <= 2)
+                    {
+                        id = new int[] { 62005, 62006, 69002, 69003, 65003 }; //토끼 고기, 사슴 고기, 토끼 가죽, 사슴 가죽, 사슴 뿔
+                        rate = new int[] { 60, 20, 40, 20, 20 };
+                    }
+                    else if (skLv <= 4)
+                    {
+                        id = new int[] { 62005, 62006, 69002, 69003, 65003 }; //토끼 고기, 사슴 고기, 토끼 가죽, 사슴 가죽, 사슴 뿔
+                        rate = new int[] { 95, 60, 75, 55, 45 };
+                    }
+                    else
+                    {
+                        id = new int[] { 62006, 69003, 65003 }; //사슴 고기, 사슴 가죽, 사슴 뿔
+                        rate = new int[] { 80, 70, 60 };
+                    }
+                    int ran = Random.Range(0, id.Length);
+                    CalcDropItem(id[ran], rate[ran]);
+                }
+                break;
         }
-        else
-        {
 
-        }
+        UIManager.ShowPopup("InvenPop");
+        Presenter.Send("InvenPop", "OpenRwdPop");
+    }
+    private int GetWorkRwdItemCnt(int val)
+    {
+        return val / 10;
     }
     public void TestDropItem()
     {
         RewardItemIdList.Clear();
-        CalcDropItem(68001, 100);
-        CalcDropItem(68001, 100);
-        CalcDropItem(68001, 100);
-        CalcDropItem(68001, 100);
-        CalcDropItem(68001, 100);
+        CalcDropItem(65001, 100);
+        CalcDropItem(65001, 100);
+        CalcDropItem(65001, 100);
+        CalcDropItem(65001, 100);
+        CalcDropItem(65001, 100);
         CalcDropItem(68002, 100);
 
         UIManager.ShowPopup("InvenPop");

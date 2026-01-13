@@ -103,12 +103,16 @@ public class SelectPop : UIScreen
                 }
                 PlayerManager.I.pData.Crown -= selItem.Price;
                 Presenter.Send("WorldMainUI", "UpdateCrownTxt");
-                // Vector2 pos = PlayerManager.I.CanAddItem(selItem.W, selItem.H);
-                // ItemManager.I.CreateInvenItem(selItem.ItemId, (int)pos.x, (int)pos.y);
                 Presenter.Send("InvenPop", "AddItem", selItem);
+                Presenter.Send("CityEnterPop", "AddNpcRls", 2); //호감도
                 Close();
                 break;
             case "OnSell":
+                PlayerManager.I.pData.Crown += (int)(selItem.Price * 0.6);
+                Presenter.Send("WorldMainUI", "UpdateCrownTxt");
+                Presenter.Send("InvenPop", "DeleteItem", selItem.Uid);
+                Presenter.Send("CityEnterPop", "AddNpcRls", 2); //호감도
+                Close();
                 break;
             case "OnInfo":
                 //전투 상황에서 오브젝트의 정보

@@ -235,11 +235,8 @@ public class WorkPop : UIScreen
     }
     private void SetWorkReward()
     {
-        if (workType < 200)
+        if (workType < 101)
         {
-            // crownVal = GetCrownVal();
-            // rlsVal = GetRlsVal();
-            // skExpVal = GetSkExpVal();
             PlayerManager.I.pData.Crown += crownVal; //크라운 보상 적용
             Presenter.Send("CityEnterPop", "AddNpcRls", rlsVal);
             switch (workType)
@@ -262,11 +259,16 @@ public class WorkPop : UIScreen
                 case 7:
                     PlayerManager.I.AddSkExp(21, skExpVal);
                     break;
+            }
+        }
+        else
+        {
+            switch (workType)
+            {
                 case 101:
                     //사냥 후 보상
                     PlayerManager.I.AddSkExp(26, skExpVal);
-                    ItemManager.I.ShowWorkReward(itemVal);
-                    // PlayerManager.I.AddItem(itemVal);
+                    ItemManager.I.ShowWorkReward(itemVal, workType, PlayerManager.I.GetSkLv(26));
                     break;
             }
         }

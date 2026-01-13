@@ -1,15 +1,12 @@
 using GB;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
+using UnityEngine;
 
-
-public class ChatPop : UIScreen
+public class TalkPop : UIScreen
 {
     [SerializeField] private Transform parent;
     [SerializeField] private RectTransform box;
-    private List<GameObject> chatMentBtn = new List<GameObject>();
+    private List<GameObject> talkMentBtn = new List<GameObject>();
     private string talkKey = "";
     private void Awake()
     {
@@ -19,13 +16,13 @@ public class ChatPop : UIScreen
 
     private void OnEnable()
     {
-        Presenter.Bind("ChatPop", this);
+        Presenter.Bind("TalkPop", this);
         talkKey = "";
     }
 
     private void OnDisable()
     {
-        Presenter.UnBind("ChatPop", this);
+        Presenter.UnBind("TalkPop", this);
         InitChatBtn();
     }
 
@@ -54,7 +51,7 @@ public class ChatPop : UIScreen
     {
         switch (key)
         {
-            case "ChatStart":
+            case "TalkStart":
                 int tType = 0; //0: 상대방 혼자 대화, 1: 나만 대화, 2: 둘이 대화
                 List<int> list = data.Get<List<int>>();//퀘스트 ID, NPC ID, Order ID
                 int qid = list[0], npcId = list[1], order = list[2];
@@ -92,7 +89,7 @@ public class ChatPop : UIScreen
                 }
                 SetTalkType(tType, npcId, mentId);
                 break;
-            case "ChatMentBtn":
+            case "talkMentBtn":
                 string sKey = data.Get<string>();
                 switch (sKey)
                 {
@@ -196,9 +193,9 @@ public class ChatPop : UIScreen
         }
         for (int i = 0; i < askKeyList.Count; i++)
         {
-            var obj = Instantiate(ResManager.GetGameObject("ChatMentBtn"), parent);
-            obj.GetComponent<ChatMentBtn>().SetChatMentBtn(askKeyList[i], askMentList[i], i + 1);
-            chatMentBtn.Add(obj);
+            var obj = Instantiate(ResManager.GetGameObject("TalkAskBtn"), parent);
+            obj.GetComponent<TalkAskBtn>().SetTalkAskBtn(askKeyList[i], askMentList[i], i + 1);
+            talkMentBtn.Add(obj);
         }
     }
     private void NextChat(string key, string desc)
@@ -209,13 +206,12 @@ public class ChatPop : UIScreen
     }
     private void InitChatBtn()
     {
-        foreach (GameObject obj in chatMentBtn)
+        foreach (GameObject obj in talkMentBtn)
         {
             if (obj != null)
                 Destroy(obj);
         }
-        chatMentBtn.Clear();
+        talkMentBtn.Clear();
     }
     public override void Refresh() { }
-
 }

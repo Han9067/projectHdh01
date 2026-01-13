@@ -5,7 +5,6 @@ namespace GB
     {
 	public const string BattleReadyPop =  "BattleReadyPop"; 
 	public const string CharInfoPop =  "CharInfoPop"; 
-	public const string ChatPop =  "ChatPop"; 
 	public const string CityEnterPop =  "CityEnterPop"; 
 	public const string GuildQuestPop =  "GuildQuestPop"; 
 	public const string InvenPop =  "InvenPop"; 
@@ -16,6 +15,7 @@ namespace GB
 	public const string SelectPop =  "SelectPop"; 
 	public const string ShopInvenPop =  "ShopInvenPop"; 
 	public const string SkillPop =  "SkillPop"; 
+	public const string TalkPop =  "TalkPop"; 
 	public const string WorkPop =  "WorkPop"; 
 	public const string YesNoPop =  "YesNoPop"; 
 

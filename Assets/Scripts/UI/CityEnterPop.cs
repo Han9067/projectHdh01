@@ -87,14 +87,17 @@ public class CityEnterPop : UIScreen
                         Presenter.Send("YesNoPop", "SendYesNoPopData", "GuildJoin/Al_GuildJoin");
                     }
                     break;
+                case "OnRest":
+
+                    break;
                 case "OnChat":
                     List<int> list = new List<int>();
                     switch (sId)
                     {
                         case 1:
                             list = GetQstChatList();
-                            UIManager.ShowPopup("ChatPop");
-                            Presenter.Send("ChatPop", "ChatStart", list);
+                            UIManager.ShowPopup("TalkPop");
+                            Presenter.Send("TalkPop", "TalkStart", list);
                             break;
                     }
                     break;
@@ -138,8 +141,8 @@ public class CityEnterPop : UIScreen
                 break;
             case 1:
                 var shop = PlaceManager.I.GetShopData(shopIdList[sId]);
-                mTMPText["TitleVal"].text = GetTitleName(shop.Type);
-                mTMPText["JobVal"].text = GetJobName(shop.Type);
+                mTMPText["TitleVal"].text = LocalizationManager.GetValue(GetTitleName(shop.Type));
+                mTMPText["JobVal"].text = LocalizationManager.GetValue(GetJobName(shop.Type));
                 npcId = shop.NpcId;
                 var npc = NpcManager.I.NpcDataList[npcId];
                 mTMPText["NameVal"].text = npc.Name;
@@ -191,6 +194,7 @@ public class CityEnterPop : UIScreen
             case 3:
             case 4:
             case 5:
+                if (sId == 2) mButtons["OnRest"].gameObject.SetActive(true);
                 mButtons["OnTrade"].gameObject.SetActive(true);
                 mButtons["OnMake"].gameObject.SetActive(true);
                 break;
@@ -301,45 +305,45 @@ public class CityEnterPop : UIScreen
     {
         switch (idx)
         {
-            case 1:
-                return "길드";
-            case 2:
-                return "여관";
-            case 3:
-                return "대장간";
-            case 4:
-                return "재단소";
-            case 5:
-                return "약재상";
-            case 6:
-                return "시장";
+            case 1: return "Guild";
+            case 2: return "Inn";
+            case 3: return "Smith";
+            case 4: return "TailorShop";
+            case 5: return "Apothecary1";
+            case 6: return "Book";
+            case 7: return "Market";
+            case 8: return "Church";
+            case 21: return "Farm";
+            case 22: return "Ranch";
+            case 23: return "Sawmill";
+            case 24: return "Mine";
         }
-        return "길드";
+        return "Guild";
     }
     string GetJobName(int idx)
     {
         switch (idx)
         {
-            case 1:
-                return "길드 안내원";
-            case 2:
-                return "여관 주인";
-            case 3:
-                return "대장장이";
-            case 4:
-                return "재단사";
-            case 5:
-                return "약재 상인";
-            case 6:
-                return "상인";
+            case 1: return "GuildReceptionist";
+            case 2: return "Innkeeper";
+            case 3: return "Blacksmith";
+            case 4: return "Tailor";
+            case 5: return "Apothecary2";
+            case 6: return "Bookseller";
+            case 7: return "Merchant";
+            case 8: return "Priest";
+            case 21: return "Farmer";
+            case 22: return "Rancher";
+            case 23: return "Carpenter";
+            case 24: return "Miner";
         }
-        return "길드 안내원";
+        return "GuildReceptionist";
     }
     string GetRlsState(int num)
     {
-        if (num > 1000)
+        if (num > 4000)
             return "매우 좋음";
-        else if (num > 500)
+        else if (num > 1000)
             return "좋음";
         else if (num > 100)
             return "약간 좋음";
@@ -434,7 +438,6 @@ public class CityEnterPop : UIScreen
     #endregion
     #region 대화 관련
     private Dictionary<int, Func<int, List<int>>> qstChatHandlers = new Dictionary<int, Func<int, List<int>>>();
-
     private void InitGuildQstChatHandlers()
     {
         // 퀘스트 ID별 처리 로직을 딕셔너리에 등록
@@ -475,6 +478,11 @@ public class CityEnterPop : UIScreen
         }
 
         // 일반 채팅
+        return new List<int> { 0, npcId, 0 };
+    }
+
+    private List<int> GetRestChatList()
+    {
         return new List<int> { 0, npcId, 0 };
     }
     #endregion

@@ -19,8 +19,8 @@ public class WorldCore : AutoSingleton<WorldCore>
     private Camera cam;
     private float moveSpd = 20f, zoomSpd = 10f; // 카메라 이동 속도, 줌 속도
     private float minZoom = 5f, maxZoom = 10f;  // 줌 범위
-    public static int intoCity = 0, worldWorkId = 0;
-    private int mOverObjUid = 0, mTraceObjUid = 0;
+    public static int intoCity = 0, worldWorkId = 0, mOverObjUid = 0, mTraceObjUid = 0;
+    //도시 진입, 일 작업, 마우스 오버 몬스터, 추적 몬스터
 
     [Header("City")]
     [SerializeField] private Transform cityParent;

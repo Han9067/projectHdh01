@@ -37,6 +37,7 @@ public class MonTable  : GameData
 				case "SdwScr": return true;
 				case "GgY": return true;
 				case "Drop": return true;
+				case "Note": return true;
 
 		  default: return false;
 
@@ -70,6 +71,7 @@ public class MonTable  : GameData
 				case "SdwScr": return data.SdwScr;
 				case "GgY": return data.GgY;
 				case "Drop": return data.Drop;
+				case "Note": return data.Note;
 
 
                 default: return null;
@@ -94,6 +96,7 @@ public class MonTable  : GameData
 				case "SdwScr": return data.SdwScr;
 				case "GgY": return data.GgY;
 				case "Drop": return data.Drop;
+				case "Note": return data.Note;
 
 
                 default: return null;
@@ -119,6 +122,7 @@ public class MonTable  : GameData
 				case 6: return data.SdwScr;
 				case 7: return data.GgY;
 				case 8: return data.Drop;
+				case 9: return data.Note;
 
                 default: return null;
             }
@@ -170,5 +174,6 @@ public class MonTableProb : GameDataProb
 	[JsonProperty] public readonly float SdwScr;
 	[JsonProperty] public readonly float GgY;
 	[JsonProperty] public readonly string Drop;
+	[JsonProperty] public readonly string Note;
 
 }

@@ -134,7 +134,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.EqSlot["Hand1"] = pData.Inven[0]; // 손1
         pData.EqSlot["Armor"] = pData.Inven[1]; // 갑옷
         ItemManager.I.CreateInvenItem(60001, 0, 0); //물약
-        // ItemManager.I.CreateInvenItem(68001, 0, 1);
+        // ItemManager.I.CreateInvenItem(65001, 0, 1);
         ItemManager.I.CreateInvenItem(32001, 3, 0); //무기
         ItemManager.I.CreateInvenItem(60101, 1, 0); //스킬북
 

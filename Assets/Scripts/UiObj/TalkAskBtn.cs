@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using GB;
 using UnityEngine.EventSystems;
 
-public class ChatMentBtn : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class TalkAskBtn : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Text mTxtName;
     [SerializeField] private Button btn;
@@ -13,9 +13,9 @@ public class ChatMentBtn : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     string sKey, tMent;
     public void OnButtonClick()
     {
-        Presenter.Send("ChatPop", "ChatMentBtn", sKey);
+        Presenter.Send("TalkPop", "ChatMentBtn", sKey);
     }
-    public void SetChatMentBtn(string key, string ment, int i)
+    public void SetTalkAskBtn(string key, string ment, int i)
     {
         sKey = key;
         tMent = LocalizationManager.GetValue(ment);

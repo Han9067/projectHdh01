@@ -8,6 +8,7 @@ public class ItemInfoPop : UIScreen
     [SerializeField] private GameObject pop;
     public static bool isActive = false;
     private RectTransform statRect, popRect;
+    private int iType = 0;
     private void Awake()
     {
         Regist();
@@ -21,6 +22,7 @@ public class ItemInfoPop : UIScreen
         Presenter.Bind("ItemInfoPop", this);
         pop.transform.position = new Vector3(0, 2000, 0);
         isActive = true;
+        iType = 0;
     }
 
     private void OnDisable()
@@ -28,11 +30,16 @@ public class ItemInfoPop : UIScreen
         Presenter.UnBind("ItemInfoPop", this);
         pop.transform.position = new Vector3(0, 2000, 0);
         isActive = false;
+        iType = 0;
     }
     public override void ViewQuick(string key, IOData data)
     {
         switch (key)
         {
+            case "OnItemType":
+                int type = data.Get<int>();
+                iType = type;
+                break;
             case "OnItemInfo":
                 ItemData itemData = data.Get<ItemData>();
                 mTMPText["Name"].text = LocalizationManager.GetValue(itemData.Name);
@@ -61,7 +68,16 @@ public class ItemInfoPop : UIScreen
                 // int cnt = desc.Count(c => c == '\n');
                 mTMPText["Desc"].text = LocalizationManager.GetValue($"{itemData.Res}_Desc");
                 popRect.sizeDelta = new Vector2(400, tot);
-                mTMPText["CrownVal"].text = itemData.Price.ToString();
+                mGameObject["Crown"].SetActive(ShopInvenPop.isActive);
+                if (ShopInvenPop.isActive)
+                {
+                    int price;
+                    if (iType == 10)
+                        price = itemData.Price;
+                    else
+                        price = (int)(itemData.Price * 0.6);
+                    mTMPText["CrownVal"].text = price.ToString();
+                }
                 break;
             case "OnItemPos":
                 Vector3 pos = data.Get<Vector3>();
