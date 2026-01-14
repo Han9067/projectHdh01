@@ -382,6 +382,28 @@ public class QuestInstData
     }
 }
 
+[System.Serializable]
+public class TalkData
+{
+    //대화 타입에 대한 키, 퀘스트 또는 대화 ID, NPC ID, Order ID
+    public string TalkKey;
+    public int Tid, NpcId, Order;
+    public TalkData(string talkKey, int npcId)
+    {
+        this.TalkKey = talkKey;
+        this.NpcId = npcId;
+        this.Tid = 0;
+        this.Order = 0;
+    }
+    public TalkData(string talkKey, int npcId, int tid, int order)
+    {
+        this.TalkKey = talkKey;
+        this.NpcId = npcId;
+        this.Tid = tid;
+        this.Order = order;
+    }
+}
+
 //색상 클래스
 [System.Serializable]
 public static class ColorData

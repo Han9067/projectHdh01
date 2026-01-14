@@ -6,9 +6,9 @@ using DG.Tweening;
 public class WorldMainUI : UIScreen
 {
     [SerializeField] private Slider mIngGg, mHpGg, mMpGg, mSpGg, mEnergyGg;
-    private float wTime = 0, workTime, endWorkTime;
+    private float wTime = 0, actTime, endActTime;
     private int tDay = 0, wYear, wMonth, wDay;
-    private bool isWork = false; //일하기 상태 유무
+    private bool isAct = false, isRest = false; //일하기, 휴식 상태 유무
     private Sequence tstSqc;
     private void Awake()
     {
@@ -44,14 +44,23 @@ public class WorldMainUI : UIScreen
 
     public void OnButtonClick(string key)
     {
-        if (key.Contains("State"))
+        switch (key)
         {
-            GsManager.I.StateMenuPopup(key);
-        }
-        else
-        {
-            if (CityEnterPop.isActive) return;
-            StateGameSpd(key);
+            case "OnInvenPop":
+            case "OnCharInfoPop":
+            case "OnJournalPop":
+            case "OnSkillPop":
+                GsManager.I.StateMenuPopup(key);
+                break;
+            case "X0":
+            case "X1":
+            case "X2":
+            case "X4":
+                if (CityEnterPop.isActive) return;
+                StateGameSpd(key);
+                break;
+            case "OnStop":
+                break;
         }
     }
 
@@ -63,12 +72,12 @@ public class WorldMainUI : UIScreen
             wTime = 0;
             AddDay();
         }
-        if (isWork)
+        if (isAct)
         {
             UpdateWorkGg();
-            if (workTime >= endWorkTime)
+            if (actTime >= endActTime)
             {
-                isWork = false; workTime = 0; endWorkTime = 0;
+                isAct = false; actTime = 0; endActTime = 0;
                 mIngGg.value = 0;
                 StateWork(false);
                 UIManager.ShowPopup("WorkPop");
@@ -77,16 +86,20 @@ public class WorldMainUI : UIScreen
                 Presenter.Send("CityEnterPop", "StateVisiblePop", 1);
             }
         }
+        if (isRest)
+        {
+
+        }
 
         // I 키 입력 감지
         if (Input.GetKeyDown(KeyCode.I))
-            GsManager.I.StateMenuPopup("StateInvenPop");
+            GsManager.I.StateMenuPopup("OnInvenPop");
         if (Input.GetKeyDown(KeyCode.C))
-            GsManager.I.StateMenuPopup("StateCharInfoPop");
+            GsManager.I.StateMenuPopup("OnCharInfoPop");
         if (Input.GetKeyDown(KeyCode.J))
-            GsManager.I.StateMenuPopup("StateJournalPop");
+            GsManager.I.StateMenuPopup("OnJournalPop");
         if (Input.GetKeyDown(KeyCode.K))
-            GsManager.I.StateMenuPopup("StateSkillPop");
+            GsManager.I.StateMenuPopup("OnSkillPop");
         if (Input.GetKeyDown(KeyCode.Alpha1))
             StateGameSpd("X0");
         if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -173,8 +186,12 @@ public class WorldMainUI : UIScreen
             case "ChangeGameSpd":
                 StateGameSpd(data.Get<string>());
                 break;
-            case "StartWork":
+            case "OnWork":
+                UpdateCrownTxt();
                 StartWork(data.Get<int>());
+                break;
+            case "OnRest":
+                StartRest();
                 break;
             case "SaveAllTime":
                 GsManager.I.SetAllTime(tDay, wYear, wMonth, wDay, wTime);
@@ -218,11 +235,13 @@ public class WorldMainUI : UIScreen
 
     private void StartWork(int day)
     {
-        isWork = true;
-        workTime = 0;
-        endWorkTime = day * 40;
-        mIngGg.maxValue = endWorkTime;
+        isAct = true;
+        actTime = 0;
+        endActTime = day * 40;
+        mIngGg.maxValue = endActTime;
         mIngGg.value = 0;
+        mIngGg.gameObject.SetActive(true);
+        mButtons["OnStop"].gameObject.SetActive(false);
         StateWork(true);
         Presenter.Send("CityEnterPop", "StateVisiblePop", 0);
     }
@@ -231,10 +250,18 @@ public class WorldMainUI : UIScreen
         StateGameSpd(on ? "X4" : "X0");
         mGameObject["IngPop"].SetActive(on);
     }
+    private void StartRest()
+    {
+        isRest = true;
+        actTime = 0;
+        endActTime = 40;
+        mIngGg.gameObject.SetActive(false);
+        mButtons["OnStop"].gameObject.SetActive(true);
+    }
     private void UpdateWorkGg()
     {
-        workTime += Time.deltaTime;
-        mIngGg.value = workTime;
+        actTime += Time.deltaTime;
+        mIngGg.value = actTime;
     }
     private void SetTraceQst()
     {

@@ -57,7 +57,7 @@ public class WorkPop : UIScreen
                 break;
             case "OnStart":
                 isStart = true;
-                Presenter.Send("WorldMainUI", "StartWork", daysVal);
+                Presenter.Send("WorldMainUI", "OnWork", daysVal);
                 if (workType > 100)
                 {
                     switch (workType)

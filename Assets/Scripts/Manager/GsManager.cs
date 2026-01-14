@@ -75,7 +75,7 @@ public class GsManager : AutoSingleton<GsManager>
     #region 메뉴 팝업 상태
     public void StateMenuPopup(string key)
     {
-        string str = key.Replace("State", "");
+        string str = key.Substring(2);
         switch (str)
         {
             case "CharInfoPop":

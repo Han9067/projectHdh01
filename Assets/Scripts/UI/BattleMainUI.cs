@@ -22,6 +22,17 @@ public class BattleMainUI : UIScreen
         UpdateSp();
         mButtons["GoToWorld"].gameObject.SetActive(false); //테스트 후 정상화
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+            GsManager.I.StateMenuPopup("OnInvenPop");
+        if (Input.GetKeyDown(KeyCode.C))
+            GsManager.I.StateMenuPopup("OnCharInfoPop");
+        if (Input.GetKeyDown(KeyCode.J))
+            GsManager.I.StateMenuPopup("OnJournalPop");
+        if (Input.GetKeyDown(KeyCode.K))
+            GsManager.I.StateMenuPopup("OnSkillPop");
+    }
     private void OnEnable()
     {
         Presenter.Bind("BattleMainUI", this);
@@ -40,18 +51,17 @@ public class BattleMainUI : UIScreen
 
     public void OnButtonClick(string key)
     {
-        if (key.Contains("State"))
+        switch (key)
         {
-            GsManager.I.StateMenuPopup(key);
-        }
-        else
-        {
-            switch (key)
-            {
-                case "GoToWorld":
-                    BattleCore.I.MoveToWorld();
-                    break;
-            }
+            case "OnInvenPop":
+            case "OnCharInfoPop":
+            case "OnJournalPop":
+            case "OnSkillPop":
+                GsManager.I.StateMenuPopup(key);
+                break;
+            case "GoToWorld":
+                BattleCore.I.MoveToWorld();
+                break;
         }
     }
     public override void ViewQuick(string key, IOData data)
@@ -80,9 +90,7 @@ public class BattleMainUI : UIScreen
         }
     }
 
-    public override void Refresh()
-    {
-    }
+    public override void Refresh() { }
 
     public void UpdateHp()
     {

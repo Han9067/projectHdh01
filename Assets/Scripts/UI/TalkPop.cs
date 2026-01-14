@@ -36,7 +36,7 @@ public class TalkPop : UIScreen
     {
         switch (key)
         {
-            case "ClickNext":
+            case "OnNext":
                 //현재 대화를 종료하면서 그 이후에 발생해야하는 이벤트를 적용해줌
                 switch (talkKey)
                 {
@@ -51,56 +51,71 @@ public class TalkPop : UIScreen
     {
         switch (key)
         {
-            case "TalkStart":
-                int tType = 0; //0: 상대방 혼자 대화, 1: 나만 대화, 2: 둘이 대화
-                List<int> list = data.Get<List<int>>();//퀘스트 ID, NPC ID, Order ID
-                int qid = list[0], npcId = list[1], order = list[2];
-                string mentId = "";
-                switch (qid)
+            case "SetTalk":
+                TalkData talkData = data.Get<TalkData>();
+                int tType = 0;
+                string ment = "";
+                switch (talkData.TalkKey)
                 {
-                    case 0:
-                        mentId = "Talk_Test";
+                    case "Normal":
+                        ment = LocalizationManager.GetValue("Talk_Test");
                         break;
-                    case 1:
-                        mentId = "Talk_QstG1_1";
-                        foreach (var q in PlayerManager.I.pData.QuestList)
-                        {
-                            if (q.Qid == 101 && q.CityId == WorldCore.intoCity)
-                            {
-                                PlayerManager.I.CompleteGuildQst(q.QUid);
-                                break;
-                            }
-                        }
+                    case "Rest":
+                        ment = string.Format(LocalizationManager.GetValue("Talk_Inn_Rest_1"), 50);
+                        tType = 2;
+                        SetMyAskPreset("Inn_Rest");
                         break;
-                    case 101:
-                        switch (order)
+                    case "Qst":
+                        switch (talkData.Tid)
                         {
                             case 1:
-                                //길드 안내원이 길드 가입 권유 -> NPC 혼자 대화
-                                mentId = "Talk_QstM_Tuto_1";
-                                SetMyAskPreset("QstM_Tuto_1");
+                                ment = LocalizationManager.GetValue("Talk_QstG1_1");
+                                foreach (var q in PlayerManager.I.pData.QuestList)
+                                {
+                                    if (q.Qid == 101 && q.CityId == WorldCore.intoCity)
+                                    {
+                                        PlayerManager.I.CompleteGuildQst(q.QUid);
+                                        break;
+                                    }
+                                }
                                 break;
-                            case 3:
-                                //길드 가입 후 길드 안내원이 퀘스트 권유 -> 둘이 대화
-                                mentId = "Talk_QstM_Tuto_2_1";
-                                SetMyAskPreset("QstM_Tuto_2_1");
-                                tType = 2;
-                                break;
-                            case 5:
-                                //퀘스트 클리어 후 길드 안내원과의 대화 -> NPC 혼자 대화
-                                mentId = "Talk_QstM_Tuto_5";
-                                SetMyAskPreset("QstM_Tuto_5");
+                            case 101:
+                                switch (talkData.Order)
+                                {
+                                    case 1:
+                                        //길드 안내원이 길드 가입 권유 -> NPC 혼자 대화
+                                        ment = LocalizationManager.GetValue("Talk_QstM_Tuto_1");
+                                        SetMyAskPreset("QstM_Tuto_1");
+                                        break;
+                                    case 3:
+                                        //길드 가입 후 길드 안내원이 퀘스트 권유 -> 둘이 대화
+                                        ment = LocalizationManager.GetValue("Talk_QstM_Tuto_2_1");
+                                        SetMyAskPreset("QstM_Tuto_2_1");
+                                        tType = 2;
+                                        break;
+                                    case 5:
+                                        //퀘스트 클리어 후 길드 안내원과의 대화 -> NPC 혼자 대화
+                                        ment = LocalizationManager.GetValue("Talk_QstM_Tuto_5");
+                                        SetMyAskPreset("QstM_Tuto_5");
+                                        break;
+                                }
                                 break;
                         }
                         break;
                 }
-                SetTalkType(tType, npcId, mentId);
+                SetTalkType(tType, talkData.NpcId, ment);
                 break;
-            case "talkMentBtn":
+            case "OnClick":
                 string sKey = data.Get<string>();
                 switch (sKey)
                 {
                     case "Confirm":
+                    case "No":
+                        Close();
+                        break;
+                    case "Inn_Rest_Yes":
+                        PlayerManager.I.pData.Crown -= 50;
+                        Presenter.Send("WorldMainUI", "OnRest");
                         Close();
                         break;
                     case "QstM_Tuto_1":
@@ -126,18 +141,15 @@ public class TalkPop : UIScreen
                         break;
                 }
                 break;
-            case "NextBtn":
-                Close();
-                break;
         }
     }
-    void SetTalkType(int type, int nId, string mentId)
+    void SetTalkType(int type, int nId, string ment)
     {
         mGameObject["LineObj"].SetActive(type == 2);
         bool isOt = type == 0 || type == 2;
         bool isMy = type == 1 || type == 2;
         mTMPText["OtName"].gameObject.SetActive(isOt);
-        mButtons["ClickNext"].gameObject.SetActive(type != 2);
+        mButtons["OnNext"].gameObject.SetActive(type != 2);
         //0: 상대방 혼자 대화, 1: 나만 대화, 2: 둘이 대화
         switch (type)
         {
@@ -152,6 +164,8 @@ public class TalkPop : UIScreen
             case 2:
                 box.sizeDelta = new Vector2(1600, 600);
                 mGameObject["NextObj"].SetActive(false);
+                mGameObject["OtObj"].SetActive(true);
+                mGameObject["MyObj"].SetActive(true);
                 mGameObject["OtObj"].transform.localPosition = new Vector3(0, -280, 0);
                 break;
         }
@@ -160,7 +174,7 @@ public class TalkPop : UIScreen
             GsManager.I.SetUiBaseParts(nId, mGameObject, true, "Ot_");
             GsManager.I.SetUiEqParts(NpcManager.I.NpcDataList[nId], mGameObject, "Ot_");
             mTMPText["OtName"].text = NpcManager.I.NpcDataList[nId].Name;
-            mTMPText["OtMent"].text = LocalizationManager.GetValue(mentId);
+            mTMPText["OtMent"].text = ment;
         }
         if (isMy)
         {
@@ -178,6 +192,12 @@ public class TalkPop : UIScreen
             case "Confirm":
                 askKeyList.Add("Confirm");
                 askMentList.Add("Confirm");
+                break;
+            case "Inn_Rest":
+                askKeyList.Add("Inn_Rest_Yes");
+                askMentList.Add("Yes");
+                askKeyList.Add("No");
+                askMentList.Add("No1");
                 break;
             case "QstM_Tuto_1":
                 askKeyList.Add("QstM_Tuto_1");

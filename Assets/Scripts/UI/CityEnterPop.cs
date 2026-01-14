@@ -21,7 +21,7 @@ public class CityEnterPop : UIScreen
     private Dictionary<int, List<string>> dotList = new Dictionary<int, List<string>>();
     #endregion
     #region 퀘스트 관련
-    private List<int> tGQstList = new List<int>(); // 길드 안내원과의 대화를 통해 완료 및 진행이 되는 퀘스트들을 담아두는 리스트//변수명의 약자는 talk to the guild guide about my quest
+    private List<QuestInstData> tGQstList = new List<QuestInstData>(); // 길드 안내원과의 대화를 통해 완료 및 진행이 되는 퀘스트들을 담아두는 리스트//변수명의 약자는 talk to the guild guide about my quest
     #endregion
     private void Awake()
     {
@@ -31,7 +31,7 @@ public class CityEnterPop : UIScreen
         canvasGrp = GetComponent<CanvasGroup>();
         if (canvasGrp == null)
             canvasGrp = gameObject.AddComponent<CanvasGroup>();
-        InitGuildQstChatHandlers(); //길드 퀘스트 채팅 핸들러 초기화
+        InitGuildQstTalkHandlers(); //길드 퀘스트 채팅 핸들러 초기화
     }
     private void OnEnable()
     {
@@ -88,16 +88,17 @@ public class CityEnterPop : UIScreen
                     }
                     break;
                 case "OnRest":
-
+                    UIManager.ShowPopup("TalkPop");
+                    Presenter.Send("TalkPop", "SetTalk", new TalkData("Rest", npcId));
                     break;
                 case "OnTalk":
-                    List<int> tList = new List<int>();
+                    TalkData tList;
                     switch (sId)
                     {
                         case 1:
-                            tList = GetQstChatList();
+                            tList = CheckQstTalkList();
                             UIManager.ShowPopup("TalkPop");
-                            Presenter.Send("TalkPop", "TalkStart", tList);
+                            Presenter.Send("TalkPop", "SetTalk", tList);
                             break;
                     }
                     break;
@@ -170,7 +171,7 @@ public class CityEnterPop : UIScreen
                 mButtons["OnJoin"].gameObject.SetActive(PlayerManager.I.pData.Grade == 0);
                 mButtons["OnQuest"].gameObject.SetActive(PlayerManager.I.pData.Grade > 0);
                 mButtons["OnWork"].gameObject.SetActive(false);
-                if (tGQstList.Contains(101)) //튜토리얼
+                if (tGQstList.Any(x => x.Qid == 101)) //튜토리얼
                 {
                     // int n = tGQstList.IndexOf(101);
                     switch (PlayerManager.I.pData.QuestList.Find(q => q.Qid == 101).Order)
@@ -379,20 +380,20 @@ public class CityEnterPop : UIScreen
                             case 1:
                                 if (q.State == 1 && q.CityId == cityId)
                                 {
-                                    tGQstList.Add(1);
-                                    if (!dotList[idx].Contains("DI_Chat"))
-                                        dotList[idx].Add("DI_Chat");
+                                    tGQstList.Add(q);
+                                    if (!dotList[idx].Contains("DI_Talk"))
+                                        dotList[idx].Add("DI_Talk");
                                 }
                                 break;
                             case 101:
-                                tGQstList.Add(101);
+                                tGQstList.Add(q);
                                 switch (q.Order)
                                 {
                                     case 1:
                                     case 3:
                                     case 5:
-                                        if (!dotList[idx].Contains("DI_Chat"))
-                                            dotList[idx].Add("DI_Chat");
+                                        if (!dotList[idx].Contains("DI_Talk"))
+                                            dotList[idx].Add("DI_Talk");
                                         break;
                                 }
                                 break;
@@ -438,32 +439,33 @@ public class CityEnterPop : UIScreen
     }
     #endregion
     #region 대화 관련
-    private Dictionary<int, Func<int, List<int>>> qstChatHandlers = new Dictionary<int, Func<int, List<int>>>();
-    private void InitGuildQstChatHandlers()
+    private Dictionary<int, Func<int, TalkData>> qstTalkHandlers = new Dictionary<int, Func<int, TalkData>>();
+    private void InitGuildQstTalkHandlers()
     {
         // 퀘스트 ID별 처리 로직을 딕셔너리에 등록
-        qstChatHandlers.Clear();
-        qstChatHandlers[101] = hQst101;
-        qstChatHandlers[1] = hQst1;
+        qstTalkHandlers.Clear();
+        qstTalkHandlers[101] = hQst101;
+        qstTalkHandlers[1] = hQst1;
         // 새로운 퀘스트 추가 시 여기에만 등록하면 됨
-        // questChatHandlers[102] = HandleQuest10
+        // questTalkHandlers[102] = HandleQuest10
     }
-    private List<int> hQst101(int order)
+    private TalkData hQst101(int order)
     {
-        return new List<int> { 101, npcId, order };
+        return new TalkData("Qst", npcId, 101, order);
     }
-    private List<int> hQst1(int order)
+    private TalkData hQst1(int order)
     {
-        return new List<int> { 1, npcId, order };
+        return new TalkData("Qst", npcId, 1, order);
     }
-    private List<int> GetQstChatList()
+    private TalkData CheckQstTalkList()
     {
-        List<int> priority = new List<int>();
+        //대화 타입, 퀘스트 ID, NPC ID, Order ID
+        List<TalkData> priority = new List<TalkData>();
         switch (sId)
         {
             case 1:
-                priority.Add(101);
-                priority.Add(1);
+                priority.Add(hQst101(0));
+                priority.Add(hQst1(0));
                 break;
             case 2:
                 break;
@@ -471,20 +473,15 @@ public class CityEnterPop : UIScreen
                 break;
         }
         if (priority.Count == 0)
-            return new List<int> { 0, npcId, 0 };
-        foreach (int questId in priority)
+            return new TalkData("Normal", npcId, 0, 0);
+        foreach (TalkData talkData in priority)
         {
-            if (tGQstList.Contains(questId) && qstChatHandlers.ContainsKey(questId))
-                return qstChatHandlers[questId](npcId);
+            if (tGQstList.Any(x => x.Qid == talkData.Tid) && qstTalkHandlers.ContainsKey(talkData.Tid))
+                return qstTalkHandlers[talkData.Tid](npcId);
         }
 
         // 일반 채팅
-        return new List<int> { 0, npcId, 0 };
-    }
-
-    private List<int> GetRestChatList()
-    {
-        return new List<int> { 0, npcId, 0 };
+        return new TalkData("Normal", npcId, 0, 0);
     }
     #endregion
 }

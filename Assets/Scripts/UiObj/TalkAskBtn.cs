@@ -13,7 +13,7 @@ public class TalkAskBtn : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     string sKey, tMent;
     public void OnButtonClick()
     {
-        Presenter.Send("TalkPop", "ChatMentBtn", sKey);
+        Presenter.Send("TalkPop", "OnClick", sKey);
     }
     public void SetTalkAskBtn(string key, string ment, int i)
     {

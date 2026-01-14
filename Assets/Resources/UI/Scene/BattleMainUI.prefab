@@ -969,7 +969,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: StateJournalPop
+  Key: OnJournalPop
 --- !u!1 &1387321391671459301
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,7 +1104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: StateCharInfoPop
+  Key: OnCharInfoPop
 --- !u!1 &1440171358626713516
 GameObject:
   m_ObjectHideFlags: 0
@@ -3256,16 +3256,16 @@ MonoBehaviour:
     list: []
   mButtons:
     list:
-    - key: StateCharInfoPop
+    - key: OnCharInfoPop
       value: {fileID: 4110370660066529183}
       duplicatedKey: 0
-    - key: StateInvenPop
+    - key: OnInvenPop
       value: {fileID: 4939460423896129065}
       duplicatedKey: 0
-    - key: StateSkillPop
+    - key: OnSkillPop
       value: {fileID: 5810961427106952152}
       duplicatedKey: 0
-    - key: StateJournalPop
+    - key: OnJournalPop
       value: {fileID: 7550642170008051081}
       duplicatedKey: 0
     - key: GoToWorld
@@ -3801,7 +3801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: StateSkillPop
+  Key: OnSkillPop
 --- !u!1 &5425096325733508182
 GameObject:
   m_ObjectHideFlags: 0
@@ -4361,7 +4361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: StateInvenPop
+  Key: OnInvenPop
 --- !u!1 &6773752362057568261
 GameObject:
   m_ObjectHideFlags: 0

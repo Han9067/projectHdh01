@@ -149,7 +149,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.QuestMax = 5;
         pData.TraceQId = 0;
 
-        energy = 100; //기본이 100
+        energy = 70; //기본이 100
         // pData.SkList = new Dictionary<int, SkData>();
 
         // StartCoroutine(DelayedStartTutorial(0.2f)); //추후 튜토리얼 조건이 된다면 튜토리얼을 시작시킴
