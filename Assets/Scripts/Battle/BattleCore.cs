@@ -524,18 +524,28 @@ public class BattleCore : AutoSingleton<BattleCore>
         data.isAction = true; //행동 시작
         if (data.tgId == 1000)
         {
-            Vector2Int[] path = BattlePathManager.I.GetPath(data.pos, cpPos, gGrid);
-            StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], ct, () =>
+            // 자기 자신의 ID(mId)를 전달하여 자신이 차지한 공간은 빈 공간으로 취급
+            Vector2Int[] path = BattlePathManager.I.GetPath(data.pos, cpPos, gGrid, mData[mId].w, mData[mId].h, mId);
+            if (path.Length > 0)
             {
-                data.isAction = false; //행동 종료
-                UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, mData[mId].w, mData[mId].h, mId);
-                data.pos = path[0]; //몬스터 위치 업데이트
-                mData[mId].SetObjLayer(mapH - path[0].y); //몬스터 레이어 업데이트
-            }, () =>
+                StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], ct, () =>
+                {
+                    data.isAction = false; //행동 종료
+                    UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, mData[mId].w, mData[mId].h, mId);
+                    data.pos = path[0]; //몬스터 위치 업데이트
+                    mData[mId].SetObjLayer(mapH - path[0].y); //몬스터 레이어 업데이트
+                }, () =>
+                {
+                    if (GetAttackTarget(data.tgId, data.pos) || gGrid[path[0].x, path[0].y].tId != 0)
+                        data.state = BtObjState.IDLE;
+                }));
+            }
+            else
             {
-                if (GetAttackTarget(data.tgId, data.pos) || gGrid[path[0].x, path[0].y].tId != 0)
-                    data.state = BtObjState.IDLE;
-            }));
+                // 경로를 찾지 못한 경우
+                data.isAction = false;
+                data.state = BtObjState.IDLE;
+            }
         }
     }
     IEnumerator AttackObjWithMelee(GameObject myObj, BtObjType myType, int myId, int tgId)
