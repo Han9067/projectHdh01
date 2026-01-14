@@ -144,6 +144,7 @@ public class JournalPop : UIScreen
             switch (data.Qid)
             {
                 case 2:
+                case 3:
                     mTexts["TgVal"].gameObject.SetActive(true);
                     mTexts["TgVal"].text = data.CurCnt.ToString() + " / " + data.TgCnt.ToString();
                     break;

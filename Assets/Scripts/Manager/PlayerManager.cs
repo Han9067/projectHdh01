@@ -121,7 +121,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.NextExp = GsManager.I.GetNextExp(pData.Lv);
         pData.GainExp = 0;
         pData.AddHP = 0; pData.AddMP = 0; pData.AddSP = 0;
-        pData.VIT = 5; pData.END = 5; pData.STR = 5; pData.AGI = 5; pData.FOR = 5; pData.INT = 5; pData.CHA = 5; pData.LUK = 5;
+        pData.VIT = 55; pData.END = 5; pData.STR = 5; pData.AGI = 5; pData.FOR = 5; pData.INT = 5; pData.CHA = 5; pData.LUK = 5;
 
         pData.Skin = 1; pData.Face = 1;
         pData.Eyebrow = 1; pData.Eye = 1;
@@ -136,9 +136,12 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.EqSlot["Armor"] = pData.Inven[1]; // 갑옷
         ItemManager.I.CreateInvenItem(60001, 0, 0); //물약
         // ItemManager.I.CreateInvenItem(65001, 0, 1);
-        ItemManager.I.CreateInvenItem(32001, 3, 0); //무기
+        // ItemManager.I.CreateInvenItem(32001, 3, 0); //무기
         ItemManager.I.CreateInvenItem(60101, 1, 0); //스킬북
-
+        ItemManager.I.CreateInvenItem(65001, 3, 1); //슬라임 젤
+        ItemManager.I.CreateInvenItem(65001, 4, 2);
+        ItemManager.I.CreateInvenItem(65001, 5, 2);
+        ItemManager.I.CreateInvenItem(65001, 6, 2);
         CalcPlayerStat();
         pData.HP = pData.MaxHP;
         pData.MP = pData.MaxMP;
@@ -255,13 +258,12 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     {
         return pData.SkList.ContainsKey(skId) ? pData.SkList[skId].Lv : 1;
     }
-    public int CheckQstItemCnt(int itemId)
+    public int GetQstItemCnt(int itemId)
     {
         int cnt = 0;
-        foreach (var q in pData.QuestList)
+        foreach (var q in pData.Inven)
         {
-            if (q.ItemId == itemId)
-                cnt++;
+            if (q.ItemId == itemId) cnt++;
         }
         return cnt;
     }

@@ -200,7 +200,10 @@ public class ItemManager : AutoSingleton<ItemManager>
         CalcDropItem(65001, 100);
         CalcDropItem(65001, 100);
         CalcDropItem(65001, 100);
-        CalcDropItem(68002, 100);
+        CalcDropItem(65001, 100);
+        CalcDropItem(65001, 100);
+        CalcDropItem(65001, 100);
+        CalcDropItem(65001, 100);
 
         UIManager.ShowPopup("InvenPop");
         Presenter.Send("InvenPop", "OpenRwdPop");

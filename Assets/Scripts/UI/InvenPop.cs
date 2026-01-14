@@ -63,6 +63,8 @@ public class InvenPop : UIScreen
         isActive = false;
         if (ShopInvenPop.isActive)
             UIManager.ClosePopup("ShopInvenPop");
+        if (mGameObject["RwdPop"].activeSelf) //혹시라도 강제로 팝업이 꺼졌는데 보상 팝업이 켜져있는 경우 초기화 시켜줌
+            CloseRwdPop();
         Presenter.UnBind("InvenPop", this);
     }
     public void RegistButton()
