@@ -513,7 +513,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         var pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.x, mv.y].y, 0);
         float dir = cv.x == mv.x ? obj.transform.localScale.x : (cv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
         obj.transform.localScale = new Vector3(dir, 1, 1);
-        obj.transform.DOMove(pos, 0.3f); //트윈으로 이동
+        obj.transform.DOJump(pos, jumpPower: 0.3f, numJumps: 1, duration: 0.3f).SetEase(Ease.OutQuad); //통통 튀며 이동
         callA?.Invoke();
         yield return new WaitForSeconds(ct);
         callB?.Invoke();
