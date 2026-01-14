@@ -80,49 +80,43 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     void Update()
     {
-        if (InvenPop.isActive || CityEnterPop.isActive || CharInfoPop.isActive || SkillPop.isActive || JournalPop.isActive)
-        {
-            if (!GsManager.I.IsCursor("default")) GsManager.I.SetCursor("default");
-            return;
-        }
         Vector3 mPos = cam.ScreenToWorldPoint(Input.mousePosition); //마우스 월드 좌표
         mPos.z = 0f;
-        #region Ect Act
-        if (mOverObjUid == 0)
-            CheckMouseOverMon(mPos);
-        else
-            CheckCurMouseOverMon(mPos);
-        CheckWorldObj();
-        SetCursor(mPos); //커서 설정
-        #endregion
-        #region Player Act
+        #region Input Act
         Vector3 moveDirection = Vector3.zero;
         if (Input.GetKey(KeyCode.W)) moveDirection.y += 1; // 위로 이동
         if (Input.GetKey(KeyCode.S)) moveDirection.y -= 1; // 아래로 이동
         if (Input.GetKey(KeyCode.A)) moveDirection.x -= 1; // 왼쪽 이동
         if (Input.GetKey(KeyCode.D)) moveDirection.x += 1; // 오른쪽 이동
-        if (Input.GetMouseButtonDown(0))
+        if (!CheckActivePop())
         {
-            InputPlayerAction();
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            // 월드 좌표를 셀 좌표로 변환
-            Vector3Int cellPos = worldMapTile.WorldToCell(mPos);
-
-            // wGridDic에서 타일 데이터 조회
-            if (WorldObjManager.I.wGridDic.TryGetValue((cellPos.x, cellPos.y), out WorldObjManager.wmGrid grid))
+            if (Input.GetMouseButtonDown(0))
+                InputPlayerAction();
+            if (Input.GetMouseButtonDown(1))
             {
-                // grid 객체를 사용할 수 있습니다
-                // grid.x, grid.y, grid.tName, grid.worldPos, grid.tCost 등의 정보에 접근 가능
-                // Debug.Log($"타일 이름: {grid.tName}, 타일 타입: {grid.tType}, 비용: {grid.tCost}");
-                if (grid.tType == "f")
+                Vector3Int cellPos = worldMapTile.WorldToCell(mPos); // 월드 좌표를 셀 좌표로 변환
+                if (WorldObjManager.I.wGridDic.TryGetValue((cellPos.x, cellPos.y), out WorldObjManager.wmGrid grid)) // wGridDic에서 타일 데이터 조회
                 {
-                    UIManager.ShowPopup("SelectPop");
-                    Presenter.Send("SelectPop", "SetList", 101);
+                    // Debug.Log($"타일 이름: {grid.tName}, 타일 타입: {grid.tType}, 비용: {grid.tCost}");
+                    if (grid.tType == "f")
+                    {
+                        UIManager.ShowPopup("SelectPop");
+                        Presenter.Send("SelectPop", "SetList", 101);
+                    }
                 }
             }
+            SetCursor(mPos); //커서 설정
         }
+
+        if (mOverObjUid == 0)
+            CheckMouseOverMon(mPos);
+        else
+            CheckCurMouseOverMon(mPos);
+        #endregion
+        #region Ect Act
+        CheckWorldObj();
+        #endregion
+        #region Player Act
         if (isMove)
             MovePlayer();
         if (isTrace)
@@ -140,6 +134,10 @@ public class WorldCore : AutoSingleton<WorldCore>
     private void MoveCamera(Vector3 v)
     {
         cam.transform.position = new Vector3(v.x, v.y, -10f);
+    }
+    private bool CheckActivePop()
+    {
+        return InvenPop.isActive || CityEnterPop.isActive || CharInfoPop.isActive || SkillPop.isActive || JournalPop.isActive;
     }
     private void InputPlayerAction()
     {
@@ -569,7 +567,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         Presenter.Send("WorldMainUI", "SaveAllTime");
         DOTween.KillAll();
         WorldObjManager.I.RemoveWorldMonGrp();
-        GsManager.I.gameState = GameState.Battle; //스테이터스 변경
+        GsManager.gameState = GameState.Battle; //스테이터스 변경
         UIManager.ChangeScene("Battle");
         // blackImg.gameObject.SetActive(true);
         // blackImg.color = new Color(0, 0, 0, 0f);

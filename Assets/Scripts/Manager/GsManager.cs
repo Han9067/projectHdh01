@@ -5,10 +5,11 @@ using GB;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
+using JetBrains.Annotations;
 
 public class GsManager : AutoSingleton<GsManager>
 {
-    public GameState gameState;
+    public static GameState gameState;
     public static int worldSpd = 1; //월드맵 속도
     private void Awake()
     {
@@ -117,6 +118,10 @@ public class GsManager : AutoSingleton<GsManager>
     public bool IsCursor(string name)
     {
         return cName == name;
+    }
+    public void InitCursor()
+    {
+        if (!IsCursor("default")) SetCursor("default");
     }
     #endregion
 

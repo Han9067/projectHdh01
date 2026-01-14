@@ -25,6 +25,8 @@ public class JournalPop : UIScreen
 
         StatePannel(curTab);
         StateTabsColor(curTab);
+
+        if (GsManager.gameState == GameState.World) GsManager.I.InitCursor();
     }
 
     private void OnDisable()

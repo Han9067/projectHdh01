@@ -65,6 +65,9 @@ public class TalkPop : UIScreen
                         tType = 2;
                         SetMyAskPreset("Inn_Rest");
                         break;
+                    case "InnNotCrown":
+                        ment = LocalizationManager.GetValue("Talk_Inn_NotCrown_1");
+                        break;
                     case "Qst":
                         switch (talkData.Tid)
                         {

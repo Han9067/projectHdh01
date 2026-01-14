@@ -23,6 +23,7 @@ public class CharInfoPop : UIScreen
         Presenter.Bind("CharInfoPop", this);
         UpdateCharInfo();
         isActive = true;
+        if (GsManager.gameState == GameState.World) GsManager.I.InitCursor();
     }
     private void OnDisable()
     {

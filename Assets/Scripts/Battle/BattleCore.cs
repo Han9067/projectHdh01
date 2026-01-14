@@ -848,7 +848,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public void MoveToWorld()
     {
         DOTween.KillAll();
-        GsManager.I.gameState = GameState.World; //스테이터스 변경
+        GsManager.gameState = GameState.World; //스테이터스 변경
         UIManager.ChangeScene("World");
     }
     void CheckMainManager()
