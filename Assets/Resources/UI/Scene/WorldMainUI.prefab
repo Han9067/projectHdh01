@@ -1778,7 +1778,7 @@ GameObject:
   - component: {fileID: 2583403950714775862}
   - component: {fileID: 6939178618528413549}
   m_Layer: 5
-  m_Name: FatVal
+  m_Name: EpVal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1912,7 +1912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad2bf7f7c938c6479ce134e2d147c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: FatVal
+  Key: EpVal
 --- !u!1 &2461390797444449013
 GameObject:
   m_ObjectHideFlags: 0
@@ -3519,11 +3519,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 5545417970641319740}
   - {fileID: 1562388528001165162}
   - {fileID: 7471762156463060313}
   - {fileID: 3218588872504938958}
   - {fileID: 3341532515723179207}
-  - {fileID: 5545417970641319740}
   - {fileID: 7423647450401817179}
   - {fileID: 4886633099490461953}
   m_Father: {fileID: 0}
@@ -3637,7 +3637,7 @@ MonoBehaviour:
     - key: CrownVal
       value: {fileID: 5369351169338499187}
       duplicatedKey: 0
-    - key: FatVal
+    - key: EpVal
       value: {fileID: 2583403950714775862}
       duplicatedKey: 0
     - key: IngMent
@@ -3741,9 +3741,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
-  m_WholeNumbers: 1
-  m_Value: 1
+  m_MaxValue: 100
+  m_WholeNumbers: 0
+  m_Value: 100
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -6325,7 +6325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.627451}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

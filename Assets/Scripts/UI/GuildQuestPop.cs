@@ -58,18 +58,25 @@ public class GuildQuestPop : UIScreen
                 break;
             case "OnQstAccept":
                 if (qstState == 1) return;
-                if (qList[curId].Qid == 4)
-                {
-                    //마커 퀘스트라 마커 생성하고 해당 퀘스트의 정보를 갱신해줘야함
-                    WorldCore.I.CreateWorldMarker(qList[curId].TgPos, 1); //2번째 매개변수 1~10은 길드 퀘스트용 마커-> 1은 몬스터 토벌용
-                    qList[curId].MarkerUid = QuestManager.I.curMkUid;
-                    QuestManager.I.curMkUid = 0;
-                }
                 qList[curId].QNpcId = npcId;
-                PlayerManager.I.pData.QuestList.Add(qList[curId]);
-                int n = PlayerManager.I.pData.QuestList.Count - 1;
-                PlayerManager.I.pData.QuestList[n].State = 1;
+                var qst = PlayerManager.I.pData.QuestList;
+                qst.Add(qList[curId]);
+                int n = qst.Count - 1;
+                qst[n].State = 1;
                 QuestManager.I.CityQuest[cityId].Remove(qList[curId].Qid);
+                switch (qst[n].Qid)
+                {
+                    case 3:
+                        qst[n].CurCnt = PlayerManager.I.GetQstItemCnt(qst[n].ItemId);
+                        if (qst[n].CurCnt >= qst[n].TgCnt)
+                            qst[n].State = 2;
+                        break;
+                    case 4:
+                        WorldCore.I.CreateWorldMarker(qst[n].TgPos, 1); //2번째 매개변수 1~10은 길드 퀘스트용 마커-> 1은 몬스터 토벌용
+                        qst[n].MarkerUid = QuestManager.I.curMkUid;
+                        QuestManager.I.curMkUid = 0;
+                        break;
+                }
                 UpdateQuestList(n);
                 questBtn[n].GetComponent<QuestListBtn>().OnButtonClick();
                 break;
@@ -121,7 +128,7 @@ public class GuildQuestPop : UIScreen
                     CreateMyQuest();
                     not = false;
                 }
-                mTexts["MyQuestVal"].text = PlayerManager.I.pData.QuestList.Count.ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
+                mTMPText["MyQstVal"].text = PlayerManager.I.pData.QuestList.Count.ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
                 if (QuestManager.I.CityQuest[cityId].Count > 0)
                 {
                     CreateCityQuest();
@@ -138,6 +145,7 @@ public class GuildQuestPop : UIScreen
                 mTexts["ExpVal"].text = qList[curId].Exp.ToString();
                 mTexts["CrownVal"].text = qList[curId].Crown.ToString();
                 mTexts["GdExpVal"].text = qList[curId].GradeExp.ToString();
+                mTMPText["CurCnt"].gameObject.SetActive(false);
                 for (int i = 0; i < questBtn.Count; i++)
                 {
                     switch (qList[i].State)
@@ -147,6 +155,16 @@ public class GuildQuestPop : UIScreen
                             break;
                         case 1:
                             questBtn[i].GetComponent<Image>().color = Color.gray;
+                            if (i != curId) continue;
+                            switch (qList[i].Qid)
+                            {
+                                case 2:
+                                case 3:
+                                    mTMPText["CurCnt"].gameObject.SetActive(true);
+                                    int curCnt = qList[i].CurCnt >= qList[i].TgCnt ? qList[i].TgCnt : qList[i].CurCnt;
+                                    mTMPText["CurCnt"].text = curCnt.ToString() + " / " + qList[i].TgCnt.ToString();
+                                    break;
+                            }
                             break;
                         case 2:
                             questBtn[i].GetComponent<Image>().color = Color.green;
@@ -164,7 +182,7 @@ public class GuildQuestPop : UIScreen
     public override void Refresh() { }
     void UpdateGradeGgSlider()
     {
-        mTexts["GradeGgVal"].text = PlayerManager.I.pData.GradeExp.ToString() + " / " + PlayerManager.I.pData.GradeNext.ToString();
+        mTMPText["GradeGgVal"].text = PlayerManager.I.pData.GradeExp.ToString() + " / " + PlayerManager.I.pData.GradeNext.ToString();
         float gg = PlayerManager.I.pData.GradeExp / PlayerManager.I.pData.GradeNext * 100;
         if (gg >= 100)
         {
@@ -178,7 +196,7 @@ public class GuildQuestPop : UIScreen
         InitQuestList();
         CreateMyQuest();
         CreateCityQuest();
-        mTexts["MyQuestVal"].text = (cnt + 1).ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
+        mTMPText["MyQstVal"].text = (cnt + 1).ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
     }
     void CreateMyQuest()
     {

@@ -25,6 +25,8 @@ public class JournalPop : UIScreen
 
         StatePannel(curTab);
         StateTabsColor(curTab);
+
+        if (GsManager.gameState == GameState.World) GsManager.I.InitCursor();
     }
 
     private void OnDisable()
@@ -142,6 +144,7 @@ public class JournalPop : UIScreen
             switch (data.Qid)
             {
                 case 2:
+                case 3:
                     mTexts["TgVal"].gameObject.SetActive(true);
                     mTexts["TgVal"].text = data.CurCnt.ToString() + " / " + data.TgCnt.ToString();
                     break;

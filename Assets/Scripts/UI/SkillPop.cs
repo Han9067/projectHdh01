@@ -33,6 +33,7 @@ public class SkillPop : UIScreen
         if (InvenPop.isActive)
             UIManager.ClosePopup("InvenPop");
         InitPop();
+        if (GsManager.gameState == GameState.World) GsManager.I.InitCursor();
     }
 
     private void OnDisable()

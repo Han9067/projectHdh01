@@ -6,7 +6,7 @@ using DG.Tweening;
 public class WorldMainUI : UIScreen
 {
     [SerializeField] private Slider mIngGg, mHpGg, mMpGg, mSpGg, mEnergyGg;
-    private float wTime = 0, actTime, endActTime;
+    private float wTime = 0, actTime, endActTime, actTick = 0;
     private int tDay = 0, wYear, wMonth, wDay;
     private bool isAct = false, isRest = false; //일하기, 휴식 상태 유무
     private Sequence tstSqc;
@@ -60,6 +60,7 @@ public class WorldMainUI : UIScreen
                 StateGameSpd(key);
                 break;
             case "OnStop":
+                InitRest();
                 break;
         }
     }
@@ -76,19 +77,34 @@ public class WorldMainUI : UIScreen
         {
             UpdateWorkGg();
             if (actTime >= endActTime)
-            {
-                isAct = false; actTime = 0; endActTime = 0;
-                mIngGg.value = 0;
-                StateWork(false);
-                UIManager.ShowPopup("WorkPop");
-                Presenter.Send("WorkPop", "EndWork");
-                StateGameSpd("X0");
-                Presenter.Send("CityEnterPop", "StateVisiblePop", 1);
-            }
+                InitWork();
         }
         if (isRest)
         {
-
+            actTime += Time.deltaTime;
+            if (actTime >= 1f)
+            {
+                actTime = 0;
+                actTick++;
+                PlayerManager.I.pData.EP += 2;
+                if (PlayerManager.I.pData.EP >= PlayerManager.I.pData.MaxEP)
+                    PlayerManager.I.pData.EP = PlayerManager.I.pData.MaxEP;
+                UpdateEp();
+            }
+            if (actTick >= endActTime)
+            {
+                actTick = 0;
+                if (PlayerManager.I.pData.Crown >= 50)
+                {
+                    PlayerManager.I.pData.Crown -= 50;
+                    UpdateCrownTxt();
+                }
+                else
+                {
+                    InitRest();
+                    Presenter.Send("CityEnterPop", "Inn_NotCrown");
+                }
+            }
         }
 
         // I 키 입력 감지
@@ -209,11 +225,15 @@ public class WorldMainUI : UIScreen
         mTMPText["HpVal"].text = PlayerManager.I.pData.HP.ToString() + "/" + PlayerManager.I.pData.MaxHP.ToString();
         mTMPText["MpVal"].text = PlayerManager.I.pData.MP.ToString() + "/" + PlayerManager.I.pData.MaxMP.ToString();
         mTMPText["SpVal"].text = PlayerManager.I.pData.SP.ToString() + "/" + PlayerManager.I.pData.MaxSP.ToString();
-        mTMPText["FatVal"].text = PlayerManager.I.energy.ToString();
         mHpGg.value = (float)PlayerManager.I.pData.HP / PlayerManager.I.pData.MaxHP * 100f;
         mMpGg.value = (float)PlayerManager.I.pData.MP / PlayerManager.I.pData.MaxMP * 100f;
         mSpGg.value = (float)PlayerManager.I.pData.SP / PlayerManager.I.pData.MaxSP * 100f;
-        mEnergyGg.value = PlayerManager.I.energy / 100f;
+        UpdateEp();
+    }
+    private void UpdateEp()
+    {
+        mTMPText["EpVal"].text = PlayerManager.I.pData.EP.ToString();
+        mEnergyGg.value = (float)PlayerManager.I.pData.EP / PlayerManager.I.pData.MaxEP * 100f;
     }
     private void UpdateCrownTxt()
     {
@@ -236,16 +256,31 @@ public class WorldMainUI : UIScreen
     private void StartWork(int day)
     {
         isAct = true;
+        mTMPText["IngMent"].text = LocalizationManager.GetValue("Ing_Work");
         actTime = 0;
         endActTime = day * 40;
         mIngGg.maxValue = endActTime;
         mIngGg.value = 0;
         mIngGg.gameObject.SetActive(true);
         mButtons["OnStop"].gameObject.SetActive(false);
-        StateWork(true);
+        StateAct(true);
         Presenter.Send("CityEnterPop", "StateVisiblePop", 0);
     }
-    private void StateWork(bool on)
+    private void InitWork()
+    {
+        isAct = false; actTime = 0; endActTime = 0;
+        StateAct(false);
+        UIManager.ShowPopup("WorkPop");
+        Presenter.Send("WorkPop", "EndWork");
+        Presenter.Send("CityEnterPop", "StateVisiblePop", 1);
+    }
+    private void InitRest()
+    {
+        isRest = false; actTime = 0; endActTime = 0;
+        StateAct(false);
+        Presenter.Send("CityEnterPop", "StateVisiblePop", 1);
+    }
+    private void StateAct(bool on)
     {
         StateGameSpd(on ? "X4" : "X0");
         mGameObject["IngPop"].SetActive(on);
@@ -253,10 +288,13 @@ public class WorldMainUI : UIScreen
     private void StartRest()
     {
         isRest = true;
+        mTMPText["IngMent"].text = LocalizationManager.GetValue("Ing_Rest");
         actTime = 0;
         endActTime = 40;
         mIngGg.gameObject.SetActive(false);
         mButtons["OnStop"].gameObject.SetActive(true);
+        StateAct(true);
+        Presenter.Send("CityEnterPop", "StateVisiblePop", 0);
     }
     private void UpdateWorkGg()
     {

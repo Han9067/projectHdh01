@@ -157,7 +157,7 @@ public class WorkPop : UIScreen
                     break;
             }
         }
-        mSlider.maxValue = PlayerManager.I.energy / 8f;
+        mSlider.maxValue = PlayerManager.I.pData.MaxEP / 8f;
         mSlider.value = 1;
         mTMPText["EnergyTxt"].text = GetEnergyTxt(8);
     }

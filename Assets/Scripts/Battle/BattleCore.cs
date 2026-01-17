@@ -314,7 +314,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void LoadEnemyGrp()
     {
-        // WorldObjManager.I.TestCreateMon(); //테스트용
+        WorldObjManager.I.TestCreateMon(); //테스트용
 
         if (WorldObjManager.I.btMonList.Count > 0)
         {
@@ -513,7 +513,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         var pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.x, mv.y].y, 0);
         float dir = cv.x == mv.x ? obj.transform.localScale.x : (cv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
         obj.transform.localScale = new Vector3(dir, 1, 1);
-        obj.transform.DOMove(pos, 0.3f); //트윈으로 이동
+        obj.transform.DOJump(pos, jumpPower: 0.3f, numJumps: 1, duration: 0.3f).SetEase(Ease.OutQuad); //통통 튀며 이동
         callA?.Invoke();
         yield return new WaitForSeconds(ct);
         callB?.Invoke();
@@ -524,18 +524,28 @@ public class BattleCore : AutoSingleton<BattleCore>
         data.isAction = true; //행동 시작
         if (data.tgId == 1000)
         {
-            Vector2Int[] path = BattlePathManager.I.GetPath(data.pos, cpPos, gGrid);
-            StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], ct, () =>
+            // 자기 자신의 ID(mId)를 전달하여 자신이 차지한 공간은 빈 공간으로 취급
+            Vector2Int[] path = BattlePathManager.I.GetPath(data.pos, cpPos, gGrid, mData[mId].w, mData[mId].h, mId);
+            if (path.Length > 0)
             {
-                data.isAction = false; //행동 종료
-                UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, mData[mId].w, mData[mId].h, mId);
-                data.pos = path[0]; //몬스터 위치 업데이트
-                mData[mId].SetObjLayer(mapH - path[0].y); //몬스터 레이어 업데이트
-            }, () =>
+                StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], ct, () =>
+                {
+                    data.isAction = false; //행동 종료
+                    UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, mData[mId].w, mData[mId].h, mId);
+                    data.pos = path[0]; //몬스터 위치 업데이트
+                    mData[mId].SetObjLayer(mapH - path[0].y); //몬스터 레이어 업데이트
+                }, () =>
+                {
+                    if (GetAttackTarget(data.tgId, data.pos) || gGrid[path[0].x, path[0].y].tId != 0)
+                        data.state = BtObjState.IDLE;
+                }));
+            }
+            else
             {
-                if (GetAttackTarget(data.tgId, data.pos) || gGrid[path[0].x, path[0].y].tId != 0)
-                    data.state = BtObjState.IDLE;
-            }));
+                // 경로를 찾지 못한 경우
+                data.isAction = false;
+                data.state = BtObjState.IDLE;
+            }
         }
     }
     IEnumerator AttackObjWithMelee(GameObject myObj, BtObjType myType, int myId, int tgId)
@@ -848,7 +858,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public void MoveToWorld()
     {
         DOTween.KillAll();
-        GsManager.I.gameState = GameState.World; //스테이터스 변경
+        GsManager.gameState = GameState.World; //스테이터스 변경
         UIManager.ChangeScene("World");
     }
     void CheckMainManager()

@@ -177,7 +177,7 @@ public class SelectPop : UIScreen
     }
     private void UpdateStateUI()
     {
-        switch (GsManager.I.gameState)
+        switch (GsManager.gameState)
         {
             case GameState.World:
                 Presenter.Send("WorldMainUI", "UpdateInfo");

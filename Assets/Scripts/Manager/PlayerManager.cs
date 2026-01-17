@@ -8,7 +8,6 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
     [Header("플레이어 데이터")]
     public int currentCity = 0;
-    public int energy = 100; // 에너지
     public PlayerData pData;
     public List<List<InvenGrid>> grids;
     public Vector3 worldPos = new Vector3(0, 0, 0);
@@ -102,6 +101,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.HP = data.HP;
         pData.MP = data.MP;
         pData.SP = data.SP;
+        pData.EP = data.EP; //원래 최대값 100이지만 추후 능력치 향상으로 증가할 수 있음
 
         isObjCreated = true; //저장된 데이터이기에 해당 불대수 true로 설정
         worldPos = pos;
@@ -121,7 +121,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.NextExp = GsManager.I.GetNextExp(pData.Lv);
         pData.GainExp = 0;
         pData.AddHP = 0; pData.AddMP = 0; pData.AddSP = 0;
-        pData.VIT = 5; pData.END = 5; pData.STR = 5; pData.AGI = 5; pData.FOR = 5; pData.INT = 5; pData.CHA = 5; pData.LUK = 5;
+        pData.VIT = 55; pData.END = 5; pData.STR = 5; pData.AGI = 5; pData.FOR = 5; pData.INT = 5; pData.CHA = 5; pData.LUK = 5;
 
         pData.Skin = 1; pData.Face = 1;
         pData.Eyebrow = 1; pData.Eye = 1;
@@ -136,9 +136,12 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.EqSlot["Armor"] = pData.Inven[1]; // 갑옷
         ItemManager.I.CreateInvenItem(60001, 0, 0); //물약
         // ItemManager.I.CreateInvenItem(65001, 0, 1);
-        ItemManager.I.CreateInvenItem(32001, 3, 0); //무기
+        // ItemManager.I.CreateInvenItem(32001, 3, 0); //무기
         ItemManager.I.CreateInvenItem(60101, 1, 0); //스킬북
-
+        ItemManager.I.CreateInvenItem(65001, 3, 1); //슬라임 젤
+        ItemManager.I.CreateInvenItem(65001, 4, 2);
+        ItemManager.I.CreateInvenItem(65001, 5, 2);
+        ItemManager.I.CreateInvenItem(65001, 6, 2);
         CalcPlayerStat();
         pData.HP = pData.MaxHP;
         pData.MP = pData.MaxMP;
@@ -149,7 +152,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.QuestMax = 5;
         pData.TraceQId = 0;
 
-        energy = 70; //기본이 100
+        pData.EP = 70; //기본이 100
+        pData.MaxEP = 100;
         // pData.SkList = new Dictionary<int, SkData>();
 
         // StartCoroutine(DelayedStartTutorial(0.2f)); //추후 튜토리얼 조건이 된다면 튜토리얼을 시작시킴
@@ -254,13 +258,12 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     {
         return pData.SkList.ContainsKey(skId) ? pData.SkList[skId].Lv : 1;
     }
-    public int CheckQstItemCnt(int itemId)
+    public int GetQstItemCnt(int itemId)
     {
         int cnt = 0;
-        foreach (var q in pData.QuestList)
+        foreach (var q in pData.Inven)
         {
-            if (q.ItemId == itemId)
-                cnt++;
+            if (q.ItemId == itemId) cnt++;
         }
         return cnt;
     }

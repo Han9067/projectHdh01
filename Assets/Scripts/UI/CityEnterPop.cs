@@ -13,7 +13,7 @@ public class CityEnterPop : UIScreen
     private List<int> splitData = new List<int>();
     public Dictionary<int, int> shopIdList = new Dictionary<int, int>();
     private int sId = 0; //상점 & 장소 ID
-    private int npcId = 0; // NPC ID
+    public int npcId = 0; // NPC ID
     private string sKey = ""; //상점 & 장소 키
     private CanvasGroup canvasGrp;
     #endregion
@@ -42,6 +42,7 @@ public class CityEnterPop : UIScreen
         shopIdList.Clear();
         tGQstList.Clear();
         sId = 0; sKey = "";
+        if (GsManager.gameState == GameState.World) GsManager.I.InitCursor(); //월드맵에서 도시 입장 시 커서 초기화
     }
     private void OnDisable()
     {
@@ -88,8 +89,16 @@ public class CityEnterPop : UIScreen
                     }
                     break;
                 case "OnRest":
-                    UIManager.ShowPopup("TalkPop");
-                    Presenter.Send("TalkPop", "SetTalk", new TalkData("Rest", npcId));
+                    if (PlayerManager.I.pData.Crown >= 50)
+                    {
+                        UIManager.ShowPopup("TalkPop");
+                        Presenter.Send("TalkPop", "SetTalk", new TalkData("Rest", npcId));
+                    }
+                    else
+                    {
+                        UIManager.ShowPopup("TalkPop");
+                        Presenter.Send("TalkPop", "SetTalk", new TalkData("InnNotCrown", npcId));
+                    }
                     break;
                 case "OnTalk":
                     TalkData tList;
@@ -247,6 +256,10 @@ public class CityEnterPop : UIScreen
                 tGQstList.Clear();
                 InitAllDots();
                 UpdateInListPreset();
+                break;
+            case "Inn_NotCrown":
+                UIManager.ShowPopup("TalkPop");
+                Presenter.Send("TalkPop", "SetTalk", new TalkData("InnNotCrown", npcId));
                 break;
         }
     }

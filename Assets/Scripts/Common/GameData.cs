@@ -117,7 +117,7 @@ public class PlayerData : ICharData
     // 레벨 및 경험치
     public int Lv, Exp, NextExp, GainExp, Grade, GradeExp, GradeNext;
     // 상태
-    public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
+    public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP, EP, MaxEP; //ep: 에너지, maxep: 최대 에너지
     public int Att, Def;
     public int Crt, CrtRate, Hit, Eva; // 치명타율, 치명타확률, 명중, 회피
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;

@@ -17,7 +17,7 @@ public class QuestManager : AutoSingleton<QuestManager>
     }
     private void Start()
     {
-        if (GsManager.I.gameState == GameState.Battle)
+        if (GsManager.gameState == GameState.Battle)
         {
             // LoadQst();
             return;
