@@ -30,10 +30,10 @@ public class InvenGrid
 public enum PtType
 {
     Face, Eyebrow, Eye1, Eye2, Ear, Nose, Mouth,
-    BaseBody, BaseHand1A, BaseHand1A2, BaseHand1B, BaseHand2, BaseBoth,
+    BaseBody, BaseHand1A, BaseHand1B, BaseHand2, BaseBoth,
     FrontHair1, FrontHair2, BackHair,
     EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth,
-    OneWp1, OneWp2, TwoWp1, TwoWp2, TwoWp3
+    OneWp1, OneWp2, OneWp3, OneWp4, TwoWp1, TwoWp2, TwoWp3
 }
 public interface ICharData
 {
@@ -306,7 +306,7 @@ public class ItemData
     public string Name, Res;
     public int ItemId, Type, Price, W, H, Dur, MaxDur, X, Y, Grade;
     public int Dir, Uid; //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
-    public int Both; // 0: 한손무기, 1: 양손무기 // 무기에만 적용
+    public int Hand; // 0: 한손무기, 1: 양손무기, 2: 창, 3: 지팡이, 4: 활
     public Dictionary<int, int> Att;
     public ItemData Clone()
     {
@@ -326,7 +326,7 @@ public class ItemData
             Y = this.Y,
             Dir = this.Dir,
             Grade = this.Grade,
-            Both = this.Both,
+            Hand = this.Hand,
         };
     }
 }

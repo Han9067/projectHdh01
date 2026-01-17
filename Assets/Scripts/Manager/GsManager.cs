@@ -161,7 +161,7 @@ public class GsManager : AutoSingleton<GsManager>
             new string[] { "Face", "Eyebrow", "Eye1", "Eye2", "Ear", "Nose", "Mouth", "BaseBody",
             "BaseHand1A", "BaseHand2", "Hair1A", "Hair1B", "Hair2" } :
             new string[] { "Face", "Eyebrow", "Eye1", "Eye2", "Ear", "Nose", "Mouth", "BaseBody",
-            "BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth", "Hair1A", "Hair1B", "Hair2" };
+            "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth", "Hair1A", "Hair1B", "Hair2" };
         for (int i = 0; i < str.Length; i++)
             img[str[i]] = obj[addKey + str[i]].GetComponent<Image>();
 
@@ -184,7 +184,6 @@ public class GsManager : AutoSingleton<GsManager>
         img["BaseHand2"].color = skinColor;
         if (!isPrf)
         {
-            img["BaseHand1A2"].color = skinColor;
             img["BaseHand1B"].color = skinColor;
             img["BaseBoth"].color = skinColor;
         }
@@ -247,8 +246,8 @@ public class GsManager : AutoSingleton<GsManager>
     public void SetUiAllEqParts(ICharData data, string backUpKey, Dictionary<string, GameObject> mGameObj)
     {
         var eq = data.EqSlot;
-        string[] all = new string[] { "BaseHand1A", "BaseHand1A2", "BaseHand1B", "BaseHand2", "BaseBoth",
-            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "TwoWp1", "TwoWp2", "TwoWp3"};
+        string[] all = new string[] { "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth",
+            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2","OneWp3","OneWp4", "TwoWp1", "TwoWp2", "TwoWp3"};
         foreach (var v in all)
             mGameObj[v].SetActive(false);
 
@@ -284,7 +283,7 @@ public class GsManager : AutoSingleton<GsManager>
         {
             if (eq[v] != null)
             {
-                switch (eq[v].Both)
+                switch (eq[v].Hand)
                 {
                     case 0:
                         string one = v == "Hand1" ? "OneWp1" : "OneWp2";
@@ -298,6 +297,10 @@ public class GsManager : AutoSingleton<GsManager>
                     case 2:
                         mGameObj["TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
                         mGameObj["TwoWp2"].SetActive(true);
+                        break;
+                    case 3:
+                        break;
+                    case 4:
                         break;
                 }
             }
@@ -316,12 +319,12 @@ public class GsManager : AutoSingleton<GsManager>
             {
                 if (eq[v] != null)
                 {
-                    switch (eq[v].Both)
+                    switch (eq[v].Hand)
                     {
                         case 1: parts = hasArmor ? new List<string> { "BaseBoth", "EqBoth" } : new List<string> { "BaseBoth" }; break;
                         case 2:
-                            parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand1A2", "BaseHand2", "EqHand1A", "EqHand2" } :
-                         new List<string> { "BaseHand1A", "BaseHand1A2", "BaseHand2" }; break;
+                            parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } :
+                         new List<string> { "BaseHand1A", "BaseHand2" }; break;
                     }
                 }
             }
@@ -345,8 +348,8 @@ public class GsManager : AutoSingleton<GsManager>
 
     HashSet<PtType> noneWpTypes = new HashSet<PtType>
     {
-        PtType.BaseHand1A2, PtType.BaseHand1B,PtType.BaseBoth, PtType.EqBoth, PtType.EqHand1B,
-        PtType.OneWp1, PtType.OneWp2, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
+        PtType.BaseHand1B,PtType.BaseBoth, PtType.EqBoth, PtType.EqHand1B,
+        PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.OneWp4, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
     };
     HashSet<PtType> hairTypes = new HashSet<PtType>
     {
@@ -355,7 +358,7 @@ public class GsManager : AutoSingleton<GsManager>
     HashSet<PtType> skinTypes = new HashSet<PtType>
     {
         PtType.Face, PtType.Ear, PtType.BaseBody, PtType.BaseHand1A,
-        PtType.BaseHand1A2, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth
+        PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth
     };
     public void SetObjParts(Dictionary<PtType, SpriteRenderer> ptSpr, GameObject ptMain, bool noneWp = false)
     {
@@ -428,9 +431,9 @@ public class GsManager : AutoSingleton<GsManager>
     public void SetObjAllEqParts(int uid, Dictionary<PtType, SpriteRenderer> ptSpr)
     {
         PtType[] bodyParts = new PtType[] {
-            PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth,
+            PtType.BaseHand1A, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth,
             PtType.EqBody, PtType.EqHand1A, PtType.EqHand1B, PtType.EqHand2, PtType.EqBoth,
-            PtType.OneWp1, PtType.OneWp2, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
+            PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.OneWp4, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
         };
 
         foreach (PtType b in bodyParts) ptSpr[b].gameObject.SetActive(false);
@@ -441,8 +444,8 @@ public class GsManager : AutoSingleton<GsManager>
         if (slot["Hand1"] != null)
         {
             //손1 착용 상태
-            int both1 = slot["Hand1"].Both;
-            switch (both1)
+            int hand1 = slot["Hand1"].Hand;
+            switch (hand1)
             {
                 case 0:
                     wpState = 1;
@@ -466,8 +469,8 @@ public class GsManager : AutoSingleton<GsManager>
         {
             if (slot["Hand2"] != null) //손2 체크
             {
-                int both2 = slot["Hand2"].Both;
-                switch (both2)
+                int hand2 = slot["Hand2"].Hand;
+                switch (hand2)
                 {
                     case 0:
                         if (wpState == 1)
@@ -486,7 +489,13 @@ public class GsManager : AutoSingleton<GsManager>
                         wpState = 5;
                         ptSpr[PtType.TwoWp2].gameObject.SetActive(true);
                         ptSpr[PtType.TwoWp2].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
-                        break; //창, 지팡이
+                        break; //창
+                    case 3:
+                        //지팡이
+                        break;
+                    case 4:
+                        //활
+                        break;
                 }
             }
         }
@@ -498,7 +507,7 @@ public class GsManager : AutoSingleton<GsManager>
             case 0: case 2: arr = hasArmor ? new PtType[] { PtType.BaseHand1A, PtType.BaseHand2, PtType.EqHand1A, PtType.EqHand2 } : new PtType[] { PtType.BaseHand1A, PtType.BaseHand2 }; break;
             case 1: case 3: arr = hasArmor ? new PtType[] { PtType.BaseHand1B, PtType.BaseHand2, PtType.EqHand1B, PtType.EqHand2 } : new PtType[] { PtType.BaseHand1B, PtType.BaseHand2 }; break;
             case 4: arr = hasArmor ? new PtType[] { PtType.BaseBoth, PtType.EqBoth } : new PtType[] { PtType.BaseBoth }; break;
-            case 5: arr = hasArmor ? new PtType[] { PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand2, PtType.EqHand1A, PtType.EqHand2 } : new PtType[] { PtType.BaseHand1A, PtType.BaseHand1A2, PtType.BaseHand2 }; break;
+            case 5: arr = hasArmor ? new PtType[] { PtType.BaseHand1A, PtType.BaseHand2, PtType.EqHand1A, PtType.EqHand2 } : new PtType[] { PtType.BaseHand1A, PtType.BaseHand2 }; break;
         }
         if (arr != null)
         {

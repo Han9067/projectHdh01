@@ -466,8 +466,8 @@ public class InvenPop : UIScreen
         {
             case "Hand1":
             case "Hand2":
-                bool one = itemObj.itemData.Both == 0; //해당 무기가 한손무기인지 양손무기인지 체크
-                if (myEqSlots["Hand1"] != null && myEqSlots["Hand1"].Both == 1)
+                bool one = itemObj.itemData.Hand == 0; //해당 무기가 한손무기인지 양손무기인지 체크
+                if (myEqSlots["Hand1"] != null && myEqSlots["Hand1"].Hand == 1)
                 {
                     //양손 무기 착용중 (양손무기는 무조건 손1에만 적용)
                     eqState = one ? 2 : 4;

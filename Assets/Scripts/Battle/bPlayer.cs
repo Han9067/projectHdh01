@@ -24,7 +24,7 @@ public class bPlayer : MonoBehaviour
     }
     public void OnDamaged(int att, int crt, int crtRate)
     {
-        Debug.Log("OnDamaged: " + att + " " + crt + " " + crtRate);
+        // Debug.Log("OnDamaged: " + att + " " + crt + " " + crtRate);
         int dmg = GsManager.I.GetDamage(att, pData.Def);
         pData.HP -= dmg;
         if (pData.HP <= 0)

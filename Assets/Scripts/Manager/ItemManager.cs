@@ -32,7 +32,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var wp in WpTable.Datas)
         {
-            ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.AttKey, wp.AttVal, 1, wp.W, wp.H, wp.Res, wp.Dur, wp.Both);
+            ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.AttKey, wp.AttVal, 1, wp.W, wp.H, wp.Res, wp.Dur, wp.Hand);
             // ItemDataList[wp.ItemID].Both = wp.Both;
         }
     }
@@ -44,7 +44,7 @@ public class ItemManager : AutoSingleton<ItemManager>
         }
     }
     private ItemData CreateItemData(int id, string name, int type, int price, string keys,
-                                            string vals, int grade, int w, int h, string res, int dur, int both = 0)
+                                            string vals, int grade, int w, int h, string res, int dur, int hand = 0)
     {
         string[] kArr = keys.Split('_');
         string[] vArr = vals.Split('_');
@@ -52,7 +52,7 @@ public class ItemManager : AutoSingleton<ItemManager>
         for (int i = 0; i < kArr.Length; i++)
             att[int.Parse(kArr[i])] = int.Parse(vArr[i]);
 
-        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Att = att, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = grade, Both = both };
+        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Att = att, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = grade, Hand = hand };
     }
     public void CreateInvenItem(int id, int x, int y)
     {
