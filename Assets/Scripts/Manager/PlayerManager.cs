@@ -139,6 +139,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         // ItemManager.I.CreateInvenItem(32001, 3, 0); //무기
         ItemManager.I.CreateInvenItem(60101, 1, 0); //스킬북
         ItemManager.I.CreateInvenItem(42001, 3, 1); //지팡이
+        ItemManager.I.CreateInvenItem(46001, 4, 1); //창
         ItemManager.I.CreateInvenItem(48001, 5, 1); //활
         // ItemManager.I.CreateInvenItem(65001, 3, 1); //슬라임 젤
         // ItemManager.I.CreateInvenItem(65001, 4, 2);

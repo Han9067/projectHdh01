@@ -252,7 +252,7 @@ public class GsManager : AutoSingleton<GsManager>
     {
         var eq = data.EqSlot;
         string[] all = new string[] { "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth",
-            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2","OneWp3","TwoWp1", "TwoWp2", "TwoWp3"};
+            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "OneWp3", "TwoWp1", "TwoWp2", "TwoWp3"};
         foreach (var v in all)
             mGameObj[v].SetActive(false);
 
@@ -283,32 +283,42 @@ public class GsManager : AutoSingleton<GsManager>
         List<string> parts = GetHandParts(eq);
         foreach (var v in parts)
             mGameObj[v].SetActive(true);
-        string[] hKey = { "Hand1", "Hand2" };
-        foreach (var v in hKey)
+        if (eq["Hand1"] != null)
         {
-            if (eq[v] != null)
+            switch (eq["Hand1"].Hand)
             {
-                switch (eq[v].Hand)
-                {
-                    case 0:
-                        string one = v == "Hand1" ? "OneWp1" : "OneWp2";
-                        mGameObj[one].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq[v].ItemId.ToString());
-                        mGameObj[one].SetActive(true);
-                        break;
-                    case 1:
-                        mGameObj["TwoWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
-                        mGameObj["TwoWp1"].SetActive(true);
-                        break;
-                    case 2:
-                        mGameObj["TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
-                        mGameObj["TwoWp2"].SetActive(true);
-                        break;
-                    case 3:
-                        mGameObj["OneWp3"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
-                        mGameObj["OneWp3"].SetActive(true);
-                        break;
-                }
+                case 0:
+                    mGameObj["OneWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                    mGameObj["OneWp1"].SetActive(true);
+                    break;
+                case 1:
+                    switch (eq["Hand1"].Type)
+                    {
+                        case 2:
+                            mGameObj["TwoWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                            mGameObj["TwoWp1"].SetActive(true);
+                            break;
+                        case 4:
+                        case 6:
+                            mGameObj["TwoWp3"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                            mGameObj["TwoWp3"].SetActive(true);
+                            break;
+                        case 9:
+                            mGameObj["TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                            mGameObj["TwoWp2"].SetActive(true);
+                            break;
+                    }
+                    break;
+                case 2:
+                    mGameObj["OneWp3"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                    mGameObj["OneWp3"].SetActive(true);
+                    break;
             }
+        }
+        if (eq["Hand2"] != null)
+        {
+            mGameObj["OneWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand2"].ItemId.ToString());
+            mGameObj["OneWp2"].SetActive(true);
         }
     }
     List<string> GetHandParts(Dictionary<string, ItemData> eq)
@@ -319,34 +329,31 @@ public class GsManager : AutoSingleton<GsManager>
             parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } : new List<string> { "BaseHand1A", "BaseHand2" };
         else
         {
-            string[] eqHand = { "Hand1", "Hand2" };
-            foreach (var v in eqHand)
+            if (eq["Hand1"] != null)
             {
-                if (eq[v] != null)
+                switch (eq["Hand1"].Hand)
                 {
-                    switch (eq[v].Hand)
-                    {
-                        case 1: parts = hasArmor ? new List<string> { "BaseBoth", "EqBoth" } : new List<string> { "BaseBoth" }; break;
-                        case 2:
-                            parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } :
-new List<string> { "BaseHand1A", "BaseHand2" }; break;
-                    }
+                    case 0:
+                    case 2:
+                        parts = hasArmor ? new List<string> { "BaseHand1B", "BaseHand2", "EqHand1B", "EqHand2" } : new List<string> { "BaseHand1B", "BaseHand2" };
+                        break;
+                    case 1:
+                        switch (eq["Hand1"].Type)
+                        {
+                            case 2:
+                            case 4:
+                            case 6:
+                                parts = hasArmor ? new List<string> { "BaseBoth", "EqBoth" } : new List<string> { "BaseBoth" };
+                                break; //양손 무기
+                            case 9:
+                                parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } : new List<string> { "BaseHand1A", "BaseHand2" };
+                                break; //창
+                        }
+                        break;
                 }
             }
-            if (parts.Count == 0)
-            {
-                parts = hasArmor ? new List<string> { "BaseHand2", "EqHand2" } : new List<string> { "BaseHand2" };
-                if (eq["Hand1"] != null)
-                {
-                    parts.Add("BaseHand1B");
-                    if (hasArmor) parts.Add("EqHand1B");
-                }
-                else
-                {
-                    parts.Add("BaseHand1A");
-                    if (hasArmor) parts.Add("EqHand1A");
-                }
-            }
+            if (eq["Hand2"] != null && parts.Count == 0)
+                parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } : new List<string> { "BaseHand1A", "BaseHand2" };
         }
         return parts;
     }
@@ -458,15 +465,23 @@ new List<string> { "BaseHand1A", "BaseHand2" }; break;
                     ptSpr[PtType.OneWp1].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
                     break; //손1에 한손 착용
                 case 1:
-                    wpState = 4;
-                    ptSpr[PtType.TwoWp1].gameObject.SetActive(true);
-                    ptSpr[PtType.TwoWp1].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
-                    break; //양손검,도끼,둔기
-                case 2:
-                    wpState = 5;
-                    ptSpr[PtType.TwoWp2].gameObject.SetActive(true);
-                    ptSpr[PtType.TwoWp2].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
-                    break; //창, 지팡이
+                    switch (slot["Hand1"].Type)
+                    {
+                        case 2:
+                        case 4:
+                        case 6:
+                            wpState = 4;
+                            PtType curWp = slot["Hand1"].Type == 2 ? PtType.TwoWp1 : PtType.TwoWp3;
+                            ptSpr[curWp].gameObject.SetActive(true);
+                            ptSpr[curWp].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
+                            break;
+                        case 9:
+                            wpState = 5;
+                            ptSpr[PtType.TwoWp2].gameObject.SetActive(true);
+                            ptSpr[PtType.TwoWp2].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
+                            break;
+                    }
+                    break; //양손무기, 창
             }
         }
         //손1에 양손무기가 있을경우 스킵하기 위한 조건문
@@ -474,34 +489,12 @@ new List<string> { "BaseHand1A", "BaseHand2" }; break;
         {
             if (slot["Hand2"] != null) //손2 체크
             {
-                int hand2 = slot["Hand2"].Hand;
-                switch (hand2)
-                {
-                    case 0:
-                        if (wpState == 1)
-                            wpState = 3; //손1,2 각각 한손 착용
-                        else
-                            wpState = 2; //손2에 한손 착용
-                        ptSpr[PtType.OneWp2].gameObject.SetActive(true);
-                        ptSpr[PtType.OneWp2].sprite = ResManager.GetSprite("wp" + slot["Hand2"].ItemId.ToString());
-                        break;
-                    case 1:
-                        wpState = 4;
-                        ptSpr[PtType.TwoWp1].gameObject.SetActive(true);
-                        ptSpr[PtType.TwoWp1].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
-                        break; //양손검,도끼,둔기
-                    case 2:
-                        wpState = 5;
-                        ptSpr[PtType.TwoWp2].gameObject.SetActive(true);
-                        ptSpr[PtType.TwoWp2].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
-                        break; //창
-                    case 3:
-                        //지팡이
-                        break;
-                    case 4:
-                        //활
-                        break;
-                }
+                if (wpState == 1)
+                    wpState = 3; //손1,2 각각 한손 착용
+                else
+                    wpState = 2; //손2에 한손 착용
+                ptSpr[PtType.OneWp2].gameObject.SetActive(true);
+                ptSpr[PtType.OneWp2].sprite = ResManager.GetSprite("wp" + slot["Hand2"].ItemId.ToString());
             }
         }
         //0: 맨손. 1 : 손1에 한손 착용. 2 : 손2에 한손 착용. 3 : 손1,2 각각 한손 착용. 4 : 양손검,도끼,둔기. 5 : 창, 지팡이

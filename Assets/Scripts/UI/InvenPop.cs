@@ -217,6 +217,8 @@ public class InvenPop : UIScreen
         curItem.SetBgAlpha(0f);
         moveOn = true;
         CheckCurEq(curItem.itemData.ItemId, curItem.itemData.Type);
+
+
         if (curItem.x > -1 && curItem.y > -1)
         {
             InitItemGrid(curItem.iType, curItem.x, curItem.y, curItem.itemData.W, curItem.itemData.H);
@@ -225,12 +227,26 @@ public class InvenPop : UIScreen
         }
         else
         {
-            if (isEq) return;
-            if (curItem.itemData.ItemId > 60000) return; //장착 아이템이 아닌 모든 아이템들은 스킵
+            //장착 아이템이 아닌 모든 아이템들은 스킵
             //장착 중이던 아이템일 경우 장착 해제시켜야함
-            string eq = GetEquipBody(curItem.itemData.Uid);
-            eqSlots[eq].StateMain(true);
-            PlayerManager.I.TakeoffEq(eq);
+            if (isEq) return;
+            if (curItem.itemData.ItemId > 60000) return;
+            ResetAllGrids();
+            curItem.x = -1; curItem.y = -1;
+            if (curItem.itemData.ItemId > 30000 && curItem.itemData.Type == 1)
+            {
+                //양손 무기일 경우
+                StateSubWp(false);
+                eqSlots["Hand1"].StateMain(true);
+                eqSlots["Hand2"].StateMain(true);
+                PlayerManager.I.TakeoffEq("Hand1");
+            }
+            else
+            {
+                string eq = GetEquipBody(curItem.itemData.Uid);
+                eqSlots[eq].StateMain(true);
+                PlayerManager.I.TakeoffEq(eq);
+            }
         }
     }
     private void SetCurItem(int uid)
@@ -314,7 +330,7 @@ public class InvenPop : UIScreen
         float maxX = curItemRect.position.x + wid / 2, maxY = curItemRect.position.y + hei / 2;
 
         int myUid = curItem.itemData.Uid, maxCnt = curItem.itemData.W * curItem.itemData.H;
-        int gx = 0, gy = 0;
+        int gx = -1, gy = -1;
 
         for (int y = 0; y < 10; y++)
         {
@@ -368,7 +384,6 @@ public class InvenPop : UIScreen
                 }
             }
         }
-
         curItemX = gx; curItemY = gy; // 현재 선택된 아이템의 위치 설정
         curState = gridUid.Count == 0 ? 0 : (gridUid.Count > 1 ? 2 : 1); // 상태 설정
         Image[,] gridImgs = type == 0 ? ivGridImg : rwdGridImg;
@@ -469,6 +484,7 @@ public class InvenPop : UIScreen
         {
             case "Hand1":
             case "Hand2":
+                StateSubWp(false); //양손 착용시 활성화되는 서브 이미지 초기화 및 비활성화
                 bool one = itemObj.itemData.Hand == 0; //해당 무기가 한손무기인지 양손무기인지 체크
                 if (myEqSlots["Hand1"] != null && myEqSlots["Hand1"].Hand == 1)
                 {
@@ -537,9 +553,9 @@ public class InvenPop : UIScreen
                         SelectItemObj(uid2, true);
                         break;
                     case 3: //손1,손2 비어있으며 양손무기 착용
-                        eqSlots[eq].StateMain(false);
-                        eqSlots[oEq].StateMain(false);
-                        PlaceEqItem(eq, itemObj);
+                        eqSlots[eq].StateMain(false); eqSlots[oEq].StateMain(false);
+                        PlaceEqItem("Hand1", itemObj);
+                        StateSubWp(true, itemObj);
                         break;
                     case 4: //착용된 한손,양손 무기 빼고 양손 무기 착용
                         int uid3 = myEqSlots["Hand1"] != null ? myEqSlots["Hand1"].Uid : myEqSlots["Hand2"].Uid;
@@ -550,12 +566,27 @@ public class InvenPop : UIScreen
 
                         PlaceEqItem("Hand1", itemObj);
                         SelectItemObj(uid3, true);
+
+                        StateSubWp(true, itemObj);
                         break;
                 }
                 break;
         }
     }
 
+    private void StateSubWp(bool isActive, ItemObj wpObj = null)
+    {
+        mImages["SubWp"].gameObject.SetActive(isActive);
+        if (isActive && wpObj != null)
+        {
+            RectTransform wpObjRect = wpObj.transform as RectTransform;
+            RectTransform subWpRect = mImages["SubWp"].transform as RectTransform;
+            subWpRect.sizeDelta = wpObjRect.sizeDelta;
+
+            string res = wpObj.GetItemRes();
+            mImages["SubWp"].sprite = ResManager.GetSprite(res);
+        }
+    }
     private void PlaceEqItem(string eq, ItemObj itemObj)
     {
         itemObj.transform.position = eqSlots[eq].transform.position;
@@ -563,7 +594,6 @@ public class InvenPop : UIScreen
         PlayerManager.I.ApplyEqSlot(eq, itemObj.itemData);
         EndMovingItem();
     }
-
     private void CheckCurEq(int id, int type)
     {
         if (id > 60000)
@@ -572,7 +602,7 @@ public class InvenPop : UIScreen
         }
         else if (id > 30000)
         {
-            curEq = (type == 10) ? new string[] { "Hand2" } : new string[] { "Hand1", "Hand2" };
+            curEq = (type == 12) ? new string[] { "Hand2" } : new string[] { "Hand1", "Hand2" };
         }
         else
         {
@@ -614,6 +644,7 @@ public class InvenPop : UIScreen
                     switch (curState)
                     {
                         case 0:
+                            if (curItemX == -1 && curItemY == -1) return;
                             MoveItem(curItem.itemData.W, curItem.itemData.H, curItemX, curItemY);
                             break;
                         case 1:

@@ -114,4 +114,8 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
         bgAlpha = alpha;
         bg.color = new Color(bg.color.r, bg.color.g, bg.color.b, bgAlpha);
     }
+    public string GetItemRes()
+    {
+        return itemData.Res;
+    }
 }
