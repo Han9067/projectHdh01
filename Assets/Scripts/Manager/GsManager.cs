@@ -252,7 +252,7 @@ public class GsManager : AutoSingleton<GsManager>
     {
         var eq = data.EqSlot;
         string[] all = new string[] { "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth",
-            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2","OneWp3","OneWp4", "TwoWp1", "TwoWp2", "TwoWp3"};
+            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2","OneWp3","TwoWp1", "TwoWp2", "TwoWp3"};
         foreach (var v in all)
             mGameObj[v].SetActive(false);
 
@@ -304,8 +304,8 @@ public class GsManager : AutoSingleton<GsManager>
                         mGameObj["TwoWp2"].SetActive(true);
                         break;
                     case 3:
-                        break;
-                    case 4:
+                        mGameObj["OneWp3"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                        mGameObj["OneWp3"].SetActive(true);
                         break;
                 }
             }
@@ -329,7 +329,7 @@ public class GsManager : AutoSingleton<GsManager>
                         case 1: parts = hasArmor ? new List<string> { "BaseBoth", "EqBoth" } : new List<string> { "BaseBoth" }; break;
                         case 2:
                             parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } :
-                         new List<string> { "BaseHand1A", "BaseHand2" }; break;
+new List<string> { "BaseHand1A", "BaseHand2" }; break;
                     }
                 }
             }
@@ -354,7 +354,7 @@ public class GsManager : AutoSingleton<GsManager>
     HashSet<PtType> noneWpTypes = new HashSet<PtType>
     {
         PtType.BaseHand1B,PtType.BaseBoth, PtType.EqBoth, PtType.EqHand1B,
-        PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.OneWp4, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
+        PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
     };
     HashSet<PtType> hairTypes = new HashSet<PtType>
     {
@@ -438,7 +438,7 @@ public class GsManager : AutoSingleton<GsManager>
         PtType[] bodyParts = new PtType[] {
             PtType.BaseHand1A, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth,
             PtType.EqBody, PtType.EqHand1A, PtType.EqHand1B, PtType.EqHand2, PtType.EqBoth,
-            PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.OneWp4, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
+            PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
         };
 
         foreach (PtType b in bodyParts) ptSpr[b].gameObject.SetActive(false);

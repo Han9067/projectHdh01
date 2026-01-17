@@ -1723,7 +1723,7 @@ RectTransform:
   m_Father: {fileID: 3471270585827486281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3583,6 +3583,9 @@ MonoBehaviour:
       duplicatedKey: 0
   mButtons:
     list:
+    - key: OnStop
+      value: {fileID: 4349602113003268908}
+      duplicatedKey: 0
     - key: X0
       value: {fileID: 3784086327908617910}
       duplicatedKey: 0
@@ -3607,9 +3610,6 @@ MonoBehaviour:
     - key: OnJournalPop
       value: {fileID: 3408657148690199374}
       duplicatedKey: 0
-    - key: OnStop
-      value: {fileID: 4349602113003268908}
-      duplicatedKey: 0
   mGameObject:
     list:
     - key: IngPop
@@ -3625,6 +3625,9 @@ MonoBehaviour:
     list: []
   mTMPText:
     list:
+    - key: IngMent
+      value: {fileID: 4483835773225696123}
+      duplicatedKey: 0
     - key: HpVal
       value: {fileID: 3730044977490926808}
       duplicatedKey: 0
@@ -3639,9 +3642,6 @@ MonoBehaviour:
       duplicatedKey: 0
     - key: EpVal
       value: {fileID: 2583403950714775862}
-      duplicatedKey: 0
-    - key: IngMent
-      value: {fileID: 4483835773225696123}
       duplicatedKey: 0
     - key: QstName
       value: {fileID: 4101945599046067838}
@@ -6283,7 +6283,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5545417970641319740
 RectTransform:
   m_ObjectHideFlags: 0
