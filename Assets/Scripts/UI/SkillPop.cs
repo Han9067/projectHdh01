@@ -8,10 +8,14 @@ using UnityEngine.UI;
 
 public class SkillPop : UIScreen
 {
-    [SerializeField] private Dictionary<int, SkObj> skPassiveList = new Dictionary<int, SkObj>();
-    [SerializeField] private Dictionary<int, SkObj> skCombatList = new Dictionary<int, SkObj>();
-    [SerializeField] private Dictionary<int, SkObj> skMagicList = new Dictionary<int, SkObj>();
+    // public static int curSkIdx = 0;
+
+    [SerializeField] private Dictionary<int, SkObj> skPsvList = new Dictionary<int, SkObj>(); //passive skill list
+    [SerializeField] private Dictionary<int, SkObj> skWpList = new Dictionary<int, SkObj>(); //weapon skill list
+    [SerializeField] private Dictionary<int, SkObj> skMgList = new Dictionary<int, SkObj>(); //magic skill list
     [SerializeField] private Slider mSlider;
+    [SerializeField] private SelSkObj selSkObj;
+    [SerializeField] private List<SkSlot> skSlots = new List<SkSlot>();
     public static bool isActive = false;
     private int curWpIdx = 0, curMgIdx = 0;
     private void Awake()
@@ -22,8 +26,8 @@ public class SkillPop : UIScreen
     private void Start()
     {
         StateTab(0);
-        StateCombat(0);
-        StateMagic(0);
+        StateWp(0);
+        StateMg(0);
     }
 
     private void OnEnable()
@@ -34,24 +38,27 @@ public class SkillPop : UIScreen
             UIManager.ClosePopup("InvenPop");
         InitPop();
         if (GsManager.gameState == GameState.World) GsManager.I.InitCursor();
+        mGameObject["SkSlots"].SetActive(false);
+        mGameObject["SkBlock"].SetActive(false);
+        selSkObj.gameObject.SetActive(false);
     }
 
     private void OnDisable()
     {
         Presenter.UnBind("SkillPop", this);
         isActive = false;
-        foreach (var v in skCombatList)
+        foreach (var v in skWpList)
         {
             if (v.Value != null)
                 Destroy(v.Value.gameObject);
         }
-        foreach (var v in skMagicList)
+        foreach (var v in skMgList)
         {
             if (v.Value != null)
                 Destroy(v.Value.gameObject);
         }
-        skCombatList.Clear();
-        skMagicList.Clear();
+        skWpList.Clear();
+        skMgList.Clear();
         curWpIdx = 0;
         curMgIdx = 0;
     }
@@ -64,62 +71,81 @@ public class SkillPop : UIScreen
 
     public void OnButtonClick(string key)
     {
-        if (key.StartsWith("Wp"))
+        switch (key)
         {
-            int wpIdx = 0;
-            switch (key)
-            {
-                case "WpNormal": wpIdx = 0; break;
-                case "WpSword": wpIdx = 1; break;
-                case "WpAxe": wpIdx = 2; break;
-                case "WpBlunt": wpIdx = 3; break;
-                case "WpSpear": wpIdx = 4; break;
-                case "WpBow": wpIdx = 5; break;
-                case "WpShield": wpIdx = 6; break;
-            }
-            if (curWpIdx != wpIdx)
-            {
-                curWpIdx = wpIdx;
-                StateCombat(curWpIdx);
-            }
-        }
-        else if (key.StartsWith("Mg"))
-        {
-            int mgIdx = 0;
-            switch (key)
-            {
-                case "MgNormal": mgIdx = 0; break;
-                case "MgFire": mgIdx = 1; break;
-                case "MgIce": mgIdx = 2; break;
-                case "MgElectric": mgIdx = 3; break;
-                case "MgEarth": mgIdx = 4; break;
-                case "MgWind": mgIdx = 5; break;
-                case "MgHoly": mgIdx = 6; break;
-                case "MgDark": mgIdx = 7; break;
-            }
-            if (curMgIdx != mgIdx)
-            {
-                curMgIdx = mgIdx;
-                StateMagic(curMgIdx);
-            }
-        }
-        else
-        {
-            switch (key)
-            {
-                case "Close":
-                    Close();
-                    break;
-                case "PassiveBtn":
-                    StateTab(0);
-                    break;
-                case "CombatBtn":
-                    StateTab(1);
-                    break;
-                case "MagicBtn":
-                    StateTab(2);
-                    break;
-            }
+            case "Close":
+                Close();
+                break;
+            case "PsvBtn":
+                StateTab(0);
+                break;
+            case "WpBtn":
+                StateTab(1);
+                break;
+            case "MgBtn":
+                StateTab(2);
+                break;
+            default:
+                if (key.StartsWith("Wp"))
+                {
+                    int wpIdx = 0;
+                    switch (key)
+                    {
+                        case "WpAll": wpIdx = 0; break;
+                        case "WpNormal": wpIdx = 1; break;
+                        case "WpSword": wpIdx = 2; break;
+                        case "WpAxe": wpIdx = 3; break;
+                        case "WpBlunt": wpIdx = 4; break;
+                        case "WpSpear": wpIdx = 5; break;
+                        case "WpBow": wpIdx = 6; break;
+                        case "WpShield": wpIdx = 7; break;
+                    }
+                    if (curWpIdx != wpIdx)
+                    {
+                        curWpIdx = wpIdx;
+                        StateWp(curWpIdx);
+                    }
+                }
+                else if (key.StartsWith("Mg"))
+                {
+                    int mgIdx = 0;
+                    switch (key)
+                    {
+                        case "MgAll": mgIdx = 0; break;
+                        case "MgNormal": mgIdx = 1; break;
+                        case "MgFire": mgIdx = 2; break;
+                        case "MgIce": mgIdx = 3; break;
+                        case "MgElectric": mgIdx = 4; break;
+                        case "MgEarth": mgIdx = 5; break;
+                        case "MgWind": mgIdx = 6; break;
+                        case "MgHoly": mgIdx = 7; break;
+                        case "MgDark": mgIdx = 8; break;
+                    }
+                    if (curMgIdx != mgIdx)
+                    {
+                        curMgIdx = mgIdx;
+                        StateMg(curMgIdx);
+                    }
+                }
+                else
+                {
+                    switch (key)
+                    {
+                        case "Close":
+                            Close();
+                            break;
+                        case "PsvBtn":
+                            StateTab(0);
+                            break;
+                        case "WpBtn":
+                            StateTab(1);
+                            break;
+                        case "MgBtn":
+                            StateTab(2);
+                            break;
+                    }
+                }
+                break;
         }
     }
     public override void ViewQuick(string key, IOData data)
@@ -130,12 +156,18 @@ public class SkillPop : UIScreen
                 ShowSkDesc(data.Get<SkData>());
                 break;
             case "DragSk":
-                mGameObject["SkDesc"].SetActive(false);
                 mGameObject["SkSlots"].SetActive(true);
+                mGameObject["SkBlock"].SetActive(true);
+                selSkObj.gameObject.SetActive(true);
+                selSkObj.SetSelSkObj(data.Get<SkData>());
                 break;
             case "EndDragSk":
                 mGameObject["SkSlots"].SetActive(false);
-                mGameObject["SkDesc"].SetActive(true);
+                mGameObject["SkBlock"].SetActive(false);
+                selSkObj.gameObject.SetActive(false);
+                break;
+            case "MoveSelSkObj":
+                selSkObj.transform.position = Input.mousePosition;
                 break;
         }
     }
@@ -150,68 +182,60 @@ public class SkillPop : UIScreen
         mGameObject["DescMain"].SetActive(false);
         mSlider.value = 0;
         mSlider.gameObject.SetActive(false);
-        CheckPassiveSk();
-        mGameObject["SkSlots"].SetActive(false);
+        CheckPsvSk();
     }
 
-    private void CheckPassiveSk()
+    private void CheckPsvSk()
     {
-        Dictionary<int, SkData> mySk = PlayerManager.I.pData.SkList;
+        var mySk = PlayerManager.I.pData.SkList;
         foreach (var v in mySk)
         {
             if (v.Value.SkType == 0)
             {
-                if (!skPassiveList.ContainsKey(v.Key))
-                {
-                    CreateSkObj(v.Key, mGameObject["PassiveMain"].transform, 0);
-                }
+                if (!skPsvList.ContainsKey(v.Key))
+                    CreateSkObj(v.Key, mGameObject["PsvMain"].transform, 0);
                 else
                     UpdateSkObj(v.Key, 0);
             }
             else
                 break;
         }
-        ArrangeSkObj();
+        ArrangeSkObj(skPsvList);
+    }
+    private void CheckWpSk()
+    {
+        var mySk = PlayerManager.I.pData.SkList;
+        foreach (var v in mySk)
+        {
+
+        }
     }
     private void CreateSkObj(int skId, Transform parent, int type)
     {
+        //추후에는 스킬 사용이 안되는 스킬에 대한 대응이 필요함.
         SkData data = PlayerManager.I.pData.SkList[skId];
         GameObject obj = Instantiate(ResManager.GetGameObject("SkObj"), parent);
         obj.GetComponent<SkObj>().SetSk(data);
         if (type < 10)
-        {
-            skPassiveList[skId] = obj.GetComponent<SkObj>();
-        }
-        else if (type < 40)
-        {
-            skCombatList[skId] = obj.GetComponent<SkObj>();
-        }
+            skPsvList[skId] = obj.GetComponent<SkObj>();
+        else if (type < 21)
+            skWpList[skId] = obj.GetComponent<SkObj>();
         else
-        {
-            skMagicList[skId] = obj.GetComponent<SkObj>();
-        }
+            skMgList[skId] = obj.GetComponent<SkObj>();
     }
     private void UpdateSkObj(int skId, int type)
     {
         SkData data = PlayerManager.I.pData.SkList[skId];
-        if (type == 0)
-        {
-            skPassiveList[skId].SetSk(data);
-        }
-        else if (type < 20)
-        {
-            skCombatList[skId].SetSk(data);
-        }
+        if (type < 10)
+            skPsvList[skId].SetSk(data);
+        else if (type < 21)
+            skWpList[skId].SetSk(data);
         else
-        {
-            skMagicList[skId].SetSk(data);
-        }
+            skMgList[skId].SetSk(data);
     }
-    void ArrangeSkObj()
+    void ArrangeSkObj(Dictionary<int, SkObj> list)
     {
-        // skPassiveList: Dictionary<int, GameObject> 가정
-        var ordered = skPassiveList.OrderBy(kv => kv.Key).ToList();
-
+        var ordered = list.OrderBy(kv => kv.Key).ToList();
         for (int i = 0; i < ordered.Count; i++)
         {
             var slotObj = ordered[i].Value;
@@ -248,8 +272,8 @@ public class SkillPop : UIScreen
     }
     private void StateTab(int idx)
     {
-        string[] btn = new string[] { "PassiveBtn", "CombatBtn", "MagicBtn" };
-        string[] obj = new string[] { "PassiveObj", "CombatObj", "MagicObj" };
+        string[] btn = new string[] { "PsvBtn", "WpBtn", "MgBtn" };
+        string[] obj = new string[] { "PsvObj", "WpObj", "MgObj" };
         for (int i = 0; i < 3; i++)
         {
             if (i == idx)
@@ -264,21 +288,31 @@ public class SkillPop : UIScreen
             }
         }
     }
-    private void StateCombat(int idx)
+    private void StateWp(int idx)
     {
-        string[] btn = new string[] { "WpNormal", "WpSword", "WpAxe", "WpBlunt", "WpSpear", "WpBow", "WpShield" };
+        string[] btn = new string[] { "WpAll", "WpNormal", "WpSword", "WpAxe", "WpBlunt", "WpSpear", "WpBow", "WpShield" };
         foreach (var v in btn)
             mButtons[v].GetComponent<Image>().color = Color.gray;
         mButtons[btn[idx]].GetComponent<Image>().color = Color.yellow;
-        //밑에 일반 공격 스킬 리스트 보여주기
+        switch (idx)
+        {
+            case 0:
+                //전체
+                break;
+        }
     }
-    private void StateMagic(int idx)
+    private void StateMg(int idx)
     {
-        string[] btn = new string[] { "MgNormal", "MgFire", "MgIce", "MgElectric", "MgEarth", "MgWind", "MgHoly", "MgDark" };
+        string[] btn = new string[] { "MgAll", "MgNormal", "MgFire", "MgIce", "MgElectric", "MgEarth", "MgWind", "MgHoly", "MgDark" };
         foreach (var v in btn)
             mButtons[v].GetComponent<Image>().color = Color.gray;
         mButtons[btn[idx]].GetComponent<Image>().color = Color.yellow;
-        //밑에 일반 마법 스킬 리스트 보여주기
+        switch (idx)
+        {
+            case 0:
+                //전체
+                break;
+        }
     }
 
     public override void Refresh() { }

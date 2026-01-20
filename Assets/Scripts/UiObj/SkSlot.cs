@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using GB;
 using UnityEngine.EventSystems;
 
-public class SkSlot : MonoBehaviour, IPointerEnterHandler
+public class SkSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public int skId, skType, useType, line, idx, slotType;
     [SerializeField] private Image slot, icon, sel;
@@ -52,8 +52,7 @@ public class SkSlot : MonoBehaviour, IPointerEnterHandler
             case 0:
                 break;
             case 1:
-                if (eventData.pointerDrag != null)
-                    sel.gameObject.SetActive(true);
+                sel.gameObject.SetActive(true);
                 break;
         }
     }
@@ -64,8 +63,7 @@ public class SkSlot : MonoBehaviour, IPointerEnterHandler
             case 0:
                 break;
             case 1:
-                if (eventData.pointerDrag != null)
-                    sel.gameObject.SetActive(false);
+                sel.gameObject.SetActive(false);
                 break;
         }
     }

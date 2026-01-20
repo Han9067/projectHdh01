@@ -159,7 +159,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.EP = 70; //기본이 100
         pData.MaxEP = 100;
         // pData.SkList = new Dictionary<int, SkData>();
-
+        TestAddSkExp();
         // StartCoroutine(DelayedStartTutorial(0.2f)); //추후 튜토리얼 조건이 된다면 튜토리얼을 시작시킴
     }
     private void CalcPlayerStat()

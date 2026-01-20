@@ -41,18 +41,19 @@ public class SkObj : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDr
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("OnBeginDrag");
-        Presenter.Send("SkillPop", "DragSk");
+        if (data.SkType == 0) return;
+        Presenter.Send("SkillPop", "DragSk", data);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("OnDrag");
+        if (data.SkType == 0) return;
+        Presenter.Send("SkillPop", "MoveSelSkObj");
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("OnEndDrag");
+        if (data.SkType == 0) return;
         Presenter.Send("SkillPop", "EndDragSk");
     }
 }
