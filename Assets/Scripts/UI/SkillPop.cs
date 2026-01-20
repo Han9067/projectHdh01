@@ -129,6 +129,14 @@ public class SkillPop : UIScreen
             case "SelectSk":
                 ShowSkDesc(data.Get<SkData>());
                 break;
+            case "DragSk":
+                mGameObject["SkDesc"].SetActive(false);
+                mGameObject["SkSlots"].SetActive(true);
+                break;
+            case "EndDragSk":
+                mGameObject["SkSlots"].SetActive(false);
+                mGameObject["SkDesc"].SetActive(true);
+                break;
         }
     }
 
@@ -143,6 +151,7 @@ public class SkillPop : UIScreen
         mSlider.value = 0;
         mSlider.gameObject.SetActive(false);
         CheckPassiveSk();
+        mGameObject["SkSlots"].SetActive(false);
     }
 
     private void CheckPassiveSk()
@@ -150,7 +159,7 @@ public class SkillPop : UIScreen
         Dictionary<int, SkData> mySk = PlayerManager.I.pData.SkList;
         foreach (var v in mySk)
         {
-            if (v.Value.Type == 0)
+            if (v.Value.SkType == 0)
             {
                 if (!skPassiveList.ContainsKey(v.Key))
                 {
@@ -169,11 +178,11 @@ public class SkillPop : UIScreen
         SkData data = PlayerManager.I.pData.SkList[skId];
         GameObject obj = Instantiate(ResManager.GetGameObject("SkObj"), parent);
         obj.GetComponent<SkObj>().SetSk(data);
-        if (type == 0)
+        if (type < 10)
         {
             skPassiveList[skId] = obj.GetComponent<SkObj>();
         }
-        else if (type < 20)
+        else if (type < 40)
         {
             skCombatList[skId] = obj.GetComponent<SkObj>();
         }
@@ -271,5 +280,6 @@ public class SkillPop : UIScreen
         mButtons[btn[idx]].GetComponent<Image>().color = Color.yellow;
         //밑에 일반 마법 스킬 리스트 보여주기
     }
+
     public override void Refresh() { }
 }

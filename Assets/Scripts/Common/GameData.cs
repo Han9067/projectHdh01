@@ -65,7 +65,7 @@ public class AttData
 [System.Serializable]
 public class SkData
 {
-    public int SkId, Type, Cool, Exp, NextExp, Lv;
+    public int SkId, SkType, UseType, Cool, Exp, NextExp, Lv;
     public string Name;
     public List<SkAttData> Att;
     public SkData Clone()
@@ -73,7 +73,8 @@ public class SkData
         return new SkData
         {
             SkId = this.SkId,
-            Type = this.Type,
+            SkType = this.SkType,
+            UseType = this.UseType,
             Cool = this.Cool,
             Name = this.Name,
             Exp = 0,

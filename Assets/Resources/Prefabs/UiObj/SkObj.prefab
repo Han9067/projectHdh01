@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -14, y: -14}
+  m_SizeDelta: {x: -6, y: -6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5218604330873042700
 CanvasRenderer:
@@ -244,7 +244,8 @@ MonoBehaviour:
   iconImg: {fileID: 4341942608386795715}
   data:
     SkId: 0
-    Type: 0
+    SkType: 0
+    UseType: 0
     Cool: 0
     Exp: 0
     NextExp: 0

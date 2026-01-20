@@ -684,6 +684,86 @@ MonoBehaviour:
           value: Miner
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: Def
+      value:
+        list:
+        - key: 23
+          value: "\uBC29\uC5B4\uB825"
+          duplicatedKey: 0
+        - key: 10
+          value: Def
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Att
+      value:
+        list:
+        - key: 23
+          value: "\uACF5\uACA9\uB825"
+          duplicatedKey: 0
+        - key: 10
+          value: Att
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: MD
+      value:
+        list:
+        - key: 23
+          value: "\uB9C8\uBC95 \uBC29\uC5B4\uB825"
+          duplicatedKey: 0
+        - key: 10
+          value: MD
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: MA
+      value:
+        list:
+        - key: 23
+          value: "\uB9C8\uBC95 \uACF5\uACA9\uB825"
+          duplicatedKey: 0
+        - key: 10
+          value: MA
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Eva
+      value:
+        list:
+        - key: 23
+          value: "\uD68C\uD53C\uC728"
+          duplicatedKey: 0
+        - key: 10
+          value: Eva
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Crt
+      value:
+        list:
+        - key: 23
+          value: "\uCE58\uBA85\uD0C0\uC728"
+          duplicatedKey: 0
+        - key: 10
+          value: Crt
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: CrtRate
+      value:
+        list:
+        - key: 23
+          value: "\uCE58\uBA85\uD0C0 \uD655\uB960"
+          duplicatedKey: 0
+        - key: 10
+          value: CrtRate
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Hit
+      value:
+        list:
+        - key: 23
+          value: "\uBA85\uC911\uB960"
+          duplicatedKey: 0
+        - key: 10
+          value: Hit
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: Vit
       value:
         list:
@@ -794,84 +874,384 @@ MonoBehaviour:
           value: Sp
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Def
+    - key: AddDef
       value:
         list:
         - key: 23
-          value: "\uBC29\uC5B4\uB825"
+          value: "\uBC29\uC5B4\uB825 \uCD94\uAC00"
           duplicatedKey: 0
         - key: 10
-          value: Defense
+          value: Add Def
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Att
+    - key: AddAtt
       value:
         list:
         - key: 23
-          value: "\uACF5\uACA9\uB825"
+          value: "\uACF5\uACA9\uB825 \uCD94\uAC00"
           duplicatedKey: 0
         - key: 10
-          value: Attack
+          value: Add Att
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: MD
+    - key: AddMD
       value:
         list:
         - key: 23
-          value: "\uB9C8\uBC95 \uBC29\uC5B4\uB825"
+          value: "\uB9C8\uBC95 \uBC29\uC5B4\uB825 \uCD94\uAC00"
           duplicatedKey: 0
         - key: 10
-          value: Magic Defense
+          value: Add MD
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: MA
+    - key: AddMA
       value:
         list:
         - key: 23
-          value: "\uB9C8\uBC95 \uACF5\uACA9\uB825"
+          value: "\uB9C8\uBC95 \uACF5\uACA9\uB825 \uCD94\uAC00"
           duplicatedKey: 0
         - key: 10
-          value: Magic Attack
+          value: Add MA
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Eva
+    - key: AddEva
       value:
         list:
         - key: 23
-          value: "\uD68C\uD53C\uC728"
+          value: "\uD68C\uD53C\uC728 \uCD94\uAC00"
           duplicatedKey: 0
         - key: 10
-          value: Evasion Rate
+          value: Add Eva
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Crt
+    - key: AddCrt
       value:
         list:
         - key: 23
-          value: "\uCE58\uBA85\uD0C0\uC728"
+          value: "\uCE58\uBA85\uD0C0\uC728 \uCD94\uAC00"
           duplicatedKey: 0
         - key: 10
-          value: Critical Damage
+          value: Add Crt
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: CrtRate
+    - key: AddCrtRate
       value:
         list:
         - key: 23
-          value: "\uCE58\uBA85\uD0C0 \uD655\uB960"
+          value: "\uCE58\uBA85\uD0C0 \uD655\uB960 \uCD94\uAC00"
           duplicatedKey: 0
         - key: 10
-          value: Critical Rate
+          value: Add CrtRate
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Hit
+    - key: AddHit
       value:
         list:
         - key: 23
-          value: "\uBA85\uC911\uB960"
+          value: "\uBA85\uC911\uB960 \uCD94\uAC00"
           duplicatedKey: 0
         - key: 10
-          value: Hit Rate
+          value: Add Hit
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddVit
+      value:
+        list:
+        - key: 23
+          value: "\uCCB4\uB825 \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add Vit
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddEnd
+      value:
+        list:
+        - key: 23
+          value: "\uC9C0\uAD6C\uB825 \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add End
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddStr
+      value:
+        list:
+        - key: 23
+          value: "\uADFC\uB825 \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add Str
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddAgi
+      value:
+        list:
+        - key: 23
+          value: "\uBBFC\uCCA9 \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add Agi
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddFor
+      value:
+        list:
+        - key: 23
+          value: "\uAE30\uB825 \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add For
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddInt
+      value:
+        list:
+        - key: 23
+          value: "\uC9C0\uC131 \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add Int
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddCha
+      value:
+        list:
+        - key: 23
+          value: "\uB9E4\uB825 \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add Cha
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddLuk
+      value:
+        list:
+        - key: 23
+          value: "\uD589\uC6B4 \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add Luk
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddHp
+      value:
+        list:
+        - key: 23
+          value: "HP \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add Hp
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddMp
+      value:
+        list:
+        - key: 23
+          value: "MP \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add Mp
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AddSp
+      value:
+        list:
+        - key: 23
+          value: "SP \uCD94\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: Add Sp
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubDef
+      value:
+        list:
+        - key: 23
+          value: "\uBC29\uC5B4\uB825 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Def
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubAtt
+      value:
+        list:
+        - key: 23
+          value: "\uACF5\uACA9\uB825 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Att
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubMD
+      value:
+        list:
+        - key: 23
+          value: "\uB9C8\uBC95 \uBC29\uC5B4\uB825 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub MD
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubMA
+      value:
+        list:
+        - key: 23
+          value: "\uB9C8\uBC95 \uACF5\uACA9\uB825 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub MA
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubEva
+      value:
+        list:
+        - key: 23
+          value: "\uD68C\uD53C\uC728 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Eva
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubCrt
+      value:
+        list:
+        - key: 23
+          value: "\uCE58\uBA85\uD0C0\uC728 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Crt
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubCrtRate
+      value:
+        list:
+        - key: 23
+          value: "\uCE58\uBA85\uD0C0 \uD655\uB960 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub CrtRate
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubHit
+      value:
+        list:
+        - key: 23
+          value: "\uBA85\uC911\uB960 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Hit
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubVit
+      value:
+        list:
+        - key: 23
+          value: "\uCCB4\uB825 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Vit
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubEnd
+      value:
+        list:
+        - key: 23
+          value: "\uC9C0\uAD6C\uB825 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub End
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubStr
+      value:
+        list:
+        - key: 23
+          value: "\uADFC\uB825 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Str
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubAgi
+      value:
+        list:
+        - key: 23
+          value: "\uBBFC\uCCA9 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Agi
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubFor
+      value:
+        list:
+        - key: 23
+          value: "\uAE30\uB825 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub For
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubInt
+      value:
+        list:
+        - key: 23
+          value: "\uC9C0\uC131 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Int
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubCha
+      value:
+        list:
+        - key: 23
+          value: "\uB9E4\uB825 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Cha
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubLuk
+      value:
+        list:
+        - key: 23
+          value: "\uD589\uC6B4 \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Luk
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubHp
+      value:
+        list:
+        - key: 23
+          value: "HP \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Hp
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubMp
+      value:
+        list:
+        - key: 23
+          value: "MP \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Mp
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SubSp
+      value:
+        list:
+        - key: 23
+          value: "SP \uAC10\uC18C"
+          duplicatedKey: 0
+        - key: 10
+          value: Sub Sp
           duplicatedKey: 0
       duplicatedKey: 0
     - key: CoolDown
@@ -881,7 +1261,17 @@ MonoBehaviour:
           value: "\uCFE8\uD0C0\uC784 \uAC10\uC18C"
           duplicatedKey: 0
         - key: 10
-          value: CoolDown
+          value: CoolTime Down
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: CoolUp
+      value:
+        list:
+        - key: 23
+          value: "\uCFE8\uD0C0\uC784 \uC99D\uAC00"
+          duplicatedKey: 0
+        - key: 10
+          value: CoolTime Up
           duplicatedKey: 0
       duplicatedKey: 0
     - key: AddSwordSk
@@ -1084,14 +1474,24 @@ MonoBehaviour:
           value: Serious Injury
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Move
+    - key: MoveRng
       value:
         list:
         - key: 23
-          value: "\uC774\uB3D9"
+          value: "\uC774\uB3D9 \uAC70\uB9AC"
           duplicatedKey: 0
         - key: 10
-          value: Move
+          value: Move Range
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: AttRng
+      value:
+        list:
+        - key: 23
+          value: "\uACF5\uACA9 \uC0AC\uAC70\uB9AC"
+          duplicatedKey: 0
+        - key: 10
+          value: Attack Range
           duplicatedKey: 0
       duplicatedKey: 0
     - key: CraftingMaterial
@@ -1554,14 +1954,14 @@ MonoBehaviour:
           value: Powerful Attack
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: ChargeAttack
+    - key: DashAttack
       value:
         list:
         - key: 23
-          value: "\uB3CC\uC9C4 \uACF5\uACA9"
+          value: "\uC9C8\uC8FC \uACF5\uACA9"
           duplicatedKey: 0
         - key: 10
-          value: Charge Attack
+          value: Dash Attack
           duplicatedKey: 0
       duplicatedKey: 0
     - key: WideSlash
@@ -1604,6 +2004,36 @@ MonoBehaviour:
           value: Rapid Thrust
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: PrecisionShot
+      value:
+        list:
+        - key: 23
+          value: "\uC815\uBC00 \uC0AC\uACA9"
+          duplicatedKey: 0
+        - key: 10
+          value: Precision Shot
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: PiercingShot
+      value:
+        list:
+        - key: 23
+          value: "\uAD00\uD1B5 \uC0AC\uACA9"
+          duplicatedKey: 0
+        - key: 10
+          value: Piercing Shot
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: ShieldBlock
+      value:
+        list:
+        - key: 23
+          value: "\uBC29\uD328 \uB9C9\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Shield Block
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: EnergyBall
       value:
         list:
@@ -1612,6 +2042,26 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Energy Ball
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: ManaBarrier
+      value:
+        list:
+        - key: 23
+          value: "\uB9C8\uB098 \uBC30\uB9AC\uC5B4"
+          duplicatedKey: 0
+        - key: 10
+          value: Mana Barrier
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: MagicMissile
+      value:
+        list:
+        - key: 23
+          value: "\uB9E4\uC9C1 \uBBF8\uC0AC\uC77C"
+          duplicatedKey: 0
+        - key: 10
+          value: Magic Missile
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Shirt
@@ -1664,44 +2114,64 @@ MonoBehaviour:
           value: Brigandine
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: InnkeeperOutfit
+    - key: CarpenterTunic
       value:
         list:
         - key: 23
-          value: "\uC5EC\uAD00\uC8FC\uC778\uC758 \uC637"
+          value: "\uBAA9\uC218 \uD29C\uB2C9"
           duplicatedKey: 0
         - key: 10
-          value: Innkeeper Outfit
+          value: Carpenter Tunic
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: BlacksmithOutfit
+    - key: OutdatedMageClothes
       value:
         list:
         - key: 23
-          value: "\uB300\uC7A5\uC7A5\uC774\uC758 \uC637"
+          value: "\uAD6C\uC2DD \uB9C8\uBC95\uC0AC \uC637"
           duplicatedKey: 0
         - key: 10
-          value: Blacksmith Outfit
+          value: Outdated Mage Clothes
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: TailorOutfit
+    - key: InnkeeperClothes
       value:
         list:
         - key: 23
-          value: "\uC7AC\uB2E8\uC0AC\uC758 \uC637"
+          value: "\uC5EC\uAD00\uC8FC\uC778 \uC637"
           duplicatedKey: 0
         - key: 10
-          value: Tailor Outfit
+          value: Innkeeper Clothes
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: MerchantOutfit
+    - key: BlacksmithClothes
       value:
         list:
         - key: 23
-          value: "\uC0C1\uC778\uC758 \uC637"
+          value: "\uB300\uC7A5\uC7A5\uC774 \uC637"
           duplicatedKey: 0
         - key: 10
-          value: Merchant Outfit
+          value: Blacksmith Clothes
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: TailorClothes
+      value:
+        list:
+        - key: 23
+          value: "\uC7AC\uB2E8\uC0AC \uC637"
+          duplicatedKey: 0
+        - key: 10
+          value: Tailor Clothes
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: MerchantClothes
+      value:
+        list:
+        - key: 23
+          value: "\uC0C1\uC778 \uC637"
+          duplicatedKey: 0
+        - key: 10
+          value: Merchant Clothes
           duplicatedKey: 0
       duplicatedKey: 0
     - key: GuildUniform
@@ -1712,6 +2182,26 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Guild Uniform
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: InnkeeperDress
+      value:
+        list:
+        - key: 23
+          value: "\uC5EC\uAD00\uC8FC\uC778 \uC637(\uC5EC\uC131)"
+          duplicatedKey: 0
+        - key: 10
+          value: Innkeeper Dress
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: TailorDress
+      value:
+        list:
+        - key: 23
+          value: "\uC7AC\uB2E8\uC0AC \uC637(\uC5EC\uC131)"
+          duplicatedKey: 0
+        - key: 10
+          value: Tailor Dress
           duplicatedKey: 0
       duplicatedKey: 0
     - key: ShortShoes
@@ -4265,17 +4755,17 @@ MonoBehaviour:
           value: Shield
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: MagicFocus_Desc
+    - key: MagicCatalyst_Desc
       value:
         list:
         - key: 23
-          value: "\uB9C8\uBC95 \uB3C4\uAD6C\uB4E4\uC744 \uB2E4\uB8E8\uB294 \uC219\uB828\uB3C4\uC785\uB2C8\uB2E4.
+          value: "\uB9C8\uBC95 \uCD09\uB9E4\uC5D0 \uB300\uD55C \uC219\uB828\uB3C4\uC785\uB2C8\uB2E4.
             \uC2A4\uD0AC \uC218\uCE58\uAC00 \uB192\uC544\uC9C8\uC218\uB85D \uB9C8\uBC95
             \uB3C4\uAD6C\uB97C \uCC29\uC6A9 \uD558\uC600\uC744\uB54C \uD6A8\uACFC\uAC00
             \uC99D\uAC00\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: Staff
+          value: MagicCatalyst
           duplicatedKey: 0
       duplicatedKey: 0
     - key: LightArmor_Desc
@@ -4418,14 +4908,16 @@ MonoBehaviour:
           value: Alchemy
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Meditation_Desc
+    - key: Respite_Desc
       value:
         list:
         - key: 23
-          value: "\uBA85\uC0C1"
+          value: "\uC6D4\uB4DC\uB9F5\uC5D0\uC11C \uBE44\uC804\uD22C \uC0C1\uD0DC\uC5D0\uC11C
+            \uC2DC\uAC04\uC5D0 \uB530\uB77C \uB2F9\uC2E0\uC758 HP,MP,SP\uB97C \uD68C\uBCF5\uC2DC\uCF1C\uC8FC\uB294
+            \uD328\uC2DC\uBE0C \uC2A4\uD0AC\uC785\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: Meditation
+          value: Respite
           duplicatedKey: 0
       duplicatedKey: 0
     - key: NormalMagic_Desc
@@ -4506,6 +4998,19 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Dark Magic
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Meditation_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC9E7\uC740 \uC2DC\uAC04 \uBA85\uC0C1\uC744 \uD1B5\uD574 \uC790\uC5F0\uC5D0\uC11C
+            \uD750\uB974\uB294 \uAE30\uB97C \uD761\uC218\uD558\uC5EC MP\uC640 SP\uB97C
+            \uD68C\uBCF5\uD558\uC5EC \uC804\uD22C\uC5D0 \uC784\uD560 \uC218 \uC788\uB3C4\uB85D
+            \uD569\uB2C8\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: Meditation
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Dash_Desc

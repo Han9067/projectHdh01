@@ -11,6 +11,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public PlayerData pData;
     public List<List<InvenGrid>> grids;
     public Vector3 worldPos = new Vector3(0, 0, 0);
+    public List<List<SkSlot>> skSlots;
     [Header("기타")]
     public bool isObjCreated = false; // 월드 오브젝트 생성 여부
     public bool isGate1Open = false; // 관문 1 통행 여부
@@ -308,6 +309,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public void TestAddSkExp()
     {
         AddSkExp(1, 20);
+        AddSkExp(1001, 20); //명상
+        // AddSkExp(1002, 20); //대시
+        // AddSkExp(1003, 20); //이중 공격
     }
     public void TestDropItem()
     {

@@ -16,6 +16,7 @@ public class GameSaveData
     public bool isGate1Open;
     public Dictionary<int, Dictionary<int, QuestInstData>> CityQuest;
     public Dictionary<int, WorldMonData> worldMonDataList;
+    public List<List<SkSlot>> playerSkSlots;
 }
 
 public class SaveFileManager : AutoSingleton<SaveFileManager>
@@ -40,6 +41,7 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
         saveData.worldMonDataList = WorldObjManager.I.worldMonDataList;
         saveData.curDay = GsManager.I.tDay;
         saveData.curTime = GsManager.I.wTime;
+        saveData.playerSkSlots = PlayerManager.I.skSlots;
         #endregion
 
         // ⭐ 여기가 핵심!
@@ -76,6 +78,7 @@ public class SaveFileManager : AutoSingleton<SaveFileManager>
                 GsManager.I.wTime = loadedData.curTime;
                 PlayerManager.I.isObjCreated = true; //WorldObjManager.I.worldMonDataList 에 데이터가 있기떄문에 덮여씌어지지 않도록 isObjCreated 를 true 로 설정
                 PlayerManager.I.isGate1Open = loadedData.isGate1Open; //관문 통행 여부
+                PlayerManager.I.skSlots = loadedData.playerSkSlots; //스킬 슬롯 데이터 로드
                 Debug.Log("=== 게임 데이터 로드 완료 ===");
             }
             catch (System.Exception e)
