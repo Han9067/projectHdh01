@@ -9,12 +9,12 @@ public class bMonster : MonoBehaviour
     public int objId, monsterId;
     public string mName;
     public MonData monData;
-    public GameObject shdObj, bodyObj, ggParent, ggObj;
+    public GameObject shdObj, mainObj, ggParent, ggObj, bodyObj;
     bool isGG = false;
     public float hp, maxHp;
     public int att, def, crt, crtRate, hit, eva, gainExp, lv;
-    public int w, h;
-    [SerializeField] private SpriteRenderer bodySpr;
+    public int w, h, Rng;
+    [SerializeField] private SpriteRenderer mainSpr;
     private MaterialPropertyBlock mProp;
     public bool isOutline = false;
     private Color redColor = new Color(1, 0.5f, 0.5f, 1);
@@ -24,12 +24,13 @@ public class bMonster : MonoBehaviour
         monData = MonManager.I.MonDataList[monsterId].Clone();
         w = monData.W;
         h = monData.H;
-        bodyObj.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("mon_" + monsterId);
+        mainObj.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("mon_" + monsterId);
         shdObj.transform.localScale = new Vector3(monData.SdwScr, monData.SdwScr, 1);
-        bodyObj.transform.localPosition = new Vector3((w - 1) * 0.6f, 0.4f, 0);
-        shdObj.transform.localPosition = new Vector3((w - 1) * 0.6f, -0.35f, 0);
+        mainObj.transform.localPosition = new Vector3(0, 0.4f, 0);
+        shdObj.transform.localPosition = new Vector3(0, -0.35f, 0);
         ggParent.SetActive(false);
-        ggParent.transform.localPosition = new Vector3((w - 1) * 0.6f, monData.GgY, 0);
+        ggParent.transform.localPosition = new Vector3(0, monData.GgY, 0);
+        bodyObj.transform.localPosition = new Vector3((w - 1) * 0.6f, 0, 0);
         mName = monData.Name;
         maxHp = monData.HP;
         hp = maxHp;
@@ -41,6 +42,7 @@ public class bMonster : MonoBehaviour
         eva = monData.Eva;
         gainExp = monData.GainExp;
         lv = monData.Lv;
+        Rng = monData.Rng;
         mProp = new MaterialPropertyBlock();
     }
     public void SetMonData(int objId, int monId, float px, float py)
@@ -50,11 +52,13 @@ public class bMonster : MonoBehaviour
         transform.position = new Vector3(px, py, 0);
         //w에 따라 내부 자식 리소스 x좌표 변경
     }
-    public void SetDirObj(int dir)
+    public float GetObjDir()
     {
-        transform.localScale = new Vector3(dir, 1, 1);
-        int gDir = dir == -1 ? -1 : 1;
-        ggParent.transform.localScale = new Vector3(gDir, 1, 1);
+        return bodyObj.transform.localScale.x;
+    }
+    public void SetObjDir(float dir)
+    {
+        bodyObj.transform.localScale = new Vector3(dir, 1, 1);
     }
     public void SetObjLayer(int y)
     {
@@ -83,7 +87,7 @@ public class bMonster : MonoBehaviour
         BattleCore.I.DeathObj(objId, attacker);
         //몬스터 죽음 연출
         ggParent.SetActive(false);
-        bodyObj.GetComponent<SpriteRenderer>().DOFade(0f, 0.2f);
+        mainObj.GetComponent<SpriteRenderer>().DOFade(0f, 0.2f);
         shdObj.GetComponent<SpriteRenderer>().DOFade(0f, 0.2f);
         //경험치 획득
         yield return new WaitForSeconds(0.3f);
@@ -92,11 +96,11 @@ public class bMonster : MonoBehaviour
     public void StateOutline(bool on)
     {
         isOutline = on;
-        bodySpr.GetPropertyBlock(mProp);
+        mainSpr.GetPropertyBlock(mProp);
         mProp.SetFloat("_Outline", on ? 1f : 0);
         mProp.SetColor("_OutlineColor", Color.red);
         mProp.SetFloat("_OutlineSize", 10);
-        bodySpr.SetPropertyBlock(mProp);
-        bodySpr.color = on ? redColor : Color.white;
+        mainSpr.SetPropertyBlock(mProp);
+        mainSpr.color = on ? redColor : Color.white;
     }
 }

@@ -140,7 +140,6 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (EventSystem.current.IsPointerOverGameObject())
         {
-            // Debug.Log("UI 오버레이 영역에서는 포커스 커서 비활성화");
             // UI 오버레이 영역에서는 포커스 커서 비활성화
             if (!GsManager.I.IsCursor("default")) GsManager.I.SetCursor("default");
             if (focus.activeSelf) focus.SetActive(false);
@@ -148,9 +147,9 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         if (isActionable)
         {
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mouseWorldPos.z = 0;
-            Vector2Int t = FindTilePos(mouseWorldPos);
+            Vector3 wPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            wPos.z = 0;
+            Vector2Int t = FindTilePos(wPos);
             if (t.x == -1 && t.y == -1)
             {
                 if (focus.activeSelf) focus.SetActive(false);
@@ -180,8 +179,13 @@ public class BattleCore : AutoSingleton<BattleCore>
                     cName = "attack";
                     if (focus.activeSelf) focus.SetActive(false);
                     HideAllOutline();
-                    ShowOutline(gGrid[t.x, t.y].tId);
-                    //몬스터는 w,h 이 1로 고정이 아니니 항상 왼쪽 상단의 오브젝트 기준을 찾아줘야함
+                    int mId = gGrid[t.x, t.y].tId;
+                    ShowOutline(mId);
+                    if (attRngPos != objTurn[0].pos)
+                    {
+                        ShowAttRng(objTurn[0].pos, 1, 1, player.pData.Rng);
+                        attRngPos = objTurn[0].pos;
+                    }
                 }
                 else if (gGrid[t.x, t.y].tId >= 1000)
                 {
@@ -212,7 +216,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 switch (cName)
                 {
                     case "attack":
-                        if (GetAttackTarget(gGrid[t.x, t.y].tId, cpPos))
+                        if (GetAttackTarget(gGrid[t.x, t.y].tId, cpPos, player.pData.Rng, 1, 1))
                         {
                             objTurn[0].state = BtObjState.ATTACK;
                             objTurn[0].tgId = gGrid[t.x, t.y].tId;
@@ -319,7 +323,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             {
                 case 0:
                     cx = 10; cy = 12;
-                    pObj.transform.localScale = new Vector3(-1, 1, 1); //좌측 방향 설정 -> 추후 스케일 변동으로 문제가 있을시 세부작업
+                    player.SetObjDir(-1);
                     break;
                 case 1: cx = 20; cy = 12; break;
             }
@@ -365,7 +369,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 int w = MonManager.I.MonDataList[mId].W, h = MonManager.I.MonDataList[mId].H;
                 var mon = Instantiate(ResManager.GetGameObject("MonObj"), monsterParent);
                 var data = mon.GetComponent<bMonster>();
-                data.SetDirObj(pDir == 0 ? 1 : -1);
+                data.SetObjDir(pDir == 0 ? 1 : -1);
                 data.SetMonData(++objId, mId, gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
                 data.SetObjLayer(mapH - p.y);
                 mon.name = "Mon_" + objId;
@@ -416,42 +420,21 @@ public class BattleCore : AutoSingleton<BattleCore>
     #region ==== Field Action ====
     private void ShowAttRng(Vector2Int grid, int w, int h, int cnt)
     {
-        // 1. 먼저 모든 attRng 비활성화
-        foreach (var rng in attRng)
-            rng.SetActive(false);
-
-        // 2. 대상이 차지하는 영역 계산
-        HashSet<Vector2Int> occupiedArea = new HashSet<Vector2Int>();
-        for (int x = 0; x < w; x++)
-        {
-            for (int y = 0; y < h; y++)
-            {
-                occupiedArea.Add(new Vector2Int(grid.x + x, grid.y + y));
-            }
-        }
-        // 3. 주변 범위 내의 모든 위치 수집 (대상 영역 제외)
+        foreach (var rng in attRng) rng.SetActive(false);
+        int attMinX = grid.x, attMaxX = grid.x + w - 1, attMinY = grid.y, attMaxY = grid.y + h - 1;
         List<Vector2Int> rngPos = new List<Vector2Int>();
-
-        // 대상 영역의 경계를 기준으로 cnt 범위 내의 모든 위치 확인
         for (int x = grid.x - cnt; x < grid.x + w + cnt; x++)
         {
             for (int y = grid.y - cnt; y < grid.y + h + cnt; y++)
             {
-                Vector2Int p = new Vector2Int(x, y);
-
-                // 대상이 차지하는 영역이면 제외
-                if (occupiedArea.Contains(p))
-                    continue;
-
-                // 맵 범위 체크
-                if (x < 0 || x >= mapW || y < 0 || y >= mapH)
-                    continue;
-
-                rngPos.Add(p);
+                if (x < 0 || x >= mapW || y < 0 || y >= mapH) continue;
+                if (x >= grid.x && x < grid.x + w && y >= grid.y && y < grid.y + h) continue;
+                int distX = x < attMinX ? attMinX - x : (x > attMaxX ? x - attMaxX : 0);
+                int distY = y < attMinY ? attMinY - y : (y > attMaxY ? y - attMaxY : 0);
+                if (Mathf.Max(distX, distY) <= cnt) rngPos.Add(new Vector2Int(x, y));
             }
         }
-
-        // 4. attRng 리스트의 오브젝트들을 해당 위치에 배치하고 활성화
+        if (rngPos.Count > attRng.Count) CreateRngObj(rngPos.Count - attRng.Count);
         for (int i = 0; i < rngPos.Count; i++)
         {
             Vector2Int p = rngPos[i];
@@ -507,11 +490,13 @@ public class BattleCore : AutoSingleton<BattleCore>
                             return;
                         }
                         ot.isAction = true;
-                        StartCoroutine(MoveObj(pObj, cpPos, ot.mPath[ot.mIdx], 0.3f, () =>
+                        StartCoroutine(MoveObj(pObj, 1000, cpPos, ot.mPath[ot.mIdx], 0.3f, () =>
                         {
-                            UpdateGrid(cpPos.x, cpPos.y, ot.mPath[ot.mIdx].x, ot.mPath[ot.mIdx].y, 1, 1, 1000);
-                            cpPos = ot.mPath[ot.mIdx];
-                            player.SetObjLayer(mapH - cpPos.y);
+                            Vector2Int nPos = ot.mPath[ot.mIdx];
+                            UpdateGrid(cpPos.x, cpPos.y, nPos.x, nPos.y, 1, 1, 1000);
+                            cpPos = nPos;
+                            ot.pos = nPos;
+                            player.SetObjLayer(mapH - nPos.y);
                             ot.mIdx++;
                         }, () =>
                         {
@@ -536,7 +521,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                 switch (ot.state)
                 {
                     case BtObjState.IDLE:
-                        if (GetAttackTarget(ot.tgId, ot.pos))
+                        // Dictionary 중복 접근 최적화
+                        var monData = mData[mId];
+                        if (GetAttackTarget(ot.tgId, ot.pos, monData.Rng, monData.w, monData.h))
                             StartCoroutine(AttackObjWithMelee(mObj[mId], BtObjType.MONSTER, mId, ot.tgId));
                         else
                         {
@@ -560,15 +547,44 @@ public class BattleCore : AutoSingleton<BattleCore>
         tIdx++; //다음 턴을 위해 턴 인덱스 증가
         if (tIdx >= objTurn.Count) tIdx = 0;
     }
-    bool GetAttackTarget(int tId, Vector2Int pos)
+    private float GetBodyObj(int objId)
     {
-        for (int i = 0; i < Directions.Dir8.Length; i++)
+        if (objId == 1000)
+            return player.GetObjDir();
+        else
+            return mData[objId].GetObjDir();
+    }
+    private void SetObjDir(int objId, Vector2Int cv, Vector2Int lv)
+    {
+        //cv : 현재 위치의 벡터, lv : 바라보는 위치의 벡터
+        float dir = cv.x == lv.x ? GetBodyObj(objId) : (cv.x > lv.x ? 1f : -1f);
+        if (objId == 1000)
+            player.SetObjDir(dir);
+        else
+            mData[objId].SetObjDir(dir);
+    }
+    private void SetObjDir(int objId, float cx, float lx)
+    {
+        //cx : 현재 위치의 x좌표, lx : 바라보는 위치의 x좌표
+        float dir = cx == lx ? GetBodyObj(objId) : (cx > lx ? 1f : -1f);
+        if (objId == 1000)
+            player.SetObjDir(dir);
+        else
+            mData[objId].SetObjDir(dir);
+    }
+    bool GetAttackTarget(int tId, Vector2Int pos, int rng, int w, int h)
+    {
+        int attMinX = pos.x, attMaxX = pos.x + w - 1, attMinY = pos.y, attMaxY = pos.y + h - 1;
+        for (int x = pos.x - rng; x < pos.x + w + rng; x++)
         {
-            Vector2Int t = pos + Directions.Dir8[i];
-            if (t.x < 0 || t.x >= mapW || t.y < 0 || t.y >= mapH)
-                continue;
-            if (gGrid[t.x, t.y].tId == tId)
-                return true;
+            for (int y = pos.y - rng; y < pos.y + h + rng; y++)
+            {
+                if (x < 0 || x >= mapW || y < 0 || y >= mapH) continue;
+                if (x >= pos.x && x < pos.x + w && y >= pos.y && y < pos.y + h) continue;
+                int distX = x < attMinX ? attMinX - x : (x > attMaxX ? x - attMaxX : 0);
+                int distY = y < attMinY ? attMinY - y : (y > attMaxY ? y - attMaxY : 0);
+                if (Mathf.Max(distX, distY) <= rng && gGrid[x, y].tId == tId) return true;
+            }
         }
         return false;
     }
@@ -586,35 +602,38 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return false;
     }
-    IEnumerator MoveObj(GameObject obj, Vector2Int cv, Vector2Int mv, float ct, Action callA = null, Action callB = null)
+    IEnumerator MoveObj(GameObject obj, int objId, Vector2Int cv, Vector2Int mv, float ct,
+        Action callA = null, Action callB = null)
     {
+        SetObjDir(objId, cv, mv);
         var pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.x, mv.y].y, 0);
-        float dir = cv.x == mv.x ? obj.transform.localScale.x : (cv.x > mv.x ? 1f : -1f); //캐릭터 방향 설정
-        obj.transform.localScale = new Vector3(dir, 1, 1);
         obj.transform.DOJump(pos, jumpPower: 0.3f, numJumps: 1, duration: 0.3f).SetEase(Ease.OutQuad); //통통 튀며 이동
         callA?.Invoke();
         yield return new WaitForSeconds(ct);
         callB?.Invoke();
         TurnAction();
     }
+
     void TrackMon(TurnData data, int mId, float ct)
     {
         data.isAction = true; //행동 시작
         if (data.tgId == 1000)
         {
+            // Dictionary 중복 접근 최적화
+            var mon = mData[mId];
             // 자기 자신의 ID(mId)를 전달하여 자신이 차지한 공간은 빈 공간으로 취급
-            Vector2Int[] path = BattlePathManager.I.GetPath(data.pos, cpPos, gGrid, mData[mId].w, mData[mId].h, mId);
+            Vector2Int[] path = BattlePathManager.I.GetPath(data.pos, cpPos, gGrid, mon.w, mon.h, mId);
             if (path.Length > 0)
             {
-                StartCoroutine(MoveObj(mObj[mId], data.pos, path[0], ct, () =>
+                StartCoroutine(MoveObj(mObj[mId], mId, data.pos, path[0], ct, () =>
                 {
                     data.isAction = false; //행동 종료
-                    UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, mData[mId].w, mData[mId].h, mId);
+                    UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, mon.w, mon.h, mId);
                     data.pos = path[0]; //몬스터 위치 업데이트
-                    mData[mId].SetObjLayer(mapH - path[0].y); //몬스터 레이어 업데이트
+                    mon.SetObjLayer(mapH - path[0].y); //몬스터 레이어 업데이트
                 }, () =>
                 {
-                    if (GetAttackTarget(data.tgId, data.pos) || gGrid[path[0].x, path[0].y].tId != 0)
+                    if (GetAttackTarget(data.tgId, data.pos, mon.Rng, mon.w, mon.h) || gGrid[path[0].x, path[0].y].tId != 0)
                         data.state = BtObjState.IDLE;
                 }));
             }
@@ -648,6 +667,8 @@ public class BattleCore : AutoSingleton<BattleCore>
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
+                SetObjDir(myId, myPos.x, tgPos.x); //현재 오브젝트가 타겟을 바라보도록
+                SetObjDir(tgId, tgPos.x, myPos.x); //타겟 오브젝트가 현재 오브젝트를 바라보도록
                 switch (myType)
                 {
                     case BtObjType.PLAYER: //플레이어가 타겟에게 행동

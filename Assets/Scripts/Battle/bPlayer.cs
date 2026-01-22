@@ -9,7 +9,7 @@ public class bPlayer : MonoBehaviour
 {
     public int objId = 1000;
     Dictionary<PtType, SpriteRenderer> ptSpr = new Dictionary<PtType, SpriteRenderer>();
-    public GameObject ptMain;
+    public GameObject ptMain, bodyObj;
     public PlayerData pData;
     [SerializeField] private SortingGroup sGrp;
     void Awake()
@@ -21,6 +21,14 @@ public class bPlayer : MonoBehaviour
         pData = PlayerManager.I.pData;
         GsManager.I.SetObjAppearance(0, ptSpr);
         GsManager.I.SetObjAllEqParts(0, ptSpr);
+    }
+    public float GetObjDir()
+    {
+        return bodyObj.transform.localScale.x;
+    }
+    public void SetObjDir(float dir)
+    {
+        bodyObj.transform.localScale = new Vector3(dir, 1, 1);
     }
     public void OnDamaged(int att, int crt, int crtRate)
     {
