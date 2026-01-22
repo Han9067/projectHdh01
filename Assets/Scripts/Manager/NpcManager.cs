@@ -71,6 +71,8 @@ public class NpcManager : AutoSingleton<NpcManager>
         int agi = npcData.AGI / 4;
         npcData.Hit = 60 + agi;
         npcData.Eva = 10 + agi;
+        int wpType = npcData.EqSlot["Hand1"] != null ? npcData.EqSlot["Hand1"].Type : 0;
+        npcData.Rng = wpType == 0 ? 1 : GsManager.I.GetWpRng(wpType);
         //////
         string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
         foreach (string e in eq)

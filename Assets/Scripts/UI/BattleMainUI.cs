@@ -1,19 +1,17 @@
-using System.Diagnostics;
 using GB;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-
+using System.Collections.Generic;
 
 public class BattleMainUI : UIScreen
 {
     public Slider mSlider_HP, mSlider_MP, mSlider_SP;
+    public List<SkSlotObj> skSlots = new List<SkSlotObj>();
     private void Awake()
     {
         Regist();
         RegistButton();
-
     }
     private void Start()
     {
@@ -21,6 +19,8 @@ public class BattleMainUI : UIScreen
         UpdateMp();
         UpdateSp();
         mButtons["GoToWorld"].gameObject.SetActive(false); //테스트 후 정상화
+        UpdateSlotList(); //슬롯 목록 업데이트
+        UpdateMainUiSkSlot(); //스킬 슬롯 업데이트
     }
     private void Update()
     {
@@ -46,7 +46,6 @@ public class BattleMainUI : UIScreen
     {
         foreach (var v in mButtons)
             v.Value.onClick.AddListener(() => { OnButtonClick(v.Key); });
-
     }
 
     public void OnButtonClick(string key)
@@ -61,6 +60,14 @@ public class BattleMainUI : UIScreen
                 break;
             case "GoToWorld":
                 BattleCore.I.MoveToWorld();
+                break;
+            case "Line1":
+            case "Line2":
+            case "Line3":
+            case "Line4":
+                PlayerManager.I.curSlotLine = int.Parse(key.Replace("Line", "")) - 1;
+                UpdateSlotList();
+                UpdateMainUiSkSlot();
                 break;
         }
     }
@@ -87,6 +94,9 @@ public class BattleMainUI : UIScreen
                 UnityEngine.Debug.Log("GameOver");
                 mButtons["GoToWorld"].gameObject.SetActive(true);
                 break;
+            case "UpdateSkSlot":
+                UpdateMainUiSkSlot();
+                break;
         }
     }
 
@@ -107,5 +117,26 @@ public class BattleMainUI : UIScreen
         mSlider_SP.value = (float)PlayerManager.I.pData.SP / PlayerManager.I.pData.MaxSP * 100;
         mTMPText["GgSpVal"].text = PlayerManager.I.pData.SP.ToString() + " / " + PlayerManager.I.pData.MaxSP.ToString();
     }
-
+    public void UpdateMainUiSkSlot()
+    {
+        int line = PlayerManager.I.curSlotLine;
+        for (int i = 0; i < skSlots.Count; i++)
+        {
+            if (PlayerManager.I.pSkSlots[line][i] == 0)
+                skSlots[i].SetSkSlot(0, 0, 0);
+            else
+            {
+                SkData data = PlayerManager.I.pData.SkList[PlayerManager.I.pSkSlots[line][i]];
+                skSlots[i].SetSkSlot(data.SkId, data.SkType, data.UseType);
+            }
+            skSlots[i].SetSkIdx(line, i);
+        }
+    }
+    public void UpdateSlotList()
+    {
+        int line = PlayerManager.I.curSlotLine;
+        for (int i = 1; i <= 4; i++)
+            mButtons["Line" + i].GetComponent<Image>().color = Color.gray;
+        mButtons["Line" + (line + 1)].GetComponent<Image>().color = Color.yellow;
+    }
 }

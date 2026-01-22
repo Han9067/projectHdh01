@@ -11,7 +11,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public PlayerData pData;
     public List<List<InvenGrid>> grids;
     public Vector3 worldPos = new Vector3(0, 0, 0);
-    public List<List<SkSlot>> skSlots;
+    public List<List<int>> pSkSlots; //스킬 슬롯
+    public int curSlotLine = 0; //현재 스킬 슬롯 라인
     [Header("기타")]
     public bool isObjCreated = false; // 월드 오브젝트 생성 여부
     public bool isGate1Open = false; // 관문 1 통행 여부
@@ -20,10 +21,16 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     [Header("테스트")]
     public int testSkin = 1;
     public int testHairColor = 1;
-    public void LoadPlayerManager()
+    private void Awake()
     {
         InitGrid();
+        InitSkSlot();
     }
+    // public void LoadPlayerManager()
+    // {
+    //     InitGrid();
+    //     InitSkSlot();
+    // }
     // 인벤토리 그리드 초기화
     private void InitGrid()
     {
@@ -36,6 +43,16 @@ public class PlayerManager : AutoSingleton<PlayerManager>
                 row.Add(new InvenGrid { x = x, y = y, slotId = -1 });
             }
             grids.Add(row);
+        }
+    }
+    private void InitSkSlot()
+    {
+        pSkSlots = new List<List<int>>();
+        for (int i = 0; i < 4; i++)
+        {
+            List<int> row = new List<int>();
+            for (int j = 0; j < 10; j++) row.Add(0);
+            pSkSlots.Add(row);
         }
     }
     public void ApplyEqSlot(string eq, ItemData data)
@@ -178,6 +195,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         int agi = pData.AGI / 4;
         pData.Hit = 60 + agi;
         pData.Eva = 10 + agi;
+        int wpType = pData.EqSlot["Hand1"] != null ? pData.EqSlot["Hand1"].Type : 0;
+        pData.Rng = wpType == 0 ? 1 : GsManager.I.GetWpRng(wpType);
         //////
         string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
         foreach (string e in eq)

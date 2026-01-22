@@ -34,6 +34,7 @@ public class MonTable  : GameData
 				case "Stat": return true;
 				case "W": return true;
 				case "H": return true;
+				case "Rng": return true;
 				case "SdwScr": return true;
 				case "GgY": return true;
 				case "Drop": return true;
@@ -68,6 +69,7 @@ public class MonTable  : GameData
 				case "Stat": return data.Stat;
 				case "W": return data.W;
 				case "H": return data.H;
+				case "Rng": return data.Rng;
 				case "SdwScr": return data.SdwScr;
 				case "GgY": return data.GgY;
 				case "Drop": return data.Drop;
@@ -93,6 +95,7 @@ public class MonTable  : GameData
 				case "Stat": return data.Stat;
 				case "W": return data.W;
 				case "H": return data.H;
+				case "Rng": return data.Rng;
 				case "SdwScr": return data.SdwScr;
 				case "GgY": return data.GgY;
 				case "Drop": return data.Drop;
@@ -119,10 +122,11 @@ public class MonTable  : GameData
 				case 3: return data.Stat;
 				case 4: return data.W;
 				case 5: return data.H;
-				case 6: return data.SdwScr;
-				case 7: return data.GgY;
-				case 8: return data.Drop;
-				case 9: return data.Note;
+				case 6: return data.Rng;
+				case 7: return data.SdwScr;
+				case 8: return data.GgY;
+				case 9: return data.Drop;
+				case 10: return data.Note;
 
                 default: return null;
             }
@@ -171,6 +175,7 @@ public class MonTableProb : GameDataProb
 	[JsonProperty] public readonly string Stat;
 	[JsonProperty] public readonly int W;
 	[JsonProperty] public readonly int H;
+	[JsonProperty] public readonly int Rng;
 	[JsonProperty] public readonly float SdwScr;
 	[JsonProperty] public readonly float GgY;
 	[JsonProperty] public readonly string Drop;

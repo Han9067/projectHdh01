@@ -41,7 +41,7 @@ public class GsManager : AutoSingleton<GsManager>
 
         #region 매니저 스크립트 초기화
         ItemManager.I.LoadItemManager();
-        PlayerManager.I.LoadPlayerManager();
+        // PlayerManager.I.LoadPlayerManager();
         MonManager.I.LoadMonManager();
         NpcManager.I.LoadNpcManager();
         QuestManager.I.LoadQuestManager();
@@ -525,6 +525,20 @@ public class GsManager : AutoSingleton<GsManager>
     // private void 
     #endregion
 
+    #region 스탯 관련
+    public int GetWpRng(int wpType)
+    {
+        switch (wpType)
+        {
+            case 9:
+                return 2;
+            case 10:
+                return 5;
+            default:
+                return 1;
+        }
+    }
+    #endregion
     #region 특성 관리
     private AttTable _attTable;
     public AttTable AttTable => _attTable ?? (_attTable = GameDataManager.GetTable<AttTable>());

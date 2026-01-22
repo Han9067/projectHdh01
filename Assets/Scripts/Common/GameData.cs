@@ -123,6 +123,7 @@ public class PlayerData : ICharData
     public int Crt, CrtRate, Hit, Eva; // 치명타율, 치명타확률, 명중, 회피
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public int QuestMax, TraceQId;
+    public int Rng;
     public List<QuestInstData> QuestList;
     public List<int> QuestClearList;
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
@@ -156,6 +157,7 @@ public class NpcData : ICharData
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
+    public int Rng;
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     #region ICharData
@@ -191,6 +193,7 @@ public class MonData
     public int Att, Def, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public int W, H; // 몬스터 오브젝트 크기
+    public int Rng; // 공격 사거리
     public float SdwScr, GgY; // 몬스터 그림자 스케일, 몬스터 그림자 Y 좌표
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>(); //추후 적용 251109
     public List<DropData> DropList = new List<DropData>();
@@ -238,7 +241,8 @@ public class MonData
             SdwScr = this.SdwScr,
             GgY = this.GgY,
 
-            DropList = this.DropList
+            DropList = this.DropList,
+            Rng = this.Rng
         };
     }
 }

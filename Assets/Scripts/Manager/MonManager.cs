@@ -23,7 +23,7 @@ public class MonManager : AutoSingleton<MonManager>
             MonData mData = CreateMonData(id, mon.Type, mon.Name,
             int.Parse(stat[0]), int.Parse(stat[1]), int.Parse(stat[2]), int.Parse(stat[3]), int.Parse(stat[4]),
             int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]),
-            mon.W, mon.H, mon.SdwScr, mon.GgY, mon.Drop);
+            mon.W, mon.H, mon.Rng, mon.SdwScr, mon.GgY, mon.Drop);
             // mData.GainExp = GsManager.I.GetGainExp(mData.MaxHP, mData.SP, mData.MP, mData.STR, mData.AGI, mData.INT, mData.CHA, mData.LUK);
             MonDataList[id] = mData;
         }
@@ -31,7 +31,7 @@ public class MonManager : AutoSingleton<MonManager>
     //VIT_END_STR_AGI_FOR_INT_CHA_LUK
     private MonData CreateMonData(int id, int monType, string name,
     int VIT, int END, int STR, int AGI, int FOR, int INT, int CHA, int LUK,
-    int w, int h, float sdwScr, float ggY, string drop)
+    int w, int h, int rng, float sdwScr, float ggY, string drop)
     {
         string[] dropArr = drop.Split('/');
         List<MonData.DropData> dList = new List<MonData.DropData>();
@@ -78,6 +78,8 @@ public class MonManager : AutoSingleton<MonManager>
             CrtRate = LUK + AGI,
             Hit = 60 + (AGI / 4),
             Eva = 10 + (AGI / 4),
+
+            Rng = rng,
 
             GainExp = GsManager.I.GetGainExp(hp, sp, mp, STR, AGI, INT, CHA, LUK),
             DropList = dList

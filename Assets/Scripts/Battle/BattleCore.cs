@@ -78,6 +78,9 @@ public class BattleCore : AutoSingleton<BattleCore>
     private float tileOffset = 0.6f, tileItv = 1.2f; // 타일 오프셋, 타일 간격
     float[] mapLimit = new float[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
     public GameObject[,] guide; // 길찾기 가이드 오브젝트
+    [SerializeField] private GameObject rngParent;
+    private List<GameObject> attRng = new List<GameObject>();
+    private Vector2Int attRngPos = new Vector2Int(-200, -200);
 
     [Header("====Player====")]
     [SerializeField] private GameObject pObj;
@@ -131,6 +134,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         MoveCamera(true);
         // FadeIn(); // 페이드인 효과
         isActionable = true;
+        CreateRngObj(8);
     }
     void Update()
     {
@@ -156,11 +160,18 @@ public class BattleCore : AutoSingleton<BattleCore>
             string cName;
             if (gGrid[t.x, t.y].tId == 0)
             {
+                //맨땅
                 cName = "default";
                 if (!GsManager.I.IsCursor(cName)) GsManager.I.SetCursor(cName);
                 if (!focus.activeSelf) focus.SetActive(true);
                 if (focusSrp.color != Color.white) focusSrp.color = Color.white;
                 HideAllOutline();
+                if (attRng[0].activeSelf)
+                {
+                    foreach (var rng in attRng)
+                        rng.SetActive(false);
+                    attRngPos = new Vector2Int(-200, -200);
+                }
             }
             else
             {
@@ -168,14 +179,22 @@ public class BattleCore : AutoSingleton<BattleCore>
                 {
                     cName = "attack";
                     if (focus.activeSelf) focus.SetActive(false);
-                    //추후에 해당 타깃 이미지 주변에 아웃라인 강조를 추가하여 선택중이다라는 느낌을 줄 예정
                     HideAllOutline();
                     ShowOutline(gGrid[t.x, t.y].tId);
+                    //몬스터는 w,h 이 1로 고정이 아니니 항상 왼쪽 상단의 오브젝트 기준을 찾아줘야함
                 }
                 else if (gGrid[t.x, t.y].tId >= 1000)
                 {
                     cName = "default";
                     if (focus.activeSelf) focus.SetActive(false);
+                    if (gGrid[t.x, t.y].tId == 1000)
+                    {
+                        if (attRngPos != t)
+                        {
+                            ShowAttRng(t, 1, 1, player.pData.Rng);
+                            attRngPos = t;
+                        }
+                    }
                     //추후에 해당 타깃 이미지 주변에 아웃라인 강조를 추가하여 선택중이다라는 느낌을 줄 예정
                 }
                 else
@@ -358,6 +377,17 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
     }
+    private void CreateRngObj(int cnt)
+    {
+        int idx = attRng.Count;
+        for (int i = 0; i < cnt; i++)
+        {
+            var rng = Instantiate(ResManager.GetGameObject("RngGrid"), rngParent.transform);
+            rng.name = "Rng_" + (idx + i);
+            rng.SetActive(false);
+            attRng.Add(rng);
+        }
+    }
     #endregion
     Vector2Int FindTilePos(Vector3 worldPos)
     {
@@ -383,6 +413,54 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return result;
     }
+    #region ==== Field Action ====
+    private void ShowAttRng(Vector2Int grid, int w, int h, int cnt)
+    {
+        // 1. 먼저 모든 attRng 비활성화
+        foreach (var rng in attRng)
+            rng.SetActive(false);
+
+        // 2. 대상이 차지하는 영역 계산
+        HashSet<Vector2Int> occupiedArea = new HashSet<Vector2Int>();
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                occupiedArea.Add(new Vector2Int(grid.x + x, grid.y + y));
+            }
+        }
+        // 3. 주변 범위 내의 모든 위치 수집 (대상 영역 제외)
+        List<Vector2Int> rngPos = new List<Vector2Int>();
+
+        // 대상 영역의 경계를 기준으로 cnt 범위 내의 모든 위치 확인
+        for (int x = grid.x - cnt; x < grid.x + w + cnt; x++)
+        {
+            for (int y = grid.y - cnt; y < grid.y + h + cnt; y++)
+            {
+                Vector2Int p = new Vector2Int(x, y);
+
+                // 대상이 차지하는 영역이면 제외
+                if (occupiedArea.Contains(p))
+                    continue;
+
+                // 맵 범위 체크
+                if (x < 0 || x >= mapW || y < 0 || y >= mapH)
+                    continue;
+
+                rngPos.Add(p);
+            }
+        }
+
+        // 4. attRng 리스트의 오브젝트들을 해당 위치에 배치하고 활성화
+        for (int i = 0; i < rngPos.Count; i++)
+        {
+            Vector2Int p = rngPos[i];
+            attRng[i].transform.position = new Vector3(gGrid[p.x, p.y].x, gGrid[p.x, p.y].y, 0);
+            attRng[i].SetActive(true);
+        }
+        attRngPos = grid;
+    }
+    #endregion
     #region ==== Object Action ====
     void OnMovePlayer(Vector2Int t, int state = 0)
     {

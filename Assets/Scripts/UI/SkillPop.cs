@@ -8,20 +8,21 @@ using UnityEngine.UI;
 
 public class SkillPop : UIScreen
 {
-    // public static int curSkIdx = 0;
+    public static int slotLine = -1, slotIdx = -1;
 
     [SerializeField] private Dictionary<int, SkObj> skPsvList = new Dictionary<int, SkObj>(); //passive skill list
     [SerializeField] private Dictionary<int, SkObj> skWpList = new Dictionary<int, SkObj>(); //weapon skill list
     [SerializeField] private Dictionary<int, SkObj> skMgList = new Dictionary<int, SkObj>(); //magic skill list
     [SerializeField] private Slider mSlider;
     [SerializeField] private SelSkObj selSkObj;
-    [SerializeField] private List<SkSlot> skSlots = new List<SkSlot>();
+    [SerializeField] private List<List<SkSlotObj>> skSlots = new List<List<SkSlotObj>>();
     public static bool isActive = false;
     private int curWpIdx = 0, curMgIdx = 0;
     private void Awake()
     {
         Regist();
         RegistButton();
+        InitSkSlot();
     }
     private void Start()
     {
@@ -41,6 +42,8 @@ public class SkillPop : UIScreen
         mGameObject["SkSlots"].SetActive(false);
         mGameObject["SkBlock"].SetActive(false);
         selSkObj.gameObject.SetActive(false);
+        UpdateSkSlot();
+        slotLine = -1; slotIdx = -1; //선택된 스킬 슬롯 초기화(포인터 오버 시 선택된 스킬 슬롯 정보 저장)
     }
 
     private void OnDisable()
@@ -165,6 +168,9 @@ public class SkillPop : UIScreen
                 mGameObject["SkSlots"].SetActive(false);
                 mGameObject["SkBlock"].SetActive(false);
                 selSkObj.gameObject.SetActive(false);
+                //
+                if (slotLine != -1 && slotIdx != -1)
+                    RegiSkSlot(slotLine, slotIdx, data.Get<int>());
                 break;
             case "MoveSelSkObj":
                 selSkObj.transform.position = Input.mousePosition;
@@ -183,6 +189,8 @@ public class SkillPop : UIScreen
         mSlider.value = 0;
         mSlider.gameObject.SetActive(false);
         CheckPsvSk();
+        CheckWpSk();
+        CheckMgSk();
     }
 
     private void CheckPsvSk()
@@ -197,8 +205,6 @@ public class SkillPop : UIScreen
                 else
                     UpdateSkObj(v.Key, 0);
             }
-            else
-                break;
         }
         ArrangeSkObj(skPsvList);
     }
@@ -207,7 +213,27 @@ public class SkillPop : UIScreen
         var mySk = PlayerManager.I.pData.SkList;
         foreach (var v in mySk)
         {
-
+            if (v.Value.SkType > 0 && v.Value.SkType < 21)
+            {
+                if (!skWpList.ContainsKey(v.Key))
+                    CreateSkObj(v.Key, mGameObject["WpMain"].transform, v.Value.SkType);
+                else
+                    UpdateSkObj(v.Key, v.Value.SkType);
+            }
+        }
+    }
+    private void CheckMgSk()
+    {
+        var mySk = PlayerManager.I.pData.SkList;
+        foreach (var v in mySk)
+        {
+            if (v.Value.SkType >= 21)
+            {
+                if (!skMgList.ContainsKey(v.Key))
+                    CreateSkObj(v.Key, mGameObject["MgMain"].transform, v.Value.SkType);
+                else
+                    UpdateSkObj(v.Key, v.Value.SkType);
+            }
         }
     }
     private void CreateSkObj(int skId, Transform parent, int type)
@@ -315,5 +341,61 @@ public class SkillPop : UIScreen
         }
     }
 
+    private void InitSkSlot()
+    {
+        skSlots.Clear();
+        for (int i = 1; i <= 4; i++)
+        {
+            string slotGroupName = "SkSlots" + i;
+            if (mGameObject.ContainsKey(slotGroupName))
+            {
+                SkSlotObj[] slots = mGameObject[slotGroupName].GetComponentsInChildren<SkSlotObj>();
+                skSlots.Add(new List<SkSlotObj>(slots));
+            }
+        }
+    }
+
+    private void UpdateSkSlot()
+    {
+        var mySkSlots = PlayerManager.I.pSkSlots;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < mySkSlots[i].Count; j++)
+            {
+                if (mySkSlots[i][j] == 0) continue;
+                SkData data = PlayerManager.I.pData.SkList[mySkSlots[i][j]];
+                skSlots[i][j].SetSkSlot(data.SkId, data.SkType, data.UseType);
+            }
+        }
+    }
+
+    private void RegiSkSlot(int line, int idx, int skId)
+    {
+        SearchRegiSkSlot(skId); //이미 등록된 동일 스킬 슬롯이 있으면 제거
+        SkData data = PlayerManager.I.pData.SkList[skId];
+        skSlots[line][idx].SetSkSlot(data.SkId, data.SkType, data.UseType);
+        PlayerManager.I.pSkSlots[line][idx] = skId;
+        if (GsManager.gameState == GameState.Battle)
+            Presenter.Send("BattleMainUI", "UpdateSkSlot");
+    }
+    private void SearchRegiSkSlot(int skId)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < PlayerManager.I.pSkSlots[i].Count; j++)
+            {
+                if (PlayerManager.I.pSkSlots[i][j] == skId)
+                {
+                    RemoveSkSlot(i, j);
+                    break;
+                }
+            }
+        }
+    }
+    public void RemoveSkSlot(int line, int idx)
+    {
+        PlayerManager.I.pSkSlots[line][idx] = 0;
+        skSlots[line][idx].SetSkSlot(0, 0, 0);
+    }
     public override void Refresh() { }
 }

@@ -54,6 +54,6 @@ public class SkObj : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDr
     public void OnEndDrag(PointerEventData eventData)
     {
         if (data.SkType == 0) return;
-        Presenter.Send("SkillPop", "EndDragSk");
+        Presenter.Send("SkillPop", "EndDragSk", data.SkId);
     }
 }
