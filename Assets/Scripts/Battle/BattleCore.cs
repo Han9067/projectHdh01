@@ -85,7 +85,6 @@ public class BattleCore : AutoSingleton<BattleCore>
     [Header("====Player====")]
     [SerializeField] private GameObject pObj;
     public GameObject focus, propParent; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
-
     private SpriteRenderer focusSrp;
     private bPlayer player; //플레이어
     private bool isActionable = false, isMove = false; // 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부
@@ -105,6 +104,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public Dictionary<string, List<SkEffObj>> effList = new Dictionary<string, List<SkEffObj>>();
     [Header("====Projectile====")]
     public GameObject projParent;
+    public List<GameObject> projObj = new List<GameObject>();
     [Header("====Common====")]
     [SerializeField] private int objId;
     [SerializeField] private int curSelObjId = 0;
@@ -243,7 +243,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                     Presenter.Send("SelectPop", "SetList", 2);
                 }
             }
-
         }
         if (isMove)
             MoveCamera(false);
@@ -479,6 +478,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     case BtObjState.READY:
                         isMove = false;
                         isActionable = true;
+                        Debug.Log("READY");
                         return;
                     case BtObjState.IDLE:
                         break;
@@ -506,8 +506,28 @@ public class BattleCore : AutoSingleton<BattleCore>
                         }));
                         break;
                     case BtObjState.ATTACK:
-                        Debug.Log("AttType: " + player.pData.AtkType);
-                        StartCoroutine(AttackObjWithMelee(pObj, BtObjType.PLAYER, 1000, ot.tgId));
+                        switch (player.pData.AtkType)
+                        {
+                            case 0:
+                                AttObjWithMelee(pObj, BtObjType.PLAYER, 1000, ot.tgId);
+                                break;
+                            case 1:
+                                if (player.pData.EqSlot["Hand2"] == null)
+                                {
+                                    Presenter.Send("BattleMainUI", "ShowToastPopup", "Tst_NotAmmo");
+                                    return;
+                                }
+                                AttObjWithRanged(player.bodyObj, BtObjType.PLAYER, 1000, ot.tgId,
+                                    player.pData.EqSlot["Hand2"] == null ? 0 : player.pData.EqSlot["Hand2"].ItemId);
+                                player.pData.EqSlot["Hand2"].Dur -= 1;
+                                if (player.pData.EqSlot["Hand2"].Dur <= 0)
+                                {
+                                    PlayerManager.I.pData.Inven.Remove(player.pData.EqSlot["Hand2"]);
+                                    player.pData.EqSlot["Hand2"] = null;
+                                }
+                                break;
+                        }
+                        isActionable = false;
                         ot.state = BtObjState.READY;
                         break;
                 }
@@ -527,7 +547,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                         // Dictionary 중복 접근 최적화
                         var monData = mData[mId];
                         if (GetAttackTarget(ot.tgId, ot.pos, monData.Rng, monData.w, monData.h))
-                            StartCoroutine(AttackObjWithMelee(mObj[mId], BtObjType.MONSTER, mId, ot.tgId));
+                        {
+                            AttObjWithMelee(mObj[mId], BtObjType.MONSTER, mId, ot.tgId);
+                        }
                         else
                         {
                             //추적 시작
@@ -617,7 +639,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         TurnAction();
     }
 
-    void TrackMon(TurnData data, int mId, float ct)
+    private void TrackMon(TurnData data, int mId, float ct)
     {
         data.isAction = true; //행동 시작
         if (data.tgId == 1000)
@@ -648,83 +670,102 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
     }
-    IEnumerator AttackObjWithMelee(GameObject myObj, BtObjType myType, int myId, int tgId)
+    private void AttObjWithMelee(GameObject myObj, BtObjType myType, int myId, int tgId)
     {
         var tgType = GetObjType(tgId);
-        if (tgType == BtObjType.NONE) yield break;
+        if (tgType == BtObjType.NONE) return; //토스트 메세지로 적이 없습니다 식으로 예외처리
         var myPos = myObj.transform.position;
-        Vector3 tgPos = Vector3.zero;
-        switch (tgType)
-        {
-            case BtObjType.PLAYER:
-                tgPos = pObj.transform.position;
-                break;
-            case BtObjType.MONSTER:
-                tgPos = mObj[tgId].transform.position;
-                break;
-        }
-
+        Vector3 tgPos = GetTgPos(tgType, tgId);
+        if (tgPos == Vector3.zero) return;
         Vector3 midPoint = GetMidPoint(myPos, tgPos);
         Sequence sequence = DOTween.Sequence();
         sequence.Append(myObj.transform.DOMove(midPoint, 0.05f)
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
-                SetObjDir(myId, myPos.x, tgPos.x); //현재 오브젝트가 타겟을 바라보도록
-                SetObjDir(tgId, tgPos.x, myPos.x); //타겟 오브젝트가 현재 오브젝트를 바라보도록
-                switch (myType)
-                {
-                    case BtObjType.PLAYER: //플레이어가 타겟에게 행동
-                        switch (tgType)
-                        {
-                            case BtObjType.MONSTER:
-                                mData[tgId].OnDamaged(player.pData.Att, mData[tgId].crt, mData[tgId].crtRate, BtFaction.ALLY);
-                                ShowEff("N_Att", tgPos, myObj.transform.localScale.x);
-                                break;
-                            case BtObjType.NPC:
-                                break;
-                        }
-                        break;
-                    case BtObjType.MONSTER: //몬스터가 타겟에게 행동
-                        switch (tgType)
-                        {
-                            case BtObjType.PLAYER:
-                                player.OnDamaged(mData[myId].att, mData[myId].crt, mData[myId].crtRate);
-                                ShowEff("N_Att", tgPos, myObj.transform.localScale.x);
-                                break;
-                            case BtObjType.MONSTER:
-                                break;
-                            case BtObjType.NPC:
-                                break;
-                        }
-                        break;
-                    case BtObjType.NPC: //NPC가 타겟에게 행동
-                        switch (tgType)
-                        {
-                            case BtObjType.PLAYER:
-                                break;
-                            case BtObjType.MONSTER:
-                                break;
-                            case BtObjType.NPC:
-                                break;
-                        }
-                        break;
-                }
+                CompAttackAction(myId, myType, tgId, tgType, myPos, tgPos, "N_Att");
             }));
         sequence.Append(myObj.transform.DOMove(myPos, 0.05f)
             .SetEase(Ease.InQuad));
         sequence.Play();
-
-        yield return new WaitForSeconds(0.3f);
-        TurnAction();
     }
-    Vector3 GetMidPoint(Vector3 myPos, Vector3 tgPos)
+    private void AttObjWithRanged(GameObject bodyObj, BtObjType myType, int myId, int tgId, int projId)
+    {
+        var tgType = GetObjType(tgId);
+        if (tgType == BtObjType.NONE) return;
+        Vector3 tgPos = GetTgPos(tgType, tgId);
+        if (tgPos == Vector3.zero) return;
+        tgPos += new Vector3(0, 0.5f, 0);
+        var sPos = bodyObj.transform.position +
+        (bodyObj.transform.localScale.x > 0 ? new Vector3(-0.5f, 0.5f, 0) : new Vector3(0.5f, 0.5f, 0)); // 시작 위치
+        var proj = GetProjObj();
+        proj.transform.position = sPos;
+
+        float dist = Vector3.Distance(sPos, tgPos);
+        float dur = Mathf.Clamp(dist / 20f, 0.05f, 0.4f);
+        float minDistForArc = 1.5f;
+        float h = (dist > minDistForArc)
+            ? Mathf.Clamp((dist - minDistForArc) * 0.3f, 0f, 2.5f)
+            : 0f;
+
+        Vector3 start = sPos;
+        Vector3 end = tgPos;
+        // ---- 수식 포물선: 위치 = 직선 보간 + 4*h*t*(1-t), 접선 = (end-start) + (0, 4h(1-2t), 0) ----
+        DOTween.To(() => 0f, t =>
+        {
+            // 위치
+            Vector3 pos = Vector3.Lerp(start, end, t) + new Vector3(0, 4f * h * t * (1f - t), 0);
+            proj.transform.position = pos;
+
+            // 진행 방향(접선) → 스프라이트가 위를 향함: Atan2 - 90°
+            Vector3 tangent = (end - start) + new Vector3(0, 4f * h * (1f - 2f * t), 0);
+            if (tangent.sqrMagnitude > 0.0001f)
+            {
+                tangent.Normalize();
+                float angle = Mathf.Atan2(tangent.y, tangent.x) * Mathf.Rad2Deg - 90f;
+                proj.transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
+        }, 1f, dur)
+        .SetEase(Ease.Linear)
+        .OnComplete(() =>
+        {
+            proj.SetActive(false);
+            CompAttackAction(myId, myType, tgId, tgType, sPos, tgPos, "N_Att");
+        });
+    }
+    private Vector3 GetTgPos(BtObjType tgType, int tgId)
+    {
+        switch (tgType)
+        {
+            case BtObjType.PLAYER:
+                return player.bodyObj.transform.position;
+            case BtObjType.MONSTER:
+                return mData[tgId].bodyObj.transform.position;
+            default:
+                return Vector3.zero;
+        }
+    }
+    private Vector3 GetMidPoint(Vector3 myPos, Vector3 tgPos)
     {
         Vector3 dir = (tgPos - myPos).normalized;
         float dist = Vector3.Distance(myPos, tgPos);
         return myPos + (dir * (dist * 0.1f));
     }
-    int SearchNearbyAiObj(Vector2Int pos, BtFaction faction)
+    private GameObject GetProjObj()
+    {
+        foreach (var t in projObj)
+        {
+            if (!t.gameObject.activeSelf)
+            {
+                t.gameObject.SetActive(true);
+                return t;
+            }
+        }
+        var obj = Instantiate(ResManager.GetGameObject("ProjObj"), projParent.transform);
+        projObj.Add(obj);
+        return obj;
+    }
+    private int SearchNearbyAiObj(Vector2Int pos, BtFaction faction)
     {
         int oId = 0;
         float minDist = float.MaxValue;
@@ -743,7 +784,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return oId;
     }
-    BtObjType GetObjType(int objId)
+    private BtObjType GetObjType(int objId)
     {
         foreach (var t in objTurn)
         {
@@ -752,6 +793,51 @@ public class BattleCore : AutoSingleton<BattleCore>
                 return t.type;
         }
         return BtObjType.NONE;
+    }
+    private void CompAttackAction(int myId, BtObjType myType, int tgId,
+    BtObjType tgType, Vector3 myPos, Vector3 tgPos, string effKey)
+    {
+        SetObjDir(myId, myPos.x, tgPos.x); //현재 오브젝트가 타겟을 바라보도록
+        SetObjDir(tgId, tgPos.x, myPos.x); //타겟 오브젝트가 현재 오브젝트를 바라보도록
+        switch (myType)
+        {
+            case BtObjType.PLAYER: //플레이어가 타겟에게 행동
+                switch (tgType)
+                {
+                    case BtObjType.MONSTER:
+                        mData[tgId].OnDamaged(player.pData.Att, mData[tgId].crt, mData[tgId].crtRate, BtFaction.ALLY);
+                        ShowEff(effKey, tgPos, player.bodyObj.transform.localScale.x, () => { TurnAction(); });
+                        break;
+                    case BtObjType.NPC:
+                        break;
+                }
+                break;
+            case BtObjType.MONSTER: //몬스터가 타겟에게 행동
+                switch (tgType)
+                {
+                    case BtObjType.PLAYER:
+                        player.OnDamaged(mData[myId].att, mData[myId].crt, mData[myId].crtRate);
+                        ShowEff(effKey, tgPos, mData[myId].bodyObj.transform.localScale.x);
+                        TurnAction();
+                        break;
+                    case BtObjType.MONSTER:
+                        break;
+                    case BtObjType.NPC:
+                        break;
+                }
+                break;
+            case BtObjType.NPC: //NPC가 타겟에게 행동
+                switch (tgType)
+                {
+                    case BtObjType.PLAYER:
+                        break;
+                    case BtObjType.MONSTER:
+                        break;
+                    case BtObjType.NPC:
+                        break;
+                }
+                break;
+        }
     }
     public void DeathObj(int objId, BtFaction attacker)
     {
@@ -818,13 +904,18 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     #endregion
     #region ==== 애니메이션 ====
-    public void ShowEff(string effName, Vector3 pos, float dir)
+    public void ShowEff(string effName, Vector3 pos, float dir, Action call = null)
     {
         var eff = GetEffIdx(effName);
         if (eff != null)
         {
             eff.transform.position = pos;
             eff.transform.localScale = new Vector3(dir, 1, 1);
+            eff.anim.EndEvent.RemoveAllListeners();
+            eff.anim.EndEvent.AddListener(() =>
+            {
+                if (call != null) call();
+            });
             eff.anim.Play();
         }
         else
@@ -836,6 +927,11 @@ public class BattleCore : AutoSingleton<BattleCore>
             effList[effName].Add(eff);
             eff.transform.position = pos;
             eff.transform.localScale = new Vector3(dir, 1, 1);
+            eff.anim.EndEvent.RemoveAllListeners();
+            eff.anim.EndEvent.AddListener(() =>
+            {
+                if (call != null) call();
+            });
             eff.anim.Play();
         }
     }

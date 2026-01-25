@@ -57,6 +57,8 @@ public class InvenPop : UIScreen
         if (SkillPop.isActive)
             UIManager.ClosePopup("SkillPop");
         if (GsManager.gameState == GameState.World) GsManager.I.InitCursor();
+        if (isLoadInven)
+            UpdateMyInven();
     }
     private void OnDisable()
     {
@@ -823,6 +825,26 @@ public class InvenPop : UIScreen
                 Destroy(itemList[i].gameObject);
                 itemList.RemoveAt(i);
             }
+        }
+    }
+    private void UpdateMyInven()
+    {
+        for (int i = itemList.Count - 1; i >= 0; i--)
+        {
+            if (itemList[i].iType != 0) continue;
+
+            ItemData found = PlayerManager.I.pData.Inven.Find(id => id.Uid == itemList[i].uid);
+            if (found != null) continue;
+
+            if (itemList[i].x >= 0 && itemList[i].y >= 0)
+                InitItemGrid(0, itemList[i].x, itemList[i].y, itemList[i].itemData.W, itemList[i].itemData.H);
+            Destroy(itemList[i].gameObject);
+            itemList.RemoveAt(i);
+        }
+        if (PlayerManager.I.pData.EqSlot["Hand2"] != null && PlayerManager.I.pData.EqSlot["Hand2"].Type == 12)
+        {
+            ItemObj itemObj = GetItemObj(PlayerManager.I.pData.EqSlot["Hand2"].Uid);
+            itemObj.UpdateDurTxt();
         }
     }
     public override void Refresh() { }
