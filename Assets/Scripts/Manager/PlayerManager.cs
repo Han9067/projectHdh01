@@ -147,23 +147,19 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Nose = 1; pData.Mouth = 1;
         pData.Hair = 1; pData.HairColor = 1;
 
-        // ItemManager.I.CreateInvenItem(30001, -1, -1); //옷, 장착 아이템은 -1, -1로 설정
-        // ItemManager.I.CreateInvenItem(32001, -1, -1); //무기
-        ItemManager.I.CreateInvenItem(46001, -1, -1); //무기
+        // ItemManager.I.CreateInvenItem(46001, -1, -1); //무기
+        ItemManager.I.CreateInvenItem(48001, -1, -1); //활
         ItemManager.I.CreateInvenItem(10001, -1, -1); //옷
+        ItemManager.I.CreateInvenItem(52001, -1, -1); //화살
         pData.EqSlot["Hand1"] = pData.Inven[0]; // 손1
         pData.EqSlot["Armor"] = pData.Inven[1]; // 갑옷
-        ItemManager.I.CreateInvenItem(60001, 0, 0); //물약
-        // ItemManager.I.CreateInvenItem(65001, 0, 1);
-        // ItemManager.I.CreateInvenItem(32001, 3, 0); //무기
-        ItemManager.I.CreateInvenItem(60101, 1, 0); //스킬북
-        ItemManager.I.CreateInvenItem(42001, 3, 1); //지팡이
-        ItemManager.I.CreateInvenItem(46001, 4, 1); //창
-        ItemManager.I.CreateInvenItem(48001, 5, 1); //활
-        // ItemManager.I.CreateInvenItem(65001, 3, 1); //슬라임 젤
-        // ItemManager.I.CreateInvenItem(65001, 4, 2);
-        // ItemManager.I.CreateInvenItem(65001, 5, 2);
-        // ItemManager.I.CreateInvenItem(65001, 6, 2);
+        pData.EqSlot["Hand2"] = pData.Inven[2]; // 손2
+        // ItemManager.I.CreateInvenItem(60001, 0, 0); //물약
+        // ItemManager.I.CreateInvenItem(60101, 1, 0); //스킬북
+        // ItemManager.I.CreateInvenItem(42001, 3, 1); //지팡이
+        // ItemManager.I.CreateInvenItem(48001, 2, 1); //활
+        ItemManager.I.CreateInvenItem(52001, 3, 1);
+
         CalcPlayerStat();
         pData.HP = pData.MaxHP;
         pData.MP = pData.MaxMP;
@@ -208,18 +204,19 @@ public class PlayerManager : AutoSingleton<PlayerManager>
                 {
                     case "Hand1":
                     case "Hand2":
-                        pData.Att += pData.EqSlot[e].Att[13]; // 공격력
+                        pData.Att += pData.EqSlot[e].Att[2]; // 공격력
                         break;
                     case "Necklace":
                     case "Ring1":
                     case "Ring2":
                         break;
                     default:
-                        pData.Def += pData.EqSlot[e].Att[12]; // 방어력
+                        pData.Def += pData.EqSlot[e].Att[1]; // 방어력
                         break;
                 }
             }
         }
+        pData.AtkType = pData.EqSlot["Hand1"] != null && pData.EqSlot["Hand1"].Hand == 2 ? 1 : 0;
     }
     public void ClearMainQst(int qid)
     {

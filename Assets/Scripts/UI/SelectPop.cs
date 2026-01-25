@@ -76,6 +76,9 @@ public class SelectPop : UIScreen
                         //기타 아이템
                         selList[5].SetActive(true); //버리기
                         break;
+                    case 9:
+                        selList[9].SetActive(true); //화살 및 탄약 아이템 수량 나누기용
+                        break;
                     case 101:
                         //월드맵 -> 숲지역에서 사냥
                         selList[6].SetActive(true);
@@ -96,19 +99,23 @@ public class SelectPop : UIScreen
                 selItem = data.Get<ItemData>();
                 break;
             case "OnBuy":
-                if (PlayerManager.I.pData.Crown < selItem.Price)
+                int buyPrice = ItemManager.I.GetItemPrice(selItem.Price, selItem.Dur, selItem.MaxDur);
+                if (PlayerManager.I.pData.Crown < buyPrice)
                 {
                     Debug.Log("돈이 부족합니다.");
                     return;
                 }
-                PlayerManager.I.pData.Crown -= selItem.Price;
+                ItemData cloneItem = selItem.Clone();
+                cloneItem.Dur = selItem.Dur; cloneItem.MaxDur = selItem.MaxDur;
+                PlayerManager.I.pData.Crown -= buyPrice;
                 Presenter.Send("WorldMainUI", "UpdateCrownTxt");
-                Presenter.Send("InvenPop", "AddItem", selItem);
+                Presenter.Send("InvenPop", "AddItem", cloneItem);
                 Presenter.Send("CityEnterPop", "AddNpcRls", 2); //호감도
                 Close();
                 break;
             case "OnSell":
-                PlayerManager.I.pData.Crown += (int)(selItem.Price * 0.6);
+                int sellPrice = ItemManager.I.GetItemPrice(selItem.Price, selItem.Dur, selItem.MaxDur);
+                PlayerManager.I.pData.Crown += sellPrice;
                 Presenter.Send("WorldMainUI", "UpdateCrownTxt");
                 Presenter.Send("InvenPop", "DeleteItem", selItem.Uid);
                 Presenter.Send("CityEnterPop", "AddNpcRls", 2); //호감도

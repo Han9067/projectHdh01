@@ -103,9 +103,32 @@ public class InvenPop : UIScreen
                 break;
             case "AddItem":
                 ItemData item = data.Get<ItemData>(); //아이템 데이터 가져오기
+                if (item.Type == 12)
+                {
+                    foreach (var v in itemList)
+                    {
+                        if (v.iType == 0 && v.itemData.Type == 12 && v.itemData.Dur < v.itemData.MaxDur)
+                        {
+                            int remain = v.itemData.MaxDur - v.itemData.Dur;
+                            if (remain >= item.Dur)
+                            {
+                                v.itemData.Dur += item.Dur;
+                                v.UpdateDurTxt();
+                                return;
+                            }
+                            else
+                            {
+                                item.Dur -= remain;
+                                v.itemData.Dur = v.itemData.MaxDur;
+                                v.UpdateDurTxt();
+                                if (item.Dur <= 0) return;
+                            }
+                        }
+                    }
+                }
                 Vector2Int pos = GetEmptyPos(0, item.W, item.H); //플레이어 인벤에 빈 공간 찾기
-                ItemManager.I.CreateInvenItem(item.ItemId, pos.x, pos.y); //플레이어 인벤토리에 아이템 추가
-                PlaceInvenItem(pos.x, pos.y, item.W, item.H, item, false); //플레이어 인벤토리에 아이템 실체화
+                ItemManager.I.CreateInvenItem(item, pos.x, pos.y); //플레이어 인벤토리에 아이템 추가
+                PlaceInvenItem(pos.x, pos.y, item.W, item.H, item, false); //플레이어 인벤토리에 아이템 실체화   
                 break;
             case "ResetAllGrids":
                 ResetAllGrids();
@@ -485,7 +508,7 @@ public class InvenPop : UIScreen
             case "Hand1":
             case "Hand2":
                 StateSubWp(false); //양손 착용시 활성화되는 서브 이미지 초기화 및 비활성화
-                bool one = itemObj.itemData.Hand == 0; //해당 무기가 한손무기인지 양손무기인지 체크
+                bool one = itemObj.itemData.Hand != 1; //해당 무기가 한손무기인지 양손무기인지 체크
                 if (myEqSlots["Hand1"] != null && myEqSlots["Hand1"].Hand == 1)
                 {
                     //양손 무기 착용중 (양손무기는 무조건 손1에만 적용)
@@ -507,7 +530,15 @@ public class InvenPop : UIScreen
                 else
                 {
                     if (one)
+                    {
+                        if (myEqSlots["Hand2"].Hand == 3 && itemObj.itemData.Hand == 2)
+                        {
+                            //Hand2에 화살타입이 있는데 장착 대상이 활인 경우 eqState = 0으로 돌려서 활을 장착시키게한다
+                            eqState = 0;
+                            break;
+                        }
                         eqState = 1;
+                    }
                     else
                     {
                         revSlot = myEqSlots[eq == "Hand1" ? "Hand2" : "Hand1"];//반대쪽 슬롯의 정보
@@ -532,6 +563,7 @@ public class InvenPop : UIScreen
         switch (eqState)
         {
             case 0:
+                if (itemObj.itemData.Hand == 2) eq = "Hand1";
                 eqSlots[eq].StateMain(false);
                 PlaceEqItem(eq, itemObj);
                 break;
@@ -548,6 +580,12 @@ public class InvenPop : UIScreen
                     case 2: //착용된 양손 무기 빼고 한손 무기 착용
                         int uid2 = myEqSlots["Hand1"].Uid;
                         PlayerManager.I.TakeoffEq("Hand1");
+                        if (itemObj.itemData.Hand == 2)
+                        {
+                            eq = "Hand1";
+                            oEq = "Hand2";
+                            eqSlots[eq].StateMain(false);
+                        }
                         eqSlots[oEq].StateMain(true);
                         PlaceEqItem(eq, itemObj);
                         SelectItemObj(uid2, true);

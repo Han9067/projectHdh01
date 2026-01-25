@@ -80,6 +80,7 @@ public class MonManager : AutoSingleton<MonManager>
             Eva = 10 + (AGI / 4),
 
             Rng = rng,
+            AtkType = 0,
 
             GainExp = GsManager.I.GetGainExp(hp, sp, mp, STR, AGI, INT, CHA, LUK),
             DropList = dList

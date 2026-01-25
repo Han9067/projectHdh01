@@ -64,6 +64,13 @@ public class ItemManager : AutoSingleton<ItemManager>
         //추후에는 특수능력 또는 추가 능력치 붙는 아이템에 대한 대응도 해야함.
         //고민중인건 매개변수에 배열을 두개 넣어서 한개는 능력치 값 id를 넣고 다른 하나는 능력치의 값을 적용할까함
     }
+    public void CreateInvenItem(ItemData item, int x, int y)
+    {
+        item.X = x;
+        item.Y = y;
+        item.Uid = GetUid();
+        PlayerManager.I.pData.Inven.Add(item);
+    }
     public static int GetGradeIndex(int gradeValue)
     {
         // 0~99로 클램프
@@ -207,6 +214,11 @@ public class ItemManager : AutoSingleton<ItemManager>
 
         UIManager.ShowPopup("InvenPop");
         Presenter.Send("InvenPop", "OpenRwdPop");
+    }
+    public int GetItemPrice(int price, int curDur, int maxDur)
+    {
+        float per = (float)curDur / maxDur;
+        return (int)(price * per);
     }
     public int GetUid()
     {

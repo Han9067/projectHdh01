@@ -83,18 +83,19 @@ public class NpcManager : AutoSingleton<NpcManager>
                 {
                     case "Hand1":
                     case "Hand2":
-                        npcData.Att += npcData.EqSlot[e].Att[13]; // 공격력
+                        npcData.Att += npcData.EqSlot[e].Att[2]; // 공격력
                         break;
                     case "Necklace":
                     case "Ring1":
                     case "Ring2":
                         break;
                     default:
-                        npcData.Def += npcData.EqSlot[e].Att[12]; // 방어력
+                        npcData.Def += npcData.EqSlot[e].Att[1]; // 방어력
                         break;
                 }
             }
         }
+        npcData.AtkType = npcData.EqSlot["Hand1"] != null && npcData.EqSlot["Hand1"].Hand == 2 ? 1 : 0;
     }
     public void AddNpcRls(int npcId, int val)
     {

@@ -103,6 +103,8 @@ public class BattleCore : AutoSingleton<BattleCore>
     [Header("====Effect====")]
     public GameObject effParent;
     public Dictionary<string, List<SkEffObj>> effList = new Dictionary<string, List<SkEffObj>>();
+    [Header("====Projectile====")]
+    public GameObject projParent;
     [Header("====Common====")]
     [SerializeField] private int objId;
     [SerializeField] private int curSelObjId = 0;
@@ -504,6 +506,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         }));
                         break;
                     case BtObjState.ATTACK:
+                        Debug.Log("AttType: " + player.pData.AtkType);
                         StartCoroutine(AttackObjWithMelee(pObj, BtObjType.PLAYER, 1000, ot.tgId));
                         ot.state = BtObjState.READY;
                         break;

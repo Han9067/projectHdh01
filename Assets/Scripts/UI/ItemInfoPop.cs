@@ -59,7 +59,10 @@ public class ItemInfoPop : UIScreen
                 }
                 if (itemData.ItemId < 60000)
                 {
-                    stat += $"\n{LocalizationManager.GetValue("Durability")} : {itemData.Dur}/{itemData.MaxDur}";
+                    if (itemData.Type != 12)
+                        stat += $"\n{LocalizationManager.GetValue("Durability")} : {itemData.Dur}/{itemData.MaxDur}";
+                    else
+                        stat += $"\n{LocalizationManager.GetValue("Quantity")} : {itemData.Dur}/{itemData.MaxDur}";
                     h1 += 30;
                 }
                 tot += h1;
@@ -71,11 +74,8 @@ public class ItemInfoPop : UIScreen
                 mGameObject["Crown"].SetActive(ShopInvenPop.isActive);
                 if (ShopInvenPop.isActive)
                 {
-                    int price;
-                    if (iType == 10)
-                        price = itemData.Price;
-                    else
-                        price = (int)(itemData.Price * 0.6);
+                    int price = ItemManager.I.GetItemPrice(itemData.Price, itemData.Dur, itemData.MaxDur);
+                    if (iType != 10) price = (int)(price * 0.6);
                     mTMPText["CrownVal"].text = price.ToString();
                 }
                 break;

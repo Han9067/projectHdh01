@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using GB;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
-
+using TMPro;
 public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public int iType; //item type -> 팝업에 따라 해당 타입이 바뀜. 0: 유저 인벤, 1: 상점 인벤
@@ -13,12 +13,18 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
     [SerializeField] private Image bg, main;
     private float bgAlpha = 1f;
     private Color bgColor;
+    [SerializeField] private TextMeshProUGUI cntTxt;
     // Start is called before the first frame update
     void Start()
     {
         main.sprite = ResManager.GetSprite(itemData.Res);
         bgColor = ColorData.GetItemGradeColor(itemData.Grade);
         bg.color = new Color(bgColor.r, bgColor.g, bgColor.b, bgAlpha);
+        if (itemData.Type == 12)
+        {
+            cntTxt.gameObject.SetActive(true);
+            cntTxt.text = itemData.Dur.ToString();
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -117,5 +123,9 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
     public string GetItemRes()
     {
         return itemData.Res;
+    }
+    public void UpdateDurTxt()
+    {
+        cntTxt.text = itemData.Dur.ToString();
     }
 }

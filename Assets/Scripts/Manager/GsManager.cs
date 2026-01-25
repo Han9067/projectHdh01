@@ -317,6 +317,7 @@ public class GsManager : AutoSingleton<GsManager>
         }
         if (eq["Hand2"] != null)
         {
+            if (eq["Hand2"].Hand == 3) return;
             mGameObj["OneWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand2"].ItemId.ToString());
             mGameObj["OneWp2"].SetActive(true);
         }
@@ -455,6 +456,7 @@ public class GsManager : AutoSingleton<GsManager>
         //손1 체크
         if (slot["Hand1"] != null)
         {
+            Debug.Log("Hand1: " + slot["Hand1"].Hand);
             //손1 착용 상태
             int hand1 = slot["Hand1"].Hand;
             switch (hand1)
@@ -482,6 +484,11 @@ public class GsManager : AutoSingleton<GsManager>
                             break;
                     }
                     break; //양손무기, 창
+                case 2:
+                    wpState = 3;
+                    ptSpr[PtType.OneWp3].gameObject.SetActive(true);
+                    ptSpr[PtType.OneWp3].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
+                    break;
             }
         }
         //손1에 양손무기가 있을경우 스킵하기 위한 조건문
@@ -522,7 +529,6 @@ public class GsManager : AutoSingleton<GsManager>
             ptSpr[PtType.EqBody].gameObject.SetActive(true);
         }
     }
-    // private void 
     #endregion
 
     #region 스탯 관련
