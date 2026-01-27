@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GB;
-using UnityEditor;
 using UnityEngine.Rendering;
 
 public class bPlayer : MonoBehaviour
@@ -30,10 +28,8 @@ public class bPlayer : MonoBehaviour
     {
         bodyObj.transform.localScale = new Vector3(dir, 1, 1);
     }
-    public void OnDamaged(int att, int crt, int crtRate)
+    public void OnDamaged(int dmg)
     {
-        // Debug.Log("OnDamaged: " + att + " " + crt + " " + crtRate);
-        int dmg = GsManager.I.GetDamage(att, pData.Def);
         pData.HP -= dmg;
         if (pData.HP <= 0)
         {
@@ -42,7 +38,6 @@ public class bPlayer : MonoBehaviour
         }
         Presenter.Send("BattleMainUI", "GetPlayerHp");
         BattleCore.I.ShowBloodScreen();
-        BattleCore.I.ShowDmgTxt(dmg, transform.position); // 데미지 텍스트 표시
     }
     #region ==== 🎨 ORDERING IN LAYER ====
     public void SetObjLayer(int y)
@@ -50,20 +45,4 @@ public class bPlayer : MonoBehaviour
         sGrp.sortingOrder = y;
     }
     #endregion
-}
-
-[CustomEditor(typeof(bPlayer))]
-public class bPlayerEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
-
-        bPlayer myScript = (bPlayer)target;
-
-        if (GUILayout.Button("체력 차감"))
-        {
-            myScript.OnDamaged(2, 0, 0);
-        }
-    }
 }

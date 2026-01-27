@@ -64,10 +64,8 @@ public class bMonster : MonoBehaviour
     {
         sGrp.sortingOrder = y;
     }
-    public void OnDamaged(int att, int crt, int crtRate, BtFaction attacker)
+    public void OnDamaged(int dmg, BtFaction attacker)
     {
-        Debug.Log("OnDamaged: " + att + " " + crt + " " + crtRate);
-        int dmg = GsManager.I.GetDamage(att, def);
         hp -= dmg;
         if (hp > 0 && !isGG)
         {
@@ -79,8 +77,6 @@ public class bMonster : MonoBehaviour
             StartCoroutine(DeathMon(attacker));
         else
             ggObj.transform.localScale = new Vector3(hp / maxHp, 1, 1);
-        //텍스트 연출
-        BattleCore.I.ShowDmgTxt(dmg, transform.position); // 데미지 텍스트 표시
     }
     private IEnumerator DeathMon(BtFaction attacker)
     {

@@ -16,4 +16,8 @@ public class RngGrid : MonoBehaviour
         xx = x2;
         yy = y2;
     }
+    public bool IsSkAvailable()
+    {
+        return spr.color == Color.green;
+    }
 }
