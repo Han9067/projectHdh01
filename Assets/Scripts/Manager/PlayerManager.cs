@@ -147,14 +147,13 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Nose = 1; pData.Mouth = 1;
         pData.Hair = 1; pData.HairColor = 1;
 
-        // ItemManager.I.CreateInvenItem(32001, -1, -1); //무기
-        ItemManager.I.CreateInvenItem(48001, -1, -1); //활
+        ItemManager.I.CreateInvenItem(32001, -1, -1); //무기
+        // ItemManager.I.CreateInvenItem(48001, -1, -1); //활
         ItemManager.I.CreateInvenItem(10001, -1, -1); //옷
-        ItemManager.I.CreateInvenItem(52001, -1, -1); //화살
-        pData.Inven[2].Dur = 3;
+        // ItemManager.I.CreateInvenItem(52001, -1, -1); //화살
         pData.EqSlot["Hand1"] = pData.Inven[0]; // 손1
         pData.EqSlot["Armor"] = pData.Inven[1]; // 갑옷
-        pData.EqSlot["Hand2"] = pData.Inven[2]; // 손2
+        // pData.EqSlot["Hand2"] = pData.Inven[2]; // 손2
         ItemManager.I.CreateInvenItem(60001, 0, 0); //물약
         // ItemManager.I.CreateInvenItem(60101, 1, 0); //스킬북
         // ItemManager.I.CreateInvenItem(42001, 3, 1); //지팡이
@@ -327,9 +326,12 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public void TestAddSkExp()
     {
         AddSkExp(1, 20);
-        AddSkExp(1001, 20); //명상
-        // AddSkExp(1002, 20); //대시
-        // AddSkExp(1003, 20); //이중 공격
+        // AddSkExp(1001, 20); //명상
+        AddSkExp(1002, 20); //대시
+        AddSkExp(1003, 20); //이중 공격
+
+        pSkSlots[0][0] = 1002;
+        pSkSlots[0][1] = 1003;
     }
     public void TestDropItem()
     {

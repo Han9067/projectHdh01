@@ -79,7 +79,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     float[] mapLimit = new float[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
     public GameObject[,] guide; // 길찾기 가이드 오브젝트
     [SerializeField] private GameObject rngParent;
-    private List<GameObject> attRng = new List<GameObject>();
+    private List<RngGrid> attRng = new List<RngGrid>();
     private Vector2Int attRngPos = new Vector2Int(-200, -200);
 
     [Header("====Player====")]
@@ -87,8 +87,9 @@ public class BattleCore : AutoSingleton<BattleCore>
     public GameObject focus, propParent; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
     private SpriteRenderer focusSrp;
     private bPlayer player; //플레이어
-    private bool isActionable = false, isMove = false; // 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부
-
+    private bool isActionable = false, isMove = false;// 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부
+    private static bool isSk = false; // 스킬 사용 중인지 여부
+    private int curUseSkId = 0; // 현재 사용중인 스킬 아이디
     [Header("====Monster====")]
     private Dictionary<int, GameObject> mObj = new Dictionary<int, GameObject>();
     private Dictionary<int, bMonster> mData = new Dictionary<int, bMonster>();
@@ -167,12 +168,8 @@ public class BattleCore : AutoSingleton<BattleCore>
                 if (!focus.activeSelf) focus.SetActive(true);
                 if (focusSrp.color != Color.white) focusSrp.color = Color.white;
                 HideAllOutline();
-                if (attRng[0].activeSelf)
-                {
-                    foreach (var rng in attRng)
-                        rng.SetActive(false);
-                    attRngPos = new Vector2Int(-200, -200);
-                }
+                if (attRng[0].gameObject.activeSelf && !isSk)
+                    HideAllRng();
             }
             else
             {
@@ -213,8 +210,17 @@ public class BattleCore : AutoSingleton<BattleCore>
                 //공격 커서 상황일때도 가이드라인이 생성되어야할지는 추후 고민
             }
 
+            if (isSk)
+            {
+                if (attRng[0].gameObject.activeSelf) SelRngGrid(t);
+            }
+
             if (Input.GetMouseButtonDown(0))
             {
+                if (isSk)
+                {
+                    return;
+                }
                 switch (cName)
                 {
                     case "attack":
@@ -387,9 +393,10 @@ public class BattleCore : AutoSingleton<BattleCore>
         int idx = attRng.Count;
         for (int i = 0; i < cnt; i++)
         {
-            var rng = Instantiate(ResManager.GetGameObject("RngGrid"), rngParent.transform);
-            rng.name = "Rng_" + (idx + i);
-            rng.SetActive(false);
+            var obj = Instantiate(ResManager.GetGameObject("RngGrid"), rngParent.transform);
+            var rng = obj.GetComponent<RngGrid>();
+            obj.name = "Rng_" + (idx + i);
+            obj.SetActive(false);
             attRng.Add(rng);
         }
     }
@@ -421,7 +428,8 @@ public class BattleCore : AutoSingleton<BattleCore>
     #region ==== Field Action ====
     private void ShowAttRng(Vector2Int grid, int w, int h, int cnt)
     {
-        foreach (var rng in attRng) rng.SetActive(false);
+        foreach (var rng in attRng)
+            rng.gameObject.SetActive(false);
         int attMinX = grid.x, attMaxX = grid.x + w - 1, attMinY = grid.y, attMaxY = grid.y + h - 1;
         List<Vector2Int> rngPos = new List<Vector2Int>();
         for (int x = grid.x - cnt; x < grid.x + w + cnt; x++)
@@ -439,10 +447,30 @@ public class BattleCore : AutoSingleton<BattleCore>
         for (int i = 0; i < rngPos.Count; i++)
         {
             Vector2Int p = rngPos[i];
-            attRng[i].transform.position = new Vector3(gGrid[p.x, p.y].x, gGrid[p.x, p.y].y, 0);
-            attRng[i].SetActive(true);
+            attRng[i].SetPos(gGrid[p.x, p.y].x, gGrid[p.x, p.y].y, p.x, p.y);
+            attRng[i].gameObject.SetActive(true);
         }
         attRngPos = grid;
+    }
+    private void HideAllRng()
+    {
+        foreach (var rng in attRng)
+            rng.gameObject.SetActive(false);
+        attRngPos = new Vector2Int(-200, -200);
+    }
+    private void SelRngGrid(Vector2Int grid)
+    {
+        foreach (var rng in attRng)
+            rng.SetColor(Color.white);
+        if (grid.x == -1 && grid.y == -1) return;
+        foreach (var rng in attRng)
+        {
+            if (rng.xx == grid.x && rng.yy == grid.y)
+            {
+                rng.SetColor(Color.green);
+                break;
+            }
+        }
     }
     #endregion
     #region ==== Object Action ====
@@ -478,7 +506,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                     case BtObjState.READY:
                         isMove = false;
                         isActionable = true;
-                        Debug.Log("READY");
                         return;
                     case BtObjState.IDLE:
                         break;
@@ -900,6 +927,54 @@ public class BattleCore : AutoSingleton<BattleCore>
                 if (gGrid[x, y].tId == objId)
                     gGrid[x, y].tId = 0;
             }
+        }
+    }
+    #endregion
+    #region ==== 스킬 사용 ====
+    public void StateSk(int skId)
+    {
+        GsManager.I.InitCursor();
+        if (isSk)
+            CancelSk();
+        else
+        {
+            if (curUseSkId == skId) return;
+            ClickSk(skId);
+        }
+    }
+    public void ClickSk(int skId)
+    {
+        isSk = true; curUseSkId = skId;
+        SkData data = PlayerManager.I.pData.SkList[skId];
+        foreach (var at in data.Att)
+        {
+            // Debug.Log(LocalizationManager.GetValue(t.Name) + " : " + t.Val);
+            switch (at.AttID)
+            {
+                case 57:
+                    break;
+                case 608:
+                case 609:
+                    ShowAttRng(FindTilePos(player.transform.position), 1, 1, at.Val);
+                    break;
+            }
+        }
+    }
+    public void CancelSk()
+    {
+        isSk = false; curUseSkId = 0;
+        HideAllRng();
+    }
+    public void UseSk(int skId)
+    {
+        switch (skId)
+        {
+            case 1001:
+                break;
+            case 1002:
+                break;
+            case 1003:
+                break;
         }
     }
     #endregion

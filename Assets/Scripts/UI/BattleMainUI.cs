@@ -25,6 +25,19 @@ public class BattleMainUI : UIScreen
     }
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            // Debug.Log(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][0]);
+            BattleCore.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][0]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            BattleCore.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][1]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            Debug.Log(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][2]);
+        }
         if (Input.GetKeyDown(KeyCode.I))
             GsManager.I.StateMenuPopup("OnInvenPop");
         if (Input.GetKeyDown(KeyCode.C))

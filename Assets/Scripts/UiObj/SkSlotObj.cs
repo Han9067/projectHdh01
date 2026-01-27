@@ -57,7 +57,9 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         switch (slotType)
         {
             case 0:
-                // sel.gameObject.SetActive(true);
+                if (sel.color.a == 0)
+                    sel.color = new Color(1, 1, 1, 40f / 255f);
+                sel.gameObject.SetActive(true);
                 break;
             case 1:
                 SkillPop.slotLine = line;
@@ -71,7 +73,7 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         switch (slotType)
         {
             case 0:
-                // sel.gameObject.SetActive(false);
+                sel.gameObject.SetActive(false);
                 break;
             case 1:
                 SkillPop.slotLine = -1;
@@ -85,7 +87,8 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         if (skId == 0) return;
         if (eventData.button == PointerEventData.InputButton.Left && !eventData.dragging)
         {
-            Debug.Log(skId);
+            // Debug.Log(skId);
+            BattleCore.I.ClickSk(skId);
         }
     }
     public void OnBeginDrag(PointerEventData eventData)
@@ -103,5 +106,9 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     {
         if (slotType == 0 || skId == 0) return;
         Debug.Log("EndDrag");
+    }
+    public void AnimSel()
+    {
+
     }
 }
