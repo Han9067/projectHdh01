@@ -87,7 +87,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public GameObject focus, propParent; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
     private SpriteRenderer focusSrp;
     private bPlayer player; //플레이어
-    private bool isActionable = false, isMove = false;// 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부
+    private bool isActionable = false;// 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부  isMove = false
     private static bool isSk = false; // 스킬 사용 중인지 여부
     private bool isSkAvailable = false; // 스킬 사용 가능 여부
     private int curUseSkId = 0; // 현재 사용중인 스킬 아이디
@@ -263,8 +263,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                 }
             }
         }
-        if (isMove)
-            MoveCamera(false);
+        MoveCamera(false);
+        // if (isMove)
+        //     MoveCamera(false);
     }
     #region ==== 🎨 LOAD BATTLE SCENE ====
     void LoadFieldMap()
@@ -528,7 +529,8 @@ public class BattleCore : AutoSingleton<BattleCore>
     void OnMovePlayer(Vector2Int t, int state = 0)
     {
         focus.SetActive(false);
-        isActionable = false; isMove = true;
+        isActionable = false;
+        // isMove = true;
         //추후 포커스, 가이드 라인 초기화 및 비활성화
         Vector2Int[] pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
         if (state == 1)
@@ -555,7 +557,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 switch (ot.state)
                 {
                     case BtObjState.READY:
-                        isMove = false;
+                        // isMove = false;
                         isActionable = true;
                         return;
                     case BtObjState.IDLE:
@@ -565,7 +567,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         {
                             //플레이어 이동 종료
                             ot.state = BtObjState.IDLE;
-                            isMove = false;
+                            // isMove = false;
                             isActionable = true;
                             return;
                         }
@@ -1098,17 +1100,17 @@ public class BattleCore : AutoSingleton<BattleCore>
         Vector3 tgPos = new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
 
         float dist = Vector3.Distance(wPos, tgPos);
-        float dur = Mathf.Clamp(dist * 0.05f, 0.1f, 1.0f);
+        float dur = Mathf.Clamp(dist * 0.1f, 0.1f, 1.0f); //dist * 0.05f, 0.1f, 1.0f
 
         SetObjDir(1000, cpPos, pos);
 
         // 5. 카메라가 따라오도록 플래그 설정
-        isMove = true;
+        // isMove = true;
 
         // 6. DOTween으로 이동 (선형 이동)
         pObj.transform.DOMove(tgPos, dur)
-            .SetEase(Ease.OutCubic) // 또는 Ease.Linear, Ease.InOutQuad 등
-            .OnUpdate(() => { MoveCamera(false); })
+            .SetEase(Ease.OutCubic) // 또는 Ease.Linear, Ease.InOutQuad 등 OutCubic
+                                    // .OnUpdate(() => { MoveCamera(false); })
             .OnComplete(() =>
             {
                 // 이동 완료 후 처리
@@ -1117,8 +1119,8 @@ public class BattleCore : AutoSingleton<BattleCore>
                 objTurn[0].pos = pos;
                 player.SetObjLayer(mapH - pos.y);
                 // 카메라 이동 종료
-                isMove = false;
-                MoveCamera(true);
+                // isMove = false;
+                // MoveCamera(false);
                 TurnAction();
             });
     }

@@ -294,16 +294,16 @@ public class GsManager : AutoSingleton<GsManager>
                 case 1:
                     switch (eq["Hand1"].Type)
                     {
-                        case 2:
+                        case 12:
                             mGameObj["TwoWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
                             mGameObj["TwoWp1"].SetActive(true);
                             break;
-                        case 4:
-                        case 6:
+                        case 14:
+                        case 16:
                             mGameObj["TwoWp3"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
                             mGameObj["TwoWp3"].SetActive(true);
                             break;
-                        case 9:
+                        case 19:
                             mGameObj["TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
                             mGameObj["TwoWp2"].SetActive(true);
                             break;
@@ -341,12 +341,12 @@ public class GsManager : AutoSingleton<GsManager>
                     case 1:
                         switch (eq["Hand1"].Type)
                         {
-                            case 2:
-                            case 4:
-                            case 6:
+                            case 12:
+                            case 14:
+                            case 16:
                                 parts = hasArmor ? new List<string> { "BaseBoth", "EqBoth" } : new List<string> { "BaseBoth" };
                                 break; //양손 무기
-                            case 9:
+                            case 19:
                                 parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } : new List<string> { "BaseHand1A", "BaseHand2" };
                                 break; //창
                         }
@@ -469,15 +469,15 @@ public class GsManager : AutoSingleton<GsManager>
                 case 1:
                     switch (slot["Hand1"].Type)
                     {
-                        case 2:
-                        case 4:
-                        case 6:
+                        case 12:
+                        case 14:
+                        case 16:
                             wpState = 4;
                             PtType curWp = slot["Hand1"].Type == 2 ? PtType.TwoWp1 : PtType.TwoWp3;
                             ptSpr[curWp].gameObject.SetActive(true);
                             ptSpr[curWp].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
                             break;
-                        case 9:
+                        case 19:
                             wpState = 5;
                             ptSpr[PtType.TwoWp2].gameObject.SetActive(true);
                             ptSpr[PtType.TwoWp2].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
@@ -536,9 +536,9 @@ public class GsManager : AutoSingleton<GsManager>
     {
         switch (wpType)
         {
-            case 9:
+            case 19:
                 return 2;
-            case 10:
+            case 20:
                 return 5;
             default:
                 return 1;

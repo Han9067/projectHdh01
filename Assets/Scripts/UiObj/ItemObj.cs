@@ -20,7 +20,7 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
         main.sprite = ResManager.GetSprite(itemData.Res);
         bgColor = ColorData.GetItemGradeColor(itemData.Grade);
         bg.color = new Color(bgColor.r, bgColor.g, bgColor.b, bgAlpha);
-        if (itemData.Type == 12)
+        if (itemData.Type == 22)
         {
             cntTxt.gameObject.SetActive(true);
             cntTxt.text = itemData.Dur.ToString();

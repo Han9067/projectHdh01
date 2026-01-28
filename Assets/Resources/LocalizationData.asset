@@ -2694,6 +2694,66 @@ MonoBehaviour:
           value: Grand Skill Book(Sword)
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: RoastPork
+      value:
+        list:
+        - key: 23
+          value: "\uAD6C\uC6B4 \uB3FC\uC9C0\uACE0\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Roast Pork
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: RoastBeef
+      value:
+        list:
+        - key: 23
+          value: "\uAD6C\uC6B4 \uC18C\uACE0\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Roast Beef
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: RoastChicken
+      value:
+        list:
+        - key: 23
+          value: "\uAD6C\uC6B4 \uB2ED\uACE0\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Roast Chicken
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: FriedEgg
+      value:
+        list:
+        - key: 23
+          value: "\uACC4\uB780 \uD6C4\uB77C\uC774"
+          duplicatedKey: 0
+        - key: 10
+          value: Fried Egg
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: RoastRabbit
+      value:
+        list:
+        - key: 23
+          value: "\uAD6C\uC6B4 \uD1A0\uB07C \uACE0\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Roast Rabbit
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: RoastVenison
+      value:
+        list:
+        - key: 23
+          value: "\uAD6C\uC6B4 \uC0AC\uC2B4 \uACE0\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Roast Venison
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: Pork
       value:
         list:
@@ -2744,7 +2804,7 @@ MonoBehaviour:
           value: Rabbit Meat
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: DeerMeat
+    - key: Venison
       value:
         list:
         - key: 23
@@ -2844,24 +2904,44 @@ MonoBehaviour:
           value: Lumber
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: IronStone
+    - key: IronOre
       value:
         list:
         - key: 23
           value: "\uCCA0\uAD11\uC11D"
           duplicatedKey: 0
         - key: 10
-          value: Iron Stone
+          value: Iron Ore
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Ingot
+    - key: Coal
       value:
         list:
         - key: 23
-          value: "\uC8FC\uAD34"
+          value: "\uC11D\uD0C4"
           duplicatedKey: 0
         - key: 10
-          value: Ingot
+          value: Coal
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: IronIngot
+      value:
+        list:
+        - key: 23
+          value: "\uCCA0\uC8FC\uAD34"
+          duplicatedKey: 0
+        - key: 10
+          value: Iron Ingot
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SteelIngot
+      value:
+        list:
+        - key: 23
+          value: "\uAC15\uCCA0\uC8FC\uAD34"
+          duplicatedKey: 0
+        - key: 10
+          value: Steel Ingot
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Cotton
@@ -2884,14 +2964,24 @@ MonoBehaviour:
           value: Linen
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Cloth
+    - key: CottonCloth
       value:
         list:
         - key: 23
-          value: "\uC637\uAC10"
+          value: "\uCF54\uD2BC \uC637\uAC10"
           duplicatedKey: 0
         - key: 10
-          value: Cloth
+          value: Cotton Cloth
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: LinenCloth
+      value:
+        list:
+        - key: 23
+          value: "\uB9B0\uB128 \uC637\uAC10"
+          duplicatedKey: 0
+        - key: 10
+          value: Linen Cloth
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Leather

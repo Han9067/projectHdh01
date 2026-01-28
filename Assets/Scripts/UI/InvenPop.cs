@@ -105,11 +105,11 @@ public class InvenPop : UIScreen
                 break;
             case "AddItem":
                 ItemData item = data.Get<ItemData>(); //아이템 데이터 가져오기
-                if (item.Type == 12)
+                if (item.Type == 22)
                 {
                     foreach (var v in itemList)
                     {
-                        if (v.iType == 0 && v.itemData.Type == 12 && v.itemData.Dur < v.itemData.MaxDur)
+                        if (v.iType == 0 && v.itemData.Type == 22 && v.itemData.Dur < v.itemData.MaxDur)
                         {
                             int remain = v.itemData.MaxDur - v.itemData.Dur;
                             if (remain >= item.Dur)
@@ -639,25 +639,21 @@ public class InvenPop : UIScreen
         if (id > 60000)
         {
             curEq = new string[] { };
+            return;
         }
-        else if (id > 30000)
+        switch (type)
         {
-            curEq = (type == 12) ? new string[] { "Hand2" } : new string[] { "Hand1", "Hand2" };
-        }
-        else
-        {
-            switch (type)
-            {
-                case 1: curEq = new string[] { "Armor" }; break;
-                case 2: curEq = new string[] { "Helmet" }; break;
-                case 3: curEq = new string[] { "Shoes" }; break;
-                case 4: curEq = new string[] { "Gloves" }; break;
-                case 5: curEq = new string[] { "Belt" }; break;
-                case 6: curEq = new string[] { "Cape" }; break;
-                case 7: curEq = new string[] { "Ring1", "Ring2" }; break;
-                case 8: curEq = new string[] { "Necklace" }; break;
-                case 9: curEq = new string[] { "Hand1", "Hand2" }; break; //방패
-            }
+            case 1: curEq = new string[] { "Armor" }; break;
+            case 2: curEq = new string[] { "Helmet" }; break;
+            case 3: curEq = new string[] { "Shoes" }; break;
+            case 4: curEq = new string[] { "Gloves" }; break;
+            case 5: curEq = new string[] { "Belt" }; break;
+            case 6: curEq = new string[] { "Cape" }; break;
+            case 7: curEq = new string[] { "Ring1", "Ring2" }; break;
+            case 8: curEq = new string[] { "Necklace" }; break;
+            default:
+                curEq = (type == 22) ? new string[] { "Hand2" } : new string[] { "Hand1", "Hand2" };
+                break;
         }
         foreach (var v in curEq)
             eqSlots[v].StatePossible(true);
@@ -841,7 +837,7 @@ public class InvenPop : UIScreen
             Destroy(itemList[i].gameObject);
             itemList.RemoveAt(i);
         }
-        if (PlayerManager.I.pData.EqSlot["Hand2"] != null && PlayerManager.I.pData.EqSlot["Hand2"].Type == 12)
+        if (PlayerManager.I.pData.EqSlot["Hand2"] != null && PlayerManager.I.pData.EqSlot["Hand2"].Type == 22)
         {
             ItemObj itemObj = GetItemObj(PlayerManager.I.pData.EqSlot["Hand2"].Uid);
             itemObj.UpdateDurTxt();

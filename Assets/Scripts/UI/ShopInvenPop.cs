@@ -97,7 +97,7 @@ public class ShopInvenPop : UIScreen
         foreach (var item in items)
         {
             ItemData data = ItemManager.I.ItemDataList[item.ItemId].Clone();
-            if (data.Type == 12) data.Dur = 20;
+            if (data.Type == 22) data.Dur = 20;
             Vector2Int pos = ApplyGrid(data.ItemId, data.W, data.H);
             ItemPos itemPos = new ItemPos { itemData = data, x = pos.x, y = pos.y };
             ItemList.Add(data);
