@@ -33,6 +33,9 @@ public class MakeTable  : GameData
 				case "ItemId": return true;
 				case "Cnt": return true;
 				case "SkId": return true;
+				case "SkLv": return true;
+				case "Val": return true;
+				case "Itv": return true;
 				case "Recipe": return true;
 				case "Note": return true;
 
@@ -64,6 +67,9 @@ public class MakeTable  : GameData
 				case "ItemId": return data.ItemId;
 				case "Cnt": return data.Cnt;
 				case "SkId": return data.SkId;
+				case "SkLv": return data.SkLv;
+				case "Val": return data.Val;
+				case "Itv": return data.Itv;
 				case "Recipe": return data.Recipe;
 				case "Note": return data.Note;
 
@@ -86,6 +92,9 @@ public class MakeTable  : GameData
 				case "ItemId": return data.ItemId;
 				case "Cnt": return data.Cnt;
 				case "SkId": return data.SkId;
+				case "SkLv": return data.SkLv;
+				case "Val": return data.Val;
+				case "Itv": return data.Itv;
 				case "Recipe": return data.Recipe;
 				case "Note": return data.Note;
 
@@ -109,8 +118,11 @@ public class MakeTable  : GameData
 				case 2: return data.ItemId;
 				case 3: return data.Cnt;
 				case 4: return data.SkId;
-				case 5: return data.Recipe;
-				case 6: return data.Note;
+				case 5: return data.SkLv;
+				case 6: return data.Val;
+				case 7: return data.Itv;
+				case 8: return data.Recipe;
+				case 9: return data.Note;
 
                 default: return null;
             }
@@ -158,6 +170,9 @@ public class MakeTableProb : GameDataProb
 	[JsonProperty] public readonly int ItemId;
 	[JsonProperty] public readonly int Cnt;
 	[JsonProperty] public readonly int SkId;
+	[JsonProperty] public readonly int SkLv;
+	[JsonProperty] public readonly int Val;
+	[JsonProperty] public readonly int Itv;
 	[JsonProperty] public readonly string Recipe;
 	[JsonProperty] public readonly string Note;
 
