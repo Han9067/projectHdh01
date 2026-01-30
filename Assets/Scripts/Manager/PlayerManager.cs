@@ -272,6 +272,34 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             pData.SkList[skId].Lv = 1;
             pData.SkList[skId].Exp = val;
             pData.SkList[skId].NextExp = GsManager.I.GetSkNextExp(1);
+
+            //제작용 스킬 중 특정 스킬은 새로 배우면 동시에 해당 스킬에 관련된 레시피를 얻을수 있다.
+            switch (skId)
+            {
+                case 23:
+                    //요리 스킬
+                    pData.MakeList.Add(62401); //구운 돼지고기
+                    pData.MakeList.Add(62402); //구운 소고기
+                    pData.MakeList.Add(62403); //구운 닭고기
+                    pData.MakeList.Add(62404); //계란 후라이
+                    pData.MakeList.Add(62405); //구운 토끼
+                    pData.MakeList.Add(62406); //구운 사슴
+                    break;
+                case 27:
+                    //단조 스킬
+                    pData.MakeList.Add(67201); //철
+                    pData.MakeList.Add(67202); //강철
+                    break;
+                case 28:
+                    //재봉 스킬
+                    pData.MakeList.Add(68201); //면
+                    pData.MakeList.Add(68202); //린넨
+                    pData.MakeList.Add(69501); //가죽
+                    break;
+                case 29:
+                    //연금술 스킬
+                    break;
+            }
             //새로 획득한 스킬이라 팝업을 표시...표시는 메세지박스에 언급되도록
         }
     }

@@ -5,7 +5,8 @@ using GB;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
-using JetBrains.Annotations;
+using System.Linq;
+
 
 public class GsManager : AutoSingleton<GsManager>
 {
@@ -37,6 +38,7 @@ public class GsManager : AutoSingleton<GsManager>
         #region 데이터 로드
         LoadAttData();
         LoadSkData();
+        LoadMakeData();
         #endregion
 
         #region 매니저 스크립트 초기화
@@ -593,6 +595,23 @@ public class GsManager : AutoSingleton<GsManager>
     // var npcSk = baseSk.Clone(); // 또는 new SkData(baseSk);
     #endregion
 
+    #region 제작 관리
+    private MakeTable _makeTable;
+    public MakeTable MakeTable => _makeTable ?? (_makeTable = GameDataManager.GetTable<MakeTable>());
+    public Dictionary<int, MakeData> MakeDataList = new Dictionary<int, MakeData>();
+    private void LoadMakeData()
+    {
+        foreach (var make in MakeTable.Datas)
+        {
+            MakeDataList[make.MakeId] = new MakeData(make.MakeId, make.ShopType, make.ItemId, make.Cnt, make.SkId, make.SkLv, make.Val, make.Itv, make.Recipe);
+        }
+    }
+    public List<int> SortMakeList(List<int> mList)
+    {
+        List<int> sortedList = mList.OrderBy(x => MakeDataList[x].SkId).ToList();
+        return sortedList;
+    }
+    #endregion
     #region 전투 관련
     public int GetDamage(int att, int def)
     {

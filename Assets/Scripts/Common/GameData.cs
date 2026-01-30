@@ -130,6 +130,7 @@ public class PlayerData : ICharData
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
+    public List<int> MakeList = new List<int>();
     #region ICharData
     public int Gen { get; set; }
     public int Skin { get; set; }
@@ -160,6 +161,7 @@ public class NpcData : ICharData
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public int Rng, AtkType;
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
+    public List<int> MakeList = new List<int>();
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     #region ICharData
     public int Gen { get; set; }
@@ -334,6 +336,25 @@ public class ItemData
             Grade = this.Grade,
             Hand = this.Hand,
         };
+    }
+}
+
+[System.Serializable]
+public class MakeData
+{
+    public int MakeID, ShopType, ItemId, Cnt, SkId, SkLv, Val, Itv;
+    public string Recipe;
+    public MakeData(int makeID, int shopType, int itemId, int cnt, int skId, int skLv, int val, int itv, string recipe)
+    {
+        this.MakeID = makeID;
+        this.ShopType = shopType;
+        this.ItemId = itemId;
+        this.Cnt = cnt;
+        this.SkId = skId;
+        this.SkLv = skLv;
+        this.Val = val;
+        this.Itv = itv;
+        this.Recipe = recipe;
     }
 }
 
