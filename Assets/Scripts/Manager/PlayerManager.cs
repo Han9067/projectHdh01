@@ -278,23 +278,23 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             {
                 case 23:
                     //요리 스킬
-                    pData.MakeList.Add(62401); //구운 돼지고기
-                    pData.MakeList.Add(62402); //구운 소고기
-                    pData.MakeList.Add(62403); //구운 닭고기
-                    pData.MakeList.Add(62404); //계란 후라이
-                    pData.MakeList.Add(62405); //구운 토끼
-                    pData.MakeList.Add(62406); //구운 사슴
+                    pData.MakeList.Add(GsManager.I.MakeDataList[62401]); //구운 돼지고기
+                    pData.MakeList.Add(GsManager.I.MakeDataList[62402]); //구운 소고기
+                    pData.MakeList.Add(GsManager.I.MakeDataList[62403]); //구운 닭고기
+                    pData.MakeList.Add(GsManager.I.MakeDataList[62404]); //계란 후라이
+                    pData.MakeList.Add(GsManager.I.MakeDataList[62405]); //구운 토끼
+                    pData.MakeList.Add(GsManager.I.MakeDataList[62406]); //구운 사슴
                     break;
                 case 27:
                     //단조 스킬
-                    pData.MakeList.Add(67201); //철
-                    pData.MakeList.Add(67202); //강철
+                    pData.MakeList.Add(GsManager.I.MakeDataList[67201]); //철
+                    pData.MakeList.Add(GsManager.I.MakeDataList[67202]); //강철
                     break;
                 case 28:
                     //재봉 스킬
-                    pData.MakeList.Add(68201); //면
-                    pData.MakeList.Add(68202); //린넨
-                    pData.MakeList.Add(69501); //가죽
+                    pData.MakeList.Add(GsManager.I.MakeDataList[68201]); //면
+                    pData.MakeList.Add(GsManager.I.MakeDataList[68202]); //린넨
+                    pData.MakeList.Add(GsManager.I.MakeDataList[69501]); //가죽
                     break;
                 case 29:
                     //연금술 스킬

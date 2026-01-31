@@ -24,6 +24,11 @@ public class InvenPop : UIScreen
     private Color gridColor, greenColor, yellowColor, redColor;
     public static bool isInstantMove = false; //왼쪽 컨트롤키+마우스왼쪽 클릭시 활성화되는 버튼으로 클릭되는 아이템을 반대쪽 인벤토리로 빠르게 이동시키는 변수
     #endregion
+    #region 제작 팝업 변수
+    public List<MakeList> makeList = new List<MakeList>();
+    public List<MatList> matList = new List<MatList>();
+    public static int curMakeId = 0;
+    #endregion
     private void Awake()
     {
         Regist();
@@ -41,14 +46,14 @@ public class InvenPop : UIScreen
                 row.Add(new InvenGrid { x = x, y = y, slotId = -1 });
             subGrids.Add(row);
         }
-        InitAllGrids();
-    }
-    private void Start()
-    {
         ivSlot = mGameObject["IvSlot"].transform;
         iPrt = mGameObject["Item"].transform;
         eqPrt = mGameObject["Eq"].transform;
         ivPos = new Vector2(ivSlot.position.x - 288, ivSlot.position.y + 288);
+        InitAllGrids();
+    }
+    private void Start()
+    {
         LoadInven();
         isLoadInven = true;
     }
@@ -77,6 +82,8 @@ public class InvenPop : UIScreen
         if (mGameObject["RwdPop"].activeSelf) //혹시라도 강제로 팝업이 꺼졌는데 보상 팝업이 켜져있는 경우 초기화 시켜줌
             CloseRwdPop();
         Presenter.UnBind("InvenPop", this);
+        if (mGameObject["MakePop"].activeSelf)
+            CloseMakePop();
     }
     public void RegistButton()
     {
@@ -145,9 +152,9 @@ public class InvenPop : UIScreen
                 ResetAllGrids();
                 break;
             case "OpenRwdPop":
-                // StartCoroutine(WaitLoadInven(isLoadInven ? 0f : 0.1f));
                 mGameObject["RwdPop"].SetActive(true);
                 mGameObject["SubSlot"].SetActive(true);
+                subPos = new Vector2(subSlot.position.x - 288, subSlot.position.y + 288);
                 LoadRwd();
                 break;
             case "DeleteItem":
@@ -157,13 +164,55 @@ public class InvenPop : UIScreen
                 List<int> list = data.Get<List<int>>();
                 MoveItemToOppositeInven(list[0], list[1], list[2], list[3], list[4], list[5]);
                 break;
+            case "OpenMakePop":
+                mGameObject["MakePop"].SetActive(true);
+                mGameObject["SubSlot"].SetActive(true);
+                subPos = new Vector2(subSlot.position.x - 288, subSlot.position.y + 288);
+                SetMakePop(data.Get<int>());
+                break;
+            case "ClickMakeList":
+                SetMatList(data.Get<RecipeData>());
+                break;
         }
     }
+    private void Update()
+    {
+        if (mGameObject["SubSlot"].activeSelf)
+        {
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetMouseButtonDown(0))
+            {
+                isInstantMove = true;
+                return;
+            }
+        }
+        if (moveOn)
+        {
+            curItem.transform.position = Input.mousePosition;
+            if (posType >= 0)
+            {
+                CheckGrids(posType);
+                if (Input.GetMouseButtonDown(0))
+                {
+                    switch (curState)
+                    {
+                        case 0:
+                            if (curItemX == -1 && curItemY == -1) return;
+                            MoveItem(curItem.itemData.W, curItem.itemData.H, curItemX, curItemY);
+                            break;
+                        case 1:
+                            ChangeItem(curItem.itemData.W, curItem.itemData.H, curItemX, curItemY);
+                            break;
+                    }
+                }
+            }
+        }
+    }
+    #region 인벤토리, 아이템 관련
     private void InitAllGrids()
     {
         ivGridImg = new Image[10, 10]; ivGridRect = new RectTransform[10, 10];
 
-        subSlot = mGameObject["SubSlot"].transform; subPos = new Vector2(subSlot.position.x - 288, subSlot.position.y + 288);
+        subSlot = mGameObject["SubSlot"].transform;
         subGridImg = new Image[10, 10]; subGridRect = new RectTransform[10, 10];
 
         for (int y = 0; y < 10; y++)
@@ -171,12 +220,12 @@ public class InvenPop : UIScreen
             for (int x = 0; x < 10; x++)
             {
                 string gName = $"grid_{y}_{x}";
-                var obj = ivSlot.Find(gName);
-                ivGridImg[y, x] = obj.GetComponent<Image>();
-                ivGridRect[y, x] = obj.transform as RectTransform;
-
-                subGridImg[y, x] = obj.GetComponent<Image>();
-                subGridRect[y, x] = obj.transform as RectTransform;
+                var iv = ivSlot.Find(gName);
+                ivGridImg[y, x] = iv.GetComponent<Image>();
+                ivGridRect[y, x] = iv.transform as RectTransform;
+                var sub = subSlot.Find(gName);
+                subGridImg[y, x] = sub.GetComponent<Image>();
+                subGridRect[y, x] = sub.transform as RectTransform;
             }
         }
         string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Helmet", "Shoes", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
@@ -638,39 +687,6 @@ public class InvenPop : UIScreen
         foreach (var v in curEq)
             eqSlots[v].StatePossible(true);
     }
-
-    private void Update()
-    {
-        if (mGameObject["SubSlot"].activeSelf)
-        {
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetMouseButtonDown(0))
-            {
-                isInstantMove = true;
-                return;
-            }
-        }
-        if (moveOn)
-        {
-            curItem.transform.position = Input.mousePosition;
-            if (posType >= 0)
-            {
-                CheckGrids(posType);
-                if (Input.GetMouseButtonDown(0))
-                {
-                    switch (curState)
-                    {
-                        case 0:
-                            if (curItemX == -1 && curItemY == -1) return;
-                            MoveItem(curItem.itemData.W, curItem.itemData.H, curItemX, curItemY);
-                            break;
-                        case 1:
-                            ChangeItem(curItem.itemData.W, curItem.itemData.H, curItemX, curItemY);
-                            break;
-                    }
-                }
-            }
-        }
-    }
     private void InitItemGrid(int type, int sx, int sy, int w, int h)
     {
         //아이템 클릭 하여 이동시 아이템이 있던 그리드에서 아이템의 그리드를 제외시킴
@@ -787,6 +803,7 @@ public class InvenPop : UIScreen
     {
         DeleteRwdItems();
         mGameObject["RwdPop"].SetActive(false);
+        mGameObject["SubSlot"].SetActive(false);
         if (mGameObject["RwdCheck"].activeSelf)
             Close();
     }
@@ -823,5 +840,47 @@ public class InvenPop : UIScreen
             itemObj.UpdateDurTxt();
         }
     }
+    #endregion
+    #region 제작 팝업 관련
+    private void SetMakePop(int shopType)
+    {
+        foreach (var v in PlayerManager.I.pData.MakeList)
+        {
+            if (v.ShopType == shopType)
+            {
+                var obj = Instantiate(ResManager.GetGameObject("MakeListObj"), mGameObject["MakeList"].transform);
+                var list = obj.GetComponent<MakeList>();
+                list.SetMakeObj(v);
+                makeList.Add(list);
+            }
+        }
+    }
+    private void SetMatList(RecipeData recipe)
+    {
+        for (int i = 0; i < recipe.MatId.Count; i++)
+        {
+            var obj = Instantiate(ResManager.GetGameObject("MatListObj"), mGameObject["MatList"].transform);
+            var list = obj.GetComponent<MatList>();
+            list.SetMatObj(recipe.MatId[i], recipe.MatCnt[i]);
+            matList.Add(list);
+        }
+    }
+    private void InitMatList()
+    {
+        foreach (var v in matList)
+            Destroy(v.gameObject);
+        matList.Clear();
+    }
+    private void CloseMakePop()
+    {
+        curMakeId = 0;
+        mGameObject["MakePop"].SetActive(false);
+        mGameObject["SubSlot"].SetActive(false);
+        foreach (var v in makeList)
+            Destroy(v.gameObject);
+        makeList.Clear();
+        InitMatList();
+    }
+    #endregion
     public override void Refresh() { }
 }

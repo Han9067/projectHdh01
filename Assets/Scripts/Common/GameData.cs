@@ -1,10 +1,7 @@
 using System.Collections.Generic;
-using System;
 using UnityEngine;
-using GB;
-using UnityEngine.UI;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 public static class SV //State Value
 {
@@ -130,7 +127,7 @@ public class PlayerData : ICharData
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
-    public List<int> MakeList = new List<int>();
+    public List<MakeData> MakeList = new List<MakeData>();
     #region ICharData
     public int Gen { get; set; }
     public int Skin { get; set; }
@@ -161,7 +158,7 @@ public class NpcData : ICharData
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public int Rng, AtkType;
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
-    public List<int> MakeList = new List<int>();
+    public List<MakeData> MakeList = new List<MakeData>();
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     #region ICharData
     public int Gen { get; set; }
@@ -343,7 +340,7 @@ public class ItemData
 public class MakeData
 {
     public int MakeID, ShopType, ItemId, Cnt, SkId, SkLv, Val, Itv;
-    public string Recipe;
+    public RecipeData Recipe;
     public MakeData(int makeID, int shopType, int itemId, int cnt, int skId, int skLv, int val, int itv, string recipe)
     {
         this.MakeID = makeID;
@@ -354,10 +351,29 @@ public class MakeData
         this.SkLv = skLv;
         this.Val = val;
         this.Itv = itv;
-        this.Recipe = recipe;
+
+        List<int> matId = new List<int>();
+        List<int> matCnt = new List<int>();
+        string[] strArr = recipe.Split('/');
+        foreach (var v in strArr)
+        {
+            string[] arr = v.Split('_');
+            matId.Add(int.Parse(arr[0]));
+            matCnt.Add(int.Parse(arr[1]));
+        }
+        this.Recipe = new RecipeData(matId, matCnt);
     }
 }
-
+[System.Serializable]
+public class RecipeData
+{
+    public List<int> MatId, MatCnt;
+    public RecipeData(List<int> matId, List<int> matCnt)
+    {
+        this.MatId = matId;
+        this.MatCnt = matCnt;
+    }
+}
 //퀘스트
 [System.Serializable]
 public class QuestData
