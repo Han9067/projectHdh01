@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using GB;
 using DG.Tweening;
@@ -17,6 +16,8 @@ public class bMonster : MonoBehaviour
     [SerializeField] private SpriteRenderer mainSpr;
     private MaterialPropertyBlock mProp;
     public bool isOutline = false;
+    private Vector3 backupPos;
+    Tween hitTween;
     private Color redColor = new Color(1, 0.5f, 0.5f, 1);
     [SerializeField] private SortingGroup sGrp;
     void Start()
@@ -64,7 +65,7 @@ public class bMonster : MonoBehaviour
     {
         sGrp.sortingOrder = y;
     }
-    public void OnDamaged(int dmg, BtFaction attacker)
+    public void OnDamaged(int dmg, BtFaction attacker, Vector3 pos)
     {
         hp -= dmg;
         if (hp > 0 && !isGG)
@@ -76,7 +77,39 @@ public class bMonster : MonoBehaviour
         if (hp <= 0)
             StartCoroutine(DeathMon(attacker));
         else
+        {
             ggObj.transform.localScale = new Vector3(hp / maxHp, 1, 1);
+            //피격에 대한 액션
+            OnHitAction(pos);
+        }
+    }
+    private void OnHitAction(Vector3 pos)
+    {
+        if (hitTween != null)
+        {
+            hitTween.Kill();
+            transform.position = backupPos;
+        }
+
+        Vector3 worldDir = transform.position - pos;
+        worldDir.z = 0f;  // 2D면 Z 무시
+        worldDir.Normalize();
+
+        float pushBack = 0.4f;
+
+        Vector3 localOffset = transform.InverseTransformDirection(worldDir) * pushBack;
+        Vector3 hitPos = transform.position + localOffset;
+        backupPos = transform.position;
+        StateOutline(true);
+        hitTween = DOTween.Sequence()
+            .Append(transform.DOLocalMove(hitPos, 0.15f).SetEase(Ease.InSine))
+            .Append(transform.DOLocalMove(backupPos, 0.1f).SetEase(Ease.InQuad))
+            .SetAutoKill(true)
+            .OnKill(() =>
+            {
+                hitTween = null;
+                StateOutline(false);
+            });
     }
     private IEnumerator DeathMon(BtFaction attacker)
     {

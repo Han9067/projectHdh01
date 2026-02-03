@@ -38,19 +38,22 @@ public static class Directions
 public class TurnData
 {
     public int objId, mIdx = 0, tgId = 0, skId = 0; // 해당 턴 오브젝트 아이디, 이동 인덱스, 타깃 아이디, 스킬 아이디
+    public int w, h;
     public Vector2Int pos; // 해당 턴 오브젝트 위치
     public BtObjState state;
     public BtObjType type;
     public BtFaction faction;
     public Vector2Int[] mPath;
     public bool isAction = false;
-    public TurnData(int objId, BtObjState state, BtObjType type, BtFaction faction, Vector2Int pos)
+    public TurnData(int objId, BtObjState state, BtObjType type, BtFaction faction, Vector2Int pos, int w, int h)
     {
         this.objId = objId;
         this.state = state;
         this.type = type;
         this.faction = faction;
         this.pos = pos;
+        this.w = w;
+        this.h = h;
     }
 }
 
@@ -87,7 +90,8 @@ public class BattleCore : AutoSingleton<BattleCore>
     public GameObject focus, propParent; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
     private SpriteRenderer focusSrp;
     private bPlayer player; //플레이어
-    private bool isActionable = false;// 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부  isMove = false
+    private bool isActionable = false;// 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부  
+    private bool isMove = false;
     private static bool isSk = false; // 스킬 사용 중인지 여부
     private bool isSkAvailable = false; // 스킬 사용 가능 여부
     private int curUseSkId = 0; // 현재 사용중인 스킬 아이디
@@ -171,8 +175,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 if (!focus.activeSelf && !isSk) focus.SetActive(true);
                 if (focusSrp.color != Color.white) focusSrp.color = Color.white;
                 HideAllOutline();
-                if (attRng[0].gameObject.activeSelf && !isSk)
-                    HideAllRng();
+                if (attRng[0].gameObject.activeSelf && !isSk) HideAllRng();
             }
             else
             {
@@ -201,7 +204,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                             attRngPos = t;
                         }
                     }
-                    //추후에 해당 타깃 이미지 주변에 아웃라인 강조를 추가하여 선택중이다라는 느낌을 줄 예정
                 }
                 else
                 {
@@ -215,7 +217,6 @@ public class BattleCore : AutoSingleton<BattleCore>
 
             if (isSk)
             {
-
                 if (attRng[0].gameObject.activeSelf) SelRngGrid(t);
             }
 
@@ -244,15 +245,14 @@ public class BattleCore : AutoSingleton<BattleCore>
                             TurnAction();
                         }
                         else
-                        {
                             OnMovePlayer(t, 1);
-                        }
                         break;
                     case "default":
                         if (!focus.activeSelf) return;
                         OnMovePlayer(t);
                         break;
                 }
+                InitCursorUI();
             }
             if (Input.GetMouseButtonDown(1))
             {
@@ -263,9 +263,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                 }
             }
         }
-        MoveCamera(false);
-        // if (isMove)
-        //     MoveCamera(false);
+        // MoveCamera(false);
+        if (isMove)
+            MoveCamera(false);
     }
     #region ==== 🎨 LOAD BATTLE SCENE ====
     void LoadFieldMap()
@@ -353,7 +353,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             cpPos = new Vector2Int(cx, cy);
             gGrid[cx, cy].tId = 1000;
             player.SetObjLayer(mapH - cy);
-            objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos));
+            objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos, 1, 1));
         }
     }
     void LoadEnemyGrp()
@@ -397,7 +397,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 mObj.Add(objId, mon);
                 mData.Add(objId, data);
                 UpdateGrid(p.x, p.y, p.x, p.y, w, h, objId);
-                objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p));
+                objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p, w, h));
                 idx++;
             }
         }
@@ -440,7 +440,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         return result;
     }
     #region ==== Field Action ====
-    private void ShowAttRng(Vector2Int grid, int w, int h, int cnt)
+    public void ShowAttRng(Vector2Int grid, int w, int h, int cnt)
     {
         foreach (var rng in attRng)
         {
@@ -515,7 +515,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
     }
-    private bool GetActiveCurPosWithRngGrid(Vector2Int grid)
+    public bool GetActiveCurPosWithRngGrid(Vector2Int grid)
     {
         foreach (var rng in attRng)
         {
@@ -530,7 +530,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         focus.SetActive(false);
         isActionable = false;
-        // isMove = true;
+        isMove = true;
         //추후 포커스, 가이드 라인 초기화 및 비활성화
         Vector2Int[] pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
         if (state == 1)
@@ -557,19 +557,22 @@ public class BattleCore : AutoSingleton<BattleCore>
                 switch (ot.state)
                 {
                     case BtObjState.READY:
-                        // isMove = false;
+                        isMove = false;
                         isActionable = true;
                         return;
                     case BtObjState.IDLE:
                         break;
                     case BtObjState.MOVE:
-                        if (ot.mIdx >= ot.mPath.Length || GetNearbyEnemy() || gGrid[ot.mPath[ot.mIdx].x, ot.mPath[ot.mIdx].y].tId != 0)
+                        if (ot.mIdx >= ot.mPath.Length || GetNearbyEnemy(ot) || gGrid[ot.mPath[ot.mIdx].x, ot.mPath[ot.mIdx].y].tId != 0)
                         {
-                            //플레이어 이동 종료
-                            ot.state = BtObjState.IDLE;
-                            // isMove = false;
-                            isActionable = true;
-                            return;
+                            //ot.mIdx가 0이면 처음 이동하는거라 스킵시킨다.
+                            if (ot.mIdx > 0)
+                            {
+                                ot.state = BtObjState.IDLE;
+                                isMove = false;
+                                isActionable = true;
+                                return;
+                            }
                         }
                         ot.isAction = true;
                         StartCoroutine(MoveObj(pObj, 1000, cpPos, ot.mPath[ot.mIdx], 0.3f, () =>
@@ -611,7 +614,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         ot.state = BtObjState.READY;
                         break;
                     case BtObjState.SKILL:
-                        ShowSk(ot.skId);
+                        BattleSkManager.I.ActSkill(ot.skId, skPos);
                         isActionable = false;
                         ot.state = BtObjState.READY;
                         break;
@@ -629,7 +632,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                 switch (ot.state)
                 {
                     case BtObjState.IDLE:
-                        // Dictionary 중복 접근 최적화
                         var monData = mData[mId];
                         if (GetAttackTarget(ot.tgId, ot.pos, monData.Rng, monData.w, monData.h))
                         {
@@ -698,19 +700,35 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return false;
     }
-    bool GetNearbyEnemy()
+    bool GetNearbyEnemy(TurnData data)
     {
-        foreach (var t in objTurn)
+        int x0 = data.pos.x, y0 = data.pos.y;
+        int w = data.w, h = data.h;
+
+        for (int x = x0 - 1; x <= x0 + w; x++)
         {
-            if (t.state == BtObjState.DEAD) continue;
-            if (t.faction == BtFaction.ENEMY)
+            for (int y = y0 - 1; y <= y0 + h; y++)
             {
-                float dist = Vector2.Distance(cpPos, t.pos);
-                if (dist < 1.5f)
-                    return true;
+                if (x >= x0 && x < x0 + w && y >= y0 && y < y0 + h)
+                    continue;
+                if (x < 0 || x >= mapW || y < 0 || y >= mapH)
+                    continue;
+
+                int tId = gGrid[x, y].tId;
+                if (tId == 0) continue;
+
+                BtFaction? cellFaction = GetFactionByObjId(tId);
+                if (cellFaction.HasValue && cellFaction.Value != data.faction)
+                    return true;  // 적 발견
             }
         }
         return false;
+    }
+    private BtFaction? GetFactionByObjId(int objId)
+    {
+        foreach (var t in objTurn)
+            if (t.objId == objId) return t.faction;
+        return null;
     }
     IEnumerator MoveObj(GameObject obj, int objId, Vector2Int cv, Vector2Int mv, float ct,
         Action callA = null, Action callB = null)
@@ -758,14 +776,15 @@ public class BattleCore : AutoSingleton<BattleCore>
     private void ActObjWithMeleeAtt(GameObject myObj, BtObjType myType, int myId, int tgId, int attId = 0)
     {
         var tgType = GetObjType(tgId);
-        // if (tgType == BtObjType.NONE) return; //토스트 메세지로 적이 없습니다 식으로 예외처리
         var myPos = myObj.transform.position;
         Vector3 tgPos = GetTgPos(tgType, tgId);
-        // if (tgPos == Vector3.zero) return;
-        Vector3 midPoint = GetMidPoint(myPos, tgPos);
+        Vector3 gPos = GetGridPos(myPos, tgId);
+        Vector3 midPoint = Vector3.Lerp(myPos, gPos, 0.4f);
+        midPoint.z = 0f;
+
         Sequence sequence = DOTween.Sequence();
-        sequence.Append(myObj.transform.DOMove(midPoint, 0.05f)
-            .SetEase(Ease.OutQuad)
+        sequence.Append(myObj.transform.DOMove(midPoint, 0.1f)
+            .SetEase(Ease.InSine)
             .OnComplete(() =>
             {
                 CompAttAct(myId, myType, tgId, tgType, myPos, tgPos, attId);
@@ -830,11 +849,30 @@ public class BattleCore : AutoSingleton<BattleCore>
                 return Vector3.zero;
         }
     }
-    private Vector3 GetMidPoint(Vector3 myPos, Vector3 tgPos)
+    private Vector3 GetGridPos(Vector3 attackerWorldPos, int tgId)
     {
-        Vector3 dir = (tgPos - myPos).normalized;
-        float dist = Vector3.Distance(myPos, tgPos);
-        return myPos + (dir * (dist * 0.1f));
+        int closestX = -1, closestY = -1;
+        float minDistSq = float.MaxValue;
+
+        for (int x = 0; x < mapW; x++)
+        {
+            for (int y = 0; y < mapH; y++)
+            {
+                if (gGrid[x, y].tId != tgId) continue;
+
+                Vector3 cellWorld = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0f);
+                float distSq = (attackerWorldPos - cellWorld).sqrMagnitude;
+                if (distSq < minDistSq)
+                {
+                    minDistSq = distSq;
+                    closestX = x;
+                    closestY = y;
+                }
+            }
+        }
+
+        if (closestX < 0) return Vector3.zero;
+        return new Vector3(gGrid[closestX, closestY].x, gGrid[closestX, closestY].y, 0f);
     }
     private GameObject GetProjObj()
     {
@@ -897,20 +935,20 @@ public class BattleCore : AutoSingleton<BattleCore>
                         switch (attId)
                         {
                             case 1003:
-                                float val = (float)GetSkAttVal(player.pData.SkList[1003], 601) * 0.01f;
+                                float val = (float)BattleSkManager.GetSkAttVal(player.pData.SkList[1003], 601) * 0.01f;
                                 att = (int)(att * val);
 
                                 List<int> dmgList = new List<int>();
                                 for (int i = 0; i < 2; i++)
                                     dmgList.Add(GsManager.I.GetDamage(att, mData[tgId].def));
-                                mData[tgId].OnDamaged(dmgList[0] + dmgList[1], BtFaction.ALLY);
+                                mData[tgId].OnDamaged(dmgList[0] + dmgList[1], BtFaction.ALLY, myPos);
                                 ShowEff("N_DoubleAtt", tgPos, player.bodyObj.transform.localScale.x, () => { TurnAction(); });
                                 StartCoroutine(ShowSqcDmgTxt(2, dmgList, 0.3f, tgPos));
                                 break;
                             default:
                                 dmg = GsManager.I.GetDamage(att, mData[tgId].def);
-                                mData[tgId].OnDamaged(dmg, BtFaction.ALLY);
-                                ShowEff("N_Att", tgPos, player.bodyObj.transform.localScale.x, () => { TurnAction(); });
+                                mData[tgId].OnDamaged(dmg, BtFaction.ALLY, myPos);
+                                StartCoroutine(UseObjTurn(0.3f));
                                 ShowDmgTxt(dmg, tgPos);
                                 break;
                         }
@@ -927,9 +965,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                 {
                     case BtObjType.PLAYER:
                         dmg = GsManager.I.GetDamage(att, player.pData.Def);
-                        player.OnDamaged(dmg);
-                        ShowEff("N_Att", tgPos, mData[myId].bodyObj.transform.localScale.x);
-                        TurnAction();
+                        player.OnDamaged(dmg, myPos);
+                        // ShowEff("N_Att", tgPos, mData[myId].bodyObj.transform.localScale.x);
+                        StartCoroutine(UseObjTurn(0.3f));
                         ShowDmgTxt(dmg, tgPos);
                         break;
                     case BtObjType.MONSTER:
@@ -950,6 +988,11 @@ public class BattleCore : AutoSingleton<BattleCore>
                 }
                 break;
         }
+    }
+    IEnumerator UseObjTurn(float ct)
+    {
+        yield return new WaitForSeconds(ct);
+        TurnAction();
     }
     public void DeathObj(int objId, BtFaction attacker)
     {
@@ -1015,118 +1058,38 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
     }
     #endregion
-    #region ==== 스킬 사용 ====
-    public void StateSk(int skId)
-    {
-        GsManager.I.InitCursor();
-        if (isSk)
-            InitSk();
-        else
-        {
-            if (curUseSkId == skId) return;
-            ClickSk(skId);
-        }
-    }
-    public void ClickSk(int skId)
-    {
-        focus.SetActive(false);
-        isSk = true; curUseSkId = skId; pSkType = 0;
-        SkData data = PlayerManager.I.pData.SkList[skId];
-        switch (skId)
-        {
-            case 1002:
-                pSkType = 1; //이동형
-                ShowAttRng(FindTilePos(player.transform.position), 1, 1, GetSkAttVal(data, 608));
-                break;
-            case 1003:
-                pSkType = 2; //대상 공격형
-                ShowAttRng(FindTilePos(player.transform.position), 1, 1, player.pData.Rng);
-                break;
-            case 1004:
-                break;
-        }
-    }
-    private int GetSkAttVal(SkData data, int attId)
-    {
-        foreach (var at in data.Att)
-        {
-            if (at.AttID == attId)
-                return at.Val;
-        }
-        return 0;
-    }
-    public void InitSk()
+    #region ==== 스킬 ====
+    public void InitBtSk()
     {
         skPos = new Vector2Int(-1, -1);
         isSk = false; curUseSkId = 0;
         HideAllRng();
     }
-    public bool IsUsingSk()
+    public bool IsUsingSk() => BattleSkManager.I.IsUsingSk();
+    // BattleSkManager 전용 (최소 API)
+    public void GetSkillState(out bool isSk, out int curSkId, out Vector2Int skPos, out bool available)
+    { isSk = BattleCore.isSk; curSkId = curUseSkId; skPos = this.skPos; available = isSkAvailable; }
+    public void BeginSkill(int skId, int skType)
+    { focus.SetActive(false); isSk = true; curUseSkId = skId; pSkType = skType; }
+    public Vector2Int GetPlayerTilePos() => FindTilePos(player.transform.position);
+    public void DashToTile(Vector2Int pos)
     {
-        if (!isSkAvailable)
-        {
-            GsManager.I.ShowTstMsg("Tst_NotSk");
-            return false;
-        }
-        if (!GetActiveCurPosWithRngGrid(skPos))
-        {
-            InitSk();
-            return false;
-        }
-        return true;
-    }
-    private void ShowSk(int skId)
-    {
-        switch (skId)
-        {
-            case 1001:
-                //명상 스킬...별도 그리드 보여줄 필요 없이 바로 사용
-                break;
-            case 1002:
-                DashPlayer(skPos);
-                //대시 스킬...선택된 거리까지 이동
-                break;
-            case 1003:
-                DoubleAttackObj(skPos);
-                //이중 공격 스킬...선택된 대상 두번 공격
-                break;
-        }
-        InitSk();
-    }
-    private void DashPlayer(Vector2Int pos)
-    {
-        //대시는 추후 오브젝트에 의해 이동 가능한 그리드를 별도로 구현해줘야함
         Vector3 wPos = pObj.transform.position;
         Vector3 tgPos = new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
-
-        float dist = Vector3.Distance(wPos, tgPos);
-        float dur = Mathf.Clamp(dist * 0.1f, 0.1f, 1.0f); //dist * 0.05f, 0.1f, 1.0f
-
+        float dur = Mathf.Clamp(Vector3.Distance(wPos, tgPos) * 0.1f, 0.1f, 1f);
         SetObjDir(1000, cpPos, pos);
-
-        // 5. 카메라가 따라오도록 플래그 설정
-        // isMove = true;
-
-        // 6. DOTween으로 이동 (선형 이동)
-        pObj.transform.DOMove(tgPos, dur)
-            .SetEase(Ease.OutCubic) // 또는 Ease.Linear, Ease.InOutQuad 등 OutCubic
-                                    // .OnUpdate(() => { MoveCamera(false); })
-            .OnComplete(() =>
-            {
-                // 이동 완료 후 처리
-                UpdateGrid(cpPos.x, cpPos.y, pos.x, pos.y, 1, 1, 1000);
-                cpPos = pos;
-                objTurn[0].pos = pos;
-                player.SetObjLayer(mapH - pos.y);
-                // 카메라 이동 종료
-                // isMove = false;
-                // MoveCamera(false);
-                TurnAction();
-            });
+        pObj.transform.DOMove(tgPos, dur).SetEase(Ease.OutCubic).OnComplete(() =>
+        {
+            UpdateGrid(cpPos.x, cpPos.y, pos.x, pos.y, 1, 1, 1000);
+            cpPos = pos;
+            objTurn[0].pos = pos;
+            player.SetObjLayer(mapH - pos.y);
+            TurnAction();
+        });
     }
-    private void DoubleAttackObj(Vector2Int pos)
+    public void ActMeleeToTile(Vector2Int pos, int skId)
     {
-        ActObjWithMeleeAtt(player.bodyObj, BtObjType.PLAYER, 1000, gGrid[pos.x, pos.y].tId, 1003);
+        ActObjWithMeleeAtt(player.bodyObj, BtObjType.PLAYER, 1000, gGrid[pos.x, pos.y].tId, skId);
     }
     #endregion
     #region ==== 애니메이션 ====
@@ -1135,14 +1098,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         var eff = GetEffIdx(effName);
         if (eff != null)
         {
-            eff.transform.position = pos;
-            eff.transform.localScale = new Vector3(dir, 1, 1);
-            eff.anim.EndEvent.RemoveAllListeners();
-            eff.anim.EndEvent.AddListener(() =>
-            {
-                if (call != null) call();
-            });
-            eff.anim.Play();
+            StartBtEff(eff, pos, dir, call);
         }
         else
         {
@@ -1151,15 +1107,19 @@ public class BattleCore : AutoSingleton<BattleCore>
             if (!effList.ContainsKey(effName))
                 effList[effName] = new List<SkEffObj>();
             effList[effName].Add(eff);
-            eff.transform.position = pos;
-            eff.transform.localScale = new Vector3(dir, 1, 1);
-            eff.anim.EndEvent.RemoveAllListeners();
-            eff.anim.EndEvent.AddListener(() =>
-            {
-                if (call != null) call();
-            });
-            eff.anim.Play();
+            StartBtEff(eff, pos, dir, call);
         }
+    }
+    private void StartBtEff(SkEffObj eff, Vector3 pos, float dir, Action call = null)
+    {
+        eff.transform.position = pos;
+        eff.transform.localScale = new Vector3(dir, 1, 1);
+        eff.anim.EndEvent.RemoveAllListeners();
+        eff.anim.EndEvent.AddListener(() =>
+        {
+            if (call != null) call();
+        });
+        eff.anim.Play();
     }
     SkEffObj GetEffIdx(string effName)
     {
@@ -1177,6 +1137,13 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     #endregion
     #region ==== UI Action ====
+    private void InitCursorUI()
+    {
+        GsManager.I.SetCursor("default");
+        focus.SetActive(false);
+        HideAllOutline();
+        HideAllRng();
+    }
     public void ShowDmgTxt(int dmg, Vector3 pos)
     {
         var txt = GetDmgTxt();
@@ -1234,9 +1201,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public void ShowOutline(int objId)
     {
         if (!mData[objId].isOutline)
-        {
             mData[objId].StateOutline(true);
-        }
         curSelObjId = objId;
     }
     public void HideAllOutline()
@@ -1306,6 +1271,10 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
     }
+    public void TestPlayer()
+    {
+        player.SetOutline();
+    }
 }
 [CustomEditor(typeof(BattleCore))]
 public class BattleCoreEditor : Editor
@@ -1314,11 +1283,14 @@ public class BattleCoreEditor : Editor
     {
         DrawDefaultInspector();
         BattleCore myScript = (BattleCore)target;
-
-        if (GUILayout.Button("데미지 텍스트 테스트"))
+        if (GUILayout.Button("캐릭터 아웃라인 테스트"))
         {
-            myScript.ShowDmgTxt(100, new Vector3(0, 0, 0));
+            myScript.TestPlayer();
         }
+        // if (GUILayout.Button("데미지 텍스트 테스트"))
+        // {
+        //     myScript.ShowDmgTxt(100, new Vector3(0, 0, 0));
+        // }
         // if (GUILayout.Button("공격 애니메이션 테스트"))
         // {
         //     myScript.ShowTestAnimation("N_Att");

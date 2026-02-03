@@ -88,7 +88,7 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         if (eventData.button == PointerEventData.InputButton.Left && !eventData.dragging)
         {
             // Debug.Log(skId);
-            BattleCore.I.ClickSk(skId);
+            BattleSkManager.I.ClickSk(skId);
         }
     }
     public void OnBeginDrag(PointerEventData eventData)

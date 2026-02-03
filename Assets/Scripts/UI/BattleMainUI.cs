@@ -27,11 +27,11 @@ public class BattleMainUI : UIScreen
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             // Debug.Log(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][0]);
-            BattleCore.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][0]);
+            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][0]);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            BattleCore.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][1]);
+            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][1]);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
