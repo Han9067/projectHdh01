@@ -120,6 +120,9 @@ public class CityEnterPop : UIScreen
                     OpenTrade();
                     break;
                 case "OnMake":
+                    StateVisiblePop(0);
+                    UIManager.ShowPopup("InvenPop");
+                    Presenter.Send("InvenPop", "OpenMakePop", sId);
                     break;
                 case "OnWork":
                     //일하기 팝업 발생

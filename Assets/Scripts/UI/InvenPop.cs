@@ -28,6 +28,8 @@ public class InvenPop : UIScreen
     public List<MakeList> makeList = new List<MakeList>();
     public List<MatList> matList = new List<MatList>();
     public static int curMakeId = 0;
+    public RecipeData curRecipe;
+    public bool isMake = false;
     #endregion
     private void Awake()
     {
@@ -49,11 +51,12 @@ public class InvenPop : UIScreen
         ivSlot = mGameObject["IvSlot"].transform;
         iPrt = mGameObject["Item"].transform;
         eqPrt = mGameObject["Eq"].transform;
-        ivPos = new Vector2(ivSlot.position.x - 288, ivSlot.position.y + 288);
+        // ivPos = new Vector2(ivSlot.position.x - 288, ivSlot.position.y + 288);
         InitAllGrids();
     }
     private void Start()
     {
+        ivPos = new Vector2(ivSlot.position.x - 288, ivSlot.position.y + 288);
         LoadInven();
         isLoadInven = true;
     }
@@ -84,6 +87,8 @@ public class InvenPop : UIScreen
         Presenter.UnBind("InvenPop", this);
         if (mGameObject["MakePop"].activeSelf)
             CloseMakePop();
+        if (ItemInfoPop.isActive)
+            UIManager.ClosePopup("ItemInfoPop");
     }
     public void RegistButton()
     {
@@ -105,6 +110,17 @@ public class InvenPop : UIScreen
                 break;
             case "Check":
                 mGameObject["RwdCheck"].SetActive(!mGameObject["RwdCheck"].activeSelf);
+                break;
+            case "OnMake":
+                if (!isMake)
+                {
+                    Presenter.Send("WorldMainUI", "ShowToastPopup", "Tst_NotMake");
+                    return;
+                }
+                MakeItem();
+                break;
+            case "MakeClose":
+                Close();
                 break;
         }
     }
@@ -165,13 +181,19 @@ public class InvenPop : UIScreen
                 MoveItemToOppositeInven(list[0], list[1], list[2], list[3], list[4], list[5]);
                 break;
             case "OpenMakePop":
+                curRecipe = null;
                 mGameObject["MakePop"].SetActive(true);
                 mGameObject["SubSlot"].SetActive(true);
                 subPos = new Vector2(subSlot.position.x - 288, subSlot.position.y + 288);
                 SetMakePop(data.Get<int>());
                 break;
             case "ClickMakeList":
-                SetMatList(data.Get<RecipeData>());
+                curRecipe = data.Get<RecipeData>();
+                foreach (var v in makeList)
+                    v.StateMakeObj(false);
+                makeList.Find(x => x.data.MakeID == curMakeId).StateMakeObj(true);
+                SetMatList(curRecipe);
+                StateMakeBtn(CheckMakeState());
                 break;
         }
     }
@@ -260,7 +282,7 @@ public class InvenPop : UIScreen
         {
             ItemData item = ItemManager.I.ItemDataList[list[i]].Clone();
             item.Uid = ItemManager.I.GetUid();//보상 아이템은 Uid를 자동으로 부여하지 않아서 수동으로 부여
-            PlaceRwdItem(item);
+            PlaceSubItem(item);
         }
     }
     private void SelectItemObj(int uid, bool isEq = false)
@@ -339,7 +361,7 @@ public class InvenPop : UIScreen
             }
         }
     }
-    private void PlaceRwdItem(ItemData item)
+    private void PlaceSubItem(ItemData item)
     {
         Vector2Int pos = GetEmptyPos(1, item.W, item.H);
         if (pos.x == -1 && pos.y == -1) return; //추후 예외처리..빈공간이 없다는 것이니까 맞춰서 작업
@@ -477,6 +499,8 @@ public class InvenPop : UIScreen
         curItem.iType = posType;
         curItem.x = ex; curItem.y = ey; curItem.eq = "";
         curItem.SetBgAlpha(1f);
+        if (posType == 1 && mGameObject["MakePop"].activeSelf)
+            StateMakeBtn(CheckMakeState());
         EndMovingItem();
     }
     private void ChangeItem(int w, int h, int ex, int ey)
@@ -723,7 +747,7 @@ public class InvenPop : UIScreen
                     ivGridImg[y, x].color = gridColor;
             }
         }
-        if (mGameObject["RwdPop"].activeSelf)
+        if (mGameObject["RwdPop"].activeSelf || mGameObject["MakePop"].activeSelf)
         {
             for (int y = 0; y < 10; y++)
             {
@@ -844,6 +868,7 @@ public class InvenPop : UIScreen
     #region 제작 팝업 관련
     private void SetMakePop(int shopType)
     {
+        ResetSubGrid();
         foreach (var v in PlayerManager.I.pData.MakeList)
         {
             if (v.ShopType == shopType)
@@ -854,9 +879,11 @@ public class InvenPop : UIScreen
                 makeList.Add(list);
             }
         }
+        StateMakeBtn(false);
     }
     private void SetMatList(RecipeData recipe)
     {
+        InitMatList();
         for (int i = 0; i < recipe.MatId.Count; i++)
         {
             var obj = Instantiate(ResManager.GetGameObject("MatListObj"), mGameObject["MatList"].transform);
@@ -873,6 +900,7 @@ public class InvenPop : UIScreen
     }
     private void CloseMakePop()
     {
+        //끄기전에 iType이 1인 아이템을 모두 인벤토리로 옮겨준다
         curMakeId = 0;
         mGameObject["MakePop"].SetActive(false);
         mGameObject["SubSlot"].SetActive(false);
@@ -880,7 +908,57 @@ public class InvenPop : UIScreen
             Destroy(v.gameObject);
         makeList.Clear();
         InitMatList();
+        Presenter.Send("CityEnterPop", "StateVisiblePop", 1);
+    }
+    private void StateMakeBtn(bool on)
+    {
+        mButtons["OnMake"].GetComponent<Image>().color = on ? Color.white : Color.gray;
+        isMake = on;
+    }
+    private bool CheckMakeState()
+    {
+        if (curRecipe == null) return false;
+        List<int> curItemIdList = new List<int>();
+        foreach (var v in itemList)
+        {
+            if (v.iType == 1)
+                curItemIdList.Add(v.itemData.ItemId);
+        }
+        for (int i = 0; i < curRecipe.MatId.Count; i++)
+        {
+            int cnt = curRecipe.MatCnt[i];
+            int id = curRecipe.MatId[i];
+            for (int j = 0; j < curItemIdList.Count; j++)
+                if (curItemIdList[j] == id) cnt--;
+            if (cnt != 0)
+                return false;
+        }
+        return true;
+    }
+    private void MakeItem()
+    {
+        for (int i = itemList.Count - 1; i >= 0; i--)
+        {
+            if (itemList[i].iType == 1)
+            {
+                PlayerManager.I.pData.Inven.Remove(itemList[i].itemData);
+                Destroy(itemList[i].gameObject);
+                itemList.RemoveAt(i);
+            }
+        }
+        ResetSubGrid(); //초기화 한번
+        MakeData data = PlayerManager.I.pData.MakeList.Find(x => x.MakeID == curMakeId);
+        for (int i = 0; i < data.Cnt; i++)
+        {
+            ItemData item = ItemManager.I.ItemDataList[data.ItemId].Clone();
+            item.Uid = ItemManager.I.GetUid();//보상 아이템은 Uid를 자동으로 부여하지 않아서 수동으로 부여
+            PlaceSubItem(item);
+        }
     }
     #endregion
     public override void Refresh() { }
+    // public override void BackKey()
+    // {
+    //     base.BackKey();
+    // }
 }

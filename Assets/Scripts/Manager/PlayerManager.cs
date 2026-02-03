@@ -158,7 +158,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         // ItemManager.I.CreateInvenItem(60101, 1, 0); //스킬북
         // ItemManager.I.CreateInvenItem(42001, 3, 1); //지팡이
         // ItemManager.I.CreateInvenItem(48001, 2, 1); //활
-        // ItemManager.I.CreateInvenItem(52001, 3, 1);
+        ItemManager.I.CreateInvenItem(67001, 0, 0);
+        ItemManager.I.CreateInvenItem(67001, 1, 0);
+        ItemManager.I.CreateInvenItem(67001, 2, 0);
+        ItemManager.I.CreateInvenItem(67001, 3, 0);
 
         CalcPlayerStat();
         pData.HP = pData.MaxHP;
@@ -354,6 +357,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public void TestAddSkExp()
     {
         AddSkExp(1, 20);
+        AddSkExp(23, 20);
+        AddSkExp(27, 20);
         // AddSkExp(1001, 20); //명상
         AddSkExp(1002, 20); //대시
         AddSkExp(1003, 20); //이중 공격

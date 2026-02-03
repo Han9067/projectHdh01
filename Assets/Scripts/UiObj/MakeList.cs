@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class MakeList : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private TextMeshProUGUI nameTxt;
-    private MakeData data;
+    public MakeData data;
     void Start()
     {
         nameTxt.text = LocalizationManager.GetValue(ItemManager.I.ItemDataList[data.ItemId].Name);
@@ -15,9 +15,10 @@ public class MakeList : MonoBehaviour, IPointerClickHandler
     {
         data = makeData;
     }
-    // public void StateMakeObj(Color color)
-    // {
-    // }
+    public void StateMakeObj(bool on)
+    {
+        nameTxt.color = on ? Color.yellow : Color.white;
+    }
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)

@@ -72,6 +72,8 @@ public class ItemObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (InvenPop.moveOn) return;
+        if (iType != InvenPop.posType)
+            InvenPop.posType = iType;
         #region 아이템 체크
         if (bgAlpha > 0f)
             bg.color = new Color(125f / 255f, 1f, 210 / 255f, 1f);
