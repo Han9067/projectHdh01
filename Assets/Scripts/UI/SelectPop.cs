@@ -102,7 +102,12 @@ public class SelectPop : UIScreen
                 int buyPrice = ItemManager.I.GetItemPrice(selItem.Price, selItem.Dur, selItem.MaxDur);
                 if (PlayerManager.I.pData.Crown < buyPrice)
                 {
-                    Debug.Log("돈이 부족합니다.");
+                    GsManager.I.ShowTstMsg("Tst_NotCrown");
+                    return;
+                }
+                if (PlayerManager.I.GetIvEmpty(selItem.W, selItem.H))
+                {
+                    GsManager.I.ShowTstMsg("Tst_NotEmptyInven");
                     return;
                 }
                 ItemData cloneItem = selItem.Clone();

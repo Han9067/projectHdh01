@@ -363,7 +363,11 @@ public class InvenPop : UIScreen
     private void PlaceSubItem(ItemData item)
     {
         Vector2Int pos = GetEmptyPos(1, item.W, item.H);
-        if (pos.x == -1 && pos.y == -1) return; //추후 예외처리..빈공간이 없다는 것이니까 맞춰서 작업
+        if (pos.x == -1 && pos.y == -1)
+        {
+            GsManager.I.ShowTstMsg("Tst_NotEmptyInven");
+            return;
+        }
         item.X = pos.x; item.Y = pos.y;
         GameObject obj = Instantiate(ResManager.GetGameObject("ItemObj"), iPrt);
         obj.name = $"Item_{item.Uid}";
@@ -543,7 +547,11 @@ public class InvenPop : UIScreen
         SetCurItem(uid);
         posType = type == 0 ? 1 : 0;
         Vector2Int pos = GetEmptyPos(posType, w, h);
-        if (pos.x == -1 && pos.y == -1) return;
+        if (pos.x == -1 && pos.y == -1)
+        {
+            GsManager.I.ShowTstMsg("Tst_NotEmptyInven");
+            return;
+        }
         InitItemGrid(type, ex, ey, w, h);
         MoveItem(w, h, pos.x, pos.y);
         posType = -1;

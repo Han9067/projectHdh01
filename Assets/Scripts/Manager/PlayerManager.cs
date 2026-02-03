@@ -75,6 +75,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             Presenter.Send("CharInfoPop", "UpdateCharInfo");
     }
     // 플레이어 데이터 초기화
+    #region 플레이어 데이터
     public void ApplyPlayerData(PlayerData data, Vector3 pos)
     {
         pData = new PlayerData();
@@ -221,6 +222,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         }
         pData.AtkType = pData.EqSlot["Hand1"] != null && pData.EqSlot["Hand1"].Hand == 2 ? 1 : 0;
     }
+    #endregion
     public void ClearMainQst(int qid)
     {
         pData.QuestClearList.Add(qid);
@@ -318,6 +320,32 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             if (q.ItemId == itemId) cnt++;
         }
         return cnt;
+    }
+    public bool GetIvEmpty(int wid, int hei)
+    {
+        //플레이어의 인벤토리 공간을 체크하는 함수
+        for (int y = 0; y < 10; y++)
+        {
+            for (int x = 0; x < 10; x++)
+            {
+                if (grids[y][x].slotId == -1)
+                {
+                    int cnt = wid * hei;
+                    if (x + wid > 10 || y + hei > 10) continue;
+                    for (int h = y; h < y + hei; h++)
+                    {
+                        for (int w = x; w < x + wid; w++)
+                        {
+                            if (grids[h][w].slotId == -1)
+                                cnt--;
+                        }
+                    }
+                    if (cnt == 0)
+                        return true;
+                }
+            }
+        }
+        return false;
     }
     #region 튜토리얼
     private IEnumerator DelayedStartTutorial(float delay)
