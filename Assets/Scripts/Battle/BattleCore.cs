@@ -594,7 +594,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                             case 1:
                                 if (player.pData.EqSlot["Hand2"] == null)
                                 {
-                                    Presenter.Send("BattleMainUI", "ShowToastPopup", "Tst_NotAmmo");
+                                    GsManager.I.ShowTstMsg("Tst_NotAmmo");
                                     return;
                                 }
                                 AttObjWithRanged(player.bodyObj, BtObjType.PLAYER, 1000, ot.tgId,
@@ -1065,7 +1065,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (!isSkAvailable)
         {
-            Presenter.Send("BattleMainUI", "ShowToastPopup", "Tst_NotSk");
+            GsManager.I.ShowTstMsg("Tst_NotSk");
             return false;
         }
         if (!GetActiveCurPosWithRngGrid(skPos))

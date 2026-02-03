@@ -81,4 +81,9 @@ public class BattleReadyPop : UIScreen
         enemyList.SetEnemy(id, cnt);
         eLists.Add(enemyList);
     }
+    public override void BackKey()
+    {
+        return;
+        // base.BackKey();
+    }
 }

@@ -75,7 +75,8 @@ public class GsManager : AutoSingleton<GsManager>
                 break;
         }
     }
-    #region 메뉴 팝업 상태
+    #region 기타
+    //월드&전투씬 메인UI 버튼들 팝업 처리
     public void StateMenuPopup(string key)
     {
         string str = key.Substring(2);
@@ -106,6 +107,11 @@ public class GsManager : AutoSingleton<GsManager>
                     UIManager.ShowPopup("SkillPop");
                 break;
         }
+    }
+    public void ShowTstMsg(string msg)
+    {
+        UIManager.ShowPopup("TstMsgPop");
+        Presenter.Send("TstMsgPop", "ShowTstMsg", msg);
     }
     #endregion
     #region 커서 관리

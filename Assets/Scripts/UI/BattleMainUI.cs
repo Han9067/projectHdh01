@@ -8,7 +8,6 @@ public class BattleMainUI : UIScreen
 {
     public Slider mSlider_HP, mSlider_MP, mSlider_SP;
     public List<SkSlotObj> skSlots = new List<SkSlotObj>();
-    private Sequence tstSqc;
     private void Awake()
     {
         Regist();
@@ -111,9 +110,6 @@ public class BattleMainUI : UIScreen
             case "UpdateSkSlot":
                 UpdateMainUiSkSlot();
                 break;
-            case "ShowToastPopup":
-                ShowTstBox(LocalizationManager.GetValue(data.Get<string>()));
-                break;
         }
     }
 
@@ -155,31 +151,5 @@ public class BattleMainUI : UIScreen
         for (int i = 1; i <= 4; i++)
             mButtons["Line" + i].GetComponent<Image>().color = Color.gray;
         mButtons["Line" + (line + 1)].GetComponent<Image>().color = Color.yellow;
-    }
-    private void ShowTstBox(string msg)
-    {
-        GameObject tstBox = mGameObject["TstBox"];
-        CanvasGroup canvasGroup = tstBox.GetComponent<CanvasGroup>();
-
-        if (tstSqc != null && tstSqc.IsActive())
-            tstSqc.Kill();
-
-        tstBox.SetActive(true);
-        mTMPText["TstMent"].text = msg;
-
-        // 알파값 초기화
-        canvasGroup.alpha = 0f;
-
-        // Sequence로 모든 애니메이션을 한 번에 관리
-        tstSqc = DOTween.Sequence()
-            .SetUpdate(true) // 실제 시간 사용
-            .Append(canvasGroup.DOFade(1f, 0.3f).SetEase(Ease.OutQuad)) // 페이드 인
-            .AppendInterval(1.4f) // 대기 시간
-            .Append(canvasGroup.DOFade(0f, 0.3f).SetEase(Ease.InQuad)) // 페이드 아웃
-            .OnComplete(() =>
-            {
-                tstBox.SetActive(false);
-                tstSqc = null;
-            });
     }
 }

@@ -577,7 +577,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     #endregion
     public void ShowToastPopup()
     {
-        Presenter.Send("WorldMainUI", "ShowToastPopup", "Tst_NotEnoughEnergy");
+        GsManager.I.ShowTstMsg("Tst_NotEnoughEnergy");
     }
 }
 

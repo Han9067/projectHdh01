@@ -8,7 +8,6 @@ public class WorldMainUI : UIScreen
     private float wTime = 0, actTime, endActTime, actTick = 0;
     private int tDay = 0, wYear, wMonth, wDay;
     private bool isAct = false, isRest = false; //일하기, 휴식 상태 유무
-    private Sequence tstSqc;
     private void Awake()
     {
         Regist();
@@ -214,9 +213,6 @@ public class WorldMainUI : UIScreen
             case "SetTraceQst":
                 SetTraceQst();
                 break;
-            case "ShowToastPopup":
-                ShowTstBox(LocalizationManager.GetValue(data.Get<string>()));
-                break;
         }
     }
     private void UpdateState()
@@ -313,32 +309,6 @@ public class WorldMainUI : UIScreen
                 break;
             }
         }
-    }
-    private void ShowTstBox(string msg)
-    {
-        GameObject tstBox = mGameObject["TstBox"];
-        CanvasGroup canvasGroup = tstBox.GetComponent<CanvasGroup>();
-
-        if (tstSqc != null && tstSqc.IsActive())
-            tstSqc.Kill();
-
-        tstBox.SetActive(true);
-        mTMPText["TstMent"].text = msg;
-
-        // 알파값 초기화
-        canvasGroup.alpha = 0f;
-
-        // Sequence로 모든 애니메이션을 한 번에 관리
-        tstSqc = DOTween.Sequence()
-            .SetUpdate(true) // 실제 시간 사용
-            .Append(canvasGroup.DOFade(1f, 0.3f).SetEase(Ease.OutQuad)) // 페이드 인
-            .AppendInterval(1.4f) // 대기 시간
-            .Append(canvasGroup.DOFade(0f, 0.3f).SetEase(Ease.InQuad)) // 페이드 아웃
-            .OnComplete(() =>
-            {
-                tstBox.SetActive(false);
-                tstSqc = null;
-            });
     }
     public override void Refresh()
     {

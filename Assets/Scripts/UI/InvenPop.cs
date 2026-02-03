@@ -2,9 +2,7 @@ using GB;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Collections;
-using Unity.VisualScripting;
-
+using System;
 public class InvenPop : UIScreen
 {
     #region 변수
@@ -79,6 +77,7 @@ public class InvenPop : UIScreen
     }
     private void OnDisable()
     {
+        Debug.Log("OnDisable");
         isActive = false;
         if (ShopInvenPop.isActive)
             UIManager.ClosePopup("ShopInvenPop");
@@ -103,7 +102,7 @@ public class InvenPop : UIScreen
                 if (mGameObject["RwdPop"].activeSelf)
                     CloseRwdPop();
                 else
-                    Close();
+                    CheckEndInvenPop(() => Close());
                 break;
             case "Complete":
                 CloseRwdPop();
@@ -120,7 +119,7 @@ public class InvenPop : UIScreen
                 MakeItem();
                 break;
             case "MakeClose":
-                Close();
+                CheckEndInvenPop(() => Close());
                 break;
         }
     }
@@ -496,7 +495,12 @@ public class InvenPop : UIScreen
             for (int x = ex; x < ex + w; x++)
                 grids[y][x].slotId = uid;
         }
-        curItem.iType = posType;
+        if (curItem.iType != posType)
+        {
+            //아이템의 소유권이 바뀌었으므로 소유권 변경
+            curItem.iType = posType;
+            ChangeItemOwnership(posType);
+        }
         curItem.x = ex; curItem.y = ey; curItem.eq = "";
         curItem.SetBgAlpha(1f);
         if (posType == 1 && mGameObject["MakePop"].activeSelf)
@@ -732,6 +736,13 @@ public class InvenPop : UIScreen
         curItemX = -1; curItemY = -1;
         curEq = new string[] { };
     }
+    private void ChangeItemOwnership(int type)
+    {
+        if (type == 0)
+            PlayerManager.I.pData.Inven.Add(curItem.itemData);
+        else
+            PlayerManager.I.pData.Inven.Remove(curItem.itemData);
+    }
     private void StateItemRaycast(bool isActive)
     {
         foreach (var v in itemList)
@@ -955,10 +966,26 @@ public class InvenPop : UIScreen
             PlaceSubItem(item);
         }
     }
+    private bool CheckRemainSubSlot()
+    {
+        foreach (var v in itemList)
+        {
+            if (v.iType == 1)
+                return true;
+        }
+        return false;
+    }
     #endregion
+    private void CheckEndInvenPop(Action call = null)
+    {
+        if (mGameObject["MakePop"].activeSelf && CheckRemainSubSlot())
+            GsManager.I.ShowTstMsg("Tst_RemainSubSlot");
+        else
+            call?.Invoke();
+    }
     public override void Refresh() { }
-    // public override void BackKey()
-    // {
-    //     base.BackKey();
-    // }
+    public override void BackKey()
+    {
+        CheckEndInvenPop(() => base.BackKey());
+    }
 }
