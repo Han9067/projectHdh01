@@ -3,6 +3,7 @@ using UnityEngine;
 using GB;
 using UnityEngine.Rendering;
 using DG.Tweening;
+using System.Linq;
 public class bPlayer : MonoBehaviour
 {
     public int objId = 1000;
@@ -10,9 +11,19 @@ public class bPlayer : MonoBehaviour
     public GameObject ptMain, bodyObj;
     public PlayerData pData;
     private Vector3 backupPos;
-    Tween hitTween;
-    private MaterialPropertyBlock pProp;
+    Tween pbt, hft; //pushBackTween, hitFlashTween
+    private Dictionary<PtType, Material> material = new Dictionary<PtType, Material>();
     [SerializeField] private SortingGroup sGrp;
+
+    private static readonly int HitColorID = Shader.PropertyToID("_HitColor"); //HitColorID
+    private static readonly int HitAmountID = Shader.PropertyToID("_HitAmount"); //HitAmountID
+    private static readonly int OutlineID = Shader.PropertyToID("_Outline"); //OutlineID
+    private static readonly int OutlineColorID = Shader.PropertyToID("_OutlineColor"); //OutlineColorID
+    private static readonly int OutlineSizeID = Shader.PropertyToID("_OutlineSize"); //OutlineSizeID
+
+    private MaterialPropertyBlock pProp; //MaterialPropertyBlock
+    private float curHitAmount; //현재 Hit Amount
+
     void Awake()
     {
         GsManager.I.SetObjParts(ptSpr, ptMain);
@@ -48,9 +59,14 @@ public class bPlayer : MonoBehaviour
     }
     private void OnHitAction(Vector3 pos)
     {
-        if (hitTween != null)
+        pushBackObj(pos);
+        hitFlashObj();
+    }
+    private void pushBackObj(Vector3 pos)
+    {
+        if (pbt != null)
         {
-            hitTween.Kill();
+            pbt.Kill();
             transform.position = backupPos;
         }
 
@@ -63,27 +79,58 @@ public class bPlayer : MonoBehaviour
         Vector3 localOffset = transform.InverseTransformDirection(worldDir) * pushBack;
         Vector3 hitPos = transform.position + localOffset;
         backupPos = transform.position;
-        hitTween = DOTween.Sequence()
+        pbt = DOTween.Sequence()
             .Append(transform.DOLocalMove(hitPos, 0.15f).SetEase(Ease.InSine))
             .Append(transform.DOLocalMove(backupPos, 0.1f).SetEase(Ease.InQuad))
             .SetAutoKill(true)
             .OnKill(() =>
             {
-                hitTween = null;
+                pbt = null;
             });
     }
-    public void SetOutline()
+    private void hitFlashObj()
     {
-        // foreach (var spr in ptSpr)
-        // {
-        //     spr.Value.GetPropertyBlock(pProp);
-        //     pProp.SetFloat("_Outline", 1f);
-        //     pProp.SetColor("_OutlineColor", Color.red);
-        //     pProp.SetFloat("_OutlineSize", 10);
-        //     spr.Value.SetPropertyBlock(pProp);
-        //     spr.Value.color = Color.red;
-        // }
+        if (hft != null)
+            hft.Kill();
+
+        curHitAmount = 1f;
+
+        // 초기 상태: 흰색 플래시
+        foreach (var spr in ptSpr)
+        {
+            spr.Value.GetPropertyBlock(pProp);
+            pProp.SetColor(HitColorID, Color.red);
+            pProp.SetFloat(HitAmountID, 1f);
+            spr.Value.SetPropertyBlock(pProp);
+        }
+
+        hft = DOTween.To(
+            () => curHitAmount,
+            x =>
+            {
+                curHitAmount = x;
+                foreach (var spr in ptSpr)
+                {
+                    spr.Value.GetPropertyBlock(pProp);
+                    pProp.SetFloat(HitAmountID, x);
+                    spr.Value.SetPropertyBlock(pProp);
+                }
+            },
+            0f, 0.3f
+        ).SetEase(Ease.OutQuad).SetAutoKill(true).OnKill(() => hft = null);
     }
+    public void StateOutline()
+    {
+        foreach (var spr in ptSpr)
+        {
+            spr.Value.GetPropertyBlock(pProp);
+            pProp.SetColor(HitColorID, Color.red);
+            // pProp.SetFloat(HitAmountID, on ? 0.5f : 0);
+            pProp.SetFloat(HitAmountID, 0.5f);
+            spr.Value.SetPropertyBlock(pProp);
+        }
+    }
+
     #region ==== 🎨 ORDERING IN LAYER ====
     public void SetObjLayer(int y)
     {

@@ -1273,7 +1273,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     public void TestPlayer()
     {
-        player.SetOutline();
+        player.StateOutline();
     }
 }
 [CustomEditor(typeof(BattleCore))]
@@ -1283,14 +1283,10 @@ public class BattleCoreEditor : Editor
     {
         DrawDefaultInspector();
         BattleCore myScript = (BattleCore)target;
-        if (GUILayout.Button("캐릭터 아웃라인 테스트"))
+        if (GUILayout.Button("테스트"))
         {
             myScript.TestPlayer();
         }
-        // if (GUILayout.Button("데미지 텍스트 테스트"))
-        // {
-        //     myScript.ShowDmgTxt(100, new Vector3(0, 0, 0));
-        // }
         // if (GUILayout.Button("공격 애니메이션 테스트"))
         // {
         //     myScript.ShowTestAnimation("N_Att");

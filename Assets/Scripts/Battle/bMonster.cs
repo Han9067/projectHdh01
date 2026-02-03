@@ -14,12 +14,23 @@ public class bMonster : MonoBehaviour
     public int att, def, crt, crtRate, hit, eva, gainExp, lv;
     public int w, h, Rng;
     [SerializeField] private SpriteRenderer mainSpr;
-    private MaterialPropertyBlock mProp;
     public bool isOutline = false;
     private Vector3 backupPos;
-    Tween hitTween;
-    private Color redColor = new Color(1, 0.5f, 0.5f, 1);
     [SerializeField] private SortingGroup sGrp;
+    private Color redColor = new Color(1, 0.5f, 0.5f, 1);
+    private MaterialPropertyBlock mProp;
+    Tween pbt, hft; //pushBackTween, hitFlashTween
+    private static readonly int HitColorID = Shader.PropertyToID("_HitColor"); //HitColorID
+    private static readonly int HitAmountID = Shader.PropertyToID("_HitAmount"); //HitAmountID
+    private static readonly int OutlineID = Shader.PropertyToID("_Outline"); //OutlineID
+    private static readonly int OutlineColorID = Shader.PropertyToID("_OutlineColor"); //OutlineColorID
+    private static readonly int OutlineSizeID = Shader.PropertyToID("_OutlineSize"); //OutlineSizeID
+    private float curHitAmount; //현재 Hit Amount
+
+    void Awake()
+    {
+        mProp = new MaterialPropertyBlock();
+    }
     void Start()
     {
         monData = MonManager.I.MonDataList[monsterId].Clone();
@@ -44,7 +55,6 @@ public class bMonster : MonoBehaviour
         gainExp = monData.GainExp;
         lv = monData.Lv;
         Rng = monData.Rng;
-        mProp = new MaterialPropertyBlock();
     }
     public void SetMonData(int objId, int monId, float px, float py)
     {
@@ -85,9 +95,14 @@ public class bMonster : MonoBehaviour
     }
     private void OnHitAction(Vector3 pos)
     {
-        if (hitTween != null)
+        pushBackObj(pos);
+        hitFlashObj();
+    }
+    private void pushBackObj(Vector3 pos)
+    {
+        if (pbt != null)
         {
-            hitTween.Kill();
+            pbt.Kill();
             transform.position = backupPos;
         }
 
@@ -100,16 +115,36 @@ public class bMonster : MonoBehaviour
         Vector3 localOffset = transform.InverseTransformDirection(worldDir) * pushBack;
         Vector3 hitPos = transform.position + localOffset;
         backupPos = transform.position;
-        StateOutline(true);
-        hitTween = DOTween.Sequence()
+        pbt = DOTween.Sequence()
             .Append(transform.DOLocalMove(hitPos, 0.15f).SetEase(Ease.InSine))
             .Append(transform.DOLocalMove(backupPos, 0.1f).SetEase(Ease.InQuad))
             .SetAutoKill(true)
             .OnKill(() =>
             {
-                hitTween = null;
-                StateOutline(false);
+                pbt = null;
             });
+    }
+    private void hitFlashObj()
+    {
+        if (hft != null)
+            hft.Kill();
+
+        curHitAmount = 1f;
+
+        // 초기 상태: 흰색 플래시
+        mainSpr.GetPropertyBlock(mProp);
+        mProp.SetColor(HitColorID, Color.red);
+        mProp.SetFloat(HitAmountID, 1f);
+        mainSpr.SetPropertyBlock(mProp);
+
+        hft = DOTween.To(
+            () => curHitAmount,
+            x =>
+            {
+                curHitAmount = x; mainSpr.GetPropertyBlock(mProp);
+                mProp.SetFloat(HitAmountID, x); mainSpr.SetPropertyBlock(mProp);
+            }, 0f, 0.3f
+        ).SetEase(Ease.OutQuad).SetAutoKill(true).OnKill(() => hft = null);
     }
     private IEnumerator DeathMon(BtFaction attacker)
     {
@@ -126,10 +161,15 @@ public class bMonster : MonoBehaviour
     {
         isOutline = on;
         mainSpr.GetPropertyBlock(mProp);
-        mProp.SetFloat("_Outline", on ? 1f : 0);
-        mProp.SetColor("_OutlineColor", Color.red);
-        mProp.SetFloat("_OutlineSize", 10);
+        mProp.SetColor(HitColorID, Color.red);
+        mProp.SetFloat(HitAmountID, on ? 0.5f : 0);
         mainSpr.SetPropertyBlock(mProp);
-        mainSpr.color = on ? redColor : Color.white;
+        // isOutline = on;
+        // mainSpr.GetPropertyBlock(mProp);
+        // mProp.SetFloat(OutlineID, on ? 1f : 0);
+        // mProp.SetColor(OutlineColorID, Color.red);
+        // mProp.SetFloat(OutlineSizeID, 10);
+        // mainSpr.SetPropertyBlock(mProp);
+        // mainSpr.color = on ? redColor : Color.white;
     }
 }
