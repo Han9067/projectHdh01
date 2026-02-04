@@ -16,7 +16,6 @@ public class WorldMainUI : UIScreen
     private void Start()
     {
         mGameObject["IngPop"].SetActive(false);
-        mGameObject["TstBox"].SetActive(false);
         if (PlayerManager.I.pData.TraceQId == 0)
             mGameObject["QstBox"].SetActive(false);
         else

@@ -289,10 +289,19 @@ public class SkillPop : UIScreen
         string str = "";
         foreach (var v in data.Att)
         {
-            string name = LocalizationManager.GetValue(v.Name);
-            int cnt = data.Lv / v.ItvLv;
-            int val = v.Val + (v.ItvVal * cnt);
-            str += string.Format(LocalizationManager.GetValue(v.Str), name, val) + "\n";
+            if (data.Lv < v.Lim) continue;
+            Debug.Log(v.Name);
+            string desc = LocalizationManager.GetValue(v.Name);
+            int val = v.Val;
+            switch (v.Str)
+            {
+                case "AisB":
+                    str += string.Format(LocalizationManager.GetValue(v.Str), desc) + "\n";
+                    break;
+                default:
+                    str += string.Format(LocalizationManager.GetValue(v.Str), desc, val) + "\n";
+                    break;
+            }
         }
         mTMPText["AttVal"].text = str;
     }

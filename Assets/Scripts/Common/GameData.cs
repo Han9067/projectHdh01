@@ -84,7 +84,7 @@ public class SkData
 [System.Serializable]
 public class SkAttData
 {
-    //0 : AttID -> 특성ID, 1 : Val -> 스킬 내 특성 초기값, 2 : Lim -> 특성 활성 레벨, 3 : Itv -> 레벨별 특성값 증가치
+    //0 : AttID -> 특성ID, 1 : Val -> 스킬 내 특성 초기값, 2 : Lim -> 특성 활성 레벨, 3 : ItvVal -> 레벨별 특성값 증가치
     public int AttID, InitVal, Lim, ItvVal, ItvLv, Val;
     public string Name, Str;
     public SkAttData(string att)
