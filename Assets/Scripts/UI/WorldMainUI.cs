@@ -12,10 +12,11 @@ public class WorldMainUI : UIScreen
     {
         Regist();
         RegistButton();
+        mGameObject["IngPop"].SetActive(false);
+        mGameObject["ExplorePop"].SetActive(false);
     }
     private void Start()
     {
-        mGameObject["IngPop"].SetActive(false);
         if (PlayerManager.I.pData.TraceQId == 0)
             mGameObject["QstBox"].SetActive(false);
         else
@@ -212,8 +213,13 @@ public class WorldMainUI : UIScreen
             case "SetTraceQst":
                 SetTraceQst();
                 break;
+            case "ShowExplorePop":
+                mGameObject["ExplorePop"].SetActive(true);
+                SetExplore();
+                break;
         }
     }
+    #region 메인 UI
     private void UpdateState()
     {
         mTMPText["HpVal"].text = PlayerManager.I.pData.HP.ToString() + "/" + PlayerManager.I.pData.MaxHP.ToString();
@@ -309,6 +315,13 @@ public class WorldMainUI : UIScreen
             }
         }
     }
+    #endregion
+    #region 탐험 팝업
+    private void SetExplore()
+    {
+
+    }
+    #endregion
     public override void Refresh()
     {
         // UI가 새로고침될 때 현재 속도에 맞게 버튼 이미지 업데이트

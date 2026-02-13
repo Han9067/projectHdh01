@@ -575,9 +575,9 @@ public class WorldCore : AutoSingleton<WorldCore>
         // });
     }
     #endregion
-    public void ShowToastPopup()
+    public void ShowExplorePopup()
     {
-        GsManager.I.ShowTstMsg("Tst_NotEnoughEnergy");
+
     }
 }
 
@@ -590,13 +590,9 @@ public class WorldCoreEditor : Editor
 
         WorldCore myScript = (WorldCore)target;
 
-        if (GUILayout.Button("플레이어 마을 이동"))
+        if (GUILayout.Button("탐험 팝업 테스트"))
         {
-            myScript.MoveRoad(1, 2);
-        }
-        if (GUILayout.Button("토스트 팝업 테스트"))
-        {
-            myScript.ShowToastPopup();
+            myScript.ShowExplorePopup();
         }
     }
 }
