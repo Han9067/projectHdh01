@@ -33,6 +33,7 @@ public class NpcManager : AutoSingleton<NpcManager>
             /////
             data.Skin = parts[0]; data.Face = parts[1]; data.Eyebrow = parts[2]; data.Eye = parts[3]; data.EyeColor = parts[4];
             data.Ear = parts[5]; data.Nose = parts[6]; data.Mouth = parts[7]; data.Hair = parts[8]; data.HairColor = parts[9];
+            data.Beard = parts[10]; data.BeardColor = parts[11];
             /////
             data.EqSlot["Armor"] = eq[0] == 0 ? null : ItemManager.I.ItemDataList[eq[0]];
             data.EqSlot["Shoes"] = eq[1] == 0 ? null : ItemManager.I.ItemDataList[eq[1]];

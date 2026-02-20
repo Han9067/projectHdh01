@@ -44,6 +44,8 @@ public interface ICharData
     int Mouth { get; set; }
     int Hair { get; set; }
     int HairColor { get; set; }
+    int Beard { get; set; }
+    int BeardColor { get; set; }
     int Gen { get; set; }
     Dictionary<string, ItemData> EqSlot { get; set; }
 }
@@ -140,6 +142,8 @@ public class PlayerData : ICharData
     public int Mouth { get; set; }
     public int Hair { get; set; }
     public int HairColor { get; set; }
+    public int Beard { get; set; }
+    public int BeardColor { get; set; }
     #endregion
     public PlayerData()
     {
@@ -172,6 +176,8 @@ public class NpcData : ICharData
     public int Mouth { get; set; }
     public int Hair { get; set; }
     public int HairColor { get; set; }
+    public int Beard { get; set; }
+    public int BeardColor { get; set; }
     #endregion
 }
 
