@@ -282,7 +282,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 tileMapObj = GameObject.FindGameObjectWithTag("tileMapObj");
         }
 
-        gMap = tileMapObj.transform.Find("Ground")?.GetComponent<Tilemap>();
+        gMap = tileMapObj.transform.Find("Bg")?.GetComponent<Tilemap>();
         var pMap = tileMapObj.transform.Find("Prop")?.GetComponent<Tilemap>();
 
         if (gMap != null)
@@ -348,7 +348,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                     break;
                 case 1: cx = 20; cy = 12; break;
             }
-
             pObj.transform.position = new Vector3(gGrid[cx, cy].x, gGrid[cx, cy].y, 0);
             cpPos = new Vector2Int(cx, cy);
             gGrid[cx, cy].tId = 1000;

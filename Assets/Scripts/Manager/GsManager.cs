@@ -481,7 +481,7 @@ public class GsManager : AutoSingleton<GsManager>
                         case 14:
                         case 16:
                             wpState = 4;
-                            PtType curWp = slot["Hand1"].Type == 2 ? PtType.TwoWp1 : PtType.TwoWp3;
+                            PtType curWp = slot["Hand1"].Type == 12 ? PtType.TwoWp1 : PtType.TwoWp3;
                             ptSpr[curWp].gameObject.SetActive(true);
                             ptSpr[curWp].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
                             break;
