@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 using System;
 using TMPro;
 using UnityEditor;
-
+using System.Linq;
 public class BtGrid
 {
     public float x, y;
@@ -69,7 +69,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     private List<TextMeshProUGUI> dmgTxtList = new List<TextMeshProUGUI>();
     public Image bloodScreen;
     [Header("====Map====")]
-    [SerializeField] private GameObject tileMapObj; // 맵 타일 오브젝트
+    private GameObject tileMapObj; // 맵 타일 오브젝트
     public int mapSeed, pDir; // [맵 시드], [플레이어 방향 상,하,좌,우]
     public BtGrid[,] gGrid; // 땅타일 그리드
     // ========================================
@@ -81,13 +81,14 @@ public class BattleCore : AutoSingleton<BattleCore>
     private float tileOffset = 0.6f, tileItv = 1.2f; // 타일 오프셋, 타일 간격
     float[] mapLimit = new float[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
     public GameObject[,] guide; // 길찾기 가이드 오브젝트
-    [SerializeField] private GameObject rngParent;
+    [SerializeField] private GameObject rngParent, propParent, prop2Parent; // 공격 범위 그리드 부모, 환경 프리팹 부모, 환경2 프리팹 부모
+    [SerializeField] private List<Prop2Obj> prop2Obj = new List<Prop2Obj>(); // 환경 프리팹 리스트
     private List<RngGrid> attRng = new List<RngGrid>();
     private Vector2Int attRngPos = new Vector2Int(-200, -200);
 
     [Header("====Player====")]
     [SerializeField] private GameObject pObj;
-    public GameObject focus, propParent; // 플레이어, 포커스, 환경, 물건 프리팹 부모, 프리팹
+    public GameObject focus; // 플레이어, 포커스, 환경
     private SpriteRenderer focusSrp;
     private bPlayer player; //플레이어
     private bool isActionable = false;// 플레이어 행동 가능 여부, 플레이어 이동 중인지 여부  
@@ -278,8 +279,9 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         else
         {
+            tileMapObj = GameObject.Find("Tile_2_1");
             if (tileMapObj == null)
-                tileMapObj = GameObject.FindGameObjectWithTag("tileMapObj");
+                tileMapObj = Instantiate(ResManager.GetGameObject("Tile_2_1"), transform);
         }
 
         gMap = tileMapObj.transform.Find("Bg")?.GetComponent<Tilemap>();
@@ -316,11 +318,29 @@ public class BattleCore : AutoSingleton<BattleCore>
                     gGrid[x, y] = new BtGrid() { x = tilePos.x * tileItv + tileOffset, y = tilePos.y * tileItv + tileOffset, tId = 0 };
                     if (pTile != null)
                     {
-                        gGrid[x, y].tId = int.Parse(pTile.name.Split('_')[2]);
+                        string[] data = pTile.name.Split('_');
+                        gGrid[x, y].tId = int.Parse(data[2]);
+                        if (data.Length > 3)
+                        {
+                            // Debug.Log(data[3]);
+                            //data[3]이 1이면 나무계열 11은 몰루
+                            switch (int.Parse(data[3]))
+                            {
+                                case 1:
+                                    var obj2 = Instantiate(ResManager.GetGameObject("Prop2Obj"), prop2Parent.transform);
+                                    string name = $"{pTile.name.Remove(pTile.name.Length - 2)}_{2}";
+                                    obj2.name = name;
+                                    obj2.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
+                                    Prop2Obj prop2 = obj2.GetComponent<Prop2Obj>();
+                                    prop2.SetProp2(name, mapH - y);
+                                    prop2Obj.Add(prop2);
+                                    break;
+                            }
+                        }
                         var prop = Instantiate(ResManager.GetGameObject("PropObj"), propParent.transform);
                         prop.name = pTile.name;
                         prop.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
-                        prop.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite(pTile.name);
+                        prop.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite(prop.name);
                     }
                 }
             }
