@@ -1,18 +1,21 @@
 using GB;
 using UnityEngine;
 using UnityEngine.EventSystems;
-public class Prop2Obj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class PropObj : MonoBehaviour
 {
     private string nameStr;
     private int sort;
+    public float curAlpha = 1f;
+    public Bounds bounds;
     [SerializeField] private SpriteRenderer spr;
 
     void Start()
     {
         spr.sprite = ResManager.GetSprite(nameStr);
         spr.sortingOrder = sort;
+        bounds = spr.bounds;
     }
-    public void SetProp2(string str, int st)
+    public void SetProp(string str, int st)
     {
         nameStr = str;
         sort = st;
@@ -20,14 +23,6 @@ public class Prop2Obj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void SetAlpha(float alpha)
     {
         spr.color = new Color(1, 1, 1, alpha);
-    }
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        Debug.Log("OnPointerEnter");
-        SetAlpha(0.5f);
-    }
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        SetAlpha(1f);
+        curAlpha = alpha;
     }
 }

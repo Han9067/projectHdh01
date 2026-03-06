@@ -82,7 +82,8 @@ public class BattleCore : AutoSingleton<BattleCore>
     float[] mapLimit = new float[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
     public GameObject[,] guide; // 길찾기 가이드 오브젝트
     [SerializeField] private GameObject rngParent, propParent, prop2Parent; // 공격 범위 그리드 부모, 환경 프리팹 부모, 환경2 프리팹 부모
-    [SerializeField] private List<Prop2Obj> prop2Obj = new List<Prop2Obj>(); // 환경 프리팹 리스트
+    [SerializeField] private List<PropObj> propObj = new List<PropObj>(); // 환경 프리팹 리스트
+    [SerializeField] private List<PropObj> prop2Obj = new List<PropObj>(); // 환경 프리팹2 리스트
     private List<RngGrid> attRng = new List<RngGrid>();
     private Vector2Int attRngPos = new Vector2Int(-200, -200);
 
@@ -156,10 +157,39 @@ public class BattleCore : AutoSingleton<BattleCore>
             if (focus.activeSelf) focus.SetActive(false);
             return;
         }
+        Vector3 wPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        wPos.z = 0;
+        if (prop2Obj.Count > 0)
+        {
+            List<int> idx = new List<int>();
+            for (int i = 0; i < prop2Obj.Count; i++)
+            {
+                Bounds b = prop2Obj[i].bounds;
+                bool contains = wPos.x > b.min.x && wPos.x < b.max.x && wPos.y > b.min.y && wPos.y < b.max.y;
+                if (contains) idx.Add(i);
+                else
+                {
+                    if (prop2Obj[i].curAlpha != 1f)
+                    {
+                        propObj[i].SetAlpha(1f);
+                        prop2Obj[i].SetAlpha(1f);
+                    }
+                }
+            }
+            if (idx.Count > 0)
+            {
+                for (int i = 0; i < idx.Count; i++)
+                {
+                    if (prop2Obj[idx[i]].curAlpha != 0.5f)
+                    {
+                        propObj[idx[i]].SetAlpha(0.5f);
+                        prop2Obj[idx[i]].SetAlpha(0.5f);
+                    }
+                }
+            }
+        }
         if (isActionable)
         {
-            Vector3 wPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            wPos.z = 0;
             Vector2Int t = FindTilePos(wPos);
             if (t.x == -1 && t.y == -1)
             {
@@ -319,28 +349,33 @@ public class BattleCore : AutoSingleton<BattleCore>
                     if (pTile != null)
                     {
                         string[] data = pTile.name.Split('_');
-                        gGrid[x, y].tId = int.Parse(data[2]);
-                        if (data.Length > 3)
+                        gGrid[x, y].tId = int.Parse(data[3]);
+                        switch (data[2])
                         {
-                            // Debug.Log(data[3]);
-                            //data[3]이 1이면 나무계열 11은 몰루
-                            switch (int.Parse(data[3]))
-                            {
-                                case 1:
-                                    var obj2 = Instantiate(ResManager.GetGameObject("Prop2Obj"), prop2Parent.transform);
-                                    string name = $"{pTile.name.Remove(pTile.name.Length - 2)}_{2}";
-                                    obj2.name = name;
-                                    obj2.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
-                                    Prop2Obj prop2 = obj2.GetComponent<Prop2Obj>();
-                                    prop2.SetProp2(name, mapH - y);
-                                    prop2Obj.Add(prop2);
-                                    break;
-                            }
+                            case "2":
+                                string str = $"{pTile.name.Remove(pTile.name.Length - 2)}_{Random.Range(1, 9)}";
+                                CreatePropObj("PropObj", $"{str}_1", mapH - y, propObj, gGrid[x, y].x, gGrid[x, y].y, propParent);
+                                CreatePropObj("Prop2Obj", $"{str}_2", mapH - y, prop2Obj, gGrid[x, y].x, gGrid[x, y].y + 0.6f, prop2Parent);
+                                break;
+                            default:
+                                CreatePropObj("PropObj", pTile.name, mapH - y, propObj, gGrid[x, y].x, gGrid[x, y].y, propParent);
+                                break;
                         }
-                        var prop = Instantiate(ResManager.GetGameObject("PropObj"), propParent.transform);
-                        prop.name = pTile.name;
-                        prop.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
-                        prop.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite(prop.name);
+                        // gGrid[x, y].tId = int.Parse(data[2]);
+
+                        // if (data.Length > 4)
+                        // {
+                        //     switch (int.Parse(data[4]))
+                        //     {
+                        //         case 1:
+
+                        //             //
+                        //             CreatePropObj("Prop2Obj", $"{pTile.name.Remove(pTile.name.Length - 2)}_{2}", mapH - y,
+                        //                     prop2Obj, gGrid[x, y].x, gGrid[x, y].y + 0.6f);
+                        //             break;
+                        //     }
+                        // }
+                        // CreatePropObj("PropObj", pTile.name, mapH - y, propObj, gGrid[x, y].x, gGrid[x, y].y);
                     }
                 }
             }
@@ -363,14 +398,15 @@ public class BattleCore : AutoSingleton<BattleCore>
             switch (pDir)
             {
                 case 0:
-                    cx = 10; cy = 12;
+                    cx = 13; cy = 13;
                     player.SetObjDir(-1);
                     break;
-                case 1: cx = 20; cy = 12; break;
+                case 1: cx = 24; cy = 13; break;
             }
-            pObj.transform.position = new Vector3(gGrid[cx, cy].x, gGrid[cx, cy].y, 0);
-            cpPos = new Vector2Int(cx, cy);
-            gGrid[cx, cy].tId = 1000;
+            var pos = GetStartPos(cx, cy); //추후 문제가 생길수있음...
+            pObj.transform.position = new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
+            cpPos = pos;
+            gGrid[pos.x, pos.y].tId = 1000;
             player.SetObjLayer(mapH - cy);
             objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos, 1, 1));
         }
@@ -381,30 +417,19 @@ public class BattleCore : AutoSingleton<BattleCore>
 
         if (WorldObjManager.I.btMonList.Count > 0)
         {
-            int cx = 0, cy = 0;
-            int idx = 0;
+            int cx = 0, cy = 0, idx = 0;
             //플레이어와 반대 방향에 배치 0:좌, 1:우
             switch (pDir)
             {
-                case 0: cx = 20; cy = 12; break;
-                case 1: cx = 10; cy = 12; break;
+                case 0: cx = 24; cy = 13; break;
+                case 1: cx = 13; cy = 13; break;
             }
             //추후 핵심 시스템 끝나면 중심점과 rng 값을 조정할 생각 
             int mCnt = WorldObjManager.I.btMonList.Count, rx = (mCnt / 2) + 1, ry = (mCnt / 4) + 1;
-            var mPos = new List<Vector2Int>();
-            while (mCnt > 0)
+            for (int i = 0; i < mCnt; i++)
             {
-                int mx = cx + Random.Range(-rx, rx + 1);
-                int my = cy + Random.Range(-ry, ry + 1);
-                if (mx < 0 || mx >= mapW || my < 0 || my >= mapH)
-                    continue;
-                if (mPos.Contains(new Vector2Int(mx, my)))
-                    continue;
-                mPos.Add(new Vector2Int(mx, my));
-                mCnt--;
-            }
-            foreach (var p in mPos)
-            {
+                int mx = cx + Random.Range(-rx, rx + 1), my = cy + Random.Range(-ry, ry + 1);
+                var p = GetStartPos(mx, my);
                 int mId = WorldObjManager.I.btMonList[idx];
                 int w = MonManager.I.MonDataList[mId].W, h = MonManager.I.MonDataList[mId].H;
                 var mon = Instantiate(ResManager.GetGameObject("MonObj"), monsterParent);
@@ -421,6 +446,31 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
     }
+    private Vector2Int GetStartPos(int x, int y)
+    {
+        if (x >= 0 && x < mapW && y >= 0 && y < mapH && gGrid[x, y].tId == 0)
+            return new Vector2Int(x, y);
+        int maxRadius = Mathf.Max(mapW, mapH);
+        for (int radius = 1; radius <= maxRadius; radius++)
+        {
+            for (int dx = -radius; dx <= radius; dx++)
+            {
+                for (int dy = -radius; dy <= radius; dy++)
+                {
+                    // 현재 radius의 “테두리”만 보려면: max(|dx|,|dy|) == radius
+                    if (Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy)) != radius)
+                        continue;
+                    int nx = x + dx;
+                    int ny = y + dy;
+                    if (nx < 0 || nx >= mapW || ny < 0 || ny >= mapH)
+                        continue;
+                    if (gGrid[nx, ny].tId == 0)
+                        return new Vector2Int(nx, ny);
+                }
+            }
+        }
+        return new Vector2Int(0, 0);
+    }
     private void CreateRngObj(int cnt)
     {
         int idx = attRng.Count;
@@ -432,6 +482,15 @@ public class BattleCore : AutoSingleton<BattleCore>
             obj.SetActive(false);
             attRng.Add(rng);
         }
+    }
+    private void CreatePropObj(string prefabName, string name, int layer, List<PropObj> list, float x, float y, GameObject parent)
+    {
+        var obj = Instantiate(ResManager.GetGameObject(prefabName), parent.transform);
+        obj.name = name;
+        obj.transform.position = new Vector3(x, y, 0);
+        PropObj prop = obj.GetComponent<PropObj>();
+        prop.SetProp(name, layer);
+        list.Add(prop);
     }
     #endregion
     Vector2Int FindTilePos(Vector3 worldPos)
