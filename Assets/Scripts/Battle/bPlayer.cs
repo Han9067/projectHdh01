@@ -12,17 +12,14 @@ public class bPlayer : MonoBehaviour
     public PlayerData pData;
     private Vector3 backupPos;
     Tween pbt, hft; //pushBackTween, hitFlashTween
-    private Dictionary<PtType, Material> material = new Dictionary<PtType, Material>();
     [SerializeField] private SortingGroup sGrp;
-
+    public BoxCollider2D bColl;
+    #region ==== Hit Effect ====
     private static readonly int HitColorID = Shader.PropertyToID("_HitColor"); //HitColorID
     private static readonly int HitAmountID = Shader.PropertyToID("_HitAmount"); //HitAmountID
-    private static readonly int OutlineID = Shader.PropertyToID("_Outline"); //OutlineID
-    private static readonly int OutlineColorID = Shader.PropertyToID("_OutlineColor"); //OutlineColorID
-    private static readonly int OutlineSizeID = Shader.PropertyToID("_OutlineSize"); //OutlineSizeID
-
     private MaterialPropertyBlock pProp; //MaterialPropertyBlock
     private float curHitAmount; //현재 Hit Amount
+    #endregion
 
     void Awake()
     {

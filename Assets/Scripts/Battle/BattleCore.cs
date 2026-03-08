@@ -120,8 +120,10 @@ public class BattleCore : AutoSingleton<BattleCore>
     private Vector2Int skPos = new Vector2Int(-1, -1);
     private List<TurnData> objTurn = new List<TurnData>();
     private int tIdx = 0; // 턴 인덱스
-    // float dTime = 0;
+                          // float dTime = 0;
+
     #endregion
+    string mapDefault = "Tile_1_1";
     void Awake()
     {
         if (Time.timeScale == 0) Time.timeScale = 1;
@@ -166,13 +168,15 @@ public class BattleCore : AutoSingleton<BattleCore>
             {
                 Bounds b = prop2Obj[i].bounds;
                 bool contains = wPos.x > b.min.x && wPos.x < b.max.x && wPos.y > b.min.y && wPos.y < b.max.y;
-                if (contains) idx.Add(i);
+                if (contains)
+                    idx.Add(i);
                 else
                 {
                     if (prop2Obj[i].curAlpha != 1f)
                     {
-                        propObj[i].SetAlpha(1f);
-                        prop2Obj[i].SetAlpha(1f);
+                        prop2Obj[i].onMouse = false;
+                        if (!prop2Obj[i].onObj)
+                            changeAlphaWithProps(i, 1f);
                     }
                 }
             }
@@ -182,8 +186,8 @@ public class BattleCore : AutoSingleton<BattleCore>
                 {
                     if (prop2Obj[idx[i]].curAlpha != 0.5f)
                     {
-                        propObj[idx[i]].SetAlpha(0.5f);
-                        prop2Obj[idx[i]].SetAlpha(0.5f);
+                        prop2Obj[idx[i]].onMouse = true;
+                        changeAlphaWithProps(idx[i], 0.5f);
                     }
                 }
             }
@@ -309,9 +313,9 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         else
         {
-            tileMapObj = GameObject.Find("Tile_2_1");
+            tileMapObj = GameObject.Find(mapDefault);
             if (tileMapObj == null)
-                tileMapObj = Instantiate(ResManager.GetGameObject("Tile_2_1"), transform);
+                tileMapObj = Instantiate(ResManager.GetGameObject(mapDefault), transform);
         }
 
         gMap = tileMapObj.transform.Find("Bg")?.GetComponent<Tilemap>();
@@ -361,21 +365,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                                 CreatePropObj("PropObj", pTile.name, mapH - y, propObj, gGrid[x, y].x, gGrid[x, y].y, propParent);
                                 break;
                         }
-                        // gGrid[x, y].tId = int.Parse(data[2]);
-
-                        // if (data.Length > 4)
-                        // {
-                        //     switch (int.Parse(data[4]))
-                        //     {
-                        //         case 1:
-
-                        //             //
-                        //             CreatePropObj("Prop2Obj", $"{pTile.name.Remove(pTile.name.Length - 2)}_{2}", mapH - y,
-                        //                     prop2Obj, gGrid[x, y].x, gGrid[x, y].y + 0.6f);
-                        //             break;
-                        //     }
-                        // }
-                        // CreatePropObj("PropObj", pTile.name, mapH - y, propObj, gGrid[x, y].x, gGrid[x, y].y);
                     }
                 }
             }
@@ -602,6 +591,11 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return false;
     }
+    private void changeAlphaWithProps(int idx, float val)
+    {
+        propObj[idx].SetAlpha(val);
+        prop2Obj[idx].SetAlpha(val);
+    }
     #endregion
     #region ==== Object Action ====
     void OnMovePlayer(Vector2Int t, int state = 0)
@@ -808,8 +802,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             if (t.objId == objId) return t.faction;
         return null;
     }
-    IEnumerator MoveObj(GameObject obj, int objId, Vector2Int cv, Vector2Int mv, float ct,
-        Action callA = null, Action callB = null)
+    IEnumerator MoveObj(GameObject obj, int objId, Vector2Int cv, Vector2Int mv, float ct, Action callA = null, Action callB = null)
     {
         SetObjDir(objId, cv, mv);
         var pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.x, mv.y].y, 0);
@@ -1135,6 +1128,35 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
     }
+    private void CheckPlayerOverlapProp()
+    {
+        Bounds b = player.bColl.bounds;
+        for (int i = 0; i < prop2Obj.Count; i++)
+        {
+            if (!prop2Obj[i].gameObject.activeInHierarchy) continue;
+            if (b.Intersects(prop2Obj[i].bounds))
+            {
+                if (!prop2Obj[i].onObj)
+                {
+                    prop2Obj[i].onObj = true;
+                    changeAlphaWithProps(i, 0.5f);
+                }
+            }
+            else
+            {
+                if (prop2Obj[i].onObj)
+                {
+                    prop2Obj[i].onObj = false;
+                    if (prop2Obj[i].curAlpha != 1f)
+                        changeAlphaWithProps(i, 1f);
+                }
+            }
+        }
+    }
+    public void TestCheckOverlapProp()
+    {
+        CheckPlayerOverlapProp();
+    }
     #endregion
     #region ==== 스킬 ====
     public void InitBtSk()
@@ -1364,6 +1386,10 @@ public class BattleCoreEditor : Editor
         if (GUILayout.Button("테스트"))
         {
             myScript.TestPlayer();
+        }
+        if (GUILayout.Button("테스트 오버레이 프로퍼"))
+        {
+            myScript.TestCheckOverlapProp();
         }
         // if (GUILayout.Button("공격 애니메이션 테스트"))
         // {

@@ -6,6 +6,7 @@ public class PropObj : MonoBehaviour
     private string nameStr;
     private int sort;
     public float curAlpha = 1f;
+    public bool onMouse = false, onObj = false;
     public Bounds bounds;
     [SerializeField] private SpriteRenderer spr;
 
