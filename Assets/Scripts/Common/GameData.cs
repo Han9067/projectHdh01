@@ -148,7 +148,7 @@ public class PlayerData : ICharData
     public PlayerData()
     {
         EqSlot.Add("Hand1", null); EqSlot.Add("Hand2", null); EqSlot.Add("Armor", null); EqSlot.Add("Shoes", null); EqSlot.Add("Helmet", null);
-        EqSlot.Add("Gloves", null); EqSlot.Add("Belt", null); EqSlot.Add("Cape", null); EqSlot.Add("Necklace", null); EqSlot.Add("Ring1", null); EqSlot.Add("Ring2", null);
+        EqSlot.Add("Gloves", null); EqSlot.Add("Belt", null); EqSlot.Add("Necklace", null); EqSlot.Add("Ring1", null); EqSlot.Add("Ring2", null);
     } // 생성자
 }
 [System.Serializable]

@@ -249,7 +249,7 @@ public class InvenPop : UIScreen
                 subGridRect[y, x] = sub.transform as RectTransform;
             }
         }
-        string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Helmet", "Shoes", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
+        string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Helmet", "Shoes", "Gloves", "Belt", "Necklace", "Ring1", "Ring2" };
         for (int i = 0; i < eq.Length; i++)
         {
             string eqName = eq[i];
@@ -713,9 +713,8 @@ public class InvenPop : UIScreen
             case 3: curEq = new string[] { "Shoes" }; break;
             case 4: curEq = new string[] { "Gloves" }; break;
             case 5: curEq = new string[] { "Belt" }; break;
-            case 6: curEq = new string[] { "Cape" }; break;
-            case 7: curEq = new string[] { "Ring1", "Ring2" }; break;
-            case 8: curEq = new string[] { "Necklace" }; break;
+            case 6: curEq = new string[] { "Ring1", "Ring2" }; break;
+            case 7: curEq = new string[] { "Necklace" }; break;
             default:
                 curEq = (type == 22) ? new string[] { "Hand2" } : new string[] { "Hand1", "Hand2" };
                 break;
@@ -789,7 +788,7 @@ public class InvenPop : UIScreen
     string GetEquipBody(int uId)
     {
         string result = "";
-        string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Helmet", "Shoes", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
+        string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Helmet", "Shoes", "Gloves", "Belt", "Necklace", "Ring1", "Ring2" };
         foreach (var v in eq)
         {
             if (PlayerManager.I.pData.EqSlot[v] != null && PlayerManager.I.pData.EqSlot[v].Uid == uId)

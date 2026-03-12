@@ -40,10 +40,9 @@ public class NpcManager : AutoSingleton<NpcManager>
             data.EqSlot["Helmet"] = eq[2] == 0 ? null : ItemManager.I.ItemDataList[eq[2]];
             data.EqSlot["Gloves"] = eq[3] == 0 ? null : ItemManager.I.ItemDataList[eq[3]];
             data.EqSlot["Belt"] = eq[4] == 0 ? null : ItemManager.I.ItemDataList[eq[4]];
-            data.EqSlot["Cape"] = eq[5] == 0 ? null : ItemManager.I.ItemDataList[eq[5]];
-            data.EqSlot["Necklace"] = eq[6] == 0 ? null : ItemManager.I.ItemDataList[eq[6]];
-            data.EqSlot["Ring1"] = eq[7] == 0 ? null : ItemManager.I.ItemDataList[eq[7]];
-            data.EqSlot["Ring2"] = eq[8] == 0 ? null : ItemManager.I.ItemDataList[eq[8]];
+            data.EqSlot["Necklace"] = eq[5] == 0 ? null : ItemManager.I.ItemDataList[eq[5]];
+            data.EqSlot["Ring1"] = eq[6] == 0 ? null : ItemManager.I.ItemDataList[eq[6]];
+            data.EqSlot["Ring2"] = eq[7] == 0 ? null : ItemManager.I.ItemDataList[eq[7]];
             data.EqSlot["Hand1"] = wp[0] == 0 ? null : ItemManager.I.ItemDataList[wp[0]];
             data.EqSlot["Hand2"] = wp[1] == 0 ? null : ItemManager.I.ItemDataList[wp[1]];
             /////
@@ -75,7 +74,7 @@ public class NpcManager : AutoSingleton<NpcManager>
         int wpType = npcData.EqSlot["Hand1"] != null ? npcData.EqSlot["Hand1"].Type : 0;
         npcData.Rng = wpType == 0 ? 1 : GsManager.I.GetWpRng(wpType);
         //////
-        string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Cape", "Necklace", "Ring1", "Ring2" };
+        string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Necklace", "Ring1", "Ring2" };
         foreach (string e in eq)
         {
             if (npcData.EqSlot[e] != null)
