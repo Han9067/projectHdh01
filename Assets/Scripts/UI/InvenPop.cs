@@ -60,7 +60,7 @@ public class InvenPop : UIScreen
     }
     private void InitColor()
     {
-        gridColor = new Color(220 / 255f, 185 / 255f, 155 / 255f, 1);
+        gridColor = new Color(175 / 255f, 130 / 255f, 90 / 255f, 1);
         greenColor = new Color(129 / 255f, 183 / 255f, 127 / 255f, 1);
         yellowColor = new Color(255 / 255f, 250 / 255f, 101 / 255f, 1);
         redColor = new Color(255 / 255f, 105 / 255f, 101 / 255f, 1);

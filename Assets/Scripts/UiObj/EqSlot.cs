@@ -9,7 +9,7 @@ public class EqSlot : MonoBehaviour
     [SerializeField] private Image box;
     private Button btn;
     private bool isPossible = false;
-    private Color gray = new Color(192 / 255f, 192 / 255f, 192 / 255f, 1), green = new Color(129 / 255f, 183 / 255f, 127 / 255f, 1);
+    private Color boxColor = new Color(175 / 255f, 130 / 255f, 90 / 255f, 1), green = new Color(129 / 255f, 183 / 255f, 127 / 255f, 1);
     private void Awake()
     {
         btn = GetComponent<Button>();
@@ -29,7 +29,7 @@ public class EqSlot : MonoBehaviour
         if (isPossible)
             box.color = green;
         else
-            box.color = gray;
+            box.color = boxColor;
     }
     public void OnButtonClick()
     {
