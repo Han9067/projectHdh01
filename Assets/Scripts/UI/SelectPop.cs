@@ -113,7 +113,7 @@ public class SelectPop : UIScreen
                 ItemData cloneItem = selItem.Clone();
                 cloneItem.Dur = selItem.Dur; cloneItem.MaxDur = selItem.MaxDur;
                 PlayerManager.I.pData.Crown -= buyPrice;
-                Presenter.Send("WorldMainUI", "UpdateCrownTxt");
+                Presenter.Send("InvenPop", "UpdateCrownTxt");
                 Presenter.Send("InvenPop", "AddItem", cloneItem);
                 Presenter.Send("CityEnterPop", "AddNpcRls", 2); //호감도
                 Close();
@@ -121,7 +121,7 @@ public class SelectPop : UIScreen
             case "OnSell":
                 int sellPrice = ItemManager.I.GetItemPrice(selItem.Price, selItem.Dur, selItem.MaxDur);
                 PlayerManager.I.pData.Crown += sellPrice;
-                Presenter.Send("WorldMainUI", "UpdateCrownTxt");
+                Presenter.Send("InvenPop", "UpdateCrownTxt");
                 Presenter.Send("InvenPop", "DeleteItem", selItem.Uid);
                 Presenter.Send("CityEnterPop", "AddNpcRls", 2); //호감도
                 Close();

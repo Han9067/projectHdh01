@@ -2,7 +2,7 @@ using System.Diagnostics;
 using GB;
 using UnityEngine.UI;
 using UnityEngine;
-using System.Collections.Generic;
+using System;
 
 
 public class CharInfoPop : UIScreen
@@ -17,6 +17,7 @@ public class CharInfoPop : UIScreen
     private void Start()
     {
         GsManager.I.SetUiBaseParts(0, mGameObject);
+        UpdateDetail(0);
     }
     private void OnEnable()
     {
@@ -77,6 +78,15 @@ public class CharInfoPop : UIScreen
             {
                 case "Close":
                     Close();
+                    break;
+                case "BtnBt":
+                    UpdateDetail(0);
+                    break;
+                case "BtnInfo":
+                    UpdateDetail(1);
+                    break;
+                case "BtnState":
+                    UpdateDetail(2);
                     break;
             }
         }
@@ -143,13 +153,13 @@ public class CharInfoPop : UIScreen
         int g = PlayerManager.I.pData.Grade;
         mTMPText["GradeVal"].text = GetGradeName(g);
         mTMPText["GradeVal"].transform.localPosition = g == 0 ? new Vector3(0, -48f, 0) : new Vector3(20f, -48f, 0);
-        mImages["BadgeIcon"].gameObject.SetActive(g != 0);
-        if (g > 0)
-        {
-            mImages["BadgeIcon"].color = ColorData.GetBadgeGradeColor(g);
-            int n = g > 3 ? 1 : 2;
-            mImages["BadgeIcon"].sprite = ResManager.GetSprite($"icon_badge{n}");
-        }
+        // mImages["BadgeIcon"].gameObject.SetActive(g != 0);
+        // if (g > 0)
+        // {
+        //     mImages["BadgeIcon"].color = ColorData.GetBadgeGradeColor(g);
+        //     int n = g > 3 ? 1 : 2;
+        //     mImages["BadgeIcon"].sprite = ResManager.GetSprite($"icon_badge{n}");
+        // }
     }
     string GetGradeName(int grade)
     {
@@ -168,5 +178,12 @@ public class CharInfoPop : UIScreen
             case 10: return "SS";
         }
         return "";
+    }
+    private void UpdateDetail(int idx)
+    {
+        string[] arr = new string[] { "BtObj", "InfoObj", "StateObj" };
+        foreach (string s in arr)
+            mGameObject[s].SetActive(false);
+        mGameObject[arr[idx]].SetActive(true);
     }
 }

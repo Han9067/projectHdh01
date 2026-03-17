@@ -21,7 +21,6 @@ public class WorldMainUI : UIScreen
             mGameObject["QstBox"].SetActive(false);
         else
             SetTraceQst();
-        UpdateCrownTxt();
         UpdateState();
     }
     private void OnEnable()
@@ -95,7 +94,6 @@ public class WorldMainUI : UIScreen
                 if (PlayerManager.I.pData.Crown >= 50)
                 {
                     PlayerManager.I.pData.Crown -= 50;
-                    UpdateCrownTxt();
                 }
                 else
                 {
@@ -185,9 +183,7 @@ public class WorldMainUI : UIScreen
         {
             case "UpdateInfo":
                 UpdateState();
-                UpdateCrownTxt();
                 break;
-            case "UpdateCrownTxt": UpdateCrownTxt(); break;
             case "UpdateState": UpdateState(); break;
             case "UpdateAllTime":
                 tDay = GsManager.I.tDay;
@@ -201,7 +197,6 @@ public class WorldMainUI : UIScreen
                 StateGameSpd(data.Get<string>());
                 break;
             case "OnWork":
-                UpdateCrownTxt();
                 StartWork(data.Get<int>());
                 break;
             case "OnRest":
@@ -234,10 +229,6 @@ public class WorldMainUI : UIScreen
     {
         mTMPText["EpVal"].text = PlayerManager.I.pData.EP.ToString();
         mEnergyGg.value = (float)PlayerManager.I.pData.EP / PlayerManager.I.pData.MaxEP * 100f;
-    }
-    private void UpdateCrownTxt()
-    {
-        mTMPText["CrownVal"].text = PlayerManager.I.pData.Crown.ToString();
     }
     private void CalcCalender()
     {

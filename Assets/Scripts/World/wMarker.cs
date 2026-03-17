@@ -6,19 +6,25 @@ using GB;
 public class wMarker : MonoBehaviour
 {
     [SerializeField] private int mkUid, mkType;
-    [SerializeField] private SpriteRenderer mainSpr;
-    [SerializeField] private SpriteRenderer iconSpr;
+    [SerializeField] private SpriteRenderer spr;
     void Start()
     {
         switch (mkType)
         {
             case 1:
-                mainSpr.color = Color.white;
-                iconSpr.sprite = ResManager.GetSprite("mark_e");
+                spr.sprite = ResManager.GetSprite("mark_qst");
+                break;
+            case 2:
+                spr.sprite = ResManager.GetSprite("mark_ran");
+                break;
+            case 3:
+                spr.sprite = ResManager.GetSprite("mark_exp");
+                break;
+            case 4:
+                spr.sprite = ResManager.GetSprite("mark_boss");
                 break;
             case 999:
-                mainSpr.color = Color.yellow;
-                iconSpr.sprite = ResManager.GetSprite("mark_e");
+                spr.sprite = ResManager.GetSprite("mark_qst");
                 break;
         }
     }

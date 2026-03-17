@@ -68,6 +68,7 @@ public class InvenPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("InvenPop", this);
+        mTMPText["CrownVal"].text = PlayerManager.I.pData.Crown.ToString();
         isActive = true;
         if (SkillPop.isActive)
             UIManager.ClosePopup("SkillPop");
@@ -127,6 +128,9 @@ public class InvenPop : UIScreen
     {
         switch (key)
         {
+            case "UpdateCrownTxt":
+                mTMPText["CrownVal"].text = PlayerManager.I.pData.Crown.ToString();
+                break;
             case "ClickItem":
                 if (!moveOn)
                     SelectItemObj(data.Get<int>());
