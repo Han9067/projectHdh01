@@ -94,14 +94,13 @@ public class SkillPop : UIScreen
                     int wpIdx = 0;
                     switch (key)
                     {
-                        case "WpAll": wpIdx = 0; break;
-                        case "WpNormal": wpIdx = 1; break;
-                        case "WpSword": wpIdx = 2; break;
-                        case "WpAxe": wpIdx = 3; break;
-                        case "WpBlunt": wpIdx = 4; break;
-                        case "WpSpear": wpIdx = 5; break;
-                        case "WpBow": wpIdx = 6; break;
-                        case "WpShield": wpIdx = 7; break;
+                        case "WpNormal": wpIdx = 0; break;
+                        case "WpSword": wpIdx = 1; break;
+                        case "WpAxe": wpIdx = 2; break;
+                        case "WpBlunt": wpIdx = 3; break;
+                        case "WpSpear": wpIdx = 4; break;
+                        case "WpBow": wpIdx = 5; break;
+                        case "WpShield": wpIdx = 6; break;
                     }
                     if (curWpIdx != wpIdx)
                     {
@@ -114,15 +113,14 @@ public class SkillPop : UIScreen
                     int mgIdx = 0;
                     switch (key)
                     {
-                        case "MgAll": mgIdx = 0; break;
-                        case "MgNormal": mgIdx = 1; break;
-                        case "MgFire": mgIdx = 2; break;
-                        case "MgIce": mgIdx = 3; break;
-                        case "MgElectric": mgIdx = 4; break;
-                        case "MgEarth": mgIdx = 5; break;
-                        case "MgWind": mgIdx = 6; break;
-                        case "MgHoly": mgIdx = 7; break;
-                        case "MgDark": mgIdx = 8; break;
+                        case "MgNormal": mgIdx = 0; break;
+                        case "MgFire": mgIdx = 1; break;
+                        case "MgIce": mgIdx = 2; break;
+                        case "MgElectric": mgIdx = 3; break;
+                        case "MgEarth": mgIdx = 4; break;
+                        case "MgWind": mgIdx = 5; break;
+                        case "MgHoly": mgIdx = 6; break;
+                        case "MgDark": mgIdx = 7; break;
                     }
                     if (curMgIdx != mgIdx)
                     {
@@ -184,7 +182,6 @@ public class SkillPop : UIScreen
         mTMPText["NameVal"].gameObject.SetActive(false);
         mTMPText["ExpVal"].gameObject.SetActive(false);
         mTMPText["AttVal"].gameObject.SetActive(false);
-        mGameObject["IconObj"].SetActive(false);
         mGameObject["DescMain"].SetActive(false);
         mSlider.value = 0;
         mSlider.gameObject.SetActive(false);
@@ -275,7 +272,6 @@ public class SkillPop : UIScreen
             mTMPText["LvVal"].gameObject.SetActive(true);
             mTMPText["NameVal"].gameObject.SetActive(true);
             mTMPText["ExpVal"].gameObject.SetActive(true);
-            mGameObject["IconObj"].SetActive(true);
             mSlider.gameObject.SetActive(true);
             mGameObject["DescMain"].SetActive(true);
             mTMPText["AttVal"].gameObject.SetActive(true);
@@ -285,7 +281,6 @@ public class SkillPop : UIScreen
         mTMPText["LvVal"].text = string.Format(LocalizationManager.GetValue("LvisA"), data.Lv);
         mTMPText["ExpVal"].text = data.Exp.ToString() + "/" + data.NextExp.ToString();
         mSlider.value = (float)data.Exp / (float)data.NextExp;
-        mImages["Icon"].sprite = ResManager.GetSprite("skIcon_" + data.SkId);
         string str = "";
         foreach (var v in data.Att)
         {
@@ -325,27 +320,27 @@ public class SkillPop : UIScreen
     }
     private void StateWp(int idx)
     {
-        string[] btn = new string[] { "WpAll", "WpNormal", "WpSword", "WpAxe", "WpBlunt", "WpSpear", "WpBow", "WpShield" };
+        string[] btn = new string[] { "WpNormal", "WpSword", "WpAxe", "WpBlunt", "WpSpear", "WpBow", "WpShield" };
         foreach (var v in btn)
             mButtons[v].GetComponent<Image>().color = Color.gray;
         mButtons[btn[idx]].GetComponent<Image>().color = Color.yellow;
         switch (idx)
         {
             case 0:
-                //전체
+                //일반
                 break;
         }
     }
     private void StateMg(int idx)
     {
-        string[] btn = new string[] { "MgAll", "MgNormal", "MgFire", "MgIce", "MgElectric", "MgEarth", "MgWind", "MgHoly", "MgDark" };
+        string[] btn = new string[] { "MgNormal", "MgFire", "MgIce", "MgElectric", "MgEarth", "MgWind", "MgHoly", "MgDark" };
         foreach (var v in btn)
             mButtons[v].GetComponent<Image>().color = Color.gray;
         mButtons[btn[idx]].GetComponent<Image>().color = Color.yellow;
         switch (idx)
         {
             case 0:
-                //전체
+                //일반
                 break;
         }
     }
