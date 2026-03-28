@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 public class WorldMainUI : UIScreen
 {
-    [SerializeField] private Slider mIngGg, mHpGg, mMpGg, mSpGg, mEnergyGg;
+    [SerializeField] private Slider mIngGg, mEnergyGg;
     private float wTime = 0, actTime, endActTime, actTick = 0;
     private int tDay = 0, wYear, wMonth, wDay;
     private bool isAct = false, isRest = false; //일하기, 휴식 상태 유무
@@ -220,9 +220,6 @@ public class WorldMainUI : UIScreen
         mTMPText["HpVal"].text = PlayerManager.I.pData.HP.ToString() + "/" + PlayerManager.I.pData.MaxHP.ToString();
         mTMPText["MpVal"].text = PlayerManager.I.pData.MP.ToString() + "/" + PlayerManager.I.pData.MaxMP.ToString();
         mTMPText["SpVal"].text = PlayerManager.I.pData.SP.ToString() + "/" + PlayerManager.I.pData.MaxSP.ToString();
-        mHpGg.value = (float)PlayerManager.I.pData.HP / PlayerManager.I.pData.MaxHP * 100f;
-        mMpGg.value = (float)PlayerManager.I.pData.MP / PlayerManager.I.pData.MaxMP * 100f;
-        mSpGg.value = (float)PlayerManager.I.pData.SP / PlayerManager.I.pData.MaxSP * 100f;
         UpdateEp();
     }
     private void UpdateEp()
