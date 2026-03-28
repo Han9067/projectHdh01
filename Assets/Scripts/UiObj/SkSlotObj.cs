@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public int skId, skType, useType, line, idx, slotType;
-    [SerializeField] private Image slot, icon, sel;
+    [SerializeField] private Image icon, sel;
     private void Start()
     {
         SetSkSlot(skId, skType, useType);
@@ -20,30 +20,9 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         {
             icon.gameObject.SetActive(true);
             icon.sprite = ResManager.GetSprite("skIcon_" + skId);
-            switch (useType)
-            {
-                case 0:
-                    slot.color = Color.gray;
-                    break;
-                case 1:
-                    slot.color = Color.red;
-                    break;
-                case 2:
-                    slot.color = Color.blue;
-                    break;
-                case 3:
-                    slot.color = Color.green;
-                    break;
-                default:
-                    slot.color = Color.white;
-                    break;
-            }
         }
         else
-        {
             icon.gameObject.SetActive(false);
-            slot.color = Color.white;
-        }
 
         if (sel.gameObject.activeSelf) sel.gameObject.SetActive(false);
     }
