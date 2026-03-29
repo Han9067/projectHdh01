@@ -149,7 +149,7 @@ public class BattleMainUI : UIScreen
     {
         int line = PlayerManager.I.curSlotLine;
         for (int i = 1; i <= 4; i++)
-            mButtons["Line" + i].GetComponent<Image>().color = Color.gray;
+            mButtons["Line" + i].GetComponent<Image>().color = Color.white;
         mButtons["Line" + (line + 1)].GetComponent<Image>().color = Color.yellow;
     }
 }

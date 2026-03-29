@@ -182,9 +182,9 @@ public class SkillPop : UIScreen
         mTMPText["NameVal"].gameObject.SetActive(false);
         mTMPText["ExpVal"].gameObject.SetActive(false);
         mTMPText["AttVal"].gameObject.SetActive(false);
-        mGameObject["DescMain"].SetActive(false);
+        mTMPText["DescVal"].gameObject.SetActive(false);
         mSlider.value = 0;
-        mSlider.gameObject.SetActive(false);
+        // mSlider.gameObject.SetActive(false);
         CheckPsvSk();
         CheckWpSk();
         CheckMgSk();
@@ -267,13 +267,13 @@ public class SkillPop : UIScreen
     }
     private void ShowSkDesc(SkData data)
     {
-        if (!mGameObject["DescMain"].gameObject.activeSelf)
+        if (!mTMPText["DescVal"].gameObject.activeSelf)
         {
             mTMPText["LvVal"].gameObject.SetActive(true);
             mTMPText["NameVal"].gameObject.SetActive(true);
             mTMPText["ExpVal"].gameObject.SetActive(true);
             mSlider.gameObject.SetActive(true);
-            mGameObject["DescMain"].SetActive(true);
+            mTMPText["DescVal"].gameObject.SetActive(true);
             mTMPText["AttVal"].gameObject.SetActive(true);
         }
         mTMPText["NameVal"].text = LocalizationManager.GetValue(data.Name);
@@ -308,12 +308,12 @@ public class SkillPop : UIScreen
         {
             if (i == idx)
             {
-                mButtons[btn[i]].GetComponent<Image>().color = new Color((200 / 255f), (185 / 255f), (155 / 255f), 1);
+                mButtons[btn[i]].GetComponent<Image>().color = Color.yellow;
                 mGameObject[obj[i]].SetActive(true);
             }
             else
             {
-                mButtons[btn[i]].GetComponent<Image>().color = Color.gray;
+                mButtons[btn[i]].GetComponent<Image>().color = Color.white;
                 mGameObject[obj[i]].SetActive(false);
             }
         }
