@@ -84,7 +84,7 @@ public class WorkPop : UIScreen
                 StatePop(0);
                 daysVal = 1;
                 workType = data.Get<int>();
-                mTMPText["DaysVal"].text = string.Format(strDays, daysVal.ToString());
+                mTMPText["DaysVal"].text = daysVal.ToString();
                 SetWork();
                 break;
             case "EndWork":
@@ -159,7 +159,7 @@ public class WorkPop : UIScreen
         }
         mSlider.maxValue = PlayerManager.I.pData.MaxEP / 8f;
         mSlider.value = 1;
-        mTMPText["EnergyTxt"].text = GetEnergyTxt(8);
+        mTMPText["EnergyVal"].text = (8 * daysVal).ToString();
     }
     private void CreateWorkReward(string img, string txt, int val, int type)
     {
@@ -173,7 +173,7 @@ public class WorkPop : UIScreen
         crownVal = GetCrownVal();
         rlsVal = GetRlsVal();
         skExpVal = GetSkExpVal();
-        mTMPText["DaysVal"].text = string.Format(strDays, daysVal.ToString());
+        mTMPText["DaysVal"].text = daysVal.ToString();
         foreach (var v in rewardList)
         {
             if (v.id < 10000)
@@ -207,7 +207,7 @@ public class WorkPop : UIScreen
                 }
             }
         }
-        mTMPText["EnergyTxt"].text = GetEnergyTxt(8 * daysVal); ;
+        mTMPText["EnergyVal"].text = (8 * daysVal).ToString();
     }
     private int GetCrownVal()
     {
@@ -228,10 +228,6 @@ public class WorkPop : UIScreen
     private int GetItemVal(int skLv, int addVal = 0)
     {
         return (daysVal * 10 * skLv) + addVal;
-    }
-    private string GetEnergyTxt(int num)
-    {
-        return string.Format(LocalizationManager.GetValue("EnergyConsumedA"), num.ToString());
     }
     private void SetWorkReward()
     {

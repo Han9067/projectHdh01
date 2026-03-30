@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using GB;
 using UnityEngine.UI;
+using TMPro;
 public class QuestListBtn : MonoBehaviour
 {
     public int uId, star, type;
     private string qName, popName;
     public List<GameObject> starList = new List<GameObject>();
-    [SerializeField] private Text mTxtName;
+    [SerializeField] private TextMeshProUGUI mTxtName;
     [SerializeField] private Button btn;
     public void OnButtonClick()
     {

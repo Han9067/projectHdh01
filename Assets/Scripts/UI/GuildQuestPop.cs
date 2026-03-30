@@ -141,10 +141,10 @@ public class GuildQuestPop : UIScreen
             case "ClickQuestListBtn":
                 curId = data.Get<int>();
                 UpdateStars(qList[curId].Star);
-                mTexts["DescVal"].text = qList[curId].Desc;
-                mTexts["ExpVal"].text = qList[curId].Exp.ToString();
-                mTexts["CrownVal"].text = qList[curId].Crown.ToString();
-                mTexts["GdExpVal"].text = qList[curId].GradeExp.ToString();
+                mTMPText["DescVal"].text = qList[curId].Desc;
+                mTMPText["ExpVal"].text = qList[curId].Exp.ToString();
+                mTMPText["CrownVal"].text = qList[curId].Crown.ToString();
+                mTMPText["GdExpVal"].text = qList[curId].GradeExp.ToString();
                 mTMPText["CurCnt"].gameObject.SetActive(false);
                 for (int i = 0; i < questBtn.Count; i++)
                 {

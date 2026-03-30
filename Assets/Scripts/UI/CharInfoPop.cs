@@ -151,7 +151,7 @@ public class CharInfoPop : UIScreen
     void UpdateGrade()
     {
         int g = PlayerManager.I.pData.Grade;
-        mTMPText["GradeVal"].text = GetGradeName(g);
+        mTMPText["GradeVal"].text = GsManager.GetGradeName(g);
         mTMPText["GradeVal"].transform.localPosition = g == 0 ? new Vector3(0, -48f, 0) : new Vector3(20f, -48f, 0);
         // mImages["BadgeIcon"].gameObject.SetActive(g != 0);
         // if (g > 0)
@@ -160,24 +160,6 @@ public class CharInfoPop : UIScreen
         //     int n = g > 3 ? 1 : 2;
         //     mImages["BadgeIcon"].sprite = ResManager.GetSprite($"icon_badge{n}");
         // }
-    }
-    string GetGradeName(int grade)
-    {
-        switch (grade)
-        {
-            case 0: return "없음";
-            case 1: return "H";
-            case 2: return "G";
-            case 3: return "F";
-            case 4: return "E";
-            case 5: return "D";
-            case 6: return "C";
-            case 7: return "B";
-            case 8: return "A";
-            case 9: return "S";
-            case 10: return "SS";
-        }
-        return "";
     }
     private void UpdateDetail(int idx)
     {

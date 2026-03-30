@@ -564,23 +564,6 @@ public static class ColorData
     {
         return eyeColor.TryGetValue(eyeId, out Color color) ? color : new Color(30f / 255f, 30f / 255f, 30f / 255f);
     }
-    public static Color GetBadgeGradeColor(int grade)
-    {
-        switch (grade)
-        {
-            case 1: return new Color(180f / 255f, 110f / 255f, 60f / 255f);
-            case 2: return new Color(60f / 60f, 60f / 255f, 60f / 255f);
-            case 3: return new Color(230f / 255f, 230f / 255f, 230f / 255f);
-            case 4: return new Color(150f / 255f, 150f / 255f, 150f / 255f);
-            case 5: return new Color(215f / 255f, 140f / 255f, 110f / 255f);
-            case 6: return new Color(225f / 255f, 225f / 255f, 225f / 255f);
-            case 7: return new Color(255f / 255f, 210f / 255f, 110f / 255f);
-            case 8: return new Color(220f / 255f, 245f / 255f, 255f / 255f);
-            case 9: return new Color(85f / 255f, 140f / 255f, 200f / 255f);
-            case 10: return new Color(30f / 255f, 30f / 255f, 30f / 255f);
-        }
-        return Color.white;
-    }
     public static Color GetItemGradeColor(int grade)
     {
         return itemGradeColor.TryGetValue(grade, out Color color) ? color : new Color(197f / 255f, 197f / 255f, 197f / 255f);

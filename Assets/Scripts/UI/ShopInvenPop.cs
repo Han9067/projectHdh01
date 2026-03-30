@@ -62,7 +62,7 @@ public class ShopInvenPop : UIScreen
     {
         switch (key)
         {
-            case "ShopInvenPopClose":
+            case "Close":
                 UIManager.ClosePopup("InvenPop");
                 Close();
                 break;
@@ -83,7 +83,7 @@ public class ShopInvenPop : UIScreen
                 name = "약제상";
                 break;
         }
-        mTexts["ShopName"].text = name;
+        mTMPText["ShopName"].text = name;
         CreateGrid(data.Get<int>());
     }
     public void CreateGrid(int id)

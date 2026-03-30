@@ -132,21 +132,21 @@ public class JournalPop : UIScreen
         qBtnList[idx].GetComponent<Image>().color = Color.yellow;
         QuestInstData data = PlayerManager.I.pData.QuestList[idx];
         UpdateStars(data.Star);
-        mTexts["DescVal"].text = data.Desc;
+        mTMPText["DescVal"].text = data.Desc;
         if (data.State == 2)
         {
-            mTexts["TgVal"].gameObject.SetActive(true);
-            mTexts["TgVal"].text = LocalizationManager.GetValue("Completed");
+            mTMPText["TgVal"].gameObject.SetActive(true);
+            mTMPText["TgVal"].text = LocalizationManager.GetValue("Completed");
         }
         else
         {
-            mTexts["TgVal"].gameObject.SetActive(false);
+            mTMPText["TgVal"].gameObject.SetActive(false);
             switch (data.Qid)
             {
                 case 2:
                 case 3:
-                    mTexts["TgVal"].gameObject.SetActive(true);
-                    mTexts["TgVal"].text = data.CurCnt.ToString() + " / " + data.TgCnt.ToString();
+                    mTMPText["TgVal"].gameObject.SetActive(true);
+                    mTMPText["TgVal"].text = data.CurCnt.ToString() + " / " + data.TgCnt.ToString();
                     break;
             }
         }

@@ -538,7 +538,26 @@ public class GsManager : AutoSingleton<GsManager>
         }
     }
     #endregion
-
+    #region 뱃지 관련
+    public static string GetGradeName(int grade)
+    {
+        switch (grade)
+        {
+            case 0: return "없음";
+            case 1: return "H";
+            case 2: return "G";
+            case 3: return "F";
+            case 4: return "E";
+            case 5: return "D";
+            case 6: return "C";
+            case 7: return "B";
+            case 8: return "A";
+            case 9: return "S";
+            case 10: return "SS";
+        }
+        return null;
+    }
+    #endregion
     #region 스탯 관련
     public int GetWpRng(int wpType)
     {
