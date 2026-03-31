@@ -237,7 +237,7 @@ public class InvenPop : UIScreen
     {
         ivGridImg = new Image[10, 10]; ivGridRect = new RectTransform[10, 10];
 
-        subSlot = mGameObject["SubSlot"].transform;
+        subSlot = mGameObject["SubSlotList"].transform;
         subGridImg = new Image[10, 10]; subGridRect = new RectTransform[10, 10];
 
         for (int y = 0; y < 10; y++)

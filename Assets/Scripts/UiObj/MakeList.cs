@@ -2,14 +2,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using GB;
-using UnityEngine.EventSystems;
-public class MakeList : MonoBehaviour, IPointerClickHandler
+public class MakeList : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI nameTxt;
+    [SerializeField] private Button button;
     public MakeData data;
     void Start()
     {
         nameTxt.text = LocalizationManager.GetValue(ItemManager.I.ItemDataList[data.ItemId].Name);
+        button.onClick.AddListener(OnButtonClick);
     }
     public void SetMakeObj(MakeData makeData)
     {
@@ -19,12 +20,9 @@ public class MakeList : MonoBehaviour, IPointerClickHandler
     {
         nameTxt.color = on ? Color.yellow : Color.white;
     }
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnButtonClick()
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            InvenPop.curMakeId = data.MakeID;
-            Presenter.Send("InvenPop", "ClickMakeList", data.Recipe);
-        }
+        InvenPop.curMakeId = data.MakeID;
+        Presenter.Send("InvenPop", "ClickMakeList", data.Recipe);
     }
 }

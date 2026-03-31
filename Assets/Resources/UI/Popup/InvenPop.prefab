@@ -1497,8 +1497,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -146.49998, y: 0.00055600994}
-  m_SizeDelta: {x: 260, y: 760}
+  m_AnchoredPosition: {x: -157.49997, y: 0.00009089255}
+  m_SizeDelta: {x: 280, y: 760}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5523779029706772819
 MonoBehaviour:
@@ -1515,7 +1515,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 5
+    m_Top: 15
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: 0
@@ -2378,7 +2378,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1351506616299931966}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999618
+  m_Size: 0.99630964
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4089,7 +4089,7 @@ RectTransform:
   m_Father: {fileID: 7733180613260999076}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.9999618}
+  m_AnchorMax: {x: 1, y: 0.99630964}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -9323,7 +9323,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -328, y: -25}
+  m_AnchoredPosition: {x: -338, y: -25}
   m_SizeDelta: {x: 4, y: 840}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8556585539113822732
@@ -11289,7 +11289,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -25}
+  m_AnchoredPosition: {x: 6, y: -25}
   m_SizeDelta: {x: 4, y: 840}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6986125288915883434
@@ -11508,7 +11508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
+    m_Left: 10
     m_Right: 0
     m_Top: 10
     m_Bottom: 0
@@ -12328,6 +12328,9 @@ MonoBehaviour:
     - key: SubSlot
       value: {fileID: 8362540118368047375}
       duplicatedKey: 0
+    - key: SubSlotList
+      value: {fileID: 6719917012128944306}
+      duplicatedKey: 0
     - key: SplitPop
       value: {fileID: 3690109132868519374}
       duplicatedKey: 0
@@ -12482,9 +12485,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -15063,8 +15066,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -292, y: 110}
-  m_SizeDelta: {x: 1423.668, y: 1000}
+  m_AnchoredPosition: {x: -310, y: 110}
+  m_SizeDelta: {x: 1450, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1200334521961970414
 CanvasRenderer:
@@ -15942,8 +15945,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -500, y: -35}
-  m_SizeDelta: {x: 310, y: 760}
+  m_AnchoredPosition: {x: -526, y: -35}
+  m_SizeDelta: {x: 332, y: 760}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7675841377550548190
 CanvasRenderer:
@@ -15996,7 +15999,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 4480353035638654776}
-  m_Horizontal: 1
+  m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 1
   m_Elasticity: 0.1
@@ -16322,6 +16325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6185891269482675334}
+  - component: {fileID: 7313944878161502412}
   m_Layer: 0
   m_Name: Slots
   m_TagString: Untagged
@@ -16444,6 +16448,19 @@ Transform:
   - {fileID: 1436192927478600787}
   m_Father: {fileID: 5899427159866546009}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7313944878161502412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6719917012128944306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: SubSlotList
 --- !u!1 &6777918135504344585
 GameObject:
   m_ObjectHideFlags: 0
@@ -20694,8 +20711,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5899427159866546009}
-  - component: {fileID: 5447220532187370979}
   - component: {fileID: 291356370628267284}
+  - component: {fileID: 8410955641982332362}
   m_Layer: 0
   m_Name: SubSlot
   m_TagString: Untagged
@@ -20724,19 +20741,6 @@ RectTransform:
   m_AnchoredPosition: {x: 50, y: 160}
   m_SizeDelta: {x: 640, y: 640}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5447220532187370979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8362540118368047375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Key: SubSlot
 --- !u!114 &291356370628267284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20750,6 +20754,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+--- !u!114 &8410955641982332362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8362540118368047375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: SubSlot
 --- !u!1 &8431665270322370265
 GameObject:
   m_ObjectHideFlags: 0
@@ -21349,7 +21366,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -165, y: -35}
+  m_AnchoredPosition: {x: -166, y: -35}
   m_SizeDelta: {x: 300, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8868176727750175748
