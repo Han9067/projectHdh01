@@ -86,6 +86,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     [SerializeField] private List<PropObj> prop2Obj = new List<PropObj>(); // 환경 프리팹2 리스트
     private List<RngGrid> attRng = new List<RngGrid>();
     private Vector2Int attRngPos = new Vector2Int(-200, -200);
+    private int lcx = 0, rcx = 0;//좌, 우 플레이어 또는 NPC, 몬스터의 기준 x좌표
 
     [Header("====Player====")]
     [SerializeField] private GameObject pObj;
@@ -123,7 +124,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                           // float dTime = 0;
 
     #endregion
-    string mapDefault = "Tile_1_1";
+    string mapDefault = "Tile_101_1";
     void Awake()
     {
         if (Time.timeScale == 0) Time.timeScale = 1;
@@ -307,16 +308,14 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         if (gGrid != null)
             gGrid = null;
-        if (mapSeed != 0)
-        {
-            //추후에 맵 시드에 맞춰서 맵 생성
-        }
-        else
-        {
-            tileMapObj = GameObject.Find(mapDefault);
-            if (tileMapObj == null)
-                tileMapObj = Instantiate(ResManager.GetGameObject(mapDefault), transform);
-        }
+        //mapSeed -> 1~100 필드 101부터 던전 및 특수 맵
+        mapSeed = 101; //던전 맵 시드
+        tileMapObj = GameObject.Find(mapDefault);
+        if (tileMapObj == null)
+            tileMapObj = Instantiate(ResManager.GetGameObject(mapDefault), transform);
+        //lcx, rcx 설정
+        lcx = mapSeed < 101 ? 13 : 10;
+        rcx = mapSeed < 101 ? 24 : 17;
 
         gMap = tileMapObj.transform.Find("Bg")?.GetComponent<Tilemap>();
         var pMap = tileMapObj.transform.Find("Prop")?.GetComponent<Tilemap>();
@@ -383,15 +382,9 @@ public class BattleCore : AutoSingleton<BattleCore>
         {
             //추후엔 특정 이벤트(기습, 매복 등) 으로 배치 상황이 특수해질 경우도 대응해야함
             pDir = Random.Range(0, 2); // 0:좌, 1:우 -> 파티의 방향 설정
-            int cx = 0, cy = 0;
-            switch (pDir)
-            {
-                case 0:
-                    cx = 13; cy = 13;
-                    player.SetObjDir(-1);
-                    break;
-                case 1: cx = 24; cy = 13; break;
-            }
+            int cx = pDir == 0 ? lcx : rcx, cy = mapSeed < 101 ? 13 : 11;
+            player.SetObjDir(pDir == 0 ? -1 : 1);
+
             var pos = GetStartPos(cx, cy); //추후 문제가 생길수있음...
             pObj.transform.position = new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
             cpPos = pos;
@@ -406,13 +399,7 @@ public class BattleCore : AutoSingleton<BattleCore>
 
         if (WorldObjManager.I.btMonList.Count > 0)
         {
-            int cx = 0, cy = 0, idx = 0;
-            //플레이어와 반대 방향에 배치 0:좌, 1:우
-            switch (pDir)
-            {
-                case 0: cx = 24; cy = 13; break;
-                case 1: cx = 13; cy = 13; break;
-            }
+            int cx = pDir == 0 ? rcx : lcx, cy = mapSeed < 101 ? 13 : 11, idx = 0;
             //추후 핵심 시스템 끝나면 중심점과 rng 값을 조정할 생각 
             int mCnt = WorldObjManager.I.btMonList.Count, rx = (mCnt / 2) + 1, ry = (mCnt / 4) + 1;
             for (int i = 0; i < mCnt; i++)
