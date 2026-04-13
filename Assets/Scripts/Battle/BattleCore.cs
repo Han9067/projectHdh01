@@ -124,7 +124,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                           // float dTime = 0;
 
     #endregion
-    string mapDefault = "Tile_101_1";
+    // string mapDefault = "Tile_101_1";
     void Awake()
     {
         if (Time.timeScale == 0) Time.timeScale = 1;
@@ -309,10 +309,10 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (gGrid != null)
             gGrid = null;
         //mapSeed -> 1~100 필드 101부터 던전 및 특수 맵
-        mapSeed = 101; //던전 맵 시드
-        tileMapObj = GameObject.Find(mapDefault);
+        mapSeed = 1; //던전 맵 시드
+        tileMapObj = GameObject.Find($"Tile_{mapSeed}_1");
         if (tileMapObj == null)
-            tileMapObj = Instantiate(ResManager.GetGameObject(mapDefault), transform);
+            tileMapObj = Instantiate(ResManager.GetGameObject($"Tile_{mapSeed}_1"), transform);
         //lcx, rcx 설정
         lcx = mapSeed < 101 ? 13 : 10;
         rcx = mapSeed < 101 ? 24 : 17;
