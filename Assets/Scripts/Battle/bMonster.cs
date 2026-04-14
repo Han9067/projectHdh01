@@ -6,6 +6,7 @@ using UnityEngine.Rendering;
 public class bMonster : MonoBehaviour
 {
     public int objId, monsterId;
+    private int angIdx = 0;
     public string mName;
     public MonData monData;
     public GameObject shdObj, mainObj, ggParent, ggObj, bodyObj;
@@ -15,16 +16,16 @@ public class bMonster : MonoBehaviour
     public int w, h, Rng;
     [SerializeField] private SpriteRenderer mainSpr;
     public bool isOutline = false;
-    private Vector3 backupPos;
+    private Vector3 backupPos, backupBodyPos;
     [SerializeField] private SortingGroup sGrp;
-    private Color redColor = new Color(1, 0.5f, 0.5f, 1);
+    // private Color redColor = new Color(1, 0.5f, 0.5f, 1);
     private MaterialPropertyBlock mProp;
     Tween pbt, hft; //pushBackTween, hitFlashTween
     private static readonly int HitColorID = Shader.PropertyToID("_HitColor"); //HitColorID
     private static readonly int HitAmountID = Shader.PropertyToID("_HitAmount"); //HitAmountID
-    private static readonly int OutlineID = Shader.PropertyToID("_Outline"); //OutlineID
-    private static readonly int OutlineColorID = Shader.PropertyToID("_OutlineColor"); //OutlineColorID
-    private static readonly int OutlineSizeID = Shader.PropertyToID("_OutlineSize"); //OutlineSizeID
+    // private static readonly int OutlineID = Shader.PropertyToID("_Outline"); //OutlineID
+    // private static readonly int OutlineColorID = Shader.PropertyToID("_OutlineColor"); //OutlineColorID
+    // private static readonly int OutlineSizeID = Shader.PropertyToID("_OutlineSize"); //OutlineSizeID
     private float curHitAmount; //현재 Hit Amount
 
     void Awake()
@@ -39,10 +40,11 @@ public class bMonster : MonoBehaviour
         mainObj.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("mon_" + monsterId);
         shdObj.transform.localScale = new Vector3(monData.SdwScr, monData.SdwScr, 1);
         mainObj.transform.localPosition = new Vector3(0, 0.4f, 0);
-        shdObj.transform.localPosition = new Vector3(0, -0.35f, 0);
+        shdObj.transform.localPosition = new Vector3((w - 1) * 0.6f, -0.35f, 0);
         ggParent.SetActive(false);
         ggParent.transform.localPosition = new Vector3(0, monData.GgY, 0);
         bodyObj.transform.localPosition = new Vector3((w - 1) * 0.6f, 0, 0);
+        backupBodyPos = new Vector3((w - 1) * 0.6f, 0, 0); //이동시 점프 후 백업 위치로 이동 시키기 위한 벡터
         mName = monData.Name;
         maxHp = monData.HP;
         hp = maxHp;
@@ -70,6 +72,17 @@ public class bMonster : MonoBehaviour
     public void SetObjDir(float dir)
     {
         bodyObj.transform.localScale = new Vector3(dir, 1, 1);
+    }
+    public void OnJump(float dur)
+    {
+        // bodyObj.transform.DOLocalJump(backupBodyPos, jumpPower: 0.3f, numJumps: 1, duration: dur).SetEase(Ease.OutQuad);
+        angIdx = angIdx == 0 ? 1 : 0;
+        float ang = angIdx == 0 ? Random.Range(-12f, -4f) : Random.Range(4f, 12f);
+
+        DOTween.Sequence()
+        .Join(bodyObj.transform.DOLocalJump(backupBodyPos, 0.3f, 1, dur))
+        .Join(bodyObj.transform.DOLocalRotate(new Vector3(0, 0, ang), dur * 0.45f).SetEase(Ease.OutQuad))
+        .Append(bodyObj.transform.DOLocalRotate(Vector3.zero, dur * 0.2f).SetEase(Ease.OutQuad));
     }
     public void SetObjLayer(int y)
     {

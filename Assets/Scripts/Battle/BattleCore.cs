@@ -80,6 +80,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     private Vector2Int cpPos = new Vector2Int(0, 0); //현재 플레이어 위치 좌표
     private float tileOffset = 0.6f, tileItv = 1.2f; // 타일 오프셋, 타일 간격
     float[] mapLimit = new float[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
+    float[] camLimit = new float[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 카메라 제한
     public GameObject[,] guide; // 길찾기 가이드 오브젝트
     [SerializeField] private GameObject rngParent, escParent, propParent, prop2Parent; // 공격 범위 그리드 부모, 탈출존 프리팹, 부모, 환경 프리팹 부모, 환경2 프리팹 부모
     [SerializeField] private List<PropObj> propObj = new List<PropObj>(); // 환경 프리팹 리스트
@@ -390,6 +391,9 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
             mapLimit[0] = (mapW / 2) * -1.2f; mapLimit[1] = (mapW / 2) * 1.2f;
             mapLimit[2] = (mapH / 2) * -1.2f; mapLimit[3] = (mapH / 2) * 1.2f;
+
+            camLimit[0] = mapLimit[0] + 7f; camLimit[1] = mapLimit[1] - 7f;
+            camLimit[2] = mapLimit[2] + 4f; camLimit[3] = mapLimit[3] - 4f;
         }
         pMap.gameObject.SetActive(false);
     }
@@ -813,14 +817,23 @@ public class BattleCore : AutoSingleton<BattleCore>
     IEnumerator MoveObj(GameObject obj, int objId, Vector2Int cv, Vector2Int mv, float ct, Action callA = null, Action callB = null)
     {
         SetObjDir(objId, cv, mv);
+        // bool isDiagonal = Mathf.Abs(cv.x - mv.x) > 0 && Mathf.Abs(cv.y - mv.y) > 0;
+        float dur = 0.2f;
         var pos = new Vector3(gGrid[mv.x, mv.y].x, gGrid[mv.x, mv.y].y, 0);
-        obj.transform.DOJump(pos, jumpPower: 0.3f, numJumps: 1, duration: 0.3f).SetEase(Ease.OutQuad); //통통 튀며 이동
+        obj.transform.DOMove(pos, dur).SetEase(Ease.Linear);
+        OnJumpMove(objId, dur);
         callA?.Invoke();
         yield return new WaitForSeconds(ct);
         callB?.Invoke();
         TurnAction();
     }
-
+    public void OnJumpMove(int oid, float dur)
+    {
+        if (oid == 1000)
+            player.OnJump(dur);
+        else
+            mData[oid].OnJump(dur);
+    }
     private void TrackMon(TurnData data, int mId, float ct)
     {
         data.isAction = true; //행동 시작
@@ -928,6 +941,15 @@ public class BattleCore : AutoSingleton<BattleCore>
                 return Vector3.zero;
         }
     }
+    private Vector3 GetEdgePos(int w, int h, Vector3 myPos, Vector3 tgPos)
+    {
+        Vector3 pos = new Vector3((tgPos.x - myPos.x) * 0.3f * w, (tgPos.y - myPos.y) * 0.3f * h, 0);
+        return myPos + pos;
+    }
+    private float GetLookAngle(Vector3 myPos, Vector3 tgPos)
+    {
+        return Mathf.Atan2(myPos.y - tgPos.y, myPos.x - tgPos.x) * Mathf.Rad2Deg;
+    }
     private Vector3 GetGridPos(Vector3 attackerWorldPos, int tgId)
     {
         int closestX = -1, closestY = -1;
@@ -1014,19 +1036,22 @@ public class BattleCore : AutoSingleton<BattleCore>
                         switch (attId)
                         {
                             case 1003:
-                                float val = (float)BattleSkManager.GetSkAttVal(player.pData.SkList[1003], 601) * 0.01f;
+                                float val = BattleSkManager.GetSkAttVal(player.pData.SkList[1003], 601) * 0.01f;
                                 att = (int)(att * val);
 
                                 List<int> dmgList = new List<int>();
                                 for (int i = 0; i < 2; i++)
                                     dmgList.Add(GsManager.I.GetDamage(att, mData[tgId].def));
                                 mData[tgId].OnDamaged(dmgList[0] + dmgList[1], BtFaction.ALLY, myPos);
-                                ShowEff("N_DoubleAtt", tgPos, player.bodyObj.transform.localScale.x, () => { TurnAction(); });
+                                ShowEff("N_DoubleAtt", GetEdgePos(1, 1, myPos, tgPos),
+                                player.bodyObj.transform.localScale.x, GetLookAngle(myPos, tgPos), () => { TurnAction(); });
                                 StartCoroutine(ShowSqcDmgTxt(2, dmgList, 0.3f, tgPos));
                                 break;
                             default:
                                 dmg = GsManager.I.GetDamage(att, mData[tgId].def);
                                 mData[tgId].OnDamaged(dmg, BtFaction.ALLY, myPos);
+                                ShowEff("N_Att", GetEdgePos(1, 1, myPos, tgPos),
+                                player.bodyObj.transform.localScale.x, GetLookAngle(myPos, tgPos));
                                 StartCoroutine(UseObjTurn(0.3f));
                                 ShowDmgTxt(dmg, tgPos);
                                 break;
@@ -1045,7 +1070,8 @@ public class BattleCore : AutoSingleton<BattleCore>
                     case BtObjType.PLAYER:
                         dmg = GsManager.I.GetDamage(att, player.pData.Def);
                         player.OnDamaged(dmg, myPos);
-                        // ShowEff("N_Att", tgPos, mData[myId].bodyObj.transform.localScale.x);
+                        ShowEff("N_Att", GetEdgePos(mData[myId].w, mData[myId].h, myPos, tgPos),
+                            mData[myId].bodyObj.transform.localScale.x, GetLookAngle(myPos, tgPos));
                         StartCoroutine(UseObjTurn(0.3f));
                         ShowDmgTxt(dmg, tgPos);
                         break;
@@ -1201,12 +1227,12 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     #endregion
     #region ==== 애니메이션 ====
-    public void ShowEff(string effName, Vector3 pos, float dir, Action call = null)
+    public void ShowEff(string effName, Vector3 pos, float dir, float angle, Action call = null)
     {
         var eff = GetEffIdx(effName);
         if (eff != null)
         {
-            StartBtEff(eff, pos, dir, call);
+            StartBtEff(eff, pos, dir, angle, call);
         }
         else
         {
@@ -1215,16 +1241,19 @@ public class BattleCore : AutoSingleton<BattleCore>
             if (!effList.ContainsKey(effName))
                 effList[effName] = new List<SkEffObj>();
             effList[effName].Add(eff);
-            StartBtEff(eff, pos, dir, call);
+            StartBtEff(eff, pos, dir, angle, call);
         }
     }
-    private void StartBtEff(SkEffObj eff, Vector3 pos, float dir, Action call = null)
+    private void StartBtEff(SkEffObj eff, Vector3 pos, float dir, float angle, Action call = null)
     {
         eff.transform.position = pos;
+        eff.transform.rotation = Quaternion.Euler(0f, 0f, dir * angle);
         eff.transform.localScale = new Vector3(dir, 1, 1);
+
         eff.anim.EndEvent.RemoveAllListeners();
         eff.anim.EndEvent.AddListener(() =>
         {
+            eff.gameObject.SetActive(false);
             if (call != null) call();
         });
         eff.anim.Play();
@@ -1343,6 +1372,9 @@ public class BattleCore : AutoSingleton<BattleCore>
     void MoveCamera(bool isInit)
     {
         var targetPosition = new Vector3(pObj.transform.position.x, pObj.transform.position.y, -10f);
+        //카메라가 x,y축에서 제한된 위치를 벗어나면 벗어나지못하게 제한
+        targetPosition.x = Mathf.Clamp(targetPosition.x, camLimit[0], camLimit[1]);
+        targetPosition.y = Mathf.Clamp(targetPosition.y, camLimit[2], camLimit[3]);
         if (isInit)
             cmr.transform.position = targetPosition;
         else
@@ -1379,9 +1411,12 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
     }
-    public void TestPlayer()
+    public void TestPlayer(int dir)
     {
-        player.StateOutline();
+        // player.StateOutline();
+        var pos = dir == 0 ? new Vector3(player.transform.position.x - 0.6f, player.transform.position.y, 0f) :
+                new Vector3(player.transform.position.x + 0.6f, player.transform.position.y, 0f);
+        ShowEff("N_Att", pos, dir == 0 ? 1f : -1f, 90f);
     }
 }
 [CustomEditor(typeof(BattleCore))]
@@ -1391,9 +1426,13 @@ public class BattleCoreEditor : Editor
     {
         DrawDefaultInspector();
         BattleCore myScript = (BattleCore)target;
-        if (GUILayout.Button("테스트"))
+        if (GUILayout.Button("왼쪽"))
         {
-            myScript.TestPlayer();
+            myScript.TestPlayer(0);
+        }
+        if (GUILayout.Button("오른쪽"))
+        {
+            myScript.TestPlayer(1);
         }
         if (GUILayout.Button("테스트 오버레이 프로퍼"))
         {

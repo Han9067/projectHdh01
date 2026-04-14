@@ -7,6 +7,7 @@ using System.Linq;
 public class bPlayer : MonoBehaviour
 {
     public int objId = 1000;
+    private int angIdx = 0; //이동이 회전하며 움직일때 해당 변수는 0 또는 1이 변동되며 해당 값에 따라 왼쪽,오른쪽으로 회전
     Dictionary<PtType, SpriteRenderer> ptSpr = new Dictionary<PtType, SpriteRenderer>();
     public GameObject ptMain, bodyObj;
     public PlayerData pData;
@@ -39,6 +40,17 @@ public class bPlayer : MonoBehaviour
     public void SetObjDir(float dir)
     {
         bodyObj.transform.localScale = new Vector3(dir, 1, 1);
+    }
+    public void OnJump(float dur)
+    {
+        //ptMain.transform.DOLocalJump(new Vector3(0, 0.1f, 0), jumpPower: 0.3f, numJumps: 1, duration: dur).SetEase(Ease.OutQuad);
+        angIdx = angIdx == 0 ? 1 : 0;
+        float ang = angIdx == 0 ? Random.Range(-12f, -4f) : Random.Range(4f, 12f);
+
+        DOTween.Sequence()
+        .Join(ptMain.transform.DOLocalJump(new Vector3(0, 0.1f, 0), 0.3f, 1, dur))
+        .Join(ptMain.transform.DOLocalRotate(new Vector3(0, 0, ang), dur * 0.45f).SetEase(Ease.OutQuad))
+        .Append(ptMain.transform.DOLocalRotate(Vector3.zero, dur * 0.2f).SetEase(Ease.OutQuad));
     }
     public void OnDamaged(int dmg, Vector3 pos)
     {
