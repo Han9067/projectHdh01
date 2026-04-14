@@ -81,7 +81,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     private float tileOffset = 0.6f, tileItv = 1.2f; // 타일 오프셋, 타일 간격
     float[] mapLimit = new float[4]; // 0 : 상, 1 : 하, 2 : 좌, 3 : 우 맵 타일 제한
     public GameObject[,] guide; // 길찾기 가이드 오브젝트
-    [SerializeField] private GameObject rngParent, propParent, prop2Parent; // 공격 범위 그리드 부모, 환경 프리팹 부모, 환경2 프리팹 부모
+    [SerializeField] private GameObject rngParent, escParent, propParent, prop2Parent; // 공격 범위 그리드 부모, 탈출존 프리팹, 부모, 환경 프리팹 부모, 환경2 프리팹 부모
     [SerializeField] private List<PropObj> propObj = new List<PropObj>(); // 환경 프리팹 리스트
     [SerializeField] private List<PropObj> prop2Obj = new List<PropObj>(); // 환경 프리팹2 리스트
     private List<RngGrid> attRng = new List<RngGrid>();
@@ -326,6 +326,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             // 실제 타일이 배치된 최소/최대 좌표 찾기
             int minX = int.MaxValue, maxX = int.MinValue;
             int minY = int.MaxValue, maxY = int.MinValue;
+
             for (int x = bounds.xMin; x < bounds.xMax; x++)
             {
                 for (int y = bounds.yMin; y < bounds.yMax; y++)
@@ -346,22 +347,42 @@ public class BattleCore : AutoSingleton<BattleCore>
                 for (int y = 0; y < mapH; y++)
                 {
                     var tilePos = new Vector3Int(minX + x, minY + y, 0);
-                    // TileBase gTile = gMap.GetTile(tilePos), pTile = pMap.GetTile(tilePos);
                     var pTile = pMap.GetTile(tilePos);
                     gGrid[x, y] = new BtGrid() { x = tilePos.x * tileItv + tileOffset, y = tilePos.y * tileItv + tileOffset, tId = 0 };
                     if (pTile != null)
                     {
-                        string[] data = pTile.name.Split('_');
-                        gGrid[x, y].tId = int.Parse(data[3]);
-                        switch (data[2])
+                        // string[] data = pTile.name.Split('_');
+                        // gGrid[x, y].tId = int.Parse(data[2]);
+                        // switch (data[2])
+                        // {
+                        //     case "11":
+                        //         string str = $"{pTile.name.Remove(pTile.name.Length - 2)}_{Random.Range(1, 9)}";
+                        //         CreatePropObj("PropObj", $"{str}_1", mapH - y, propObj, gGrid[x, y].x, gGrid[x, y].y, propParent);
+                        //         CreatePropObj("Prop2Obj", $"{str}_2", mapH - y, prop2Obj, gGrid[x, y].x, gGrid[x, y].y + 0.6f, prop2Parent);
+                        //         break;
+                        //     default:
+                        //         CreatePropObj("PropObj", pTile.name, mapH - y, propObj, gGrid[x, y].x, gGrid[x, y].y, propParent);
+                        //         break;
+                        // }
+                    }
+                    else
+                    {
+                        //btBlk -> 블럭 타일로 어떠한 동적 오브젝트도 이동 할 수 없음.
+                        //btEsc -> 탈출구 타일로 해당 타일에 도달하면 탈출이 된다.
+                        var gTile = gMap.GetTile(tilePos);
+                        switch (gTile.name)
                         {
-                            case "2":
-                                string str = $"{pTile.name.Remove(pTile.name.Length - 2)}_{Random.Range(1, 9)}";
-                                CreatePropObj("PropObj", $"{str}_1", mapH - y, propObj, gGrid[x, y].x, gGrid[x, y].y, propParent);
-                                CreatePropObj("Prop2Obj", $"{str}_2", mapH - y, prop2Obj, gGrid[x, y].x, gGrid[x, y].y + 0.6f, prop2Parent);
+                            case "btEsc":
+                                gGrid[x, y].tId = 1;
+                                //탈출용 오브젝트 생성
+                                var obj = Instantiate(ResManager.GetGameObject("EcsObj"), escParent.transform);
+                                obj.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
+                                break;
+                            case "btBlk":
+                                gGrid[x, y].tId = 2;
                                 break;
                             default:
-                                CreatePropObj("PropObj", pTile.name, mapH - y, propObj, gGrid[x, y].x, gGrid[x, y].y, propParent);
+                                gGrid[x, y].tId = 0;
                                 break;
                         }
                     }
