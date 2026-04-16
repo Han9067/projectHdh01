@@ -1413,10 +1413,11 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     public void TestPlayer(int dir)
     {
-        // player.StateOutline();
         var pos = dir == 0 ? new Vector3(player.transform.position.x - 0.6f, player.transform.position.y, 0f) :
                 new Vector3(player.transform.position.x + 0.6f, player.transform.position.y, 0f);
-        ShowEff("N_Att", pos, dir == 0 ? 1f : -1f, 90f);
+        ShowEff("N_Att", pos, dir == 0 ? 1f : -1f, 45f);
+
+        // ShowEff("N_Dash", player.transform.position, dir == 0 ? 1f : -1f, 0f);
     }
 }
 [CustomEditor(typeof(BattleCore))]
