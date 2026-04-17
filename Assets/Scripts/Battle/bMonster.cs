@@ -12,6 +12,7 @@ public class bMonster : MonoBehaviour
     public GameObject shdObj, mainObj, ggParent, ggObj, bodyObj;
     bool isGG = false;
     public float hp, maxHp;
+    public float dir = 1;
     public int att, def, crt, crtRate, hit, eva, gainExp, lv;
     public int w, h, Rng;
     [SerializeField] private SpriteRenderer mainSpr;

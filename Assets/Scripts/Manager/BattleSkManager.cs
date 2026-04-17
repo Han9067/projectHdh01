@@ -29,17 +29,21 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
         Vector2Int from = BattleCore.I.GetPlayerTilePos();
         switch (skId)
         {
+            case 1001:
+                break;
             case 1002:
+                BattleCore.I.ShowSkGuideLine();
                 BattleCore.I.BeginSkill(skId, 1);
                 BattleCore.I.ShowAttRng(from, 1, 1, GetSkAttVal(data, 608));
                 consumeVal = GetSkAttVal(data, 57);
                 break;
             case 1003:
+                break;
+            case 1101:
+                BattleCore.I.ShowSkGuideLine();
                 BattleCore.I.BeginSkill(skId, 2);
                 BattleCore.I.ShowAttRng(from, 1, 1, PlayerManager.I.pData.Rng);
                 consumeVal = GetSkAttVal(data, 57);
-                break;
-            case 1004:
                 break;
         }
     }

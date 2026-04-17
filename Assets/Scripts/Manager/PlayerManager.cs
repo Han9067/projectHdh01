@@ -387,12 +387,12 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         AddSkExp(1, 20);
         AddSkExp(23, 20);
         AddSkExp(27, 20);
-        // AddSkExp(1001, 20); //명상
+        AddSkExp(1001, 20); //명상
         AddSkExp(1002, 20); //대시
-        AddSkExp(1003, 20); //이중 공격
+        // AddSkExp(1003, 20); //이중 베기
 
-        pSkSlots[0][0] = 1002;
-        pSkSlots[0][1] = 1003;
+        pSkSlots[0][0] = 1001; //스킬 슬롯에 장착
+        pSkSlots[0][1] = 1002;
     }
     public void TestDropItem()
     {

@@ -8,6 +8,7 @@ public class bPlayer : MonoBehaviour
 {
     public int objId = 1000;
     private int angIdx = 0; //이동이 회전하며 움직일때 해당 변수는 0 또는 1이 변동되며 해당 값에 따라 왼쪽,오른쪽으로 회전
+    public float dir = 1; //바라보는 방향, 1 : 왼쪽, -1 : 오른쪽
     Dictionary<PtType, SpriteRenderer> ptSpr = new Dictionary<PtType, SpriteRenderer>();
     public GameObject ptMain, bodyObj;
     public PlayerData pData;
@@ -40,6 +41,7 @@ public class bPlayer : MonoBehaviour
     public void SetObjDir(float dir)
     {
         bodyObj.transform.localScale = new Vector3(dir, 1, 1);
+        this.dir = dir;
     }
     public void OnJump(float dur)
     {

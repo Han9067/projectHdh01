@@ -645,5 +645,17 @@ public class GsManager : AutoSingleton<GsManager>
         float ran = Random.Range(0.9f, 1.1f);
         return (int)(result * ran);
     }
+    public int GetCrtDamage(int att, int def, int crt)
+    {
+        int dmg = att + (att * crt / 100);
+        if (dmg + def <= 0) return 1;
+        float result = (float)dmg * dmg / (dmg + def);
+        float ran = Random.Range(0.9f, 1.1f);
+        return (int)(result * ran);
+    }
+    public bool IsCrt(int crtRate)
+    {
+        return Random.Range(0, 100) < crtRate ? true : false;
+    }
     #endregion
 }
