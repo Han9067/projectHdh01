@@ -586,22 +586,38 @@ public class BattleCore : AutoSingleton<BattleCore>
         {
             if (rng.xx == grid.x && rng.yy == grid.y)
             {
+                //han123 -> 여기서 그리드를 선택된 그리드만 색칠하지말고 w 또는 h가 2 이상일 경우 그 크기에 맞춰서 추가적으로 색칠 및 범위 리소스 생성해야함
+                int tId = gGrid[grid.x, grid.y].tId;
+                Color color = Color.white;
                 switch (pSkType)
                 {
                     case 1:
-                        if (gGrid[grid.x, grid.y].tId >= 1000)
-                            rng.SetColor(Color.red);
-                        else
-                            rng.SetColor(Color.green);
+                        color = tId >= 1000 ? Color.red : Color.green;
                         break;
                     case 2:
                     case 3:
-                        if (gGrid[grid.x, grid.y].tId < 1000)
-                            rng.SetColor(Color.red);
-                        else
-                            rng.SetColor(Color.green);
+                        color = tId < 1000 ? Color.red : Color.green;
                         break;
                 }
+                if (tId > 2000)
+                {
+                    //나중에 아군 몬스터에 대한 체크도 해줘야함. han123
+
+                    // int cnt = mData[tId].w * mData[tId].h;
+                    // for (int a = 0; a < mapW; a++)
+                    // {
+                    //     for (int b = 0; b < mapH; b++)
+                    //     {
+                    //         if (gGrid[a, b].tId == tId)
+                    //         {
+                    //             cnt--;
+                    //             if (cnt <= 0) break;
+                    //         }
+                    //     }
+                    // }
+                }
+                else
+                    rng.SetColor(color);
                 isSkAvailable = rng.IsSkAvailable();
                 selRngPos = grid;
                 return;
