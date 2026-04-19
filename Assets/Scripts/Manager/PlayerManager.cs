@@ -388,11 +388,22 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         AddSkExp(23, 20);
         AddSkExp(27, 20);
         AddSkExp(1001, 20); //명상
-        AddSkExp(1002, 20); //대시
-        // AddSkExp(1003, 20); //이중 베기
+        AddSkExp(1002, 20); //질주
+        AddSkExp(1003, 20); //질주 공격
+        AddSkExp(1101, 20); //이중 베기
+        AddSkExp(1102, 20); //횡베기
+        AddSkExp(1201, 20);
+        AddSkExp(1301, 20);
+        // AddSkExp(1401, 20);
 
         pSkSlots[0][0] = 1001; //스킬 슬롯에 장착
         pSkSlots[0][1] = 1002;
+        pSkSlots[0][2] = 1003;
+        pSkSlots[0][3] = 1101;
+        pSkSlots[0][4] = 1102;
+        pSkSlots[0][5] = 1201;
+        pSkSlots[0][6] = 1301;
+        // pSkSlots[0][7] = 1401;
     }
     public void TestDropItem()
     {

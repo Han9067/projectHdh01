@@ -21,12 +21,13 @@ public class BattleMainUI : UIScreen
         mButtons["GoToWorld"].gameObject.SetActive(false); //테스트 후 정상화
         UpdateSlotList(); //슬롯 목록 업데이트
         UpdateMainUiSkSlot(); //스킬 슬롯 업데이트
+        for (int i = 1; i <= 10; i++)
+            mTMPText["skCt" + i].gameObject.SetActive(false);
     }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            // Debug.Log(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][0]);
             BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][0]);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -35,8 +36,25 @@ public class BattleMainUI : UIScreen
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            Debug.Log(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][2]);
+            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][2]);
         }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][3]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][4]);
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][5]);
+        if (Input.GetKeyDown(KeyCode.Alpha7))
+            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][6]);
+        if (Input.GetKeyDown(KeyCode.Alpha8))
+            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][7]);
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][8]);
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][9]);
+
         if (Input.GetKeyDown(KeyCode.I))
             GsManager.I.StateMenuPopup("OnInvenPop");
         if (Input.GetKeyDown(KeyCode.C))

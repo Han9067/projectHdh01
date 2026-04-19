@@ -3,10 +3,12 @@ using UnityEngine.UI;
 using GB;
 using UnityEngine.EventSystems;
 
-public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
+public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler,
+    IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public int skId, skType, useType, line, idx, slotType;
-    [SerializeField] private Image icon, sel;
+    public bool isBlock = false;
+    [SerializeField] private Image icon, high;
     private void Start()
     {
         SetSkSlot(skId, skType, useType);
@@ -24,26 +26,32 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         else
             icon.gameObject.SetActive(false);
 
-        if (sel.gameObject.activeSelf) sel.gameObject.SetActive(false);
+        if (high.gameObject.activeSelf) high.gameObject.SetActive(false);
     }
     public void SetSkIdx(int line, int idx)
     {
         this.line = line;
         this.idx = idx;
     }
+    public void StateBlock(bool on)
+    {
+        isBlock = on;
+        high.color = new Color(1, 1, 1, on ? 0.2f : 0.5f);
+    }
     public void OnPointerEnter(PointerEventData eventData)
     {
         switch (slotType)
         {
             case 0:
-                if (sel.color.a == 0)
-                    sel.color = new Color(1, 1, 1, 40f / 255f);
-                sel.gameObject.SetActive(true);
+                if (isBlock) return;
+                if (high.color.a != 0.5f)
+                    high.color = new Color(1, 1, 1, 0.5f);
+                high.gameObject.SetActive(true);
                 break;
             case 1:
                 SkillPop.slotLine = line;
                 SkillPop.slotIdx = idx;
-                sel.gameObject.SetActive(true);
+                high.gameObject.SetActive(true);
                 break;
         }
     }
@@ -52,12 +60,13 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         switch (slotType)
         {
             case 0:
-                sel.gameObject.SetActive(false);
+                if (isBlock) return;
+                high.gameObject.SetActive(false);
                 break;
             case 1:
                 SkillPop.slotLine = -1;
                 SkillPop.slotIdx = -1;
-                sel.gameObject.SetActive(false);
+                high.gameObject.SetActive(false);
                 break;
         }
     }
@@ -66,6 +75,16 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         if (skId == 0) return;
         if (eventData.button == PointerEventData.InputButton.Left && !eventData.dragging)
         {
+            if (!BattleCore.I.GetIsActPlayer())
+            {
+                GsManager.I.ShowTstMsg("Tst_NotCurUsingSk");
+                return;
+            }
+            if (isBlock)
+            {
+                GsManager.I.ShowTstMsg("Tst_NotSk");
+                return;
+            }
             // Debug.Log(skId);
             BattleSkManager.I.ClickSk(skId);
         }

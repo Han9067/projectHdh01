@@ -604,7 +604,7 @@ public class GsManager : AutoSingleton<GsManager>
                 SkAttData attData = new SkAttData(v);
                 attList.Add(attData);
             }
-            SkDataList[sk.SkID] = new SkData { SkId = sk.SkID, SkType = sk.Type, UseType = sk.Use, Cool = sk.Cool, Name = sk.Name, Att = attList };
+            SkDataList[sk.SkID] = new SkData { SkId = sk.SkID, SkType = sk.Type, UseType = sk.Use, SkCt = sk.Cool, Name = sk.Name, Att = attList };
         }
     }
     public int GetSkNextExp(int lv)

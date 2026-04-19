@@ -6,12 +6,16 @@ using GB;
 public class SkEffObj : MonoBehaviour
 {
     public SPRAnimation anim;
-    void Start()
-    {
-        anim.Play();
-        anim.EndEvent.AddListener(() =>
-        {
-            gameObject.SetActive(false);
-        });
-    }
+    // void Start()
+    // {
+    //     // OnPlay();
+    // }
+    // private void OnPlay()
+    // {
+    //     anim.Play();
+    //     anim.EndEvent.AddListener(() =>
+    //     {
+    //         gameObject.SetActive(false);
+    //     });
+    // }
 }

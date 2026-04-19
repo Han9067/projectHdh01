@@ -64,7 +64,7 @@ public class AttData
 [System.Serializable]
 public class SkData
 {
-    public int SkId, SkType, UseType, Cool, Exp, NextExp, Lv;
+    public int SkId, SkType, UseType, CurCt, SkCt, Exp, NextExp, Lv;
     public string Name;
     public List<SkAttData> Att;
     public SkData Clone()
@@ -74,7 +74,8 @@ public class SkData
             SkId = this.SkId,
             SkType = this.SkType,
             UseType = this.UseType,
-            Cool = this.Cool,
+            CurCt = 0,
+            SkCt = this.SkCt,
             Name = this.Name,
             Exp = 0,
             NextExp = 0,
@@ -93,7 +94,7 @@ public class SkAttData
     {
         if (att == "0")
         {
-            AttID = 0; Val = 0; Lim = 0; ItvVal = 0;
+            AttID = 0; InitVal = 0; Lim = 0; ItvVal = 0; ItvLv = 0; Val = 0;
             return;
         }
         string[] attVal = att.Split('_');
