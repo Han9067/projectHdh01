@@ -11,6 +11,7 @@ using System;
 using TMPro;
 using UnityEditor;
 using System.Linq;
+using UnityEngine.Animations;
 public class BtGrid
 {
     public float x, y;
@@ -61,6 +62,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     #region ==== Global Variable ====
     [Header("====Camera====")]
     [SerializeField] private Camera cmr; // 전투씬 메인 카메라
+    private bool isNotSmooth = false; //카메라의 기본 무빙이 스무스 모드인데 특정 상황에 따라 변동되도록 하기 위한 변수\
     private Vector3 velocity = Vector3.zero; //카메라 속도
     [Header("====UI====")]
     public GameObject dmgTxtParent;
@@ -86,7 +88,6 @@ public class BattleCore : AutoSingleton<BattleCore>
     [SerializeField] private List<PropObj> propObj = new List<PropObj>(); // 환경 프리팹 리스트
     [SerializeField] private List<PropObj> prop2Obj = new List<PropObj>(); // 환경 프리팹2 리스트
     private List<RngGrid> attRng = new List<RngGrid>();
-    private Vector2Int attRngPos = new Vector2Int(-200, -200);
     private int lcx = 0, rcx = 0;//좌, 우 플레이어 또는 NPC, 몬스터의 기준 x좌표
 
     [Header("====Player====")]
@@ -228,6 +229,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
                     ShowMoveGuide(pPath);
                 }
+                // Debug.Log($"t: {t.x}, {t.y}");
             }
             else
             {
@@ -239,23 +241,18 @@ public class BattleCore : AutoSingleton<BattleCore>
                     HideAllOutline();
                     int mId = gGrid[t.x, t.y].tId;
                     ShowOutline(mId);
-                    if (attRngPos != objTurn[0].pos)
-                    {
-                        ShowAttRng(objTurn[0].pos, 1, 1, player.pData.Rng);
-                        attRngPos = objTurn[0].pos;
-                    }
+                    // if (mId > 2000 && mId <= 3000)
+                    // {
+                    //     // ShowSquareRng(t, 1);
+                    // }
                 }
                 else if (gGrid[t.x, t.y].tId >= 1000)
                 {
                     cName = "default";
                     if (focus.activeSelf) focus.SetActive(false);
-                    if (gGrid[t.x, t.y].tId == 1000)
+                    if (gGrid[t.x, t.y].tId == 1000 && !attRng[0].gameObject.activeSelf)
                     {
-                        if (attRngPos != t)
-                        {
-                            ShowAttRng(t, 1, 1, player.pData.Rng);
-                            attRngPos = t;
-                        }
+                        ShowSquareRng(t, 1);
                     }
                 }
                 else
@@ -314,9 +311,8 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
             #endregion
         }
-        // MoveCamera(false);
         if (isMove)
-            MoveCamera(false);
+            MoveCamera(isNotSmooth);
     }
     #region ==== 🎨 LOAD BATTLE SCENE ====
     void LoadFieldMap()
@@ -533,45 +529,45 @@ public class BattleCore : AutoSingleton<BattleCore>
         return result;
     }
     #region ==== Field Action ====
-    public void ShowAttRng(Vector2Int grid, int w, int h, int cnt)
+    public void ShowSquareRng(Vector2Int pos, int cnt)
     {
+        //해당 함수는 사각형 형태의 공격 범위 그리드를 화면에 보여주는 함수
+        //그리드 공식 -> 지정된 홀수 값의 제곱===== cnt 1의 값은 3이고 3부터 1씩 늘어날수록 2씩 증가 (예 : 3,5,7,9...)
+        //계산된 그리드의 총 길이에서 정 가운데에 있는 숫자(예: cnt가 1일땐 총 그리드 수는 9이지만 9에서 중앙 숫자인 5일땐 예외처리로 제외시킴)
+        //시작 위치는 cen에서 cnt 값만큼 왼쪽 상단(타입맵 좌표는 y의 경우 아래에서 위로 증가함으로 x는 -1, y는 +1를 적용해야함)으로 가서 처음 지정된 홀수값을 두번 반복문 돌려서 생성 -> idx 필참
         foreach (var rng in attRng)
         {
             rng.gameObject.SetActive(false);
             rng.SetColor(Color.white);
         }
-
-        int attMinX = grid.x, attMaxX = grid.x + w - 1, attMinY = grid.y, attMaxY = grid.y + h - 1;
-        List<Vector2Int> rngPos = new List<Vector2Int>();
-        for (int x = grid.x - cnt; x < grid.x + w + cnt; x++)
+        int idx = 0; int sx = pos.x - cnt, sy = pos.y + cnt, val = 3 + ((cnt - 1) * 2), num = val * val, cen = (num - 1) / 2;
+        List<Vector2Int> arr = new List<Vector2Int>();
+        for (int y = sy; y > sy - val; y--)
         {
-            for (int y = grid.y - cnt; y < grid.y + h + cnt; y++)
+            for (int x = sx; x < sx + val; x++)
             {
+                if (idx == cen)
+                {
+                    idx++;
+                    continue;
+                }
                 if (x < 0 || x >= mapW || y < 0 || y >= mapH) continue;
-                if (x >= grid.x && x < grid.x + w && y >= grid.y && y < grid.y + h) continue;
-
-                // tId가 1~999 사이면 제외
-                if (gGrid[x, y].tId > 0 && gGrid[x, y].tId < 1000) continue;
-
-                int distX = x < attMinX ? attMinX - x : (x > attMaxX ? x - attMaxX : 0);
-                int distY = y < attMinY ? attMinY - y : (y > attMaxY ? y - attMaxY : 0);
-                if (Mathf.Max(distX, distY) <= cnt) rngPos.Add(new Vector2Int(x, y));
+                arr.Add(new Vector2Int(x, y));
+                idx++;
             }
         }
-        if (rngPos.Count > attRng.Count) CreateRngObj(rngPos.Count - attRng.Count);
-        for (int i = 0; i < rngPos.Count; i++)
+        if (arr.Count > attRng.Count) CreateRngObj(arr.Count - attRng.Count);
+        for (int i = 0; i < arr.Count; i++)
         {
-            Vector2Int p = rngPos[i];
-            attRng[i].SetPos(gGrid[p.x, p.y].x, gGrid[p.x, p.y].y, p.x, p.y);
+            Vector2Int p = arr[i];
+            attRng[i].SetPos(gGrid[p.x, p.y].x, gGrid[p.x, p.y].y, p.x, p.y, "rng_0"); //여기서
             attRng[i].gameObject.SetActive(true);
         }
-        attRngPos = grid;
     }
     private void HideAllRng()
     {
         foreach (var rng in attRng)
             rng.gameObject.SetActive(false);
-        attRngPos = new Vector2Int(-200, -200);
     }
     private void SelRngGrid(Vector2Int grid)
     {
@@ -1140,6 +1136,13 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (closestX < 0) return Vector3.zero;
         return new Vector3(gGrid[closestX, closestY].x, gGrid[closestX, closestY].y, 0f);
     }
+    private GameObject GetObj(int oId)
+    {
+        if (oId == 1000)
+            return pObj;
+        else
+            return mData[oId].gameObject;
+    }
     private GameObject GetProjObj()
     {
         foreach (var t in projObj)
@@ -1288,11 +1291,11 @@ public class BattleCore : AutoSingleton<BattleCore>
                 break;
         }
     }
-    private String GetMeleeAniKey()
+    private string GetMeleeAniKey()
     {
         return "N_Att1";
     }
-    private String GetSkAniKey(int skId)
+    private string GetSkAniKey(int skId)
     {
         switch (skId)
         {
@@ -1441,26 +1444,52 @@ public class BattleCore : AutoSingleton<BattleCore>
         isActionable = false;
         ShowEff(skName, pos, 0f, () => { objTurn[0].state = BtObjState.READY; TurnAction(); });
     }
-    public void DashToTile(Vector2Int pos)
+    public void DashToTile(Vector2Int tgPos, int oId = 1000)
     {
-        Vector3 pPos = pObj.transform.position;
-        Vector3 tgPos = new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
-        float dur = Mathf.Clamp(Vector3.Distance(pPos, tgPos) * 0.1f, 0.1f, 1f);
-        SetObjDir(1000, cpPos, pos);
+        Vector3 oPos = pObj.transform.position, tPos = new Vector3(gGrid[tgPos.x, tgPos.y].x, gGrid[tgPos.x, tgPos.y].y, 0);
+
+        Vector2Int myPos = FindTilePos(oPos);
+        var path = BattlePathManager.I.GetPath(myPos, tgPos, gGrid);
+        int len = path.Length;
+
+        float dur = Mathf.Clamp(Vector3.Distance(oPos, tPos) * 0.05f, 0.1f, 1f);
+        Debug.Log(dur);
+        SetObjDir(oId, myPos, tgPos);
         isMove = true;
-        pObj.transform.DOMove(tgPos, dur).SetEase(Ease.OutCubic).OnComplete(() =>
+        isNotSmooth = true;
+        var obj = GetObj(oId);
+
+        var ang = Mathf.Atan2(oPos.y - tPos.y, oPos.x - tPos.x) * Mathf.Rad2Deg;
+        if (ang == -90f && ang == 90f)
+            ang = GetObjDir(oId) == 1f ? 0f : 180f;
+        obj.transform.DOMove(tPos, dur).SetEase(Ease.Linear).OnComplete(() =>
         {
-            isMove = false;
-            UpdateGrid(cpPos.x, cpPos.y, pos.x, pos.y, 1, 1, 1000);
-            cpPos = pos;
-            objTurn[0].pos = pos;
-            player.SetObjLayer(mapH - pos.y);
+            if (oId == 1000)
+            {
+                isMove = false;
+                isNotSmooth = false;
+                UpdateGrid(cpPos.x, cpPos.y, tgPos.x, tgPos.y, 1, 1, 1000);
+                cpPos = tgPos;
+                objTurn[0].pos = tgPos;
+                player.SetObjLayer(mapH - tgPos.y);
+            }
+            else { }
             TurnAction();
         });
-        //연출 -> 추후 대시는 연기 말고 다른 애니메이션으로 대체 예정
-        // float ang = player.GetObjDir() == 1f ? 0f : 180f;
-        // var skPos = new Vector3(pPos.x + (ang == 0f ? 0.6f : -0.6f), pPos.y, 0);
-        // ShowEff("N_Dash", skPos, ang);
+
+        if (oId == 1000)
+            player.OnJump(dur);
+        else
+            mData[oId].OnJump(dur);
+        StartCoroutine(ShowLoopEff("N_Dash", len, dur / len, oId, ang));
+    }
+    IEnumerator ShowLoopEff(string eff, int cnt, float ct, int oId, float ang)
+    {
+        for (int i = 0; i < cnt; i++)
+        {
+            ShowEff(eff, GetObj(oId).transform.position, ang);
+            yield return new WaitForSeconds(ct);
+        }
     }
     public void ActMeleeToTile(Vector2Int pos, int skId)
     {
