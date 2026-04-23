@@ -92,10 +92,8 @@ public class BattleCore : AutoSingleton<BattleCore>
     private Vector2Int selSkPos = new Vector2Int(-1, -1);
     private List<RngGrid> attRng = new List<RngGrid>();
     private List<RngGrid> skRng = new List<RngGrid>();
-    private List<RngGrid> objRng = new List<RngGrid>();
     private int pSkRngType = 0; // 현재 스킬 타입 ->단일인지 다중인지 등
     private int pSkTgType = 0; //0 : 적, 1 : 자신, 2 : 아군 버프
-    private List<int> objRngList = new List<int>();
     private int lcx = 0, rcx = 0;//좌, 우 플레이어 또는 NPC, 몬스터의 기준 x좌표
 
     [Header("====Player====")]
@@ -226,7 +224,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                 if (focusSrp.color != Color.white) focusSrp.color = Color.white;
                 HideAllOutline();
                 if (attRng[0].gameObject.activeSelf && !isSk) HideAllRng();
-                if (objRngList.Count > 0) HideAllObjRng(true);
                 ///가이드라인
                 if (focusBackupPos != focus.transform.position && !isSk)
                 {
@@ -247,26 +244,13 @@ public class BattleCore : AutoSingleton<BattleCore>
                     HideAllOutline();
                     int mId = gGrid[t.x, t.y].tId;
                     ShowOutline(mId);
-                    if (mId > 2000 && mId <= 3000)
-                    {
-                        // CheckAttRng(cpPos);
-                        if (objRngList.Count == 0 || !objRngList.Contains(mId))
-                        {
-                            objRngList = new List<int>() { mId }; //추후에 한번에 여러 공격하는 상황이 오면 해당 리스트에 여러 값이 적용될듯
-                            ShowObjRng(mId);
-                        }
-                    }
                 }
                 else if (gGrid[t.x, t.y].tId >= 1000)
                 {
                     cName = "default";
                     if (focus.activeSelf) focus.SetActive(false);
                     if (gGrid[t.x, t.y].tId == 1000)
-                    {
                         CheckAttRng(t);
-                        if (objRngList.Count > 0)
-                            HideAllObjRng(true);
-                    }
                 }
                 else
                 {
@@ -707,42 +691,10 @@ public class BattleCore : AutoSingleton<BattleCore>
         foreach (var rng in skRng)
             rng.gameObject.SetActive(false);
     }
-    private void ShowObjRng(int oId)
-    {
-        HideAllObjRng(false);
-        for (int i = 0; i < objRngList.Count; i++)
-        {
-            var grid = new Dictionary<(int x, int y), int>();
-            for (int w = 0; w < mapW; w++)
-            {
-                for (int h = 0; h < mapH; h++)
-                {
-                    if (gGrid[w, h].tId == oId)
-                        grid[(w, h)] = 0;
-                }
-            }
-            CreateRngObj(grid.Count - objRng.Count <= 0 ? 0 : grid.Count - objRng.Count, objRng, 1);
-            int idx = 0;
-            foreach (var g in grid)
-            {
-                int x = g.Key.x, y = g.Key.y;
-                objRng[idx].SetPos(gGrid[x, y].x, gGrid[x, y].y, x, y, $"rng_{GetRngType(grid, x, y)}", 0);
-                objRng[idx].gameObject.SetActive(true);
-                idx++;
-            }
-        }
-    }
-    private void HideAllObjRng(bool on)
-    {
-        foreach (var rng in objRng)
-            rng.gameObject.SetActive(false);
-        if (on) objRngList.Clear();
-    }
     private void HideAllRng()
     {
         HideAllAttRng();
         HideAllSkRng();
-        HideAllObjRng(true);
     }
     public bool GetActiveCurPosWithRngGrid(Vector2Int grid)
     {
