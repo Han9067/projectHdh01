@@ -577,6 +577,8 @@ public class BattleCore : AutoSingleton<BattleCore>
                     left == 1 && right == 1 ? 9 : 10;
             case 1:
                 return down == 1 ? 11 : left == 1 ? 12 : up == 1 ? 13 : 14;
+            case 0:
+                return 15;
             default:
                 return 0;
         }
