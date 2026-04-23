@@ -58,26 +58,27 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
         switch (skId)
         {
             case 1001:
-                BattleCore.I.BeginSkill(skId, 0);
+                BattleCore.I.BeginSkill(skId);
                 BattleCore.I.UseSk(skId);
                 break;
             case 1002:
-                BattleCore.I.BeginSkill(skId, 1);
-                // BattleCore.I.ShowAttRng(from, 1, 1, 3);
+                BattleCore.I.BeginSkill(skId);
+                BattleCore.I.ShowSkRng(3, from, 1, 2);
+                //rng : 범위, pos : 스킬 사용자 위치, sk : 스킬 타입(단일, 다중 등), tg : 타겟 타입(적, 자신, 아군 버프 등)
                 break;
             case 1003:
-                BattleCore.I.BeginSkill(skId, 2);
-                // BattleCore.I.ShowAttRng(from, 1, 1, 3);
+                BattleCore.I.BeginSkill(skId);
                 break;
             case 1101:
             case 1201:
             case 1202:
             case 1301:
-                BattleCore.I.BeginSkill(skId, 2);
-                // BattleCore.I.ShowAttRng(from, 1, 1, 1);
+                //주변 1칸 사각형으로 단일 공격
+                BattleCore.I.BeginSkill(skId);
+                BattleCore.I.ShowSkRng(1, from, 1, 1);
                 break;
             case 1401:
-                BattleCore.I.BeginSkill(skId, 2);
+                BattleCore.I.BeginSkill(skId);
                 // BattleCore.I.ShowAttRng(from, 1, 1, 2);
                 break;
         }

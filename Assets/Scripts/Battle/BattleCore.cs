@@ -87,7 +87,15 @@ public class BattleCore : AutoSingleton<BattleCore>
     [SerializeField] private GameObject rngParent, escParent, propParent, prop2Parent; // 공격 범위 그리드 부모, 탈출존 프리팹, 부모, 환경 프리팹 부모, 환경2 프리팹 부모
     [SerializeField] private List<PropObj> propObj = new List<PropObj>(); // 환경 프리팹 리스트
     [SerializeField] private List<PropObj> prop2Obj = new List<PropObj>(); // 환경 프리팹2 리스트
+    [Header("====Rng====")]
+    private Vector2Int attPos = new Vector2Int(-1, -1);
+    private Vector2Int selSkPos = new Vector2Int(-1, -1);
     private List<RngGrid> attRng = new List<RngGrid>();
+    private List<RngGrid> skRng = new List<RngGrid>();
+    private List<RngGrid> objRng = new List<RngGrid>();
+    private int pSkRngType = 0; // 현재 스킬 타입 ->단일인지 다중인지 등
+    private int pSkTgType = 0; //0 : 적, 1 : 자신, 2 : 아군 버프
+    private List<int> objRngList = new List<int>();
     private int lcx = 0, rcx = 0;//좌, 우 플레이어 또는 NPC, 몬스터의 기준 x좌표
 
     [Header("====Player====")]
@@ -100,8 +108,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     private static bool isSk = false; // 스킬 사용 중인지 여부
     private bool isSkAvailable = false; // 스킬 사용 가능 여부
     private int curUseSkId = 0; // 현재 사용중인 스킬 아이디
-    private int pSkType = 0; // 플레이어 스킬 타입(1 : 이동형, 2 : 대상 공격형, 3 : 대상 버프형)
-                             // private Vector2Int[] pPath;
+
     private Vector2Int[] pPath; // 플레이어 이동 경로
     [Header("====Monster====")]
     private Dictionary<int, GameObject> mObj = new Dictionary<int, GameObject>();
@@ -122,7 +129,6 @@ public class BattleCore : AutoSingleton<BattleCore>
     [Header("====Common====")]
     [SerializeField] private int objId;
     [SerializeField] private int curSelObjId = 0;
-    private Vector2Int selRngPos = new Vector2Int(-1, -1);
     private List<TurnData> objTurn = new List<TurnData>();
     private int tIdx = 0; // 턴 인덱스
                           // float dTime = 0;
@@ -154,7 +160,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         MoveCamera(true);
         // FadeIn(); // 페이드인 효과
         isActionable = true;
-        CreateRngObj(8);
+        CreateRngObj(8, attRng);
     }
     void Update()
     {
@@ -182,7 +188,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     {
                         prop2Obj[i].onMouse = false;
                         if (!prop2Obj[i].onObj)
-                            changeAlphaWithProps(i, 1f);
+                            ChangeAlphaWithProps(i, 1f);
                     }
                 }
             }
@@ -193,7 +199,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     if (prop2Obj[idx[i]].curAlpha != 0.5f)
                     {
                         prop2Obj[idx[i]].onMouse = true;
-                        changeAlphaWithProps(idx[i], 0.5f);
+                        ChangeAlphaWithProps(idx[i], 0.5f);
                     }
                 }
             }
@@ -206,7 +212,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 if (focus.activeSelf) focus.SetActive(false);
                 return;
             }
-            focus.transform.position = new Vector3(gGrid[t.x, t.y].x, gGrid[t.x, t.y].y, 0);
+            focus.transform.position = GetGridToWorldPos(t);
             string cName;
             if (gGrid[t.x, t.y].tId == 0)
             {
@@ -220,6 +226,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 if (focusSrp.color != Color.white) focusSrp.color = Color.white;
                 HideAllOutline();
                 if (attRng[0].gameObject.activeSelf && !isSk) HideAllRng();
+                if (objRngList.Count > 0) HideAllObjRng(true);
                 ///가이드라인
                 if (focusBackupPos != focus.transform.position && !isSk)
                 {
@@ -229,7 +236,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                     pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
                     ShowMoveGuide(pPath);
                 }
-                // Debug.Log($"t: {t.x}, {t.y}");
             }
             else
             {
@@ -241,24 +247,35 @@ public class BattleCore : AutoSingleton<BattleCore>
                     HideAllOutline();
                     int mId = gGrid[t.x, t.y].tId;
                     ShowOutline(mId);
-                    // if (mId > 2000 && mId <= 3000)
-                    // {
-                    //     // ShowSquareRng(t, 1);
-                    // }
+                    if (mId > 2000 && mId <= 3000)
+                    {
+                        // CheckAttRng(cpPos);
+                        if (objRngList.Count == 0 || !objRngList.Contains(mId))
+                        {
+                            objRngList = new List<int>() { mId }; //추후에 한번에 여러 공격하는 상황이 오면 해당 리스트에 여러 값이 적용될듯
+                            ShowObjRng(mId);
+                        }
+                    }
                 }
                 else if (gGrid[t.x, t.y].tId >= 1000)
                 {
                     cName = "default";
                     if (focus.activeSelf) focus.SetActive(false);
-                    if (gGrid[t.x, t.y].tId == 1000 && !attRng[0].gameObject.activeSelf)
+                    if (gGrid[t.x, t.y].tId == 1000)
                     {
-                        ShowSquareRng(t, 1);
+                        CheckAttRng(t);
+                        if (objRngList.Count > 0)
+                            HideAllObjRng(true);
                     }
                 }
                 else
                 {
                     cName = "notMove";
-                    if (!focus.activeSelf) focus.SetActive(true);
+                    if (!focus.activeSelf)
+                    {
+                        focus.SetActive(true);
+                        HideAllRng();
+                    }
                     if (focusSrp.color != Color.red) focusSrp.color = Color.red;
                 }
                 if (!GsManager.I.IsCursor(cName)) GsManager.I.SetCursor(cName);
@@ -267,7 +284,8 @@ public class BattleCore : AutoSingleton<BattleCore>
 
             if (isSk)
             {
-                if (attRng[0].gameObject.activeSelf) SelRngGrid(t);
+                if (skRng.Count > 0)
+                    SelSKRngGrid(t);
             }
             #region Input Act
             if (Input.GetMouseButtonDown(0))
@@ -292,11 +310,11 @@ public class BattleCore : AutoSingleton<BattleCore>
                             TurnAction();
                         }
                         else
-                            OnMovePlayer(t, 1);
+                            OnMovePlayer(1);
                         break;
                     case "default":
                         if (!focus.activeSelf) return;
-                        OnMovePlayer(t);
+                        OnMovePlayer();
                         break;
                 }
                 InitCursorUI();
@@ -314,6 +332,12 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (isMove)
             MoveCamera(isNotSmooth);
     }
+    #region ==== 🎨 GET ====
+    private Vector3 GetGridToWorldPos(Vector2Int pos)
+    {
+        return new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
+    }
+    #endregion
     #region ==== 🎨 LOAD BATTLE SCENE ====
     void LoadFieldMap()
     {
@@ -482,16 +506,18 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return new Vector2Int(0, 0);
     }
-    private void CreateRngObj(int cnt)
+    private void CreateRngObj(int cnt, List<RngGrid> list, int type = 0)
     {
-        int idx = attRng.Count;
+        if (cnt == 0) return;
+        int idx = list.Count;
         for (int i = 0; i < cnt; i++)
         {
-            var obj = Instantiate(ResManager.GetGameObject("RngGrid"), rngParent.transform);
+            var obj = Instantiate(ResManager.GetGameObject("RngObj"), rngParent.transform);
             var rng = obj.GetComponent<RngGrid>();
-            obj.name = "Rng_" + (idx + i);
+            rng.SetData(type); //type -> 0 : 공격 범위, 1 : 오브젝트 범위, 2 : 스킬 범위
+            obj.name = $"Rng_{type}_{idx + i}";
             obj.SetActive(false);
-            attRng.Add(rng);
+            list.Add(rng);
         }
     }
     private void CreatePropObj(string prefabName, string name, int layer, List<PropObj> list, float x, float y, GameObject parent)
@@ -529,96 +555,194 @@ public class BattleCore : AutoSingleton<BattleCore>
         return result;
     }
     #region ==== Field Action ====
-    public void ShowSquareRng(Vector2Int pos, int cnt)
+    private int GetRngType(Dictionary<(int x, int y), int> grid, int x, int y)
     {
+        //총 0~14까지 존재하며 그룹은 1~4, 5~10, 11~14 4개 그룹으로 나누어짐
+        // 1~4 까지는 1개 선으로 상, 우, 하, 좌 순
+        // 5~10 까지는 2개 선으로 상&우, 우&하, 하&좌, 좌&상, 상&하, 좌&우 순
+        // 11~14 까지는 3개 선으로 상&좌&우, 우&상&하, 하&좌&우, 좌&상&하 순
+        //주어진 x,y을 기준으로 상하좌우 그리드가 존재하는지 체크 
+        int idx = 0;
+        int up = 0, down = 0, left = 0, right = 0;
+        if (grid.ContainsKey((x, y + 1)))
+        {
+            idx++;
+            up = 1;
+        }
+        if (grid.ContainsKey((x, y - 1)))
+        {
+            idx++;
+            down = 1;
+        }
+        if (grid.ContainsKey((x - 1, y)))
+        {
+            idx++;
+            left = 1;
+        }
+        if (grid.ContainsKey((x + 1, y)))
+        {
+            idx++;
+            right = 1;
+        }
+        switch (idx)
+        {
+            case 3:
+                return down == 1 && left == 1 && right == 1 ? 1 : up == 1 && left == 1 && down == 1 ? 2 : up == 1 && left == 1 && right == 1 ? 3 : 4;
+            case 2:
+                return down == 1 && left == 1 ? 5 : left == 1 && up == 1 ? 6 : up == 1 && right == 1 ? 7 : right == 1 && down == 1 ? 8 :
+                    left == 1 && right == 1 ? 9 : 10;
+            case 1:
+                return down == 1 ? 11 : left == 1 ? 12 : up == 1 ? 13 : 14;
+            default:
+                return 0;
+        }
+    }
+    private void CheckAttRng(Vector2Int t)
+    {
+        if (!attRng[0].gameObject.activeSelf)
+            ShowAttRng(t, 1);
+        else
+        {
+            if (attPos != t)
+                ShowAttRng(t, 1);
+        }
+    }
+    private void ShowAttRng(Vector2Int pos, int cnt)
+    {
+        attPos = pos;
         //해당 함수는 사각형 형태의 공격 범위 그리드를 화면에 보여주는 함수
         //그리드 공식 -> 지정된 홀수 값의 제곱===== cnt 1의 값은 3이고 3부터 1씩 늘어날수록 2씩 증가 (예 : 3,5,7,9...)
         //계산된 그리드의 총 길이에서 정 가운데에 있는 숫자(예: cnt가 1일땐 총 그리드 수는 9이지만 9에서 중앙 숫자인 5일땐 예외처리로 제외시킴)
         //시작 위치는 cen에서 cnt 값만큼 왼쪽 상단(타입맵 좌표는 y의 경우 아래에서 위로 증가함으로 x는 -1, y는 +1를 적용해야함)으로 가서 처음 지정된 홀수값을 두번 반복문 돌려서 생성 -> idx 필참
-        foreach (var rng in attRng)
-        {
-            rng.gameObject.SetActive(false);
-            rng.SetColor(Color.white);
-        }
+        HideAllAttRng();
         int idx = 0; int sx = pos.x - cnt, sy = pos.y + cnt, val = 3 + ((cnt - 1) * 2), num = val * val, cen = (num - 1) / 2;
-        List<Vector2Int> arr = new List<Vector2Int>();
+
+        var grid = new Dictionary<(int x, int y), int>();
         for (int y = sy; y > sy - val; y--)
         {
             for (int x = sx; x < sx + val; x++)
             {
-                if (idx == cen)
-                {
-                    idx++;
-                    continue;
-                }
                 if (x < 0 || x >= mapW || y < 0 || y >= mapH) continue;
-                arr.Add(new Vector2Int(x, y));
-                idx++;
+                grid[(x, y)] = 0; //여기에는 타입을 넣을생각
             }
         }
-        if (arr.Count > attRng.Count) CreateRngObj(arr.Count - attRng.Count);
-        for (int i = 0; i < arr.Count; i++)
+        if (grid.Count > attRng.Count) CreateRngObj(grid.Count - attRng.Count, attRng);
+        foreach (var g in grid)
         {
-            Vector2Int p = arr[i];
-            attRng[i].SetPos(gGrid[p.x, p.y].x, gGrid[p.x, p.y].y, p.x, p.y, "rng_0"); //여기서
-            attRng[i].gameObject.SetActive(true);
+            int x = g.Key.x, y = g.Key.y;
+            attRng[idx].SetPos(gGrid[x, y].x, gGrid[x, y].y, x, y, $"rng_{GetRngType(grid, x, y)}", 0);
+            attRng[idx].gameObject.SetActive(true);
+            idx++;
         }
     }
-    private void HideAllRng()
+    private void SetSkRng(int sk)
+    {
+        // 1 : 단일_근접1칸_일반 근접공격, 2 : 단일_근접 2칸_창 일반 공격, 3 : 단일_원거리1칸
+        // 11 : 다중_근접 3칸_횡베기 등, 12 : 다중_근접 둥글게 8칸_회전베기 등, 13 : 다중_근접 십자 4칸_좌1우1상1하1칸, 
+        // 14 : 다중_근접 십자 8칸_좌2우2상2하2칸, 15 : 다중_근접 직선 3칸_관통 찌르기_창
+        if (skRng.Count > 0)
+            HideAllSkRng();
+        int cnt = 1;
+        switch (sk)
+        {
+            case 11:
+                cnt = 3;
+                break;
+            case 12:
+            case 14:
+                cnt = 8;
+                break;
+            case 13:
+                cnt = 4;
+                break;
+            case 15:
+                cnt = 3;
+                break;
+        }
+        CreateRngObj(cnt - skRng.Count <= 0 ? 0 : cnt - skRng.Count, skRng, 2);
+    }
+    private void HideAllAttRng()
     {
         foreach (var rng in attRng)
             rng.gameObject.SetActive(false);
     }
-    private void SelRngGrid(Vector2Int grid)
+    public void ShowSkRng(int rng, Vector2Int pos, int sk, int tg)
     {
+        //rng : 범위, pos : 스킬 사용자 위치, sk : 스킬 타입(단일, 다중 등), tg : 타겟 타입(적, 자신, 아군 버프 등)
+        ShowAttRng(pos, rng);
+        SetSkRng(sk);
+        pSkRngType = sk;
+        pSkTgType = tg;
+    }
+    private void SelSKRngGrid(Vector2Int pos)
+    {
+        //pos가 범위 그리드 내부에 있는지 체크
+        selSkPos = new Vector2Int(-1, -1);
         foreach (var rng in attRng)
-            rng.SetColor(Color.white);
-        if (grid.x == -1 && grid.y == -1)
         {
-            selRngPos = new Vector2Int(-1, -1);
-            return;
-        }
-        foreach (var rng in attRng)
-        {
-            if (rng.xx == grid.x && rng.yy == grid.y)
+            if (rng.xx == pos.x && rng.yy == pos.y)
             {
-                //han123 -> 여기서 그리드를 선택된 그리드만 색칠하지말고 w 또는 h가 2 이상일 경우 그 크기에 맞춰서 추가적으로 색칠 및 범위 리소스 생성해야함
-                int tId = gGrid[grid.x, grid.y].tId;
-                Color color = Color.white;
-                switch (pSkType)
-                {
-                    case 1:
-                        color = tId >= 1000 ? Color.red : Color.green;
-                        break;
-                    case 2:
-                    case 3:
-                        color = tId < 1000 ? Color.red : Color.green;
-                        break;
-                }
-                if (tId > 2000)
-                {
-                    //나중에 아군 몬스터에 대한 체크도 해줘야함. han123
-
-                    // int cnt = mData[tId].w * mData[tId].h;
-                    // for (int a = 0; a < mapW; a++)
-                    // {
-                    //     for (int b = 0; b < mapH; b++)
-                    //     {
-                    //         if (gGrid[a, b].tId == tId)
-                    //         {
-                    //             cnt--;
-                    //             if (cnt <= 0) break;
-                    //         }
-                    //     }
-                    // }
-                }
-                else
-                    rng.SetColor(color);
-                isSkAvailable = rng.IsSkAvailable();
-                selRngPos = grid;
-                return;
+                selSkPos = pos;
+                break;
             }
         }
+        if (selSkPos.x == -1 && selSkPos.y == -1)
+        {
+            if (skRng.Count > 0)
+                HideAllSkRng();
+            return;
+        }
+        if (pSkRngType == 1)
+        {
+            skRng[0].gameObject.SetActive(true);
+            skRng[0].transform.position = GetGridToWorldPos(pos);
+        }
+        else
+        {
+            // switch(pSkRngType)
+        }
+    }
+    private void HideAllSkRng()
+    {
+        foreach (var rng in skRng)
+            rng.gameObject.SetActive(false);
+    }
+    private void ShowObjRng(int oId)
+    {
+        HideAllObjRng(false);
+        for (int i = 0; i < objRngList.Count; i++)
+        {
+            var grid = new Dictionary<(int x, int y), int>();
+            for (int w = 0; w < mapW; w++)
+            {
+                for (int h = 0; h < mapH; h++)
+                {
+                    if (gGrid[w, h].tId == oId)
+                        grid[(w, h)] = 0;
+                }
+            }
+            CreateRngObj(grid.Count - objRng.Count <= 0 ? 0 : grid.Count - objRng.Count, objRng, 1);
+            int idx = 0;
+            foreach (var g in grid)
+            {
+                int x = g.Key.x, y = g.Key.y;
+                objRng[idx].SetPos(gGrid[x, y].x, gGrid[x, y].y, x, y, $"rng_{GetRngType(grid, x, y)}", 0);
+                objRng[idx].gameObject.SetActive(true);
+                idx++;
+            }
+        }
+    }
+    private void HideAllObjRng(bool on)
+    {
+        foreach (var rng in objRng)
+            rng.gameObject.SetActive(false);
+        if (on) objRngList.Clear();
+    }
+    private void HideAllRng()
+    {
+        HideAllAttRng();
+        HideAllSkRng();
+        HideAllObjRng(true);
     }
     public bool GetActiveCurPosWithRngGrid(Vector2Int grid)
     {
@@ -629,7 +753,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return false;
     }
-    private void changeAlphaWithProps(int idx, float val)
+    private void ChangeAlphaWithProps(int idx, float val)
     {
         propObj[idx].SetAlpha(val);
         prop2Obj[idx].SetAlpha(val);
@@ -681,14 +805,12 @@ public class BattleCore : AutoSingleton<BattleCore>
     #endregion
     #region ==== Object Action ====
     public bool GetIsActPlayer() => isActionable;
-    void OnMovePlayer(Vector2Int t, int state = 0)
+    void OnMovePlayer(int state = 0)
     {
         focus.SetActive(false);
         HideMoveGuide();
         isActionable = false;
         isMove = true;
-        //추후 포커스, 가이드 라인 초기화 및 비활성화
-        // Vector2Int[] pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
         if (state == 1)
             pPath = new Vector2Int[] { pPath[0] };
         TurnData pTurn = objTurn[0];
@@ -772,7 +894,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         ot.state = BtObjState.READY;
                         break;
                     case BtObjState.SKILL:
-                        BattleSkManager.I.ActSkill(ot.skId, selRngPos);
+                        BattleSkManager.I.ActSkill(ot.skId, selSkPos);
                         isActionable = false;
                         ot.state = BtObjState.READY;
                         break;
@@ -1390,7 +1512,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 if (!prop2Obj[i].onObj)
                 {
                     prop2Obj[i].onObj = true;
-                    changeAlphaWithProps(i, 0.5f);
+                    ChangeAlphaWithProps(i, 0.5f);
                 }
             }
             else
@@ -1399,7 +1521,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 {
                     prop2Obj[i].onObj = false;
                     if (prop2Obj[i].curAlpha != 1f)
-                        changeAlphaWithProps(i, 1f);
+                        ChangeAlphaWithProps(i, 1f);
                 }
             }
         }
@@ -1412,7 +1534,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     #region ==== 스킬 ====
     public void InitBtSk()
     {
-        selRngPos = new Vector2Int(-1, -1);
+        selSkPos = new Vector2Int(-1, -1);
         isSk = false; curUseSkId = 0;
         HideAllRng();
     }
@@ -1426,9 +1548,9 @@ public class BattleCore : AutoSingleton<BattleCore>
     public bool IsUsingSk() => BattleSkManager.I.IsUsingSk();
     // BattleSkManager 전용 (최소 API)
     public void GetSkillState(out bool isSk, out int curSkId, out Vector2Int skPos, out bool available)
-    { isSk = BattleCore.isSk; curSkId = curUseSkId; skPos = selRngPos; available = isSkAvailable; }
-    public void BeginSkill(int skId, int skType)
-    { focus.SetActive(false); isSk = true; curUseSkId = skId; pSkType = skType; HideMoveGuide(); HideAllRng(); }
+    { isSk = BattleCore.isSk; curSkId = curUseSkId; skPos = selSkPos; available = isSkAvailable; }
+    public void BeginSkill(int skId)
+    { focus.SetActive(false); isSk = true; curUseSkId = skId; HideMoveGuide(); HideAllAttRng(); }
     public Vector2Int GetPlayerTilePos() => FindTilePos(player.transform.position);
     public void BuffSk(int skId)
     {
@@ -1553,7 +1675,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         GsManager.I.SetCursor("default");
         focus.SetActive(false);
         HideAllOutline();
-        HideAllRng();
+        HideAllAttRng();
     }
     public void ShowDmgTxt(int dmg, bool crt, Vector3 pos)
     {
