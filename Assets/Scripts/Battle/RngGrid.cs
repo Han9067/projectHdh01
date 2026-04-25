@@ -23,7 +23,7 @@ public class RngGrid : MonoBehaviour
                 spr.color = new Color(1f, 0f, 0f, 1.0f);
                 break;//오브젝트 범위 그리드
             case 2:
-                spr.color = new Color(0f, 0f, 1f, 1.0f);
+                spr.color = new Color(0f, 1f, 0f, 1.0f);
                 break;//스킬 범위 그리드
         }
     }

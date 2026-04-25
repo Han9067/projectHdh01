@@ -687,6 +687,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         {
             // switch(pSkRngType)
         }
+        //방향
     }
     private void HideAllSkRng()
     {
@@ -1520,7 +1521,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         isActionable = false;
         ShowEff(skName, pos, 0f, () => { objTurn[0].state = BtObjState.READY; TurnAction(); });
     }
-    public void DashToTile(Vector2Int tgPos, int oId = 1000)
+    public void DashToTile(Vector2Int tgPos, int oId = 1000, Action call = null)
     {
         Vector3 oPos = pObj.transform.position, tPos = new Vector3(gGrid[tgPos.x, tgPos.y].x, gGrid[tgPos.x, tgPos.y].y, 0);
 
@@ -1548,6 +1549,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 cpPos = tgPos;
                 objTurn[0].pos = tgPos;
                 player.SetObjLayer(mapH - tgPos.y);
+                call?.Invoke();
             }
             else { }
             TurnAction();

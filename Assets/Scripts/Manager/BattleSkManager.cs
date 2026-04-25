@@ -87,14 +87,14 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
     public bool IsUsingSk()
     {
         BattleCore.I.GetSkillState(out _, out _, out Vector2Int skPos, out bool available);
-        if (!available)
-        {
-            GsManager.I.ShowTstMsg("Tst_NotSk");
-            return false;
-        }
         if (!BattleCore.I.GetActiveCurPosWithRngGrid(skPos))
         {
             InitBtSk();
+            return false;
+        }
+        if (!available)
+        {
+            GsManager.I.ShowTstMsg("Tst_NotSk");
             return false;
         }
         return true;
