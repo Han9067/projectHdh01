@@ -36,7 +36,9 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     public void StateBlock(bool on)
     {
         isBlock = on;
-        high.color = new Color(1, 1, 1, on ? 0.2f : 0.5f);
+        float val = on ? (80f / 255f) : 1f;
+        high.color = new Color(val, val, val, 0.5f);
+        high.gameObject.SetActive(on);
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -85,8 +87,7 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
                 GsManager.I.ShowTstMsg("Tst_NotSk");
                 return;
             }
-            // Debug.Log(skId);
-            BattleSkManager.I.ClickSk(skId);
+            BattleSkManager.I.ClickSk(skId, idx);
         }
     }
     public void OnBeginDrag(PointerEventData eventData)

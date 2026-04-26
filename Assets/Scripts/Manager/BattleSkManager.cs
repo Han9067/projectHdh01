@@ -4,28 +4,31 @@ using GB;
 public class BattleSkManager : AutoSingleton<BattleSkManager>
 {
     private SkData curSkData = null;
+    private int curSkIdx = -1;
     private int csmHp = 0, csmMp = 0, csmSp = 0; //소모 체력, 마나, 스페셜
     public void InitBtSk()
     {
         BattleCore.I.InitBtSk();
         curSkData = null;
+        curSkIdx = -1;
+        csmHp = 0; csmMp = 0; csmSp = 0;
     }
-    public void StateSk(int skId)
+    public void ClickSk(int skId, int btnIdx)
     {
         GsManager.I.InitCursor();
-        BattleCore.I.GetSkillState(out bool isSk, out int curSkId, out _, out _);
-        if (isSk)
-            InitBtSk();
-        else
-        {
-            if (curSkId == skId) return;
-            ClickSk(skId);
-        }
-    }
-    public void ClickSk(int skId)
-    {
         if (!PlayerManager.I.pData.SkList.TryGetValue(skId, out SkData data))
             return;
+        if (curSkIdx == btnIdx || BattleCore.I.isSk)
+        {
+            InitBtSk();
+            return;
+        }
+        if (data.CurCt > 0)
+        {
+            GsManager.I.ShowTstMsg("Tst_NotSkCt");
+            return;
+        }
+        curSkIdx = btnIdx;
         curSkData = data;
         switch (curSkData.UseType)
         {
@@ -33,7 +36,7 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                 csmHp = GetSkAttVal(curSkData, 55);
                 if (PlayerManager.I.pData.HP < csmHp)
                 {
-                    GsManager.I.ShowTstMsg("Tst_NotSk");
+                    GsManager.I.ShowTstMsg("Tst_NotEnoughN", "HP");
                     return;
                 }
                 break; //hp 소모
@@ -41,7 +44,7 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                 csmMp = GetSkAttVal(curSkData, 56);
                 if (PlayerManager.I.pData.MP < csmMp)
                 {
-                    GsManager.I.ShowTstMsg("Tst_NotSk");
+                    GsManager.I.ShowTstMsg("Tst_NotEnoughN", "MP");
                     return;
                 }
                 break; //mp 소모
@@ -49,7 +52,7 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                 csmSp = GetSkAttVal(curSkData, 57);
                 if (PlayerManager.I.pData.SP < csmSp)
                 {
-                    GsManager.I.ShowTstMsg("Tst_NotSk");
+                    GsManager.I.ShowTstMsg("Tst_NotEnoughN", "SP");
                     return;
                 }
                 break; //sp 소모
@@ -86,15 +89,9 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
 
     public bool IsUsingSk()
     {
-        BattleCore.I.GetSkillState(out _, out _, out Vector2Int skPos, out bool available);
-        if (!BattleCore.I.GetActiveCurPosWithRngGrid(skPos))
+        if (!BattleCore.I.GetActiveCurPosWithRngGrid(BattleCore.I.GetSelSkPos()))
         {
             InitBtSk();
-            return false;
-        }
-        if (!available)
-        {
-            GsManager.I.ShowTstMsg("Tst_NotSk");
             return false;
         }
         return true;
@@ -133,8 +130,10 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
         }
         //스킬 쿨타임 시작
         curSkData.CurCt = curSkData.SkCt;
-        // Debug.Log(curSkData.CurCt);
-
+        if (PlayerManager.isZeroCt)
+            curSkData.CurCt = 0;
+        int[] arr = { curSkIdx, curSkData.CurCt };
+        Presenter.Send("BattleMainUI", "UpdateSkCt", arr);
         InitBtSk(); //초기화
     }
 

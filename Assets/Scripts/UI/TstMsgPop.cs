@@ -38,6 +38,10 @@ public class TstMsgPop : UIScreen
             case "ShowTstMsg":
                 ShowTstBox(LocalizationManager.GetValue(data.Get<string>()));
                 break;
+            case "ShowTstMsgArr1":
+                string[] arr = data.Get<string[]>();
+                ShowTstBox(string.Format(LocalizationManager.GetValue(arr[0]), arr[1]));
+                break;
         }
     }
     private void ShowTstBox(string msg)

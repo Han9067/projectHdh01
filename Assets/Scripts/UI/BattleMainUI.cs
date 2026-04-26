@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections.Generic;
+using UnityEngine.UI.Extensions;
 
 public class BattleMainUI : UIScreen
 {
@@ -28,32 +29,32 @@ public class BattleMainUI : UIScreen
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][0]);
+            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][0], 0);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][1]);
+            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][1], 1);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][2]);
+            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][2], 2);
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][3]);
+            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][3], 3);
         }
         if (Input.GetKeyDown(KeyCode.Alpha5))
-            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][4]);
+            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][4], 4);
         if (Input.GetKeyDown(KeyCode.Alpha6))
-            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][5]);
+            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][5], 5);
         if (Input.GetKeyDown(KeyCode.Alpha7))
-            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][6]);
+            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][6], 6);
         if (Input.GetKeyDown(KeyCode.Alpha8))
-            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][7]);
+            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][7], 7);
         if (Input.GetKeyDown(KeyCode.Alpha9))
-            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][8]);
+            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][8], 8);
         if (Input.GetKeyDown(KeyCode.Alpha0))
-            BattleSkManager.I.StateSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][9]);
+            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][9], 9);
 
         if (Input.GetKeyDown(KeyCode.I))
             GsManager.I.StateMenuPopup("OnInvenPop");
@@ -128,6 +129,13 @@ public class BattleMainUI : UIScreen
             case "UpdateSkSlot":
                 UpdateMainUiSkSlot();
                 break;
+            case "UpdateSkCt":
+                var arr = data.Get<int[]>();
+                UpdateSkCt(arr[0], arr[1]); //idx, ct
+                break;
+            case "ReduceSkCt":
+                ReduceSkCt();
+                break;
         }
     }
 
@@ -169,5 +177,49 @@ public class BattleMainUI : UIScreen
         for (int i = 1; i <= 4; i++)
             mButtons["Line" + i].GetComponent<Image>().color = Color.white;
         mButtons["Line" + (line + 1)].GetComponent<Image>().color = Color.yellow;
+    }
+    public void ReduceSkCt()
+    {
+        var skList = PlayerManager.I.pData.SkList;
+        var slots = PlayerManager.I.pSkSlots;
+        var l = PlayerManager.I.curSlotLine;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                if (slots[i][j] == 0) continue;
+                SkData data = skList[slots[i][j]];
+                if (data.CurCt <= 0)
+                {
+                    slots[i][j] = 0;
+                    continue;
+                }
+                data.CurCt--;
+                if (i == l)
+                    UpdateSkCt(j, data.CurCt);
+            }
+        }
+    }
+    public void UpdateSkCt(int idx, int ct)
+    {
+        var on = ct > 0;
+        int n = idx + 1;
+        if (on)
+        {
+            if (!mTMPText["skCt" + n].gameObject.activeSelf)
+            {
+                mTMPText["skCt" + n].gameObject.SetActive(true);
+                skSlots[idx].StateBlock(true);
+            }
+            mTMPText["skCt" + n].text = ct.ToString();
+        }
+        else
+        {
+            if (mTMPText["skCt" + n].gameObject.activeSelf)
+            {
+                mTMPText["skCt" + n].gameObject.SetActive(false);
+                skSlots[idx].StateBlock(false);
+            }
+        }
     }
 }

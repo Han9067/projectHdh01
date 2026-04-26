@@ -71,7 +71,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public Image bloodScreen;
     [Header("====Map====")]
     private GameObject tileMapObj; // 맵 타일 오브젝트
-    public int mapSeed, pDir; // [맵 시드], [플레이어 방향 상,하,좌,우]
+    public int mapSeed, pDir; // [맵 시드], [플레이어 방향 상,하,좌,우] -> 초기의 플레이어 그룹의 방향을 지정하고 시작하고 나서는 플레이어의 방향으로만 체크
     public BtGrid[,] gGrid; // 땅타일 그리드
     // ========================================
     // 🎮 gGrid 내부 tId 관련 내용 => 0~99 -> 타일종류, 3자리 숫자 -> 환경 오브젝트, 4자리 숫자 -> 플레이어(1000 고정), NPC, 몬스터
@@ -103,10 +103,8 @@ public class BattleCore : AutoSingleton<BattleCore>
     private bPlayer player; //플레이어
     private bool isActionable = false;// 플레이어 행동 가능 여부
     private bool isMove = false;
-    private static bool isSk = false; // 스킬 사용 중인지 여부
-    private bool isSkAvailable = false; // 스킬 사용 가능 여부
+    public bool isSk = false; // 스킬 사용 중인지 여부
     private int curUseSkId = 0; // 현재 사용중인 스킬 아이디
-
     private Vector2Int[] pPath; // 플레이어 이동 경로
     [Header("====Monster====")]
     private Dictionary<int, GameObject> mObj = new Dictionary<int, GameObject>();
@@ -151,6 +149,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         //ps. 여기에서는 아니지만 나중에 맵이 변경 또는 이동되는 특수 지형 및 던전도 대응해야함....ㅠㅠ
         bloodScreen.gameObject.SetActive(false);
         ItemManager.I.ClearDropItem(); // 전투 시작 전 드랍 아이템 초기화
+        // pDir = (int)player.GetObjDir(); // 전투 시작되면 플레이어의 방향으로 설정
     }
     void Start()
     {
@@ -688,6 +687,9 @@ public class BattleCore : AutoSingleton<BattleCore>
             // switch(pSkRngType)
         }
         //방향
+        var dir = pos.x - cpPos.x;
+        if (dir == 0) return;
+        player.SetObjDir(dir > 0 ? -1 : 1);
     }
     private void HideAllSkRng()
     {
@@ -794,6 +796,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         isSk = false;
                         isMove = false;
                         isActionable = true;
+                        Presenter.Send("BattleMainUI", "ReduceSkCt");
                         return;
                     case BtObjState.IDLE:
                         break;
@@ -1493,6 +1496,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         isSk = false; curUseSkId = 0;
         HideAllRng();
     }
+    public Vector2Int GetSelSkPos() => selSkPos;
     public void UseSk(int skId)
     {
         objTurn[0].state = BtObjState.SKILL;
@@ -1501,9 +1505,6 @@ public class BattleCore : AutoSingleton<BattleCore>
         TurnAction();
     }
     public bool IsUsingSk() => BattleSkManager.I.IsUsingSk();
-    // BattleSkManager 전용 (최소 API)
-    public void GetSkillState(out bool isSk, out int curSkId, out Vector2Int skPos, out bool available)
-    { isSk = BattleCore.isSk; curSkId = curUseSkId; skPos = selSkPos; available = isSkAvailable; }
     public void BeginSkill(int skId)
     { focus.SetActive(false); isSk = true; curUseSkId = skId; HideMoveGuide(); HideAllAttRng(); }
     public Vector2Int GetPlayerTilePos() => FindTilePos(player.transform.position);
@@ -1530,7 +1531,6 @@ public class BattleCore : AutoSingleton<BattleCore>
         int len = path.Length;
 
         float dur = Mathf.Clamp(Vector3.Distance(oPos, tPos) * 0.05f, 0.1f, 1f);
-        Debug.Log(dur);
         SetObjDir(oId, myPos, tgPos);
         isMove = true;
         isNotSmooth = true;

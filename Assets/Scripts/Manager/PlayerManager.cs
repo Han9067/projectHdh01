@@ -5,7 +5,8 @@ using UnityEditor;
 using System.Collections;
 public class PlayerManager : AutoSingleton<PlayerManager>
 {
-
+    [Header("테스트 데이터")]
+    public static bool isZeroCt = false; //스킬 쿨타임 없애기
     [Header("플레이어 데이터")]
     public int currentCity = 0;
     public PlayerData pData;

@@ -113,6 +113,12 @@ public class GsManager : AutoSingleton<GsManager>
         UIManager.ShowPopup("TstMsgPop");
         Presenter.Send("TstMsgPop", "ShowTstMsg", msg);
     }
+    public void ShowTstMsg(string msg, string main, int type = 1)
+    {
+        string[] arr = new string[] { msg, main };
+        UIManager.ShowPopup("TstMsgPop");
+        Presenter.Send("TstMsgPop", "ShowTstMsgArr" + type, arr);
+    }
     #endregion
     #region 커서 관리
     public string cName = "default";
