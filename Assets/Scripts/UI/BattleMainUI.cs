@@ -9,6 +9,8 @@ public class BattleMainUI : UIScreen
 {
     public Slider mSlider_HP, mSlider_MP, mSlider_SP;
     public List<SkSlotObj> skSlots = new List<SkSlotObj>();
+    public List<GameObject> slotBlk = new List<GameObject>();
+    public MsgBox msgBox;
     private void Awake()
     {
         Regist();
@@ -22,6 +24,7 @@ public class BattleMainUI : UIScreen
         mButtons["GoToWorld"].gameObject.SetActive(false); //테스트 후 정상화
         UpdateSlotList(); //슬롯 목록 업데이트
         UpdateMainUiSkSlot(); //스킬 슬롯 업데이트
+        UpdateWpSk(); //웨폰 스킬 관련 제한 업데이트
         for (int i = 1; i <= 10; i++)
             mTMPText["skCt" + i].gameObject.SetActive(false);
     }
@@ -29,32 +32,32 @@ public class BattleMainUI : UIScreen
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][0], 0);
+            BattleSkManager.I.ClickSk(skSlots[0].skId, 0);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][1], 1);
+            BattleSkManager.I.ClickSk(skSlots[1].skId, 1);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][2], 2);
+            BattleSkManager.I.ClickSk(skSlots[2].skId, 2);
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][3], 3);
+            BattleSkManager.I.ClickSk(skSlots[3].skId, 3);
         }
         if (Input.GetKeyDown(KeyCode.Alpha5))
-            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][4], 4);
+            BattleSkManager.I.ClickSk(skSlots[4].skId, 4);
         if (Input.GetKeyDown(KeyCode.Alpha6))
-            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][5], 5);
+            BattleSkManager.I.ClickSk(skSlots[5].skId, 5);
         if (Input.GetKeyDown(KeyCode.Alpha7))
-            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][6], 6);
+            BattleSkManager.I.ClickSk(skSlots[6].skId, 6);
         if (Input.GetKeyDown(KeyCode.Alpha8))
-            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][7], 7);
+            BattleSkManager.I.ClickSk(skSlots[7].skId, 7);
         if (Input.GetKeyDown(KeyCode.Alpha9))
-            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][8], 8);
+            BattleSkManager.I.ClickSk(skSlots[8].skId, 8);
         if (Input.GetKeyDown(KeyCode.Alpha0))
-            BattleSkManager.I.ClickSk(PlayerManager.I.pSkSlots[PlayerManager.I.curSlotLine][9], 9);
+            BattleSkManager.I.ClickSk(skSlots[9].skId, 9);
 
         if (Input.GetKeyDown(KeyCode.I))
             GsManager.I.StateMenuPopup("OnInvenPop");
@@ -133,8 +136,14 @@ public class BattleMainUI : UIScreen
                 var arr = data.Get<int[]>();
                 UpdateSkCt(arr[0], arr[1]); //idx, ct
                 break;
+            case "UpdateWpSk":
+                UpdateWpSk();
+                break;
             case "ReduceSkCt":
                 ReduceSkCt();
+                break;
+            case "ShowMsg":
+                msgBox.ShowMsg(data.Get<string>());
                 break;
         }
     }
@@ -178,6 +187,16 @@ public class BattleMainUI : UIScreen
             mButtons["Line" + i].GetComponent<Image>().color = Color.white;
         mButtons["Line" + (line + 1)].GetComponent<Image>().color = Color.yellow;
     }
+    public void UpdateWpSk()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            if (skSlots[i].skId == 0) continue;
+            SkData data = PlayerManager.I.pData.SkList[skSlots[i].skId];
+            if (data.SkType > 1 && data.SkType < 20)
+                slotBlk[i].SetActive(!GsManager.I.GetAvailableWpSk(data.SkType));
+        }
+    }
     public void ReduceSkCt()
     {
         var skList = PlayerManager.I.pData.SkList;
@@ -191,7 +210,7 @@ public class BattleMainUI : UIScreen
                 SkData data = skList[slots[i][j]];
                 if (data.CurCt <= 0)
                 {
-                    slots[i][j] = 0;
+                    data.CurCt = 0;
                     continue;
                 }
                 data.CurCt--;
@@ -209,7 +228,8 @@ public class BattleMainUI : UIScreen
             if (!mTMPText["skCt" + n].gameObject.activeSelf)
             {
                 mTMPText["skCt" + n].gameObject.SetActive(true);
-                skSlots[idx].StateBlock(true);
+                // skSlots[idx].StateBlock(true);
+                slotBlk[idx].SetActive(true);
             }
             mTMPText["skCt" + n].text = ct.ToString();
         }
@@ -218,7 +238,8 @@ public class BattleMainUI : UIScreen
             if (mTMPText["skCt" + n].gameObject.activeSelf)
             {
                 mTMPText["skCt" + n].gameObject.SetActive(false);
-                skSlots[idx].StateBlock(false);
+                // skSlots[idx].StateBlock(false);
+                slotBlk[idx].SetActive(false);
             }
         }
     }

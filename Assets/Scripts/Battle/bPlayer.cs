@@ -56,6 +56,7 @@ public class bPlayer : MonoBehaviour
     }
     public void OnDamaged(int dmg, Vector3 pos)
     {
+        Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Hit"), pData.Name, dmg));
         pData.HP -= dmg;
         if (pData.HP <= 0)
         {

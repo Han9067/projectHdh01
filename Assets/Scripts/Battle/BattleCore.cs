@@ -45,7 +45,7 @@ public class TurnData
     public BtObjType type;
     public BtFaction faction;
     public Vector2Int[] mPath;
-    public bool isAction = false;
+    public bool isActObj = false; //행동 제어를 위한 변수
     public TurnData(int objId, BtObjState state, BtObjType type, BtFaction faction, Vector2Int pos, int w, int h)
     {
         this.objId = objId;
@@ -149,7 +149,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         //ps. 여기에서는 아니지만 나중에 맵이 변경 또는 이동되는 특수 지형 및 던전도 대응해야함....ㅠㅠ
         bloodScreen.gameObject.SetActive(false);
         ItemManager.I.ClearDropItem(); // 전투 시작 전 드랍 아이템 초기화
-        // pDir = (int)player.GetObjDir(); // 전투 시작되면 플레이어의 방향으로 설정
+                                       // pDir = (int)player.GetObjDir(); // 전투 시작되면 플레이어의 방향으로 설정
     }
     void Start()
     {
@@ -775,6 +775,14 @@ public class BattleCore : AutoSingleton<BattleCore>
         pTurn.mPath = pPath; pTurn.mIdx = 0;
         TurnAction();
     }
+    private void PlayerReady()
+    {
+        Debug.Log("READY");
+        isSk = false;
+        isMove = false;
+        isActionable = true;
+        Presenter.Send("BattleMainUI", "ReduceSkCt");
+    }
     void TurnAction()
     {
         //모든 오브젝트의 턴을 여기서 관리해야할듯...플레이어 떄문에 여기저기 분산으로 제어하니까 코드가 더러워짐
@@ -792,11 +800,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 switch (ot.state)
                 {
                     case BtObjState.READY:
-                        Debug.Log("READY");
-                        isSk = false;
-                        isMove = false;
-                        isActionable = true;
-                        Presenter.Send("BattleMainUI", "ReduceSkCt");
+                        PlayerReady();
                         return;
                     case BtObjState.IDLE:
                         break;
@@ -806,13 +810,11 @@ public class BattleCore : AutoSingleton<BattleCore>
                             //ot.mIdx가 0이면 처음 이동하는거라 스킵시킨다.
                             if (ot.mIdx > 0)
                             {
-                                ot.state = BtObjState.IDLE;
-                                isMove = false;
-                                isActionable = true;
+                                PlayerReady();
                                 return;
                             }
                         }
-                        ot.isAction = true;
+                        ot.isActObj = true;
                         StartCoroutine(MoveObj(pObj, 1000, cpPos, ot.mPath[ot.mIdx], 0.3f, () =>
                         {
                             Vector2Int nPos = ot.mPath[ot.mIdx];
@@ -823,7 +825,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                             ot.mIdx++;
                         }, () =>
                         {
-                            ot.isAction = false;
+                            ot.isActObj = false;
                         }));
                         break;
                     case BtObjState.ATTACK:
@@ -1006,7 +1008,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     private void TrackMon(TurnData data, int mId, float ct)
     {
-        data.isAction = true; //행동 시작
+        data.isActObj = true; //행동 시작
         if (data.tgId == 1000)
         {
             // Dictionary 중복 접근 최적화
@@ -1017,7 +1019,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             {
                 StartCoroutine(MoveObj(mObj[mId], mId, data.pos, path[0], ct, () =>
                 {
-                    data.isAction = false; //행동 종료
+                    data.isActObj = false; //행동 종료
                     UpdateGrid(data.pos.x, data.pos.y, path[0].x, path[0].y, mon.w, mon.h, mId);
                     data.pos = path[0]; //몬스터 위치 업데이트
                     mon.SetObjLayer(mapH - path[0].y); //몬스터 레이어 업데이트
@@ -1030,7 +1032,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             else
             {
                 // 경로를 찾지 못한 경우
-                data.isAction = false;
+                data.isActObj = false;
                 data.state = BtObjState.IDLE;
             }
         }
@@ -1288,6 +1290,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 crtRate = player.pData.CrtRate;
                 att = attId == 0 ? att : (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[attId], 601) * 0.01f);
                 aniKey = attId == 0 ? GetMeleeAniKey() : GetSkAniKey(attId);
+                Debug.Log(aniKey);
                 switch (tgType)
                 {
                     case BtObjType.MONSTER:
@@ -1373,7 +1376,48 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     private string GetMeleeAniKey()
     {
-        return "N_Att1";
+        bool wpOn;
+        int wpType;
+        if (player.pData.EqSlot["Hand1"] != null)
+        {
+            if (player.pData.EqSlot["Hand2"] != null)
+                return "N_Att1";
+            else
+            {
+                wpOn = true;
+                wpType = player.pData.EqSlot["Hand1"].Type;
+            }
+        }
+        else if (player.pData.EqSlot["Hand2"] != null)
+        {
+            wpOn = true;
+            wpType = player.pData.EqSlot["Hand2"].Type;
+        }
+        else
+            return "N_Att1";
+        if (wpOn)
+        {
+            switch (wpType)
+            {
+                case 11:
+                case 12:
+                    return "N_Att2";
+                case 13:
+                case 14:
+                    return "N_Att3";
+                case 15:
+                case 16:
+                    return "N_Att4";
+                case 17:
+                case 18:
+                    return "N_Att1";
+                case 19:
+                    return "N_Att5";
+            }
+            return "N_Att1";
+        }
+        else
+            return "N_Att1";
     }
     private string GetSkAniKey(int skId)
     {

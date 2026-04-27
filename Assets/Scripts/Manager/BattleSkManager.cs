@@ -23,6 +23,12 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
             InitBtSk();
             return;
         }
+        //웨폰 스킬 관련 제한
+        if (data.SkType > 1 && data.SkType < 20 && !GsManager.I.GetAvailableWpSk(data.SkType))
+        {
+            GsManager.I.ShowTstMsg("Tst_NotSk");
+            return;
+        }
         if (data.CurCt > 0)
         {
             GsManager.I.ShowTstMsg("Tst_NotSkCt");
@@ -99,6 +105,7 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
 
     public void ActSkill(int skId, Vector2Int pos)
     {
+        Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_UseSk"), PlayerManager.I.pData.Name, GsManager.I.GetSkName(skId)));
         switch (skId)
         {
             case 1001:

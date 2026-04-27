@@ -91,6 +91,7 @@ public class bMonster : MonoBehaviour
     }
     public void OnDamaged(int dmg, BtFaction attacker, Vector3 pos)
     {
+        Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Hit"), mName, dmg));
         hp -= dmg;
         if (hp > 0 && !isGG)
         {

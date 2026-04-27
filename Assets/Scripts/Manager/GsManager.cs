@@ -470,7 +470,7 @@ public class GsManager : AutoSingleton<GsManager>
         //손1 체크
         if (slot["Hand1"] != null)
         {
-            Debug.Log("Hand1: " + slot["Hand1"].Hand);
+            // Debug.Log("Hand1: " + slot["Hand1"].Hand);
             //손1 착용 상태
             int hand1 = slot["Hand1"].Hand;
             switch (hand1)
@@ -621,6 +621,50 @@ public class GsManager : AutoSingleton<GsManager>
             return limitExp[lv];
         else
             return lv * 5000;
+    }
+    public string GetSkName(int skId)
+    {
+        string name = LocalizationManager.GetValue(SkDataList[skId].Name);
+        if (name == null) return "스킬 이름 없음";
+        return LocalizationManager.GetValue(SkDataList[skId].Name);
+    }
+    public bool GetAvailableWpSk(int skType)
+    {
+        if (PlayerManager.I.pData.EqSlot["Hand1"] != null)
+        {
+            switch (PlayerManager.I.pData.EqSlot["Hand1"].Type)
+            {
+                case 11:
+                case 12:
+                    return skType == 2;
+                case 13:
+                case 14:
+                    return skType == 3;
+                case 15:
+                case 16:
+                    return skType == 4;
+                case 19:
+                    return skType == 5;
+            }
+        }
+        if (PlayerManager.I.pData.EqSlot["Hand2"] != null)
+        {
+            switch (PlayerManager.I.pData.EqSlot["Hand2"].Type)
+            {
+                case 11:
+                case 12:
+                    return skType == 2;
+                case 13:
+                case 14:
+                    return skType == 3;
+                case 15:
+                case 16:
+                    return skType == 4;
+                case 19:
+                    return skType == 5;
+            }
+        }
+        return false;
     }
     // var baseSk = GsManager.SkDataList[skId];
     // var npcSk = baseSk.Clone(); // 또는 new SkData(baseSk);

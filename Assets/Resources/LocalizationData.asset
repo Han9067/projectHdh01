@@ -3367,6 +3367,86 @@ MonoBehaviour:
           value: Goblin
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: HobGoblin
+      value:
+        list:
+        - key: 23
+          value: "\uD649 \uACE0\uBE14\uB9B0"
+          duplicatedKey: 0
+        - key: 10
+          value: Hob Goblin
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditSword
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditAxe
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditBlunt
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditBow
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditLeader
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801 \uB450\uBAA9"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit Leader
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: RedSpider
+      value:
+        list:
+        - key: 23
+          value: "\uBD89\uC740 \uAC70\uBBF8"
+          duplicatedKey: 0
+        - key: 10
+          value: Red Spider
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: RedArmoredSpider
+      value:
+        list:
+        - key: 23
+          value: "\uBD89\uC740 \uAC11\uC8FC \uAC70\uBBF8"
+          duplicatedKey: 0
+        - key: 10
+          value: Red Armored Spider
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: Gnoll
       value:
         list:
@@ -3551,71 +3631,81 @@ MonoBehaviour:
       value:
         list:
         - key: 23
-          value: "{0}\uAC00 {1}\uC758 \uD53C\uD574\uB97C \uC785\uC5C8\uC2B5\uB2C8\uB2E4."
+          value: "{0}\uC774(\uAC00) {1}\uC758 \uD53C\uD574\uB97C \uC785\uC5C8\uC2B5\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: "{0}\uAC00 {1}\uC758 \uD53C\uD574\uB97C \uC785\uC5C8\uC2B5\uB2C8\uB2E4."
+          value: "{0}\uC774/\uAC00 {1}\uC758 \uD53C\uD574\uB97C \uC785\uC5C8\uC2B5\uB2C8\uB2E4."
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Msg_Att
+    - key: Msg_UseSk
       value:
         list:
         - key: 23
-          value: "{0}\uAC00 \uACF5\uACA9\uC744 \uD569\uB2C8\uB2E4."
+          value: "{0}\uC774(\uAC00) {1} \uC2A4\uD0AC\uC744 \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: "{0}\uAC00 \uACF5\uACA9\uC744 \uD569\uB2C8\uB2E4."
+          value: "{0}\uC774/\uAC00 \uC2A4\uD0AC\uC744 \uC0AC\uC6A9\uD569\uB2C8\uB2E4."
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Msg_CastingSk
+      value:
+        list:
+        - key: 23
+          value: "{0}\uC774(\uAC00) {1} \uC2A4\uD0AC\uC744 \uC2DC\uC804\uD569\uB2C8\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: "{0}\uC774/\uAC00 {1} \uC2A4\uD0AC\uC744 \uC2DC\uC804\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Msg_HealHp
       value:
         list:
         - key: 23
-          value: "{0}\uAC00 HP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+          value: "{0}\uC774(\uAC00) HP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: "{0}\uAC00 HP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+          value: "{0}\uC774/\uAC00 HP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Msg_HealMp
       value:
         list:
         - key: 23
-          value: "{0}\uAC00 MP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+          value: "{0}\uC774(\uAC00) MP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: "{0}\uAC00 MP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+          value: "{0}\uC774/\uAC00 MP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Msg_HealSp
       value:
         list:
         - key: 23
-          value: "{0}\uAC00 SP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+          value: "{0}\uC774(\uAC00) SP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: "{0}\uAC00 SP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+          value: "{0}\uC774/\uAC00 SP\uB97C {1}\uB9CC\uD07C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Msg_Death
       value:
         list:
         - key: 23
-          value: "{0}\uAC00 \uC8FD\uC5B4 \uC804\uC7A5\uC5D0\uC11C \uC0AC\uB77C\uC9D1\uB2C8\uB2E4."
+          value: "{0}\uC774(\uAC00) \uC8FD\uC5B4 \uC804\uC7A5\uC5D0\uC11C \uC0AC\uB77C\uC9D1\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: "{0}\uAC00 \uC8FD\uC5B4 \uC804\uC7A5\uC5D0\uC11C \uC0AC\uB77C\uC9D1\uB2C8\uB2E4."
+          value: "{0}\uC774/\uAC00 \uC8FD\uC5B4 \uC804\uC7A5\uC5D0\uC11C \uC0AC\uB77C\uC9D1\uB2C8\uB2E4."
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Msg_Injury
       value:
         list:
         - key: 23
-          value: "{0}\uAC00 \uBD80\uC0C1\uB2F9\uD558\uC5EC \uC804\uC7A5\uC5D0\uC11C
+          value: "{0}\uC774(\uAC00) \uBD80\uC0C1\uB2F9\uD558\uC5EC \uC804\uC7A5\uC5D0\uC11C
             \uC774\uD0C8\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: "{0}\uAC00 \uBD80\uC0C1\uB2F9\uD558\uC5EC \uC804\uC7A5\uC5D0\uC11C
+          value: "{0}\uC774/\uAC00 \uBD80\uC0C1\uB2F9\uD558\uC5EC \uC804\uC7A5\uC5D0\uC11C
             \uC774\uD0C8\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
       duplicatedKey: 0

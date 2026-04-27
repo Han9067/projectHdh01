@@ -7,7 +7,7 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public int skId, skType, useType, line, idx, slotType;
-    public bool isBlock = false;
+    // public bool isBlock = false;
     [SerializeField] private Image icon, high;
     private void Start()
     {
@@ -33,21 +33,20 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         this.line = line;
         this.idx = idx;
     }
-    public void StateBlock(bool on)
-    {
-        isBlock = on;
-        float val = on ? (80f / 255f) : 1f;
-        high.color = new Color(val, val, val, 0.5f);
-        high.gameObject.SetActive(on);
-    }
+    // public void StateBlock(bool on)
+    // {
+    //     isBlock = on;
+    //     // float val = on ? (80f / 255f) : 1f;
+    //     // high.color = new Color(val, val, val, 0.5f);
+    // }
     public void OnPointerEnter(PointerEventData eventData)
     {
         switch (slotType)
         {
             case 0:
-                if (isBlock) return;
-                if (high.color.a != 0.5f)
-                    high.color = new Color(1, 1, 1, 0.5f);
+                // if (isBlock) return;
+                // if (high.color.a != 0.5f)
+                //     high.color = new Color(1, 1, 1, 0.5f);
                 high.gameObject.SetActive(true);
                 break;
             case 1:
@@ -62,7 +61,7 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         switch (slotType)
         {
             case 0:
-                if (isBlock) return;
+                // if (isBlock) return;
                 high.gameObject.SetActive(false);
                 break;
             case 1:
@@ -82,11 +81,11 @@ public class SkSlotObj : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
                 GsManager.I.ShowTstMsg("Tst_NotCurUsingSk");
                 return;
             }
-            if (isBlock)
-            {
-                GsManager.I.ShowTstMsg("Tst_NotSk");
-                return;
-            }
+            // if (isBlock)
+            // {
+            //     GsManager.I.ShowTstMsg("Tst_NotSk");
+            //     return;
+            // }
             BattleSkManager.I.ClickSk(skId, idx);
         }
     }
