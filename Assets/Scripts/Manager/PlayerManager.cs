@@ -6,7 +6,8 @@ using System.Collections;
 public class PlayerManager : AutoSingleton<PlayerManager>
 {
     [Header("테스트 데이터")]
-    public static bool isZeroCt = false; //스킬 쿨타임 없애기
+    public static bool isZeroCt = true; //스킬 쿨타임 없애기
+    public static bool isZeroHpMpSp = true; //체력, 마나, 스페셜 없애기
     [Header("플레이어 데이터")]
     public int currentCity = 0;
     public PlayerData pData;
@@ -149,9 +150,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Nose = 1; pData.Mouth = 1;
         pData.Hair = 1; pData.HairColor = 1;
 
-        ItemManager.I.CreateInvenItem(32001, -1, -1); //양손검
+        // ItemManager.I.CreateInvenItem(32001, -1, -1); //양손검
         // ItemManager.I.CreateInvenItem(36001, -1, -1); //양손도끼
-        // ItemManager.I.CreateInvenItem(40001, -1, -1); //양손둔기
+        ItemManager.I.CreateInvenItem(40001, -1, -1); //양손둔기
         // ItemManager.I.CreateInvenItem(46001, -1, -1); //창
         // ItemManager.I.CreateInvenItem(48001, -1, -1); //활
         ItemManager.I.CreateInvenItem(10001, -1, -1); //옷

@@ -72,11 +72,14 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                 break;
             case 1002:
                 BattleCore.I.BeginSkill(skId);
-                BattleCore.I.ShowSkRng(3, from, 1, 2);
+                BattleCore.I.ShowSkRng(3, from, 1, 1);
                 //rng : 범위, pos : 스킬 사용자 위치, sk : 스킬 타입(단일, 다중 등), tg : 타겟 타입(적, 자신, 아군 버프 등)
+                //sk -> 1 : 단일_근접1칸_일반 근접공격, 2 : 단일_근접 2칸_창 일반 공격, 3 : 단일_원거리1칸
+                //tg -> 1 : 빈 땅, 2 : 적, 3 : 아군
                 break;
             case 1003:
                 BattleCore.I.BeginSkill(skId);
+                BattleCore.I.ShowSkRng(3, from, 1, 2);
                 break;
             case 1101:
             case 1201:
@@ -84,7 +87,7 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
             case 1301:
                 //주변 1칸 사각형으로 단일 공격
                 BattleCore.I.BeginSkill(skId);
-                BattleCore.I.ShowSkRng(1, from, 1, 1);
+                BattleCore.I.ShowSkRng(1, from, 1, 2);
                 break;
             case 1401:
                 BattleCore.I.BeginSkill(skId);
@@ -103,8 +106,12 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
         return true;
     }
 
-    public void ActSkill(int skId, Vector2Int pos)
+    public void ActSkill(int oId, int skId, Vector2Int pos)
     {
+        if (PlayerManager.isZeroHpMpSp)
+        {
+            csmHp = 1; csmMp = 1; csmSp = 1;
+        }
         Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_UseSk"), PlayerManager.I.pData.Name, GsManager.I.GetSkName(skId)));
         switch (skId)
         {
@@ -123,9 +130,12 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
             case 1002:
                 PlayerManager.I.pData.SP -= csmSp;
                 Presenter.Send("BattleMainUI", "GetPlayerSp");
-                BattleCore.I.DashToTile(pos);
+                BattleCore.I.Dash(oId, pos);
                 break;
             case 1003:
+                PlayerManager.I.pData.SP -= csmSp;
+                Presenter.Send("BattleMainUI", "GetPlayerSp");
+                BattleCore.I.DashAttack(oId, pos);
                 break;
             case 1101:
             case 1201:
