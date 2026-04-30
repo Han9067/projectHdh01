@@ -583,6 +583,151 @@ public class BattleCore : AutoSingleton<BattleCore>
             if (t.objId == objId) return t.faction;
         return null;
     }
+    private Vector3 GetTgPos(BtObjType tgType, int tgId)
+    {
+        switch (tgType)
+        {
+            case BtObjType.PLAYER:
+                return player.bodyObj.transform.position;
+            case BtObjType.MONSTER:
+                return mData[tgId].bodyObj.transform.position;
+            default:
+                return Vector3.zero;
+        }
+    }
+    private Vector3 GetNearPos(int myId, int tgId)
+    {
+        List<Vector3> myPosList = new List<Vector3>();
+        List<Vector3> tgPosList = new List<Vector3>();
+        for (int a = 0; a < mapW; a++)
+        {
+            for (int b = 0; b < mapH; b++)
+            {
+                if (gGrid[a, b].tId == myId)
+                    myPosList.Add(new Vector3(gGrid[a, b].x, gGrid[a, b].y, 0));
+                if (gGrid[a, b].tId == tgId)
+                    tgPosList.Add(new Vector3(gGrid[a, b].x, gGrid[a, b].y, 0));
+            }
+        }
+        float minDist = float.MaxValue;
+        Vector3 result = Vector3.zero;
+        for (int a = 0; a < myPosList.Count; a++)
+        {
+            for (int b = 0; b < tgPosList.Count; b++)
+            {
+                float dist = Vector3.Distance(myPosList[a], tgPosList[b]);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    result = myPosList[a];
+                }
+            }
+        }
+        return result;
+    }
+    private Vector3 GetEdgePos(int myId, int w, int h, float ang)
+    {
+        Vector3 pos = Vector3.zero;
+        for (int a = 0; a < mapW; a++)
+        {
+            for (int b = 0; b < mapH; b++)
+            {
+                if (gGrid[a, b].tId == myId)
+                {
+                    pos = new Vector3(gGrid[a, b].x, gGrid[a, b].y, 0);
+                    break;
+                }
+            }
+        }
+        if (w > 1 || h > 1)
+            pos -= new Vector3((w - 1) * 0.3f, (h - 1) * 0.3f, 0);
+        float add = 0.6f;
+        float add2 = 0.3f;
+        int val = (int)ang;
+        switch (val)
+        {
+            case -45:
+                return pos + new Vector3((-w * 0.3f) - add2, (h * 0.3f) + add2, 0);
+            case -135:
+                return pos + new Vector3((w * 0.3f) + add2, (h * 0.3f) + add2, 0);
+            case 135:
+                return pos + new Vector3((w * 0.3f) + add2, (-h * 0.3f) - add2, 0);
+            case 45:
+                return pos + new Vector3((-w * 0.3f) - add2, (-h * 0.3f) - add2, 0);
+            case 0:
+                return pos + new Vector3((-w * 0.3f) - add, 0, 0);
+            case -90:
+                return pos + new Vector3(0, (h * 0.3f) + add, 0);
+            case 180:
+                return pos + new Vector3((w * 0.3f) + add, 0, 0);
+            case 90:
+                return pos + new Vector3(0, (-h * 0.3f) - add, 0);
+        }
+        return Vector3.zero;
+    }
+    private float GetLookAngle(Vector3 myPos, Vector3 tgPos)
+    {
+        var ang = Mathf.Atan2(myPos.y - tgPos.y, myPos.x - tgPos.x) * Mathf.Rad2Deg;
+        for (int a = 0; a < ang8.Length; a++)
+        {
+            if (Mathf.Abs(ang - ang8[a]) < 2f)
+                return ang8[a];
+        }
+        return ang;
+    }
+    private Vector3 GetGridPos(Vector3 attackerWorldPos, int tgId)
+    {
+        int closestX = -1, closestY = -1;
+        float minDistSq = float.MaxValue;
+
+        for (int x = 0; x < mapW; x++)
+        {
+            for (int y = 0; y < mapH; y++)
+            {
+                if (gGrid[x, y].tId != tgId) continue;
+
+                Vector3 cellWorld = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0f);
+                float distSq = (attackerWorldPos - cellWorld).sqrMagnitude;
+                if (distSq < minDistSq)
+                {
+                    minDistSq = distSq;
+                    closestX = x;
+                    closestY = y;
+                }
+            }
+        }
+
+        if (closestX < 0) return Vector3.zero;
+        return new Vector3(gGrid[closestX, closestY].x, gGrid[closestX, closestY].y, 0f);
+    }
+    private GameObject GetObj(int oId)
+    {
+        if (oId == 1000)
+            return pObj;
+        else
+            return mData[oId].gameObject;
+    }
+    private GameObject GetProjObj()
+    {
+        foreach (var t in projObj)
+        {
+            if (!t.gameObject.activeSelf)
+            {
+                t.gameObject.SetActive(true);
+                return t;
+            }
+        }
+        var obj = Instantiate(ResManager.GetGameObject("ProjObj"), projParent.transform);
+        projObj.Add(obj);
+        return obj;
+    }
+    private float GetDmgPosY(int objId)
+    {
+        if (objId == 1000)
+            return 1f;
+        else
+            return mData[objId].dmgPosY;
+    }
     private Vector3 GetGridToWorldPos(Vector2Int pos)
     {
         return new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
@@ -594,7 +739,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public int GetDir8Idx(Vector2Int cen, Vector2Int pos)
     {
         var dif = cen - pos;
-        var dir8 = DirData.dir8;
+        var dir8 = DirData.dir8_2;
         for (int a = 0; a < 8; a++)
         {
             if (dif == dir8[a])
@@ -1202,144 +1347,6 @@ public class BattleCore : AutoSingleton<BattleCore>
             CompAttAct(myId, myType, tgId, tgType, sPos, tgPos, projId);
         });
     }
-    private Vector3 GetTgPos(BtObjType tgType, int tgId)
-    {
-        switch (tgType)
-        {
-            case BtObjType.PLAYER:
-                return player.bodyObj.transform.position;
-            case BtObjType.MONSTER:
-                return mData[tgId].bodyObj.transform.position;
-            default:
-                return Vector3.zero;
-        }
-    }
-    private Vector3 GetNearPos(int myId, int tgId)
-    {
-        List<Vector3> myPosList = new List<Vector3>();
-        List<Vector3> tgPosList = new List<Vector3>();
-        for (int a = 0; a < mapW; a++)
-        {
-            for (int b = 0; b < mapH; b++)
-            {
-                if (gGrid[a, b].tId == myId)
-                    myPosList.Add(new Vector3(gGrid[a, b].x, gGrid[a, b].y, 0));
-                if (gGrid[a, b].tId == tgId)
-                    tgPosList.Add(new Vector3(gGrid[a, b].x, gGrid[a, b].y, 0));
-            }
-        }
-        float minDist = float.MaxValue;
-        Vector3 result = Vector3.zero;
-        for (int a = 0; a < myPosList.Count; a++)
-        {
-            for (int b = 0; b < tgPosList.Count; b++)
-            {
-                float dist = Vector3.Distance(myPosList[a], tgPosList[b]);
-                if (dist < minDist)
-                {
-                    minDist = dist;
-                    result = myPosList[a];
-                }
-            }
-        }
-        return result;
-    }
-    private Vector3 GetEdgePos(int myId, int w, int h, float ang)
-    {
-        Vector3 pos = Vector3.zero;
-        for (int a = 0; a < mapW; a++)
-        {
-            for (int b = 0; b < mapH; b++)
-            {
-                if (gGrid[a, b].tId == myId)
-                {
-                    pos = new Vector3(gGrid[a, b].x, gGrid[a, b].y, 0);
-                    break;
-                }
-            }
-        }
-        if (w > 1 || h > 1)
-            pos -= new Vector3((w - 1) * 0.3f, (h - 1) * 0.3f, 0);
-        float add = 0.6f;
-        float add2 = 0.3f;
-        int val = (int)ang;
-        switch (val)
-        {
-            case -45:
-                return pos + new Vector3((-w * 0.3f) - add2, (h * 0.3f) + add2, 0);
-            case -135:
-                return pos + new Vector3((w * 0.3f) + add2, (h * 0.3f) + add2, 0);
-            case 135:
-                return pos + new Vector3((w * 0.3f) + add2, (-h * 0.3f) - add2, 0);
-            case 45:
-                return pos + new Vector3((-w * 0.3f) - add2, (-h * 0.3f) - add2, 0);
-            case 0:
-                return pos + new Vector3((-w * 0.3f) - add, 0, 0);
-            case -90:
-                return pos + new Vector3(0, (h * 0.3f) + add, 0);
-            case 180:
-                return pos + new Vector3((w * 0.3f) + add, 0, 0);
-            case 90:
-                return pos + new Vector3(0, (-h * 0.3f) - add, 0);
-        }
-        return Vector3.zero;
-    }
-    private float GetLookAngle(Vector3 myPos, Vector3 tgPos)
-    {
-        var ang = Mathf.Atan2(myPos.y - tgPos.y, myPos.x - tgPos.x) * Mathf.Rad2Deg;
-        for (int a = 0; a < ang8.Length; a++)
-        {
-            if (Mathf.Abs(ang - ang8[a]) < 2f)
-                return ang8[a];
-        }
-        return ang;
-    }
-    private Vector3 GetGridPos(Vector3 attackerWorldPos, int tgId)
-    {
-        int closestX = -1, closestY = -1;
-        float minDistSq = float.MaxValue;
-
-        for (int x = 0; x < mapW; x++)
-        {
-            for (int y = 0; y < mapH; y++)
-            {
-                if (gGrid[x, y].tId != tgId) continue;
-
-                Vector3 cellWorld = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0f);
-                float distSq = (attackerWorldPos - cellWorld).sqrMagnitude;
-                if (distSq < minDistSq)
-                {
-                    minDistSq = distSq;
-                    closestX = x;
-                    closestY = y;
-                }
-            }
-        }
-
-        if (closestX < 0) return Vector3.zero;
-        return new Vector3(gGrid[closestX, closestY].x, gGrid[closestX, closestY].y, 0f);
-    }
-    private GameObject GetObj(int oId)
-    {
-        if (oId == 1000)
-            return pObj;
-        else
-            return mData[oId].gameObject;
-    }
-    private GameObject GetProjObj()
-    {
-        foreach (var t in projObj)
-        {
-            if (!t.gameObject.activeSelf)
-            {
-                t.gameObject.SetActive(true);
-                return t;
-            }
-        }
-        var obj = Instantiate(ResManager.GetGameObject("ProjObj"), projParent.transform);
-        projObj.Add(obj);
-        return obj;
-    }
     private int SearchNearbyAiObj(Vector2Int pos, BtFaction faction)
     {
         int oId = 0;
@@ -1374,15 +1381,17 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         SetObjDir(myId, myPos, tgPos); //현재 오브젝트가 타겟을 바라보도록
         // SetObjDir(tgId, tgPos, myPos); //타겟 오브젝트가 현재 오브젝트를 바라보도록
-        int att = 0, crt = 0, crtRate = 0;
+        int att = 0, crt = 0, crtRate = 0; float ct = 0.3f;
         string aniKey = "";
-        List<int> dmgList = new List<int>();
-        List<bool> crtList = new List<bool>();
+        List<int> dmgList = new List<int>(); //데미지 리스트
+        List<bool> crtList = new List<bool>(); //크리티컬 리스트
+        List<Vector3> dmgPosList = new List<Vector3>(); //데미지 받는 대상 위치 리스트
         //추후에 데미지 텍스트도 리스트로 관리하여 다중으로 나오는 텍스트에 대한 발생 시간을 제어해야함
         // bool crtOn = false;
         Vector3 myNearPos = GetNearPos(myId, tgId);
         Vector3 tgNearPos = GetNearPos(tgId, myId);
         float ang = GetLookAngle(myNearPos, tgNearPos);
+        //공격 대상자
         switch (myType)
         {
             case BtObjType.MONSTER:
@@ -1397,27 +1406,42 @@ public class BattleCore : AutoSingleton<BattleCore>
                 att = player.pData.Att;
                 crt = player.pData.Crt;
                 crtRate = player.pData.CrtRate;
+                // att = (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[1101], 601) * 0.01f);
                 att = attId == 0 ? att : (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[attId], 601) * 0.01f);
                 aniKey = attId == 0 ? GetMeleeAniKey() : GetSkAniKey(attId);
                 break;
         }
+        //타겟
         switch (tgType)
         {
             case BtObjType.MONSTER:
                 switch (attId)
                 {
                     case 1101:
-                        // att = (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[1101], 601) * 0.01f);
                         for (int i = 0; i < 2; i++)
                         {
                             crtList.Add(GsManager.I.IsCrt(crtRate));
                             dmgList.Add(crtList[i] ? GsManager.I.GetCrtDamage(att, mData[tgId].def, crt) : GsManager.I.GetDamage(att, mData[tgId].def));
+                            dmgPosList.Add(new Vector3(tgPos.x, tgPos.y + GetDmgPosY(myId), 0f)); //데미지 텍스트 위치 설정
                         }
                         mData[tgId].OnDamaged(dmgList[0] + dmgList[1], BtFaction.ALLY, myPos);
-                        ShowEff(aniKey, GetEdgePos(myId, 1, 1, ang), ang, () => { TurnAction(); });
-                        StartCoroutine(SetSqcDmgTxt(2, dmgList, crtList, 0.3f, tgPos));
+                        ShowEff(aniKey, GetGridToWorldPos(selSkPos), 0f, () => { TurnAction(); });
                         break;
                     case 1102:
+                        var tgPosArr = Get3x1RngPos(selSkPos, GetDir8Idx(selSkPos, cpPos));
+                        foreach (var t in tgPosArr)
+                        {
+                            int id = gGrid[t.Key.x, t.Key.y].tId;
+                            if (id == 0) continue;
+                            crtList.Add(GsManager.I.IsCrt(crtRate));
+                            var dmg = crtList[crtList.Count - 1] ? GsManager.I.GetCrtDamage(att, mData[id].def, crt) : GsManager.I.GetDamage(att, mData[id].def);
+                            dmgList.Add(dmg);
+                            var oPos = GetObj(id).transform.position;
+                            dmgPosList.Add(new Vector3(oPos.x, oPos.y + GetDmgPosY(id), 0f));  //데미지 텍스트 위치 설정
+                            mData[id].OnDamaged(dmg, BtFaction.ALLY, myPos);
+                        }
+                        ShowEff(aniKey, GetEdgePos(myId, 1, 1, ang), ang, () => { TurnAction(); });
+                        ct = 0.02f;
                         break;
                     default:
                         var ePos = GetEdgePos(myId, 1, 1, ang);
@@ -1432,18 +1456,17 @@ public class BattleCore : AutoSingleton<BattleCore>
                                 break;
                         }
                         crtList.Add(GsManager.I.IsCrt(crtRate));
-                        // dmgList.Add(crtList[0] ? GsManager.I.GetCrtDamage(att, mData[tgId].def, crt) : GsManager.I.GetDamage(att, mData[tgId].def));
-                        dmgList.Add(1);
+                        dmgList.Add(crtList[0] ? GsManager.I.GetCrtDamage(att, mData[tgId].def, crt) : GsManager.I.GetDamage(att, mData[tgId].def));
+                        dmgPosList.Add(new Vector3(tgPos.x, tgPos.y + GetDmgPosY(myId), 0f));
                         mData[tgId].OnDamaged(dmgList[0], BtFaction.ALLY, myPos);
                         ShowEff(aniKey, ePos, ang, () => { TurnAction(); });
-                        StartCoroutine(SetSqcDmgTxt(1, dmgList, crtList, 0.3f, tgPos));
                         break;
                 }
+                StartCoroutine(SetSqcDmgTxt(dmgList.Count, dmgList, crtList, ct, dmgPosList));
                 break;
             case BtObjType.NPC:
                 break;
-            default:
-                //Player
+            case BtObjType.PLAYER:
                 if (isMove)
                 {
                     //이동중인 플레이어가 타겟이면 카메라를 고정시키게함
@@ -1452,9 +1475,10 @@ public class BattleCore : AutoSingleton<BattleCore>
                 }
                 crtList.Add(GsManager.I.IsCrt(crtRate));
                 dmgList.Add(crtList[0] ? GsManager.I.GetCrtDamage(att, player.pData.Def, crt) : GsManager.I.GetDamage(att, player.pData.Def));
+                dmgPosList.Add(new Vector3(tgPos.x, tgPos.y + GetDmgPosY(myId), 0f));
                 player.OnDamaged(dmgList[0], myPos);
                 ShowEff("N_Att1", GetEdgePos(myId, mData[myId].w, mData[myId].h, ang), ang, () => { TurnAction(); });
-                StartCoroutine(SetSqcDmgTxt(1, dmgList, crtList, 0.3f, tgPos));
+                StartCoroutine(SetSqcDmgTxt(1, dmgList, crtList, 0.3f, dmgPosList));
                 break;
         }
     }
@@ -1834,12 +1858,11 @@ public class BattleCore : AutoSingleton<BattleCore>
         // 원위치 복귀
         cmr.transform.localPosition = origin;
     }
-    IEnumerator SetSqcDmgTxt(int cnt, List<int> dmgList, List<bool> crtList, float ct, Vector3 pos)
+    IEnumerator SetSqcDmgTxt(int cnt, List<int> dmgList, List<bool> crtList, float ct, List<Vector3> dmgPosList)
     {
         for (int i = 0; i < cnt; i++)
         {
-            //crtList
-            ShowDmgTxt(dmgList[i], crtList[i], pos);
+            ShowDmgTxt(dmgList[i], crtList[i], dmgPosList[i]);
             yield return new WaitForSeconds(ct);
         }
     }

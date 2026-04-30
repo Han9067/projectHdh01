@@ -109,7 +109,6 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
         }
         return true;
     }
-
     public void ActSkill(int oId, int skId, Vector2Int pos)
     {
         if (PlayerManager.isZeroHpMpSp)
@@ -144,6 +143,11 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
             case 1101:
             case 1201:
             case 1301:
+                PlayerManager.I.pData.SP -= csmSp;
+                Presenter.Send("BattleMainUI", "GetPlayerSp");
+                BattleCore.I.ActMeleeToTile(pos, skId);
+                break;
+            case 1102:
                 PlayerManager.I.pData.SP -= csmSp;
                 Presenter.Send("BattleMainUI", "GetPlayerSp");
                 BattleCore.I.ActMeleeToTile(pos, skId);

@@ -9,7 +9,6 @@ public class DmgTxt : MonoBehaviour
 {
     public TextMeshProUGUI dmgTxt;
     public Image crtObj;
-    private int dmg;
     // void Start()
     // {
     //     dmgTxt.text = dmg.ToString();
@@ -17,8 +16,7 @@ public class DmgTxt : MonoBehaviour
     // }
     public void ShowDmgTxt(int d, bool crt, Vector3 pos)
     {
-        dmg = d;
-        dmgTxt.text = dmg.ToString();
+        dmgTxt.text = d == 0 ? "Miss" : d.ToString();
         gameObject.SetActive(true);
         transform.position = pos;
         crtObj.gameObject.SetActive(crt);

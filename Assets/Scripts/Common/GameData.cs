@@ -589,7 +589,11 @@ public static class ColorData
 [System.Serializable]
 public class DirData
 {
-    public static readonly Vector2Int[] dir8 = {
+    public static readonly Vector2Int[] dir8_1 = {
+        Vector2Int.up, Vector2Int.right,Vector2Int.down,Vector2Int.left,
+        new Vector2Int(-1, 1),new Vector2Int(1, 1),new Vector2Int(-1, -1),new Vector2Int(1, -1),
+    };
+    public static readonly Vector2Int[] dir8_2 = {
         new Vector2Int(-1, 1), Vector2Int.up, new Vector2Int(1, 1), Vector2Int.left,
         Vector2Int.right, new Vector2Int(-1, -1),Vector2Int.down, new Vector2Int(1, -1),
     };

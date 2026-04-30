@@ -12,7 +12,7 @@ public class bMonster : MonoBehaviour
     public GameObject shdObj, mainObj, ggParent, ggObj, bodyObj;
     bool isGG = false;
     public float hp, maxHp;
-    public float dir = 1;
+    public float dir = 1, dmgPosY = 1f;
     public int att, def, crt, crtRate, hit, eva, gainExp, lv;
     public int w, h, Rng;
     [SerializeField] private SpriteRenderer mainSpr;
@@ -38,7 +38,8 @@ public class bMonster : MonoBehaviour
         monData = MonManager.I.MonDataList[monsterId].Clone();
         w = monData.W;
         h = monData.H;
-        mainObj.GetComponent<SpriteRenderer>().sprite = ResManager.GetSprite("mon_" + monsterId);
+        var mainSpr = mainObj.GetComponent<SpriteRenderer>();
+        mainSpr.sprite = ResManager.GetSprite("mon_" + monsterId);
         shdObj.transform.localScale = new Vector3(monData.SdwScr, monData.SdwScr, 1);
         mainObj.transform.localPosition = new Vector3(0, 0.4f, 0);
         shdObj.transform.localPosition = new Vector3((w - 1) * 0.6f, -0.35f, 0);
@@ -58,6 +59,7 @@ public class bMonster : MonoBehaviour
         gainExp = monData.GainExp;
         lv = monData.Lv;
         Rng = monData.Rng;
+        dmgPosY = mainSpr.bounds.size.y * 0.5f;
     }
     public void SetMonData(int objId, int monId, float px, float py)
     {
@@ -91,7 +93,18 @@ public class bMonster : MonoBehaviour
     }
     public void OnDamaged(int dmg, BtFaction attacker, Vector3 pos)
     {
-        Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Hit"), mName, dmg));
+        if (hp <= 0) return; //죽은 몬스터는 데미지를 받지 않음
+        if (dmg > 0)
+        {
+            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Hit"), mName, dmg));
+            OnHitAction(pos);
+        }
+        else
+        {
+            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Miss"), mName));
+            return;
+        }
+
         hp -= dmg;
         if (hp > 0 && !isGG)
         {

@@ -56,15 +56,24 @@ public class bPlayer : MonoBehaviour
     }
     public void OnDamaged(int dmg, Vector3 pos)
     {
-        Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Hit"), pData.Name, dmg));
+        if (pData.HP <= 0) return; //이미 죽었으면 리턴
+        //데미지가 0이하면 데미지를 받지 않으며 어떠한 연출이 안나오도록 처리
+        if (dmg > 0)
+        {
+            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Hit"), pData.Name, dmg));
+            OnHitAction(pos);
+        }
+        else
+        {
+            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Miss"), pData.Name));
+            return;
+        }
         pData.HP -= dmg;
         if (pData.HP <= 0)
         {
             pData.HP = 0;
             Debug.Log("Player Dead");
         }
-        else
-            OnHitAction(pos);
 
         Presenter.Send("BattleMainUI", "GetPlayerHp");
         BattleCore.I.ShowBloodScreen();

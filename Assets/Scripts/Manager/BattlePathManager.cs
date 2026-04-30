@@ -39,7 +39,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
             Vector2Int current = queue.Dequeue();
             if (current == ePos) return BuildPath(sPos, ePos, cameFrom);
             // 8방향 탐색 (정적 배열 사용)
-            foreach (Vector2Int dir in DirData.dir8)
+            foreach (Vector2Int dir in DirData.dir8_1)
             {
                 Vector2Int next = current + dir;
                 if (IsValidPosition(next, gGrid) && !cameFrom.ContainsKey(next) &&
