@@ -108,6 +108,18 @@ public class SkAttData
         Val = InitVal;
     }
 }
+[System.Serializable]
+public class SEData
+{
+    //StatusEffectData -> attId: 특성ID, effType: 효과타입, turnCnt: 턴 수
+    public int attId, effType, turnCnt;
+    public SEData(int attId, int effType, int turnCnt)
+    {
+        this.attId = attId;
+        this.effType = effType;
+        this.turnCnt = turnCnt;
+    }
+}
 
 [System.Serializable]
 public class PlayerData : ICharData
@@ -131,6 +143,7 @@ public class PlayerData : ICharData
     public List<ItemData> Inven = new List<ItemData>();
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
     public List<MakeData> MakeList = new List<MakeData>();
+    public List<SEData> SE = new List<SEData>();
     #region ICharData
     public int Gen { get; set; }
     public int Skin { get; set; }
@@ -165,6 +178,7 @@ public class NpcData : ICharData
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
     public List<MakeData> MakeList = new List<MakeData>();
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
+    public List<SEData> SE = new List<SEData>();
     #region ICharData
     public int Gen { get; set; }
     public int Skin { get; set; }
@@ -203,6 +217,7 @@ public class MonData
     public int Rng, AtkType; // 공격 사거리
     public float SdwScr, GgY; // 몬스터 그림자 스케일, 몬스터 그림자 Y 좌표
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>(); //추후 적용 251109
+    public List<SEData> SE = new List<SEData>();
     public List<DropData> DropList = new List<DropData>();
     public MonData Clone()
     {
@@ -569,4 +584,13 @@ public static class ColorData
     {
         return itemGradeColor.TryGetValue(grade, out Color color) ? color : new Color(197f / 255f, 197f / 255f, 197f / 255f);
     }
+}
+
+[System.Serializable]
+public class DirData
+{
+    public static readonly Vector2Int[] dir8 = {
+        new Vector2Int(-1, 1), Vector2Int.up, new Vector2Int(1, 1), Vector2Int.left,
+        Vector2Int.right, new Vector2Int(-1, -1),Vector2Int.down, new Vector2Int(1, -1),
+    };
 }

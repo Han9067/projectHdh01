@@ -29,13 +29,6 @@ public enum BtFaction
 {
     ALLY, ENEMY
 }
-public static class Directions
-{
-    public static readonly Vector2Int[] Dir8 = {
-        Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left,
-        new Vector2Int(1, 1), new Vector2Int(1, -1), new Vector2Int(-1, 1), new Vector2Int(-1, -1)
-    };
-}
 public class TurnData
 {
     public int objId, mIdx = 0, tgId = 0, skId = 0; // 해당 턴 오브젝트 아이디, 이동 인덱스, 타깃 아이디, 스킬 아이디
@@ -127,7 +120,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     private List<TurnData> objTurn = new List<TurnData>();
     private int tIdx = 0; // 턴 인덱스
                           // float dTime = 0;
-    private static readonly float[] Dir8Ang = new float[] { -45f, -135f, 135f, 45f, 0f, -90f, 180f, 90f };
+    private static readonly float[] ang8 = new float[] { -45f, -135f, 135f, 45f, 0f, -90f, 180f, 90f };
     private Vector3 focusBackupPos;
     #endregion
     // string mapDefault = "Tile_101_1";
@@ -200,7 +193,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         if (isActionable)
         {
-            Vector2Int t = FindTilePos(wPos);
+            Vector2Int t = GetTilePos(wPos);
             if (t.x == -1 && t.y == -1)
             {
                 if (focus.activeSelf) focus.SetActive(false);
@@ -312,77 +305,6 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (isMove)
             MoveCamera(isNotSmooth);
     }
-    #region ==== 🎨 GET ====
-    public bool GetIsActPlayer() => isActionable;
-    private float GetBodyObj(int objId)
-    {
-        if (objId == 1000)
-            return player.GetObjDir();
-        else
-            return mData[objId].GetObjDir();
-    }
-    private float GetObjDir(int objId)
-    {
-        if (objId == 1000)
-            return player.dir;
-        else
-            return mData[objId].dir;
-    }
-    bool GetAttackTarget(int tId, Vector2Int pos, int rng, int w, int h)
-    {
-        int attMinX = pos.x, attMaxX = pos.x + w - 1, attMinY = pos.y, attMaxY = pos.y + h - 1;
-        for (int x = pos.x - rng; x < pos.x + w + rng; x++)
-        {
-            for (int y = pos.y - rng; y < pos.y + h + rng; y++)
-            {
-                if (x < 0 || x >= mapW || y < 0 || y >= mapH) continue;
-                if (x >= pos.x && x < pos.x + w && y >= pos.y && y < pos.y + h) continue;
-                int distX = x < attMinX ? attMinX - x : (x > attMaxX ? x - attMaxX : 0);
-                int distY = y < attMinY ? attMinY - y : (y > attMaxY ? y - attMaxY : 0);
-                if (Mathf.Max(distX, distY) <= rng && gGrid[x, y].tId == tId) return true;
-            }
-        }
-        return false;
-    }
-    bool GetNearbyEnemy(TurnData data)
-    {
-        int x0 = data.pos.x, y0 = data.pos.y;
-        int w = data.w, h = data.h;
-
-        for (int x = x0 - 1; x <= x0 + w; x++)
-        {
-            for (int y = y0 - 1; y <= y0 + h; y++)
-            {
-                if (x >= x0 && x < x0 + w && y >= y0 && y < y0 + h)
-                    continue;
-                if (x < 0 || x >= mapW || y < 0 || y >= mapH)
-                    continue;
-
-                int tId = gGrid[x, y].tId;
-                if (tId == 0) continue;
-
-                BtFaction? cellFaction = GetFactionByObjId(tId);
-                if (cellFaction.HasValue && cellFaction.Value != data.faction)
-                    return true;  // 적 발견
-            }
-        }
-        return false;
-    }
-    private BtFaction? GetFactionByObjId(int objId)
-    {
-        foreach (var t in objTurn)
-            if (t.objId == objId) return t.faction;
-        return null;
-    }
-    private Vector3 GetGridToWorldPos(Vector2Int pos)
-    {
-        return new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
-    }
-    public Vector2Int GetObjGridPos(int objId)
-    {
-        return objTurn.Find(obj => obj.objId == objId).pos;
-    }
-    #endregion
     #region ==== 🎨 LOAD BATTLE SCENE ====
     void LoadFieldMap()
     {
@@ -575,7 +497,8 @@ public class BattleCore : AutoSingleton<BattleCore>
         list.Add(prop);
     }
     #endregion
-    Vector2Int FindTilePos(Vector3 worldPos)
+    #region ==== 🎨 GET ====
+    private Vector2Int GetTilePos(Vector3 worldPos)
     {
         float minDistance = float.MaxValue;
         var result = new Vector2Int(0, 0);
@@ -599,6 +522,128 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return result;
     }
+    public bool GetIsActPlayer() => isActionable;
+    private float GetBodyObj(int objId)
+    {
+        if (objId == 1000)
+            return player.GetObjDir();
+        else
+            return mData[objId].GetObjDir();
+    }
+    private float GetObjDir(int objId)
+    {
+        if (objId == 1000)
+            return player.dir;
+        else
+            return mData[objId].dir;
+    }
+    bool GetAttackTarget(int tId, Vector2Int pos, int rng, int w, int h)
+    {
+        int attMinX = pos.x, attMaxX = pos.x + w - 1, attMinY = pos.y, attMaxY = pos.y + h - 1;
+        for (int x = pos.x - rng; x < pos.x + w + rng; x++)
+        {
+            for (int y = pos.y - rng; y < pos.y + h + rng; y++)
+            {
+                if (x < 0 || x >= mapW || y < 0 || y >= mapH) continue;
+                if (x >= pos.x && x < pos.x + w && y >= pos.y && y < pos.y + h) continue;
+                int distX = x < attMinX ? attMinX - x : (x > attMaxX ? x - attMaxX : 0);
+                int distY = y < attMinY ? attMinY - y : (y > attMaxY ? y - attMaxY : 0);
+                if (Mathf.Max(distX, distY) <= rng && gGrid[x, y].tId == tId) return true;
+            }
+        }
+        return false;
+    }
+    bool GetNearbyEnemy(TurnData data)
+    {
+        int x0 = data.pos.x, y0 = data.pos.y;
+        int w = data.w, h = data.h;
+
+        for (int x = x0 - 1; x <= x0 + w; x++)
+        {
+            for (int y = y0 - 1; y <= y0 + h; y++)
+            {
+                if (x >= x0 && x < x0 + w && y >= y0 && y < y0 + h)
+                    continue;
+                if (x < 0 || x >= mapW || y < 0 || y >= mapH)
+                    continue;
+
+                int tId = gGrid[x, y].tId;
+                if (tId == 0) continue;
+
+                BtFaction? cellFaction = GetFactionByObjId(tId);
+                if (cellFaction.HasValue && cellFaction.Value != data.faction)
+                    return true;  // 적 발견
+            }
+        }
+        return false;
+    }
+    private BtFaction? GetFactionByObjId(int objId)
+    {
+        foreach (var t in objTurn)
+            if (t.objId == objId) return t.faction;
+        return null;
+    }
+    private Vector3 GetGridToWorldPos(Vector2Int pos)
+    {
+        return new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
+    }
+    public Vector2Int GetObjGridPos(int objId)
+    {
+        return objTurn.Find(obj => obj.objId == objId).pos;
+    }
+    public int GetDir8Idx(Vector2Int cen, Vector2Int pos)
+    {
+        var dif = cen - pos;
+        var dir8 = DirData.dir8;
+        for (int a = 0; a < 8; a++)
+        {
+            if (dif == dir8[a])
+                return a;
+        }
+        return 0;
+    }
+    public Dictionary<(int x, int y), int> Get3x1RngPos(Vector2Int pos, int idx)
+    {
+        var arr = new Dictionary<(int x, int y), int>();
+        int x = pos.x, y = pos.y;
+        switch (idx)
+        {
+            case 0:
+                arr[(x, y)] = 28;
+                arr[(x, y - 1)] = 13;
+                arr[(x + 1, y)] = 12;
+                break;
+            case 1:
+            case 6:
+                arr[(x, y)] = 9;
+                arr[(x - 1, y)] = 14;
+                arr[(x + 1, y)] = 12;
+                break;
+            case 2:
+                arr[(x, y)] = 25;
+                arr[(x - 1, y)] = 14;
+                arr[(x, y - 1)] = 13;
+                break;
+            case 3:
+            case 4:
+                arr[(x, y)] = 10;
+                arr[(x, y + 1)] = 11;
+                arr[(x, y - 1)] = 13;
+                break;
+            case 5:
+                arr[(x, y)] = 27;
+                arr[(x, y + 1)] = 11;
+                arr[(x + 1, y)] = 12;
+                break;
+            case 7:
+                arr[(x, y)] = 26;
+                arr[(x, y + 1)] = 11;
+                arr[(x - 1, y)] = 14;
+                break;
+        }
+        return arr;
+    }
+    #endregion
     #region ==== Field Action ====
     private int GetRngType(Dictionary<(int x, int y), int> grid, int x, int y)
     {
@@ -632,12 +677,35 @@ public class BattleCore : AutoSingleton<BattleCore>
         switch (idx)
         {
             case 4:
-                return 15;
+                if (!grid.ContainsKey((x - 1, y + 1)))
+                    return 21;
+                else if (!grid.ContainsKey((x + 1, y + 1)))
+                    return 22;
+                else if (!grid.ContainsKey((x + 1, y - 1)))
+                    return 23;
+                else if (!grid.ContainsKey((x - 1, y - 1)))
+                    return 24;
+                else
+                    return 15;
             case 3:
                 return down == 1 && left == 1 && right == 1 ? 1 : up == 1 && left == 1 && down == 1 ? 2 : up == 1 && left == 1 && right == 1 ? 3 : 4;
             case 2:
-                return down == 1 && left == 1 ? 5 : left == 1 && up == 1 ? 6 : up == 1 && right == 1 ? 7 : right == 1 && down == 1 ? 8 :
+                var v2 = down == 1 && left == 1 ? 5 : left == 1 && up == 1 ? 6 : up == 1 && right == 1 ? 7 : right == 1 && down == 1 ? 8 :
                     left == 1 && right == 1 ? 9 : 10;
+                //5,6,7,8일때, 상반되는 대각선의 그리드가 있는지 체크해줘야함
+                switch (v2)
+                {
+                    case 5:
+                        return grid.ContainsKey((x - 1, y - 1)) ? 5 : 25;
+                    case 6:
+                        return grid.ContainsKey((x - 1, y + 1)) ? 6 : 26;
+                    case 7:
+                        return grid.ContainsKey((x + 1, y + 1)) ? 7 : 27;
+                    case 8:
+                        return grid.ContainsKey((x + 1, y - 1)) ? 8 : 28;
+                    default:
+                        return v2;
+                }
             case 1:
                 return down == 1 ? 11 : left == 1 ? 12 : up == 1 ? 13 : 14;
             default:
@@ -662,7 +730,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         //계산된 그리드의 총 길이에서 정 가운데에 있는 숫자(예: cnt가 1일땐 총 그리드 수는 9이지만 9에서 중앙 숫자인 5일땐 예외처리로 제외시킴)
         //시작 위치는 cen에서 cnt 값만큼 왼쪽 상단(타입맵 좌표는 y의 경우 아래에서 위로 증가함으로 x는 -1, y는 +1를 적용해야함)으로 가서 처음 지정된 홀수값을 두번 반복문 돌려서 생성 -> idx 필참
         HideAllAttRng();
-        int idx = 0; int sx = pos.x - cnt, sy = pos.y + cnt, val = 3 + ((cnt - 1) * 2), num = val * val, cen = (num - 1) / 2;
+        int sx = pos.x - cnt, sy = pos.y + cnt, val = 3 + ((cnt - 1) * 2), num = val * val;
 
         var grid = new Dictionary<(int x, int y), int>();
         for (int y = sy; y > sy - val; y--)
@@ -673,14 +741,16 @@ public class BattleCore : AutoSingleton<BattleCore>
                 grid[(x, y)] = 0; //여기에는 타입을 넣을생각
             }
         }
+        grid.Remove((pos.x, pos.y));
         if (grid.Count > attRng.Count) CreateRngObj(grid.Count - attRng.Count, attRng);
+        int a = 0;
         foreach (var g in grid)
         {
             int x = g.Key.x, y = g.Key.y;
-            attRng[idx].SetPos(gGrid[x, y].x, gGrid[x, y].y, x, y);
-            attRng[idx].SetSpr($"rng_{GetRngType(grid, x, y)}");
-            attRng[idx].gameObject.SetActive(true);
-            idx++;
+            attRng[a].SetPos(gGrid[x, y].x, gGrid[x, y].y, x, y);
+            attRng[a].SetSpr($"rng_{GetRngType(grid, x, y)}");
+            attRng[a].gameObject.SetActive(true);
+            a++;
         }
     }
     private void SetSkRng(int sk)
@@ -746,16 +816,42 @@ public class BattleCore : AutoSingleton<BattleCore>
             if (!skRng[0].gameObject.activeSelf)
             {
                 skRng[0].gameObject.SetActive(true);
-                skRng[0].SetPos(p.x, p.y, pos.x, pos.y);
                 skRng[0].SetSpr($"rng_{0}");
                 skRng[0].SetColor(pSkTgType);
             }
-            else
-                skRng[0].SetPos(p.x, p.y, pos.x, pos.y);
+            skRng[0].SetPos(p.x, p.y, pos.x, pos.y);
         }
         else
         {
-            // switch(pSkRngType)
+            switch (pSkRngType)
+            {
+                case 11:
+                    //횡베기 등 0번 배열을 중심으로 1번은 좌, 2번은 우로 배치
+                    //Get3x1RngPos를 호출할때, pos와 함께, 현재 위치에 대한 인덱스를 보냄
+                    // 인덱스의 기준은 왼쪽 상단부터 0,1,2 왼쪽 중앙부터 3,4 왼쪽 하단부터 5,6,7
+                    var arr = Get3x1RngPos(pos, GetDir8Idx(pos, cpPos));
+                    if (skRng.Count < 3)
+                        CreateRngObj(3 - skRng.Count, skRng);
+                    int a = 0;
+                    if (skRng[0].gameObject.activeSelf && skRng[0].xx == pos.x && skRng[0].yy == pos.y)
+                        return;
+                    // Debug.Log($"arr: {arr.Count}");
+                    foreach (var g in arr)
+                    {
+                        if (!skRng[a].gameObject.activeSelf)
+                        {
+                            skRng[a].gameObject.SetActive(true);
+                            skRng[a].SetColor(pSkTgType);
+                        }
+                        int x = g.Key.x, y = g.Key.y;
+                        skRng[a].SetSpr($"rng_{g.Value}");
+                        skRng[a].SetPos(gGrid[x, y].x, gGrid[x, y].y, x, y);
+                        a++;
+                    }
+                    break;
+                case 12:
+                    break;
+            }
         }
         //방향
         var dir = pos.x - cpPos.x;
@@ -829,7 +925,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                 obj.SetActive(false);
         }
     }
-
     #endregion
     #region ==== Object Action ====
     void OnMovePlayer(int state = 0)
@@ -1192,10 +1287,10 @@ public class BattleCore : AutoSingleton<BattleCore>
     private float GetLookAngle(Vector3 myPos, Vector3 tgPos)
     {
         var ang = Mathf.Atan2(myPos.y - tgPos.y, myPos.x - tgPos.x) * Mathf.Rad2Deg;
-        for (int a = 0; a < Dir8Ang.Length; a++)
+        for (int a = 0; a < ang8.Length; a++)
         {
-            if (Mathf.Abs(ang - Dir8Ang[a]) < 2f)
-                return Dir8Ang[a];
+            if (Mathf.Abs(ang - ang8[a]) < 2f)
+                return ang8[a];
         }
         return ang;
     }
@@ -1566,7 +1661,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public bool IsUsingSk() => BattleSkManager.I.IsUsingSk();
     public void BeginSkill(int skId)
     { focus.SetActive(false); isSk = true; curUseSkId = skId; HideMoveGuide(); HideAllAttRng(); }
-    public Vector2Int GetPlayerTilePos() => FindTilePos(player.transform.position);
+    public Vector2Int GetPlayerTilePos() => GetTilePos(player.transform.position);
     public void BuffSk(int skId)
     {
         string skName = "";
@@ -1585,7 +1680,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         Vector3 oPos = pObj.transform.position, tPos = new Vector3(gGrid[tgPos.x, tgPos.y].x, gGrid[tgPos.x, tgPos.y].y, 0);
 
-        Vector2Int myPos = FindTilePos(oPos);
+        Vector2Int myPos = GetTilePos(oPos);
         var path = BattlePathManager.I.GetPath(myPos, tgPos, gGrid);
         int len = path.Length;
 

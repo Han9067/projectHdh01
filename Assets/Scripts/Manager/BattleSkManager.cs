@@ -89,6 +89,10 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                 BattleCore.I.BeginSkill(skId);
                 BattleCore.I.ShowSkRng(1, from, 1, 2);
                 break;
+            case 1102:
+                BattleCore.I.BeginSkill(skId);
+                BattleCore.I.ShowSkRng(1, from, 11, 2);
+                break;
             case 1401:
                 BattleCore.I.BeginSkill(skId);
                 // BattleCore.I.ShowAttRng(from, 1, 1, 2);

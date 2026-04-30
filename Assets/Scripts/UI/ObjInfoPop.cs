@@ -33,7 +33,7 @@ public class ObjInfoPop : UIScreen
     {
         switch (key)
         {
-            case "ObjInfoPopClose":
+            case "Close":
                 Close();
                 break;
         }
