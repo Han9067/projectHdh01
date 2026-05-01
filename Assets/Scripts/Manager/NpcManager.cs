@@ -65,7 +65,9 @@ public class NpcManager : AutoSingleton<NpcManager>
         if (npcData.SP > npcData.MaxSP) npcData.SP = npcData.MaxSP;
 
         npcData.Att = npcData.STR * 2;
+        npcData.MAtt = npcData.INT * 2;
         npcData.Def = npcData.VIT;
+        npcData.MDef = (int)(npcData.VIT * 0.5f);
         npcData.Crt = 50 + (npcData.LUK * 2);
         npcData.CrtRate = npcData.LUK;
         int agi = npcData.AGI / 4;

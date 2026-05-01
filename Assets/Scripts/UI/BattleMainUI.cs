@@ -7,6 +7,8 @@ using UnityEngine.UI.Extensions;
 
 public class BattleMainUI : UIScreen
 {
+    public static bool isBlock = false;
+    [SerializeField] private GameObject mBlock;
     public Slider mSlider_HP, mSlider_MP, mSlider_SP;
     public List<SkSlotObj> skSlots = new List<SkSlotObj>();
     public List<GameObject> slotBlk = new List<GameObject>();
@@ -110,6 +112,10 @@ public class BattleMainUI : UIScreen
     {
         switch (key)
         {
+            case "SetBlock":
+                isBlock = data.Get<bool>();
+                mBlock.SetActive(isBlock);
+                break;
             case "UpdateInfo":
                 UpdateHp();
                 UpdateMp();

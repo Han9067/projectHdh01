@@ -120,6 +120,8 @@ public class CharInfoPop : UIScreen
         mTMPText["SpVal"].text = pData.SP.ToString() + "/" + pData.MaxSP.ToString();
         mTMPText["AttVal"].text = pData.Att.ToString();
         mTMPText["DefVal"].text = pData.Def.ToString();
+        mTMPText["MgAttVal"].text = pData.MAtt.ToString();
+        mTMPText["MgDefVal"].text = pData.MDef.ToString();
         mTMPText["CrtVal"].text = pData.Crt.ToString() + "%";
         mTMPText["CrtRateVal"].text = pData.CrtRate.ToString() + "%";
         mTMPText["HitVal"].text = pData.Hit.ToString() + "%";

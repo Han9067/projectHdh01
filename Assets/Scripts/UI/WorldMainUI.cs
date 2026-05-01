@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using DG.Tweening;
 public class WorldMainUI : UIScreen
 {
+    public static bool isBlock = false;
+    [SerializeField] private GameObject mBlock;
     [SerializeField] private Slider mIngGg, mEnergyGg;
     private float wTime = 0, actTime, endActTime, actTick = 0;
     private int tDay = 0, wYear, wMonth, wDay;
@@ -181,6 +183,10 @@ public class WorldMainUI : UIScreen
     {
         switch (key)
         {
+            case "SetBlock":
+                isBlock = data.Get<bool>();
+                mBlock.SetActive(isBlock);
+                break;
             case "UpdateInfo":
                 UpdateState();
                 break;

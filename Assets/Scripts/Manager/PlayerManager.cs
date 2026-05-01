@@ -195,7 +195,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         if (pData.SP > pData.MaxSP) pData.SP = pData.MaxSP;
 
         pData.Att = pData.STR * 2;
+        pData.MAtt = pData.INT * 2;
         pData.Def = pData.VIT;
+        pData.MDef = (int)(pData.VIT * 0.5f);
         pData.Crt = 50 + (pData.LUK * 2);
         pData.CrtRate = pData.LUK;
         int agi = pData.AGI / 4;
@@ -392,22 +394,30 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         AddSkExp(1, 20);
         AddSkExp(23, 20);
         AddSkExp(27, 20);
-        AddSkExp(1001, 20); //명상
+        // AddSkExp(1001, 20); //명상
         AddSkExp(1002, 20); //질주
-        AddSkExp(1003, 20); //질주 공격
-        AddSkExp(1101, 20); //이중 베기
-        AddSkExp(1102, 20); //횡베기
-        AddSkExp(1201, 20);
-        AddSkExp(1301, 20);
+        AddSkExp(2001, 20); //마법 화살
+        AddSkExp(2101, 20); //화염구
+        AddSkExp(2301, 20); //전기충격
+        // AddSkExp(1002, 20); //질주
+        // AddSkExp(1003, 20); //질주 공격
+        // AddSkExp(1101, 20); //이중 베기
+        // AddSkExp(1102, 20); //횡베기
+        // AddSkExp(1201, 20);
+        // AddSkExp(1301, 20);
         // AddSkExp(1401, 20);
 
-        pSkSlots[0][0] = 1001; //스킬 슬롯에 장착
-        pSkSlots[0][1] = 1002;
-        pSkSlots[0][2] = 1003;
-        pSkSlots[0][3] = 1101;
-        pSkSlots[0][4] = 1102;
-        pSkSlots[0][5] = 1201;
-        pSkSlots[0][6] = 1301;
+        // pSkSlots[0][0] = 1001; //스킬 슬롯에 장착
+        pSkSlots[0][0] = 1002; //스킬 슬롯에 장착
+        pSkSlots[0][1] = 2001;
+        pSkSlots[0][2] = 2101;
+        pSkSlots[0][3] = 2301;
+        // pSkSlots[0][1] = 1002;
+        // pSkSlots[0][2] = 1003;
+        // pSkSlots[0][3] = 1101;
+        // pSkSlots[0][4] = 1102;
+        // pSkSlots[0][5] = 1201;
+        // pSkSlots[0][6] = 1301;
         // pSkSlots[0][7] = 1401;
     }
     public void TestDropItem()

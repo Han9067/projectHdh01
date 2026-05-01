@@ -97,6 +97,13 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                 BattleCore.I.BeginSkill(skId);
                 // BattleCore.I.ShowAttRng(from, 1, 1, 2);
                 break;
+            case 2001:
+            case 2101:
+            case 2301:
+            case 2401:
+                BattleCore.I.BeginSkill(skId);
+                BattleCore.I.ShowSkRng(4, from, 1, 2);
+                break;
         }
     }
 
@@ -151,6 +158,18 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                 PlayerManager.I.pData.SP -= csmSp;
                 Presenter.Send("BattleMainUI", "GetPlayerSp");
                 BattleCore.I.ActMeleeToTile(pos, skId);
+                break;
+            case 2001:
+            case 2101:
+                PlayerManager.I.pData.MP -= csmMp;
+                Presenter.Send("BattleMainUI", "GetPlayerMp");
+                BattleCore.I.ShotMagic1(1000, pos, skId);
+                break;
+            case 2301:
+            case 2401:
+                PlayerManager.I.pData.MP -= csmMp;
+                Presenter.Send("BattleMainUI", "GetPlayerMp");
+                BattleCore.I.ShotMagic2(1000, pos, skId);
                 break;
         }
         //스킬 쿨타임 시작

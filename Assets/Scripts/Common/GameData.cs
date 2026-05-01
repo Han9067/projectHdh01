@@ -5,7 +5,7 @@ using System.Linq;
 
 public static class SV //State Value
 {
-    public const int HpVal = 8, MpVal = 4, SpVal = 4;
+    public const int HpVal = 8, MpVal = 8, SpVal = 8;
 }
 public enum GameState
 {
@@ -132,7 +132,7 @@ public class PlayerData : ICharData
     public int Lv, Exp, NextExp, GainExp, Grade, GradeExp, GradeNext;
     // 상태
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP, EP, MaxEP; //ep: 에너지, maxep: 최대 에너지
-    public int Att, Def;
+    public int Att, Def, MAtt, MDef;
     public int Crt, CrtRate, Hit, Eva; // 치명타율, 치명타확률, 명중, 회피
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public int QuestMax, TraceQId;
@@ -172,7 +172,7 @@ public class NpcData : ICharData
     public int Age, Fame, Rls; //Relationship
     public int NpcId, Lv, Exp, NextExp, GainExp, Grade, GradeExp, GradeNext;
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
-    public int Att, Def, Crt, CrtRate, Hit, Eva;
+    public int Att, Def, MAtt, MDef, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public int Rng, AtkType;
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
@@ -211,7 +211,7 @@ public class MonData
     }
     public int MonId, MonType, Lv, Exp, NextExp, GainExp, HP, MP, SP, MaxHP, MaxMP, MaxSP;
     public string Name;
-    public int Att, Def, Crt, CrtRate, Hit, Eva;
+    public int Att, Def, MAtt, MDef, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public int W, H; // 몬스터 오브젝트 크기
     public int Rng, AtkType; // 공격 사거리

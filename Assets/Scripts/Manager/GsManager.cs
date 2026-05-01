@@ -107,6 +107,25 @@ public class GsManager : AutoSingleton<GsManager>
                     UIManager.ShowPopup("SkillPop");
                 break;
         }
+        switch (SceneManager.GetActiveScene().name)
+        {
+            case "World":
+                if (IsMenuPopActive() && !WorldMainUI.isBlock)
+                    Presenter.Send("WorldMainUI", "SetBlock", true);
+                else if (!IsMenuPopActive() && WorldMainUI.isBlock)
+                    Presenter.Send("WorldMainUI", "SetBlock", false);
+                break;
+            case "Battle":
+                if (IsMenuPopActive() && !BattleMainUI.isBlock)
+                    Presenter.Send("BattleMainUI", "SetBlock", true);
+                else if (!IsMenuPopActive() && BattleMainUI.isBlock)
+                    Presenter.Send("BattleMainUI", "SetBlock", false);
+                break;
+        }
+    }
+    public bool IsMenuPopActive()
+    {
+        return CharInfoPop.isActive || InvenPop.isActive || JournalPop.isActive || SkillPop.isActive;
     }
     public void ShowTstMsg(string msg)
     {

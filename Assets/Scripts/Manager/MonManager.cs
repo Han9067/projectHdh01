@@ -43,7 +43,7 @@ public class MonManager : AutoSingleton<MonManager>
             int val = arr.Length > 2 ? int.Parse(arr[2]) : 0;
             dList.Add(new MonData.DropData(itemId, rate, val));
         }
-        int hp = VIT * SV.HpVal, sp = END * SV.SpVal, mp = INT * SV.MpVal;
+        int hp = VIT * SV.HpVal, sp = END * SV.SpVal, mp = FOR * SV.MpVal;
         return new MonData
         {
             MonId = id,
@@ -73,7 +73,9 @@ public class MonManager : AutoSingleton<MonManager>
 
             // 전투 스탯 계산 및 설정 (추가 필요!)
             Att = STR * 2,
+            MAtt = INT * 2,
             Def = VIT,
+            MDef = (int)(VIT * 0.5f),
             Crt = 50 + (LUK * 2),
             CrtRate = LUK + AGI,
             Hit = 60 + (AGI / 4),
