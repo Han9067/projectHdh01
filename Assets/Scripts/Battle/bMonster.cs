@@ -13,7 +13,7 @@ public class bMonster : MonoBehaviour
     bool isGG = false;
     public float hp, maxHp;
     public float dir = 1, dmgPosY = 1f;
-    public int att, def, crt, crtRate, hit, eva, gainExp, lv;
+    public int att, mAtt, def, mDef, crt, crtRate, hit, eva, gainExp, lv;
     public int w, h, Rng;
     [SerializeField] private SpriteRenderer mainSpr;
     public bool isOutline = false;
@@ -51,7 +51,9 @@ public class bMonster : MonoBehaviour
         maxHp = monData.HP;
         hp = maxHp;
         att = monData.Att;
+        mAtt = monData.MAtt;
         def = monData.Def;
+        mDef = monData.MDef;
         crt = monData.Crt;
         crtRate = monData.CrtRate;
         hit = monData.Hit;

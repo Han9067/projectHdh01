@@ -6,16 +6,13 @@ using GB;
 public class SkEffObj : MonoBehaviour
 {
     public SPRAnimation anim;
-    // void Start()
-    // {
-    //     // OnPlay();
-    // }
-    // private void OnPlay()
-    // {
-    //     anim.Play();
-    //     anim.EndEvent.AddListener(() =>
-    //     {
-    //         gameObject.SetActive(false);
-    //     });
-    // }
+    [SerializeField] private SpriteRenderer spr;
+    void Start()
+    {
+        spr = anim.gameObject.GetComponent<SpriteRenderer>();
+    }
+    public float GetHWid()
+    {
+        return spr.bounds.extents.x / 2f;
+    }
 }

@@ -723,6 +723,13 @@ public class BattleCore : AutoSingleton<BattleCore>
         projObj.Add(obj);
         return obj;
     }
+    private int GetDef(int objId)
+    {
+        if (objId == 1000)
+            return player.pData.Def;
+        else
+            return mData[objId].def;
+    }
     private float GetDmgPosY(int objId)
     {
         if (objId == 1000)
@@ -1300,11 +1307,7 @@ public class BattleCore : AutoSingleton<BattleCore>
 
         CompAttAct(myId, myType, tgId, tgType, myPos, tgPos, attId); //공격 연출
         Sequence sequence = DOTween.Sequence();
-        sequence.Append(myObj.transform.DOMove(midPoint, 0.1f).SetEase(Ease.InSine)
-            // .OnComplete(() =>{
-            //     CompAttAct(myId, myType, tgId, tgType, myPos, tgPos, attId);
-            // })
-            );
+        sequence.Append(myObj.transform.DOMove(midPoint, 0.1f).SetEase(Ease.InSine));
         sequence.Append(myObj.transform.DOMove(myPos, 0.05f).SetEase(Ease.InQuad));
         sequence.Play();
     }
@@ -1381,12 +1384,11 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         return BtObjType.NONE;
     }
-    private void CompAttAct(int myId, BtObjType myType, int tgId,
-    BtObjType tgType, Vector3 myPos, Vector3 tgPos, int attId)
+    private void CompAttAct(int myId, BtObjType myType, int tgId, BtObjType tgType, Vector3 myPos, Vector3 tgPos, int attId)
     {
         SetObjDir(myId, myPos, tgPos); //현재 오브젝트가 타겟을 바라보도록
         // SetObjDir(tgId, tgPos, myPos); //타겟 오브젝트가 현재 오브젝트를 바라보도록
-        int att = 0, crt = 0, crtRate = 0; float ct = 0.3f;
+        int att = 0, mAtt = 0, crt = 0, crtRate = 0; float ct = 0.3f;
         string aniKey = "";
         List<int> dmgList = new List<int>(); //데미지 리스트
         List<bool> crtList = new List<bool>(); //크리티컬 리스트
@@ -1400,6 +1402,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         {
             case BtObjType.MONSTER:
                 att = mData[myId].att;
+                mAtt = mData[myId].mAtt;
                 crt = mData[myId].crt;
                 crtRate = mData[myId].crtRate;
                 break;
@@ -1408,25 +1411,29 @@ public class BattleCore : AutoSingleton<BattleCore>
             default:
                 //Player
                 att = player.pData.Att;
+                mAtt = player.pData.MAtt;
                 crt = player.pData.Crt;
                 crtRate = player.pData.CrtRate;
                 // att = (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[1101], 601) * 0.01f);
                 att = attId == 0 ? att : (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[attId], 601) * 0.01f);
-                aniKey = attId == 0 ? GetMeleeAniKey() : GetSkAniKey(attId);
+                aniKey = attId == 0 ? GetMeleeAniKey() : GetSkKey(attId);
                 break;
         }
+        int tgDef = 0, tgMDef = 0;
         //타겟
         switch (tgType)
         {
             case BtObjType.MONSTER:
+                tgDef = mData[tgId].def;
+                tgMDef = mData[tgId].mDef;
                 switch (attId)
                 {
                     case 1101:
                         for (int i = 0; i < 2; i++)
                         {
                             crtList.Add(GsManager.I.IsCrt(crtRate));
-                            dmgList.Add(crtList[i] ? GsManager.I.GetCrtDamage(att, mData[tgId].def, crt) : GsManager.I.GetDamage(att, mData[tgId].def));
-                            dmgPosList.Add(new Vector3(tgPos.x, tgPos.y + GetDmgPosY(myId), 0f)); //데미지 텍스트 위치 설정
+                            dmgList.Add(crtList[i] ? GsManager.I.GetCrtDamage(att, tgDef, crt) : GsManager.I.GetDamage(att, tgDef));
+                            dmgPosList.Add(new Vector3(tgPos.x, tgPos.y + GetDmgPosY(tgId), 0f)); //데미지 텍스트 위치 설정
                         }
                         mData[tgId].OnDamaged(dmgList[0] + dmgList[1], BtFaction.ALLY, myPos);
                         SetFixedEff(aniKey, GetGridToWorldPos(selSkPos), 0f, () => { TurnAction(); });
@@ -1438,7 +1445,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                             int id = gGrid[t.Key.x, t.Key.y].tId;
                             if (id == 0) continue;
                             crtList.Add(GsManager.I.IsCrt(crtRate));
-                            var dmg = crtList[crtList.Count - 1] ? GsManager.I.GetCrtDamage(att, mData[id].def, crt) : GsManager.I.GetDamage(att, mData[id].def);
+                            var dmg = crtList[crtList.Count - 1] ? GsManager.I.GetCrtDamage(att, tgDef, crt) : GsManager.I.GetDamage(att, tgDef);
                             dmgList.Add(dmg);
                             var oPos = GetObj(id).transform.position;
                             dmgPosList.Add(new Vector3(oPos.x, oPos.y + GetDmgPosY(id), 0f));  //데미지 텍스트 위치 설정
@@ -1446,6 +1453,16 @@ public class BattleCore : AutoSingleton<BattleCore>
                         }
                         SetFixedEff(aniKey, GetEdgePos(myId, 1, 1, ang), ang, () => { TurnAction(); });
                         ct = 0.02f;
+                        break;
+                    case 2001:
+                    case 2101:
+                        crtList.Add(GsManager.I.IsCrt(crtRate));
+                        dmgList.Add(crtList[0] ? GsManager.I.GetCrtDamage(mAtt, tgMDef, crt) : GsManager.I.GetDamage(mAtt, tgMDef));
+                        dmgPosList.Add(new Vector3(tgPos.x, tgPos.y + GetDmgPosY(tgId), 0f));
+                        mData[tgId].OnDamaged(dmgList[0], BtFaction.ALLY, myPos);
+                        SetFixedEff(GetSkHitKey(attId), tgPos, 0f, () => { TurnAction(); });
+                        StartCoroutine(SetSqcDmgTxt(1, dmgList, crtList, 0.3f, dmgPosList));
+                        StartCoroutine(UseObjTurn(0.4f));
                         break;
                     default:
                         var ePos = GetEdgePos(myId, 1, 1, ang);
@@ -1460,7 +1477,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                                 break;
                         }
                         crtList.Add(GsManager.I.IsCrt(crtRate));
-                        dmgList.Add(crtList[0] ? GsManager.I.GetCrtDamage(att, mData[tgId].def, crt) : GsManager.I.GetDamage(att, mData[tgId].def));
+                        dmgList.Add(crtList[0] ? GsManager.I.GetCrtDamage(att, tgDef, crt) : GsManager.I.GetDamage(att, tgDef));
                         dmgPosList.Add(new Vector3(tgPos.x, tgPos.y + GetDmgPosY(myId), 0f));
                         mData[tgId].OnDamaged(dmgList[0], BtFaction.ALLY, myPos);
                         SetFixedEff(aniKey, ePos, ang, () => { TurnAction(); });
@@ -1473,7 +1490,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             case BtObjType.PLAYER:
                 crtList.Add(GsManager.I.IsCrt(crtRate));
                 dmgList.Add(crtList[0] ? GsManager.I.GetCrtDamage(att, player.pData.Def, crt) : GsManager.I.GetDamage(att, player.pData.Def));
-                dmgPosList.Add(new Vector3(tgPos.x, tgPos.y + GetDmgPosY(myId), 0f));
+                dmgPosList.Add(new Vector3(tgPos.x, tgPos.y + GetDmgPosY(tgId), 0f));
                 player.OnDamaged(dmgList[0], myPos);
                 SetFixedEff("N_Att1", GetEdgePos(myId, mData[myId].w, mData[myId].h, ang), ang, () => { TurnAction(); });
                 StartCoroutine(SetSqcDmgTxt(1, dmgList, crtList, 0.3f, dmgPosList));
@@ -1525,9 +1542,9 @@ public class BattleCore : AutoSingleton<BattleCore>
         else
             return "N_Att1";
     }
-    private string GetSkAniKey(int skId)
+    private string GetSkKey(int id)
     {
-        switch (skId)
+        switch (id)
         {
             case 1101:
                 return "W_DoubleSlash";
@@ -1549,6 +1566,24 @@ public class BattleCore : AutoSingleton<BattleCore>
                 return "N_Att1";
             default:
                 return "N_Att1";
+        }
+    }
+    private string GetSkHitKey(int id)
+    {
+        switch (id)
+        {
+            case 2001:
+                return "E_Hit2000";
+            case 2101:
+                return "E_Hit2100";
+            case 2201:
+                return "";
+            case 2301:
+                return "";
+            case 2401:
+                return "";
+            default:
+                return "";
         }
     }
     IEnumerator UseObjTurn(float ct)
@@ -1777,14 +1812,14 @@ public class BattleCore : AutoSingleton<BattleCore>
     public void ShotMagic1(int myId, Vector2Int tg, int skId)
     {
         Vector3 myPos = GetObj(myId).transform.position, tgPos = GetGridToWorldPos(tg);
-        myPos.y += 0.4f; tgPos.y += 0.4f;
-        string name = GetSkAniKey(skId);
-        SetMovingEff(name, myPos, tgPos, GetLookAngle(myPos, tgPos), () => { TurnAction(); });
+        int tgId = gGrid[tg.x, tg.y].tId;
+        string name = GetSkKey(skId);
+        SetMovingEff(name, myPos, tgPos, GetLookAngle(myPos, tgPos), () => { CompAttAct(myId, GetObjType(myId), tgId, GetObjType(tgId), myPos, tgPos, skId); });
     }
     public void ShotMagic2(int myId, Vector2Int tg, int skId)
     {
-        string name = GetSkAniKey(skId);
-        SetFixedEff(name, GetGridToWorldPos(tg), 0f, () => { TurnAction(); });
+        // string name = GetSkKey(skId);
+        // SetFixedEff(name, GetGridToWorldPos(tg), 0f, () => { TurnAction(); });
     }
     #endregion
     #region ==== 애니메이션 ====
@@ -1818,10 +1853,11 @@ public class BattleCore : AutoSingleton<BattleCore>
             effList[effName].Add(eff);
             StartEff(eff, sPos, angle, true);
         }
-        float dist = Vector3.Distance(sPos, ePos);
-        // Debug.Log($"dist: {dist}");
-        // float dur = Mathf.Clamp(dist / 20f, 1f, 0.5f);
-        DOTween.Sequence().SetAutoKill(true).Append(eff.transform.DOMove(ePos, dist / 8f).SetEase(Ease.Linear)).OnComplete(() =>
+        float wid = eff.GetHWid();
+        Vector3 dir = (ePos - sPos).normalized, sp = sPos + dir * wid, ep = ePos - dir * (wid * 1.2f);
+        eff.transform.position = sp;
+        float dist = Vector3.Distance(sp, ep);
+        eff.transform.DOMove(ep, dist / 8f).SetEase(Ease.Linear).OnComplete(() =>
         {
             eff.gameObject.SetActive(false);
             if (call != null) call();
@@ -2015,7 +2051,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     public void TestPlayer()
     {
-
+        SetMovingEff("M_FireBall", Vector3.zero, Vector3.zero, 0f, () => { });
         // ShowDmgTxt(100, true, player.transform.position);
     }
 }
