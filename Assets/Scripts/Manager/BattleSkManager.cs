@@ -99,6 +99,7 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                 break;
             case 2001:
             case 2101:
+            case 2201:
             case 2301:
             case 2401:
                 BattleCore.I.BeginSkill(skId);
@@ -120,8 +121,12 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
     {
         if (PlayerManager.isZeroHpMpSp)
         {
-            csmHp = 1; csmMp = 1; csmSp = 1;
+            csmHp = 0; csmMp = 0; csmSp = 0;
         }
+        PlayerManager.I.pData.HP -= csmHp;
+        PlayerManager.I.pData.MP -= csmMp;
+        PlayerManager.I.pData.SP -= csmSp;
+        Presenter.Send("BattleMainUI", "UpdateInfo");
         Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_UseSk"), PlayerManager.I.pData.Name, GsManager.I.GetSkName(skId)));
         switch (skId)
         {
@@ -135,41 +140,31 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                     PlayerManager.I.pData.MP = PlayerManager.I.pData.MaxMP;
                 if (PlayerManager.I.pData.SP > PlayerManager.I.pData.MaxSP)
                     PlayerManager.I.pData.SP = PlayerManager.I.pData.MaxSP;
-                Presenter.Send("BattleMainUI", "UpdateInfo");
                 break;
             case 1002:
-                PlayerManager.I.pData.SP -= csmSp;
-                Presenter.Send("BattleMainUI", "GetPlayerSp");
                 BattleCore.I.Dash(oId, pos);
                 break;
             case 1003:
-                PlayerManager.I.pData.SP -= csmSp;
-                Presenter.Send("BattleMainUI", "GetPlayerSp");
                 BattleCore.I.DashAttack(oId, pos);
                 break;
             case 1101:
             case 1201:
             case 1301:
-                PlayerManager.I.pData.SP -= csmSp;
-                Presenter.Send("BattleMainUI", "GetPlayerSp");
                 BattleCore.I.ActMeleeToTile(pos, skId);
                 break;
             case 1102:
-                PlayerManager.I.pData.SP -= csmSp;
-                Presenter.Send("BattleMainUI", "GetPlayerSp");
                 BattleCore.I.ActMeleeToTile(pos, skId);
                 break;
             case 2001:
             case 2101:
-                PlayerManager.I.pData.MP -= csmMp;
-                Presenter.Send("BattleMainUI", "GetPlayerMp");
                 BattleCore.I.ShotMagic1(1000, pos, skId);
+                break;
+            case 2201:
+                BattleCore.I.ShotMagic2(1000, pos, skId);
                 break;
             case 2301:
             case 2401:
-                PlayerManager.I.pData.MP -= csmMp;
-                Presenter.Send("BattleMainUI", "GetPlayerMp");
-                BattleCore.I.ShotMagic2(1000, pos, skId);
+                BattleCore.I.ShotMagic3(1000, pos, skId);
                 break;
         }
         //스킬 쿨타임 시작
