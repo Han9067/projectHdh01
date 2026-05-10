@@ -88,4 +88,33 @@ public class MonManager : AutoSingleton<MonManager>
             DropList = dList
         };
     }
+
+
+    public Dictionary<string, int> GetHumanMonPreset(int mId)
+    {
+        //60번대->일반 도적, 80번대->도적두목(중보~보스 수준)
+        switch (mId)
+        {
+            case 61:
+                //가죽갑옷에 노헬멧//무기는 H급
+                return new Dictionary<string, int> { { "Armor", 61 }, { "Weapon", 1000 } };
+            case 62:
+                //갬비슨갑옷에 갬비슨헬멧//무기는 G급
+                return new Dictionary<string, int> { { "Armor", 62 }, { "Weapon", 900 } };
+            case 63:
+                //사슬세트//무기는 F급
+                return new Dictionary<string, int> { { "Armor", 63 }, { "Weapon", 800 } };
+            case 81:
+                //사슬세트//무기는 F 하급
+                return new Dictionary<string, int> { { "Armor", 81 }, { "Weapon", 800 } };
+            case 82:
+                //브리간딘세트// 무기는 F 상급
+                return new Dictionary<string, int> { { "Armor", 82 }, { "Weapon", 700 } };
+            case 83:
+                //판금갑옷세트// 무기는 E 하급
+                return new Dictionary<string, int> { { "Armor", 83 }, { "Weapon", 600 } };
+            default:
+                return new Dictionary<string, int>();
+        }
+    }
 }

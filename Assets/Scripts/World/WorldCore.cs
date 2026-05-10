@@ -16,11 +16,12 @@ public class WorldCore : AutoSingleton<WorldCore>
     #region ==== Global Variable ====
     [Header("Main")]
     [SerializeField] private Image blackImg;
-    private Camera cam;
+    private Camera cmr;
     private float moveSpd = 20f, zoomSpd = 10f; // 카메라 이동 속도, 줌 속도
     private float minZoom = 5f, maxZoom = 10f;  // 줌 범위
     public static int intoCity = 0, worldWorkId = 0, mOverObjUid = 0, mTraceObjUid = 0;
     //도시 진입, 일 작업, 마우스 오버 몬스터, 추적 몬스터
+    private Vector2 mapMin, mapMax;
 
     [Header("City")]
     [SerializeField] private Transform cityParent;
@@ -46,11 +47,14 @@ public class WorldCore : AutoSingleton<WorldCore>
     void Awake()
     {
         WorldObjManager.I.CreateWorldMapGrid(worldMapTile); //월드맵 그리드부터 지역, 도로 등 생성
+        mapMin = new Vector2(-48.6f, -52.5f); //월드맵의 전체 크기 중 최소값
+        // mapMax = new Vector2(43.6f, 47.5f); //월드맵의 전체 크기 중 최대값
+        mapMax = new Vector2(-9f, -32.5f); //데모용 맵 제한
     }
     void Start()
     {
         //월드맵 시작
-        cam = Camera.main;
+        cmr = Camera.main;
         Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
         if (blackImg.gameObject.activeSelf)
             blackImg.gameObject.SetActive(false);
@@ -80,14 +84,15 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     void Update()
     {
-        Vector3 mPos = cam.ScreenToWorldPoint(Input.mousePosition); //마우스 월드 좌표
+        Vector3 mPos = cmr.ScreenToWorldPoint(Input.mousePosition); //마우스 월드 좌표
         mPos.z = 0f;
         #region Input Act
-        Vector3 moveDirection = Vector3.zero;
-        if (Input.GetKey(KeyCode.W)) moveDirection.y += 1; // 위로 이동
-        if (Input.GetKey(KeyCode.S)) moveDirection.y -= 1; // 아래로 이동
-        if (Input.GetKey(KeyCode.A)) moveDirection.x -= 1; // 왼쪽 이동
-        if (Input.GetKey(KeyCode.D)) moveDirection.x += 1; // 오른쪽 이동
+        Vector3 moveDir = Vector3.zero;
+        if (Input.GetKey(KeyCode.W)) moveDir.y += 1; // 위로 이동
+        if (Input.GetKey(KeyCode.S)) moveDir.y -= 1; // 아래로 이동
+        if (Input.GetKey(KeyCode.A)) moveDir.x -= 1; // 왼쪽 이동
+        if (Input.GetKey(KeyCode.D)) moveDir.x += 1; // 오른쪽 이동
+
         if (!CheckActivePop())
         {
             if (Input.GetMouseButtonDown(0))
@@ -124,16 +129,34 @@ public class WorldCore : AutoSingleton<WorldCore>
         #endregion
         #region Camera Act
         // Time.unscaledDeltaTime을 사용하여 일시정지 상태에서도 일정한 속도로 이동
-        cam.transform.position += moveDirection * moveSpd * Time.unscaledDeltaTime;
+        cmr.transform.position += moveDir * moveSpd * Time.unscaledDeltaTime;
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-        cam.orthographicSize -= scroll * zoomSpd;
-        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minZoom, maxZoom);
+        cmr.orthographicSize -= scroll * zoomSpd;
+        cmr.orthographicSize = Mathf.Clamp(cmr.orthographicSize, minZoom, maxZoom);
+        ClampCmrToMap();
         #endregion
     }
+    #region 카메라 관련
+    void ClampCmrToMap()
+    {
+        float halfH = cmr.orthographicSize - 5f, halfW = halfH * cmr.aspect;
+        float minX = mapMin.x + halfW, maxX = mapMax.x - halfW;
+        float minY = mapMin.y + halfH, maxY = mapMax.y - halfH;
+        // 맵이 화면보다 작을 때(줌을 많이 아웃): min > max 가 될 수 있음 → 아래 2번 참고
+        if (minX > maxX)
+            minX = maxX = (mapMin.x + mapMax.x) * 0.5f;
+        if (minY > maxY)
+            minY = maxY = (mapMin.y + mapMax.y) * 0.5f;
+        Vector3 p = cmr.transform.position;
+        p.x = Mathf.Clamp(p.x, minX, maxX);
+        p.y = Mathf.Clamp(p.y, minY, maxY);
+        cmr.transform.position = p;
+    }
+    #endregion
     #region 플레이어 관련
     private void MoveCamera(Vector3 v)
     {
-        cam.transform.position = new Vector3(v.x, v.y, -10f);
+        cmr.transform.position = new Vector3(v.x, v.y, -10f);
     }
     private bool CheckActivePop()
     {
@@ -168,7 +191,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         }
         else
         {
-            moveTgPos = cam.ScreenToWorldPoint(Input.mousePosition);
+            moveTgPos = cmr.ScreenToWorldPoint(Input.mousePosition);
             isMove = true;
         }
         moveTgPos.z = 0f;

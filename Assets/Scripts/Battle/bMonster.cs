@@ -63,7 +63,14 @@ public class bMonster : MonoBehaviour
         Rng = monData.Rng;
         dmgPosY = mainSpr.bounds.size.y * 0.5f;
     }
-    public void SetMonData(int objId, int monId, float px, float py)
+    public void SetMonNData(int objId, int monId, float px, float py)
+    {
+        this.objId = objId;
+        this.monsterId = monId;
+        transform.position = new Vector3(px, py, 0);
+        //w에 따라 내부 자식 리소스 x좌표 변경
+    }
+    public void SetMonHData(int objId, int monId, float px, float py)
     {
         this.objId = objId;
         this.monsterId = monId;

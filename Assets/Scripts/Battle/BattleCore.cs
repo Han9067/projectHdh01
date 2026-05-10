@@ -450,17 +450,12 @@ public class BattleCore : AutoSingleton<BattleCore>
                 int mx = cx + Random.Range(-rx, rx + 1), my = cy + Random.Range(-ry, ry + 1);
                 var p = GetStartPos(mx, my);
                 int mId = WorldObjManager.I.btMonList[idx];
-                int w = MonManager.I.MonDataList[mId].W, h = MonManager.I.MonDataList[mId].H;
-                var mon = Instantiate(ResManager.GetGameObject("MonObj"), monsterParent);
-                var data = mon.GetComponent<bMonster>();
-                data.SetObjDir(pDir == 0 ? 1 : -1);
-                data.SetMonData(++objId, mId, gGrid[p.x, p.y].x, gGrid[p.x, p.y].y);
-                data.SetObjLayer(mapH - p.y);
-                mon.name = "Mon_" + objId;
-                mObj.Add(objId, mon);
-                mData.Add(objId, data);
+                var mData = MonManager.I.MonDataList[mId];
+                int w = mData.W, h = mData.H;
+                CreateMon(mId, p.x, p.y, mData.MonType);
                 UpdateGrid(p.x, p.y, p.x, p.y, w, h, objId);
                 objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p, w, h));
+                objId++;
                 idx++;
             }
         }
@@ -489,6 +484,36 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
         return new Vector2Int(0, 0);
+    }
+    private string GetMonType(int type)
+    {
+        switch (type)
+        {
+            case 2:
+                return "MonObjH";
+            default:
+                return "MonObjN";
+        }
+    }
+    private void CreateMon(int mId, int px, int py, int type)
+    {
+        string str = GetMonType(type);
+        var mon = Instantiate(ResManager.GetGameObject(str), monsterParent);
+        var bMon = mon.GetComponent<bMonster>();
+        bMon.SetObjDir(pDir == 0 ? 1 : -1);
+        switch (type)
+        {
+            case 2:
+                bMon.SetMonHData(objId, mId, gGrid[px, py].x, gGrid[px, py].y);
+                break;
+            default:
+                bMon.SetMonNData(objId, mId, gGrid[px, py].x, gGrid[px, py].y);
+                break;
+        }
+        bMon.SetObjLayer(mapH - py);
+        mon.name = "Mon_" + objId;
+        mObj.Add(objId, mon);
+        mData.Add(objId, bMon);
     }
     private void CreateRngObj(int cnt, List<RngGrid> list, int type = 0)
     {
