@@ -39,6 +39,7 @@ public class MonTable  : GameData
 				case "GgY": return true;
 				case "Drop": return true;
 				case "LvData": return true;
+				case "Grade": return true;
 
 		  default: return false;
 
@@ -74,6 +75,7 @@ public class MonTable  : GameData
 				case "GgY": return data.GgY;
 				case "Drop": return data.Drop;
 				case "LvData": return data.LvData;
+				case "Grade": return data.Grade;
 
 
                 default: return null;
@@ -100,6 +102,7 @@ public class MonTable  : GameData
 				case "GgY": return data.GgY;
 				case "Drop": return data.Drop;
 				case "LvData": return data.LvData;
+				case "Grade": return data.Grade;
 
 
                 default: return null;
@@ -127,6 +130,7 @@ public class MonTable  : GameData
 				case 8: return data.GgY;
 				case 9: return data.Drop;
 				case 10: return data.LvData;
+				case 11: return data.Grade;
 
                 default: return null;
             }
@@ -180,5 +184,6 @@ public class MonTableProb : GameDataProb
 	[JsonProperty] public readonly float GgY;
 	[JsonProperty] public readonly string Drop;
 	[JsonProperty] public readonly string LvData;
+	[JsonProperty] public readonly string Grade;
 
 }

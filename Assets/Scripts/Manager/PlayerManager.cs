@@ -154,16 +154,16 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         // ItemManager.I.CreateInvenItem(36001, -1, -1); //양손도끼
         // ItemManager.I.CreateInvenItem(40001, -1, -1); //양손둔기
         // ItemManager.I.CreateInvenItem(46001, -1, -1); //창
-        // ItemManager.I.CreateInvenItem(48001, -1, -1); //활
+        // ItemManager.I.CreateInvenItem(50001, -1, -1); //활
         ItemManager.I.CreateInvenItem(10001, -1, -1); //옷
-        // ItemManager.I.CreateInvenItem(52001, -1, -1); //화살
+        // ItemManager.I.CreateInvenItem(54001, -1, -1); //화살
         pData.EqSlot["Hand1"] = pData.Inven[0]; // 손1
         pData.EqSlot["Armor"] = pData.Inven[1]; // 갑옷ㅇㅇ
         // pData.EqSlot["Hand2"] = pData.Inven[2]; // 손2 화살
         // ItemManager.I.CreateInvenItem(60001, 0, 0); //물약
         // ItemManager.I.CreateInvenItem(60101, 1, 0); //스킬북
         // ItemManager.I.CreateInvenItem(42001, 3, 1); //지팡이
-        // ItemManager.I.CreateInvenItem(48001, 2, 1); //활
+        // ItemManager.I.CreateInvenItem(50001, 2, 1); //활
         ItemManager.I.CreateInvenItem(67001, 0, 0);
         ItemManager.I.CreateInvenItem(67001, 1, 0);
         ItemManager.I.CreateInvenItem(67001, 2, 0);
