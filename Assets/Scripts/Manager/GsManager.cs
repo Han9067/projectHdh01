@@ -285,7 +285,7 @@ public class GsManager : AutoSingleton<GsManager>
     {
         var eq = data.EqSlot;
         string[] all = new string[] { "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth",
-            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "OneWp3", "TwoWp1", "TwoWp2", "TwoWp3"};
+            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "OneWp3", "TwoWp1", "TwoWp2"};
         foreach (var v in all)
             mGameObj[v].SetActive(false);
 
@@ -328,13 +328,10 @@ public class GsManager : AutoSingleton<GsManager>
                     switch (eq["Hand1"].Type)
                     {
                         case 12:
-                            mGameObj["TwoWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
-                            mGameObj["TwoWp1"].SetActive(true);
-                            break;
                         case 14:
                         case 16:
-                            mGameObj["TwoWp3"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
-                            mGameObj["TwoWp3"].SetActive(true);
+                            mGameObj["TwoWp1"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
+                            mGameObj["TwoWp1"].SetActive(true);
                             break;
                         case 19:
                             mGameObj["TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
@@ -395,7 +392,7 @@ public class GsManager : AutoSingleton<GsManager>
     HashSet<PtType> noneWpTypes = new HashSet<PtType>
     {
         PtType.BaseHand1B,PtType.BaseBoth, PtType.EqBoth, PtType.EqHand1B,
-        PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
+        PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.TwoWp1, PtType.TwoWp2
     };
     HashSet<PtType> hairTypes = new HashSet<PtType>
     {
@@ -479,7 +476,7 @@ public class GsManager : AutoSingleton<GsManager>
         PtType[] bodyParts = new PtType[] {
             PtType.BaseHand1A, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth,
             PtType.EqBody, PtType.EqHand1A, PtType.EqHand1B, PtType.EqHand2, PtType.EqBoth,
-            PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.TwoWp1, PtType.TwoWp2, PtType.TwoWp3
+            PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.TwoWp1, PtType.TwoWp2
         };
 
         foreach (PtType b in bodyParts) ptSpr[b].gameObject.SetActive(false);
@@ -506,7 +503,7 @@ public class GsManager : AutoSingleton<GsManager>
                         case 14:
                         case 16:
                             wpState = 4;
-                            PtType curWp = slot["Hand1"].Type == 12 ? PtType.TwoWp1 : PtType.TwoWp3;
+                            PtType curWp = PtType.TwoWp1;
                             ptSpr[curWp].gameObject.SetActive(true);
                             ptSpr[curWp].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
                             break;

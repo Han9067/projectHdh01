@@ -2297,14 +2297,34 @@ MonoBehaviour:
           value: Shirt
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: PeasantTunic
+      value:
+        list:
+        - key: 23
+          value: "\uB18D\uBD80\uC758 \uD29C\uB2C9"
+          duplicatedKey: 0
+        - key: 10
+          value: Peasant Tunic
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: CarpenterTunic
       value:
         list:
         - key: 23
-          value: "\uBAA9\uC218 \uD29C\uB2C9"
+          value: "\uBAA9\uC218\uC758 \uD29C\uB2C9"
           duplicatedKey: 0
         - key: 10
           value: Carpenter Tunic
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: MerchantTunic
+      value:
+        list:
+        - key: 23
+          value: "\uC0C1\uC778\uC758 \uD29C\uB2C9"
+          duplicatedKey: 0
+        - key: 10
+          value: Merchant Tunic
           duplicatedKey: 0
       duplicatedKey: 0
     - key: LeatherVest
@@ -2317,6 +2337,16 @@ MonoBehaviour:
           value: Leather Vest
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: BanditLeatherArmor
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uAC00\uC8FD\uAC11\uC637"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit Leather Armor
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: Gambeson
       value:
         list:
@@ -2327,11 +2357,31 @@ MonoBehaviour:
           value: Gambeson
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: HunterGambeson
+      value:
+        list:
+        - key: 23
+          value: "\uC0AC\uB0E5\uC6A9 \uAC2C\uBE44\uC2A8"
+          duplicatedKey: 0
+        - key: 10
+          value: Hunter Gambeson
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditGambeson
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uAC2C\uBE44\uC2A8"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit Gambeson
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: ChainMail
       value:
         list:
         - key: 23
-          value: "\uC0AC\uC2AC \uAC11\uC637"
+          value: "\uC0AC\uC2AC\uAC11\uC637"
           duplicatedKey: 0
         - key: 10
           value: Chain Mail
@@ -2347,84 +2397,104 @@ MonoBehaviour:
           value: Brigandine
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: BanditBrigandine
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uBE0C\uB9AC\uAC04\uB518"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit Brigandine
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: OutdatedMageCoat
       value:
         list:
         - key: 23
-          value: "\uAD6C\uC2DD \uB9C8\uBC95\uC0AC \uCF54\uD2B8"
+          value: "\uAD6C\uC2DD \uB9C8\uBC95\uC0AC \uC637"
           duplicatedKey: 0
         - key: 10
           value: Outdated Mage Coat
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: InnkeeperClothes
+    - key: MercenaryPlateArmor
       value:
         list:
         - key: 23
-          value: "\uC5EC\uAD00\uC8FC\uC778 \uC637"
+          value: "\uC6A9\uBCD1\uC758 \uD310\uAE08\uAC11\uC637"
           duplicatedKey: 0
         - key: 10
-          value: Innkeeper Clothes
+          value: Mercenary Plate Armor
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: BlacksmithClothes
+    - key: DenwoodPlateArmor
       value:
         list:
         - key: 23
-          value: "\uB300\uC7A5\uC7A5\uC774 \uC637"
+          value: "\uB374\uC6B0\uB4DC \uD310\uAE08\uAC11\uC637"
           duplicatedKey: 0
         - key: 10
-          value: Blacksmith Clothes
+          value: Denwood Plate Armor
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: TailorClothes
+    - key: Hood
       value:
         list:
         - key: 23
-          value: "\uC7AC\uB2E8\uC0AC \uC637"
+          value: "\uD6C4\uB4DC"
           duplicatedKey: 0
         - key: 10
-          value: Tailor Clothes
+          value: Hood
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: MerchantClothes
+    - key: FarmerHat
       value:
         list:
         - key: 23
-          value: "\uC0C1\uC778 \uC637"
+          value: "\uB18D\uBD80\uC758 \uBAA8\uC790"
           duplicatedKey: 0
         - key: 10
-          value: Merchant Clothes
+          value: Farmer Hat
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: GuildUniform
+    - key: GambesonCoif
       value:
         list:
         - key: 23
-          value: "\uAE38\uB4DC \uC81C\uBCF5"
+          value: "\uAC2C\uBE44\uC2A8 \uCF54\uC774\uD504"
           duplicatedKey: 0
         - key: 10
-          value: Guild Uniform
+          value: Gambeson Coif
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: InnkeeperDress
+    - key: ChainmailCoif
       value:
         list:
         - key: 23
-          value: "\uC5EC\uAD00\uC8FC\uC778 \uC637(\uC5EC\uC131)"
+          value: "\uC0AC\uC2AC \uCF54\uC774\uD504"
           duplicatedKey: 0
         - key: 10
-          value: Innkeeper Dress
+          value: Chainmail Coif
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: TailorDress
+    - key: Spangenhelm
       value:
         list:
         - key: 23
-          value: "\uC7AC\uB2E8\uC0AC \uC637(\uC5EC\uC131)"
+          value: "\uC2A4\uD321\uCF04\uD5EC\uB984"
           duplicatedKey: 0
         - key: 10
-          value: Tailor Dress
+          value: Spangenhelm
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: KettleHat
+      value:
+        list:
+        - key: 23
+          value: "\uCF00\uD2C0\uD587"
+          duplicatedKey: 0
+        - key: 10
+          value: Kettle Hat
           duplicatedKey: 0
       duplicatedKey: 0
     - key: ShortShoes
@@ -2497,14 +2567,64 @@ MonoBehaviour:
           value: Hunter Gloves
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: IronSword
+    - key: TrainingSword
       value:
         list:
         - key: 23
-          value: "\uCCA0\uAC80"
+          value: "\uD6C8\uB828\uC6A9 \uAC80"
           duplicatedKey: 0
         - key: 10
-          value: Iron Sword
+          value: Training Sword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Bauernwehr
+      value:
+        list:
+        - key: 23
+          value: "\uBC14\uC6B0\uC5B8\uBCA0\uC5B4"
+          duplicatedKey: 0
+        - key: 10
+          value: Bauernwehr
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditSword
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit Sword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: FootmanSword
+      value:
+        list:
+        - key: 23
+          value: "\uBCF4\uBCD1\uC758 \uAD70\uC6A9\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Footman Sword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditCurvedSword
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uACE1\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit Curved Sword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: LangesMesser
+      value:
+        list:
+        - key: 23
+          value: "\uB791\uAC8C\uC2A4\uBA54\uC11C"
+          duplicatedKey: 0
+        - key: 10
+          value: Langes Messer
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Broadsword
@@ -2527,6 +2647,36 @@ MonoBehaviour:
           value: Falchion
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: SawbladeSword
+      value:
+        list:
+        - key: 23
+          value: "\uD1B1\uB0A0\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Sawblade Sword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Hwando
+      value:
+        list:
+        - key: 23
+          value: "\uD658\uB3C4"
+          duplicatedKey: 0
+        - key: 10
+          value: Hwando
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: WolfKiller
+      value:
+        list:
+        - key: 23
+          value: "\uB291\uB300\uC0B4\uD574\uC790"
+          duplicatedKey: 0
+        - key: 10
+          value: Wolf Killer
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: OutdatedLongsword
       value:
         list:
@@ -2535,6 +2685,16 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Outdated Longsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditLongsword
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uC7A5\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit Longsword
           duplicatedKey: 0
       duplicatedKey: 0
     - key: FootmanLongsword
@@ -2547,6 +2707,16 @@ MonoBehaviour:
           value: Footman Longsword
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: DoyleLongsword
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC77C\uC758 \uC7A5\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Doyle Longsword
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: Claymore
       value:
         list:
@@ -2555,6 +2725,96 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Claymore
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Flamberge
+      value:
+        list:
+        - key: 23
+          value: "\uD50C\uB791\uBCA0\uB974\uC8FC"
+          duplicatedKey: 0
+        - key: 10
+          value: Flamberge
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Kriegsmesser
+      value:
+        list:
+        - key: 23
+          value: "\uD06C\uB9AC\uADF8\uBA54\uC11C"
+          duplicatedKey: 0
+        - key: 10
+          value: Kriegsmesser
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditCurvedLongsword
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uC591\uC190\uACE1\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit Curved Longsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: ElvenLongsword
+      value:
+        list:
+        - key: 23
+          value: "\uC5D8\uD504\uC758 \uC7A5\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Elven Longsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Ssangsudo
+      value:
+        list:
+        - key: 23
+          value: "\uC30D\uC218\uB3C4"
+          duplicatedKey: 0
+        - key: 10
+          value: Ssangsudo
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Zweihander
+      value:
+        list:
+        - key: 23
+          value: "\uCE20\uBC14\uC774\uD578\uB354"
+          duplicatedKey: 0
+        - key: 10
+          value: Zweihander
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: ManaImbuedLongsword
+      value:
+        list:
+        - key: 23
+          value: "\uB9C8\uB825\uC774 \uAE43\uB4E0 \uC7A5\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Mana Imbued Longsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: OrcGreatsword
+      value:
+        list:
+        - key: 23
+          value: "\uC624\uD06C\uC758 \uB300\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Orc Greatsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: CurvedGreatsword
+      value:
+        list:
+        - key: 23
+          value: "\uB300\uACE1\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: Curved Greatsword
           duplicatedKey: 0
       duplicatedKey: 0
     - key: HandAxe
@@ -2577,6 +2837,56 @@ MonoBehaviour:
           value: Beard Axe
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: BanditAxe
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit Axe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: FootmanAxe
+      value:
+        list:
+        - key: 23
+          value: "\uBCF4\uBCD1\uC758 \uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: Footman Axe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: CrescentAxe
+      value:
+        list:
+        - key: 23
+          value: "\uCD08\uC2B9\uB2EC\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: Crescent Axe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: DoubleHeadedAxe
+      value:
+        list:
+        - key: 23
+          value: "\uC591\uB0A0 \uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: Double Headed Axe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SilveryAxe
+      value:
+        list:
+        - key: 23
+          value: "\uC740\uBE5B \uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: Silvery Axe
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: LoggingAxe
       value:
         list:
@@ -2587,24 +2897,74 @@ MonoBehaviour:
           value: Logging Axe
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: MilitiaLongAxe
+    - key: MilitiaLongaxe
       value:
         list:
         - key: 23
-          value: "\uC0AC\uB0E5\uC6A9 \uAE34\uB3C4\uB07C"
+          value: "\uBBFC\uBCD1\uB300 \uC591\uC190\uB3C4\uB07C"
           duplicatedKey: 0
         - key: 10
-          value: Militia Long Axe
+          value: Militia Longaxe
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: FootManLongAxe
+    - key: BanditLongaxe
       value:
         list:
         - key: 23
-          value: "\uBCF4\uBCD1 \uAE34\uB3C4\uB07C"
+          value: "\uB3C4\uC801\uC758 \uC591\uC190\uB3C4\uB07C"
           duplicatedKey: 0
         - key: 10
-          value: Foot Man Long Axe
+          value: Bandit Longaxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: FootManLongaxe
+      value:
+        list:
+        - key: 23
+          value: "\uBCF4\uBCD1\uC758 \uC591\uC190\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: Foot Man Longaxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: DenwoodLongaxe
+      value:
+        list:
+        - key: 23
+          value: "\uB374\uC6B0\uB4DC \uC591\uC190\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: Denwood Longaxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: OrcGreataxe
+      value:
+        list:
+        - key: 23
+          value: "\uC624\uD06C\uC758 \uB300\uD615\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: Orc Greataxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BanditGreataxe
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uB300\uD615\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: Bandit Greataxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: GreatBattleAxe
+      value:
+        list:
+        - key: 23
+          value: "\uB300\uD615 \uC804\uD22C\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: Great Battle Axe
           duplicatedKey: 0
       duplicatedKey: 0
     - key: WoodenClub
@@ -2637,6 +2997,26 @@ MonoBehaviour:
           value: Iron Club
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: Mace
+      value:
+        list:
+        - key: 23
+          value: "\uBA54\uC774\uC2A4"
+          duplicatedKey: 0
+        - key: 10
+          value: Mace
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Morningstar
+      value:
+        list:
+        - key: 23
+          value: "\uBAA8\uB2DD\uC2A4\uD0C0"
+          duplicatedKey: 0
+        - key: 10
+          value: Morningstar
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: LargeWoodenMallet
       value:
         list:
@@ -2655,6 +3035,16 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Large Club
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: LargeMace
+      value:
+        list:
+        - key: 23
+          value: "\uB300\uD615\uBA54\uC774\uC2A4"
+          duplicatedKey: 0
+        - key: 10
+          value: Large Mace
           duplicatedKey: 0
       duplicatedKey: 0
     - key: TrainingStaff
@@ -2697,6 +3087,36 @@ MonoBehaviour:
           value: Boar Spear
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: Bill
+      value:
+        list:
+        - key: 23
+          value: "\uBE4C"
+          duplicatedKey: 0
+        - key: 10
+          value: Bill
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Glaive
+      value:
+        list:
+        - key: 23
+          value: "\uAE00\uB808\uC774\uBE0C"
+          duplicatedKey: 0
+        - key: 10
+          value: Glaive
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Bardiche
+      value:
+        list:
+        - key: 23
+          value: "\uBC14\uB514\uC26C"
+          duplicatedKey: 0
+        - key: 10
+          value: Bardiche
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: Shortbow
       value:
         list:
@@ -2737,16 +3157,6 @@ MonoBehaviour:
           value: Hunting Bow
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: EasternHornBow
-      value:
-        list:
-        - key: 23
-          value: "\uB3D9\uBC29\uC758 \uAC01\uAD81"
-          duplicatedKey: 0
-        - key: 10
-          value: Eastern Horn Bow
-          duplicatedKey: 0
-      duplicatedKey: 0
     - key: MilitaryLongbow
       value:
         list:
@@ -2755,6 +3165,16 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Military Longbow
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: EasternHornBow
+      value:
+        list:
+        - key: 23
+          value: "\uB3D9\uBC29\uC758 \uAC01\uAD81"
+          duplicatedKey: 0
+        - key: 10
+          value: Eastern Horn Bow
           duplicatedKey: 0
       duplicatedKey: 0
     - key: MarksmanLongbow
@@ -2775,6 +3195,36 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Arrow
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: RoundShield
+      value:
+        list:
+        - key: 23
+          value: "\uC6D0\uD615 \uBC29\uD328"
+          duplicatedKey: 0
+        - key: 10
+          value: Round Shield
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Buckler
+      value:
+        list:
+        - key: 23
+          value: "\uBC84\uD074\uB7EC"
+          duplicatedKey: 0
+        - key: 10
+          value: Buckler
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: HeaterShield
+      value:
+        list:
+        - key: 23
+          value: "\uD788\uD130 \uC2E4\uB4DC"
+          duplicatedKey: 0
+        - key: 10
+          value: Heater Shield
           duplicatedKey: 0
       duplicatedKey: 0
     - key: LesserHpPotion
@@ -4458,11 +4908,21 @@ MonoBehaviour:
       value:
         list:
         - key: 23
-          value: "\uD3C9\uBBFC\uCE35 \uB098\uC774\uB97C \uB530\uC9C0\uC9C0 \uC54A\uACE0
-            \uBCF4\uD3B8\uC801\uC73C\uB85C \uC785\uB294 \uC154\uCE20."
+          value: "\uD3C9\uBBFC\uCE35\uC5D0\uC11C \uBCF4\uD3B8\uC801\uC73C\uB85C \uC785\uB294
+            \uC154\uCE20."
           duplicatedKey: 0
         - key: 10
           value: Shirt
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_10002_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB18D\uBD80\uC758 \uD29C\uB2C9"
+          duplicatedKey: 0
+        - key: 10
+          value: PeasantTunic
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_10003_Desc
@@ -4470,13 +4930,25 @@ MonoBehaviour:
         list:
         - key: 23
           value: "\uB374\uC6B0\uB4DC \uBAA9\uC218\uB4E4\uC774 \uC990\uACA8 \uC785\uB294
-            \uD29C\uB2C9."
+            \uD29C\uB2C9. \uC785\uC73C\uBA74 \uB3C4\uB07C\uB97C \uC798 \uC774\uC6A9\uD560
+            \uAC83 \uAC19\uC740 \uB290\uB08C\uC774 \uB4E0\uB2E4."
           duplicatedKey: 0
         - key: 10
           value: CarpenterTunic
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_10011_Desc
+    - key: item_10004_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC0C1\uC778\uB4E4\uC774 \uC990\uACA8 \uC785\uC740 \uD29C\uB2C9.
+            \uD654\uB824\uD558\uC9C4 \uC54A\uC9C0\uB9CC \uAE30\uD488\uC774 \uB290\uAEF4\uC9C4\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: MerchantTunic
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_10021_Desc
       value:
         list:
         - key: 23
@@ -4485,10 +4957,22 @@ MonoBehaviour:
             \uBCF5\uC7A5."
           duplicatedKey: 0
         - key: 10
-          value: Leather Vest
+          value: LeatherVest
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_10021_Desc
+    - key: item_10022_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uB4E4\uC5D0\uAC8C \uC720\uD589\uCC98\uB7FC \uC0AC\uC6A9\uB418\uB294
+            \uAC00\uC8FD\uAC11\uC637. \uC678\uD615\uC5D0 \uBE44\uD574 \uC131\uB2A5\uC774
+            \uC88B\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: BanditLeatherArmor
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_10041_Desc
       value:
         list:
         - key: 23
@@ -4500,7 +4984,7 @@ MonoBehaviour:
           value: Gambeson
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_10022_Desc
+    - key: item_10042_Desc
       value:
         list:
         - key: 23
@@ -4514,7 +4998,20 @@ MonoBehaviour:
             protection.
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_10031_Desc
+    - key: item_10043_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uB4E4\uC774 \uC0AC\uC6A9\uD558\uB294 \uAC2C\uBE44\uC2A8.
+            \uADF8\uB4E4\uC740 \uC0DD\uC874\uC744 \uC704\uD574 \uAC2C\uBE44\uC2A8
+            \uB0B4\uBD80\uB97C \uD2BC\uD2BC\uD558\uAC8C \uCC44\uC6CC \uB123\uC6E0\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: A gambeson worn by bandits. They heavily padded the inside to ensure
+            their survival.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_10061_Desc
       value:
         list:
         - key: 23
@@ -4523,10 +5020,11 @@ MonoBehaviour:
             \uD558\uB294 \uBAA8\uD5D8\uAC00\uB4E4\uC774 \uC785\uB294 \uAC11\uC637."
           duplicatedKey: 0
         - key: 10
-          value: Chain Mail
+          value: Chainmail armor made of interwoven iron rings, favored by adventurers
+            who find plate armor too burdensome.
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_10051_Desc
+    - key: item_10081_Desc
       value:
         list:
         - key: 23
@@ -4535,7 +5033,22 @@ MonoBehaviour:
             \uC788\uC5B4 \uBC29\uC5B4\uB825\uC774 \uC6B0\uC218\uD55C \uAC11\uC637."
           duplicatedKey: 0
         - key: 10
-          value: Brigandine
+          value: Armor that looks like ordinary clothing on the outside, but is lined
+            with iron plates on the inside for excellent defense.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_10082_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uB4E4\uC774 \uC0AC\uC6A9\uD558\uB294 \uBE0C\uB9AC\uAC04\uB518.
+            \uBAA8\uD5D8\uAC00\uB4E4\uC744 \uC2B5\uACA9\uD558\uC5EC \uC5BB\uC740
+            \uC804\uB9AC\uD488\uB4E4\uC744 \uC774\uC6A9\uD558\uC5EC \uB9CC\uB4E0\uB4EF\uD55C
+            \uC131\uB2A5 \uC88B\uC740 \uAC11\uC637."
+          duplicatedKey: 0
+        - key: 10
+          value: A brigandine worn by bandits. It is a highly effective armor, seemingly
+            crafted from the loot of ambushed adventurers.
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_10101_Desc
@@ -4548,8 +5061,42 @@ MonoBehaviour:
             \uCDE8\uAE09\uBC1B\uB294 \uAD6C\uC2DC\uB300\uC758 \uBCF5\uC7A5."
           duplicatedKey: 0
         - key: 10
-          value: A mana-infused classic. Decent performance, but now just a budget
-            choice for modern mages.
+          value: An outdated attire crafted from mana-imbued materials. While it
+            offers decent performance, modern mages merely consider it a cost-effective
+            option.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_10121_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC804\uC7C1\uC774 \uC7A6\uB358 \uACFC\uAC70\uC5D0 \uC6A9\uBCD1\uB4E4\uC774
+            \uB3C8\uC744 \uB4E4\uC5EC \uCC29\uC6A9\uD55C \uD310\uAE08 \uAC11\uC637.
+            \uC911\uAC11\uC637\uC774\uB77C\uB294 \uBB35\uC9C1\uD568\uACFC \uC5B4\uC6B8\uB9AC\uC9C0
+            \uC54A\uB294 \uC720\uC5F0\uC131\uC744 \uAC00\uC9C0\uACE0 \uC788\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: Plate armor purchased and worn by mercenaries during the war-torn
+            eras of the past. It boasts a surprising flexibility that belies its
+            heavy appearance.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_10122_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB374\uC6B0\uB4DC\uC5D0\uC11C\uB9CC \uCDE8\uAE09\uD558\uB294 \uD310\uAE08\uAC11\uC637.
+            \uB369\uAD74 \uBB38\uC591\uC740 \uB374\uC6B0\uB4DC\uC758 \uC601\uC6C5\uC774\uC600\uB358
+            \uC7AD\uACFC \uBE48\uC2A4\uD1A0\uD06C \uAC00\uBB38\uC758 \uC0C1\uC9D5\uC774\uBA70
+            \uC774 \uAC11\uC637\uC744 \uC18C\uC720\uD558\uB294\uAC74 \uB374\uC6B0\uB4DC\uC640
+            \uBE48\uC2A4\uD1A0\uD06C \uAC00\uBB38\uC758 \uBE44\uD638\uB97C \uBC1B\uB294\uB2E4\uB294
+            \uC758\uBBF8\uC774\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: Plate armor exclusively handled in Denwood. The vine crest is the
+            symbol of the Beanstalk family and Jack, a hero of Denwood. Owning this
+            armor signifies being under the protection of both Denwood and the Beanstalk
+            family.
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_14001_Desc
@@ -4639,10 +5186,60 @@ MonoBehaviour:
             \uD3C9\uBC94\uD55C \uCCA0\uAC80."
           duplicatedKey: 0
         - key: 10
-          value: IronSword
+          value: TrainingSword
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_30002_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uBC14\uC6B0\uC5B8\uBCA0\uC5B4"
+          duplicatedKey: 0
+        - key: 10
+          value: Bauernwehr
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_30003_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: BanditSword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_30021_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uBCF4\uBCD1\uC758 \uAD70\uC6A9\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: FootmanSword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_30022_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uACE1\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: BanditCurvedSword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_30023_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB791\uAC8C\uC2A4\uBA54\uC11C"
+          duplicatedKey: 0
+        - key: 10
+          value: LangesMesser
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_30024_Desc
       value:
         list:
         - key: 23
@@ -4655,7 +5252,7 @@ MonoBehaviour:
           value: Broadsword
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_30003_Desc
+    - key: item_30041_Desc
       value:
         list:
         - key: 23
@@ -4666,19 +5263,60 @@ MonoBehaviour:
           value: Falchion
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: item_30042_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uD1B1\uB0A0\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: SawbladeSword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_30043_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uD658\uB3C4"
+          duplicatedKey: 0
+        - key: 10
+          value: Hwando
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_30044_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB291\uB300\uC0B4\uD574\uC790"
+          duplicatedKey: 0
+        - key: 10
+          value: WolfKiller
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: item_32001_Desc
       value:
         list:
         - key: 23
-          value: "\uACFC\uAC70\uC5D0 \uC804\uC7C1\uC5D0\uC11C \uB9CE\uC774 \uC0AC\uC6A9\uB418\uC5C8\uC9C0\uB9CC
-            \uD22C\uBC15\uD55C \uB2E8\uC810\uC774 \uC788\uC5B4 \uC9C0\uAE08\uC740
-            \uD6C8\uB828\uC6A9\uC73C\uB85C \uB110\uB9AC \uBCF4\uAE09\uB41C \uC7A5\uAC80."
+          value: "\uC804\uC7C1\uC774 \uB9CE\uB358 \uACFC\uAC70\uC5D0 \uB9CE\uC774
+            \uC0AC\uC6A9\uB418\uC5C8\uC9C0\uB9CC \uD22C\uBC15\uD55C \uB2E8\uC810\uC774
+            \uC788\uC5B4 \uC9C0\uAE08\uC740 \uD6C8\uB828\uC6A9\uC73C\uB85C \uB110\uB9AC
+            \uBCF4\uAE09\uB41C \uC7A5\uAC80."
           duplicatedKey: 0
         - key: 10
-          value: Outdated Longsword
+          value: OutdatedLongsword
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_32002_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uC7A5\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: BanditLongsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_32003_Desc
       value:
         list:
         - key: 23
@@ -4687,10 +5325,20 @@ MonoBehaviour:
             \uAD70\uC6A9 \uC7A5\uAC80."
           duplicatedKey: 0
         - key: 10
-          value: Footman Longsword
+          value: FootmanLongsword
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_32003_Desc
+    - key: item_32004_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC77C\uC758 \uC7A5\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: DoyleLongsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_32021_Desc
       value:
         list:
         - key: 23
@@ -4701,6 +5349,96 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Claymore
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_32022_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uD50C\uB791\uBCA0\uB974\uC8FC"
+          duplicatedKey: 0
+        - key: 10
+          value: Flamberge
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_32023_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uD06C\uB9AC\uADF8\uBA54\uC11C"
+          duplicatedKey: 0
+        - key: 10
+          value: Kriegsmesser
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_32024_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uC591\uC190\uACE1\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: BanditCurvedLongsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_32025_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC5D8\uD504\uC758 \uC7A5\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: ElvenLongsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_32041_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC30D\uC218\uB3C4"
+          duplicatedKey: 0
+        - key: 10
+          value: Ssangsudo
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_32042_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uCE20\uBC14\uC774\uD578\uB354"
+          duplicatedKey: 0
+        - key: 10
+          value: Zweihander
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_32043_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB9C8\uB825\uC774 \uAE43\uB4E0 \uC7A5\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: ManaImbuedLongsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_33001_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC624\uD06C\uC758 \uB300\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: OrcGreatsword
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_33002_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB300\uACE1\uAC80"
+          duplicatedKey: 0
+        - key: 10
+          value: CurvedGreatsword
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_34001_Desc
@@ -4725,13 +5463,63 @@ MonoBehaviour:
           value: BeardAxe
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: item_34003_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: BanditAxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_34021_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uBCF4\uBCD1\uC758 \uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: FootmanAxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_34022_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uCD08\uC2B9\uB2EC\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: CrescentAxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_34041_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC591\uB0A0 \uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: DoubleHeadedAxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_34042_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC740\uBE5B \uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: SilveryAxe
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: item_36001_Desc
       value:
         list:
         - key: 23
           value: "\uBAA9\uC218\uB098 \uBC8C\uBAA9\uAFBC\uB4E4\uC774 \uB098\uBB34\uB97C
             \uBCA8 \uB54C \uD3B8\uB9AC\uD558\uC5EC \uC990\uACA8 \uC0AC\uC6A9\uD558\uB294
-            \uAE34 \uB3C4\uB07C."
+            \uC591\uC190 \uB3C4\uB07C.        "
           duplicatedKey: 0
         - key: 10
           value: LoggingAxe
@@ -4741,15 +5529,26 @@ MonoBehaviour:
       value:
         list:
         - key: 23
-          value: "\uC0AC\uB0E5\uAFBC\uB4E4\uC774 \uC7A5\uBCD1\uAE30 \uB300\uC2E0
-            \uB300\uD615 \uC9D0\uC2B9\uB4E4\uC744 \uC0AC\uB0E5\uD558\uAE30 \uC704\uD574
-            \uB9CC\uB4E0 \uAE34 \uB3C4\uB07C."
+          value: "\uBBFC\uBCD1\uB300\uC5D0\uC11C \uC0AC\uC6A9\uD558\uB294 \uC591\uC190
+            \uB3C4\uB07C\uB85C \uC591\uC190\uC73C\uB85C \uB2E4\uB8E8\uB294 \uB3C4\uB07C\uC5D0
+            \uBE44\uD574 \uB2E4\uB8E8\uAE30 \uC27D\uB3C4\uB85D \uC81C\uC791\uB41C
+            \uBB34\uAE30."
           duplicatedKey: 0
         - key: 10
-          value: MilitiaLongAxe
+          value: MilitiaLongaxe
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_36003_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uC591\uC190\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: BanditLongaxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_36021_Desc
       value:
         list:
         - key: 23
@@ -4758,7 +5557,47 @@ MonoBehaviour:
             \uC704\uB825\uC801\uC778 \uAE34 \uB3C4\uB07C"
           duplicatedKey: 0
         - key: 10
-          value: FootMan LongAxe
+          value: FootManLongaxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_36022_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB374\uC6B0\uB4DC \uC591\uC190\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: DenwoodLongaxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_37001_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uC624\uD06C\uC758 \uB300\uD615\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: OrcGreataxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_37002_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uC801\uC758 \uB300\uD615\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: BanditGreataxe
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_37003_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB300\uD615 \uC804\uD22C\uB3C4\uB07C"
+          duplicatedKey: 0
+        - key: 10
+          value: GreatBattleAxe
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_38001_Desc
@@ -4773,19 +5612,19 @@ MonoBehaviour:
           value: WoodenClub
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_38002_Desc
+    - key: item_38021_Desc
       value:
         list:
         - key: 23
           value: "\uC77C\uBC18 \uACE4\uBD09\uC5D0 \uBABB \uB610\uB294 \uCCA0\uB85C
             \uB41C \uAC00\uC2DC\uB97C \uBC15\uC544 \uB9CC\uB4E0 \uACE4\uBD09. \uAC00\uC2DC\uB85C
-            \uC778\uD55C \uCD9C\uD608 \uD6A8\uACFC\uAC00 \uC788\uB2E4."
+            \uC778\uD55C \uCD9C\uD608 \uD6A8\uACFC\uAC00 \uC788\uB2E4. "
           duplicatedKey: 0
         - key: 10
           value: SpikedClub
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_38003_Desc
+    - key: item_38022_Desc
       value:
         list:
         - key: 23
@@ -4793,6 +5632,26 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: IronClub
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_38023_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uBA54\uC774\uC2A4"
+          duplicatedKey: 0
+        - key: 10
+          value: Mace
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_38024_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uBAA8\uB2DD\uC2A4\uD0C0"
+          duplicatedKey: 0
+        - key: 10
+          value: Morningstar
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_40001_Desc
@@ -4811,11 +5670,21 @@ MonoBehaviour:
         list:
         - key: 23
           value: "\uAE38\uACE0 \uD070 \uACE4\uBD09\uC5D0 \uCCA0 \uC7A5\uC2DD\uC774
-            \uB418\uC5B4 \uC788\uB294 \uB300\uD615 \uACE4\uBD09. \uC0B0\uC801\uB4E4\uC774
-            \uC990\uACA8 \uC0AC\uC6A9\uD588\uB2E4."
+            \uB418\uC5B4 \uC788\uB294 \uB300\uD615 \uACE4\uBD09\uC73C\uB85C \uB3C4\uC801\uB4E4\uC774
+            \uC990\uACA8 \uC0AC\uC6A9\uD558\uB294 \uBB34\uAE30."
           duplicatedKey: 0
         - key: 10
           value: LargeClub
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_40021_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uB300\uD615\uBA54\uC774\uC2A4"
+          duplicatedKey: 0
+        - key: 10
+          value: LargeMace
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_42001_Desc
@@ -4828,7 +5697,7 @@ MonoBehaviour:
             \uC9C0\uD321\uC774"
           duplicatedKey: 0
         - key: 10
-          value: Staff
+          value: TrainingStaff
           duplicatedKey: 0
       duplicatedKey: 0
     - key: item_46001_Desc
@@ -4843,7 +5712,7 @@ MonoBehaviour:
           value: ShortSpear
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_46002_Desc
+    - key: item_46021_Desc
       value:
         list:
         - key: 23
@@ -4853,7 +5722,7 @@ MonoBehaviour:
           value: WingedSpear
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_46003_Desc
+    - key: item_46041_Desc
       value:
         list:
         - key: 23
@@ -4870,6 +5739,36 @@ MonoBehaviour:
       value:
         list:
         - key: 23
+          value: "\uBE4C"
+          duplicatedKey: 0
+        - key: 10
+          value: Bill
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_48002_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uAE00\uB808\uC774\uBE0C"
+          duplicatedKey: 0
+        - key: 10
+          value: Glaive
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_48003_Desc
+      value:
+        list:
+        - key: 23
+          value: "\uBC14\uB514\uC26C"
+          duplicatedKey: 0
+        - key: 10
+          value: Bardiche
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: item_50001_Desc
+      value:
+        list:
+        - key: 23
           value: "\uB204\uAD6C\uB098 \uB2E4\uB8E8\uAE30 \uC27D\uC9C0\uB9CC \uB0B4\uAD6C\uC131\uACFC
             \uC704\uB825\uC774 \uB0AE\uC544 \uC5F0\uC2B5\uC6A9\uC73C\uB85C \uC801\uD569\uD55C
             \uC6D0\uAC70\uB9AC \uBB34\uAE30."
@@ -4879,7 +5778,7 @@ MonoBehaviour:
             power make it suitable for practice.
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_48002_Desc
+    - key: item_50002_Desc
       value:
         list:
         - key: 23
@@ -4892,7 +5791,7 @@ MonoBehaviour:
             versatility.
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_48003_Desc
+    - key: item_50003_Desc
       value:
         list:
         - key: 23
@@ -4905,7 +5804,7 @@ MonoBehaviour:
             but offering superior accuracy and range.
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_48004_Desc
+    - key: item_50004_Desc
       value:
         list:
         - key: 23
@@ -4918,7 +5817,7 @@ MonoBehaviour:
             and ease of use.
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_48005_Desc
+    - key: item_50005_Desc
       value:
         list:
         - key: 23
@@ -4931,7 +5830,7 @@ MonoBehaviour:
             than a standard longbow.
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_48006_Desc
+    - key: item_50006_Desc
       value:
         list:
         - key: 23
@@ -4945,7 +5844,7 @@ MonoBehaviour:
             A composite bow crafted from horn and wood.
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_48007_Desc
+    - key: item_50007_Desc
       value:
         list:
         - key: 23
@@ -4959,7 +5858,7 @@ MonoBehaviour:
             power at long ranges for skilled archers.
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: item_52001_Desc
+    - key: item_54001_Desc
       value:
         list:
         - key: 23

@@ -32,7 +32,7 @@ public class EqTable  : GameData
 				case "Name": return true;
 				case "Type": return true;
 				case "Grade": return true;
-				case "Weight": return true;
+				case "App": return true;
 				case "Price": return true;
 				case "AttKey": return true;
 				case "AttVal": return true;
@@ -69,7 +69,7 @@ public class EqTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Grade": return data.Grade;
-				case "Weight": return data.Weight;
+				case "App": return data.App;
 				case "Price": return data.Price;
 				case "AttKey": return data.AttKey;
 				case "AttVal": return data.AttVal;
@@ -97,7 +97,7 @@ public class EqTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Grade": return data.Grade;
-				case "Weight": return data.Weight;
+				case "App": return data.App;
 				case "Price": return data.Price;
 				case "AttKey": return data.AttKey;
 				case "AttVal": return data.AttVal;
@@ -126,7 +126,7 @@ public class EqTable  : GameData
 				case 1: return data.Name;
 				case 2: return data.Type;
 				case 3: return data.Grade;
-				case 4: return data.Weight;
+				case 4: return data.App;
 				case 5: return data.Price;
 				case 6: return data.AttKey;
 				case 7: return data.AttVal;
@@ -181,7 +181,7 @@ public class EqTableProb : GameDataProb
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly int Grade;
-	[JsonProperty] public readonly int Weight;
+	[JsonProperty] public readonly int App;
 	[JsonProperty] public readonly int Price;
 	[JsonProperty] public readonly string AttKey;
 	[JsonProperty] public readonly string AttVal;
