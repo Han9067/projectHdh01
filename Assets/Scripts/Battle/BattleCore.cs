@@ -505,6 +505,8 @@ public class BattleCore : AutoSingleton<BattleCore>
         {
             case 2:
                 bMon.SetMonHData(objId, mId, gGrid[px, py].x, gGrid[px, py].y);
+                //프리셋 적용
+                // var preset = MonManager.I.GetHumanMonPreset(mId);
                 break;
             default:
                 bMon.SetMonNData(objId, mId, gGrid[px, py].x, gGrid[px, py].y);

@@ -89,30 +89,77 @@ public class MonManager : AutoSingleton<MonManager>
         };
     }
 
-
+    public List<int> GetMonWp(int id)
+    {
+        switch (id)
+        {
+            case 1:
+                return new List<int> { 30003, 56001 };
+            case 2:
+                return new List<int> { 34003, 56001 };
+            case 3:
+                return new List<int> { 38001, 56001 };
+            case 4:
+                return new List<int> { 50002 };
+            case 11:
+                return new List<int> { 30022, 50021 };
+            case 12:
+                return new List<int> { 34022, 50021 };
+            case 13:
+                return new List<int> { 38021, 50021 };
+            case 14:
+                return new List<int> { 50021 };
+            case 21:
+                return new List<int> { 30024, 50021 };
+            case 22:
+                return new List<int> { 34022, 50021 };
+            case 23:
+                return new List<int> { 38023, 50021 };
+            case 24:
+                return new List<int> { 32002 };
+            case 25:
+                return new List<int> { 34021 };
+            case 26:
+                return new List<int> { 40002 };
+            case 31:
+                return new List<int> { 32024 };
+            case 32:
+                return new List<int> { 34024 };
+            case 33:
+                return new List<int> { 40002 };
+            case 41:
+                return new List<int> { 32042 };
+            case 42:
+                return new List<int> { 37002 };
+            case 43:
+                return new List<int> { 40021 };
+            default:
+                return null;
+        }
+    }
     public Dictionary<string, int> GetHumanMonPreset(int mId)
     {
         //60번대->일반 도적, 80번대->도적두목(중보~보스 수준)
         switch (mId)
         {
             case 61:
-                //가죽갑옷에 노헬멧//무기는 H급
-                return new Dictionary<string, int> { { "Armor", 61 }, { "Weapon", 1000 } };
+                //가죽갑옷에 노헬멧//근접 무기는 H급->30003,34003,38001에 방패 56001 //원거리는 50002
+                return new Dictionary<string, int> { { "Armor", 61 }, { "Weapon", Random.Range(1, 5) } };
             case 62:
-                //갬비슨갑옷에 갬비슨헬멧//무기는 G급
-                return new Dictionary<string, int> { { "Armor", 62 }, { "Weapon", 900 } };
+                //갬비슨갑옷에 갬비슨헬멧//무기는 G급//근접 무기는 H급->30022,34022,38021 방패 56002 //원거리는 50021
+                return new Dictionary<string, int> { { "Armor", 62 }, { "Weapon", Random.Range(11, 15) } };
             case 63:
-                //사슬세트//무기는 F급
-                return new Dictionary<string, int> { { "Armor", 63 }, { "Weapon", 800 } };
+                //사슬세트//무기는 F급 ->여기는 근접만 있음 근접 무기 H~F급 -> 30024,34022,38023 방패 56021
+                return new Dictionary<string, int> { { "Armor", 63 }, { "Weapon", Random.Range(21, 27) } };
             case 81:
-                //사슬세트//무기는 F 하급
-                return new Dictionary<string, int> { { "Armor", 81 }, { "Weapon", 800 } };
+                //사슬세트//무기는 양손 G급->32002,34021,40002
+                return new Dictionary<string, int> { { "Armor", 81 }, { "Weapon", Random.Range(25, 27) } };
             case 82:
-                //브리간딘세트// 무기는 F 상급
-                return new Dictionary<string, int> { { "Armor", 82 }, { "Weapon", 700 } };
+                //브리간딘세트// 무기는 양손 F급 -> 32024,34024,40002
+                return new Dictionary<string, int> { { "Armor", 82 }, { "Weapon", Random.Range(31, 34) } };
             case 83:
-                //판금갑옷세트// 무기는 E 하급
-                return new Dictionary<string, int> { { "Armor", 83 }, { "Weapon", 600 } };
+                //판금갑옷세트// 무기는 E 32042, 37002, 40021
+                return new Dictionary<string, int> { { "Armor", 83 }, { "Weapon", Random.Range(41, 44) } };
             default:
                 return new Dictionary<string, int>();
         }
