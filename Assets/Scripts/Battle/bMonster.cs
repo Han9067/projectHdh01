@@ -28,8 +28,8 @@ public class bMonster : MonoBehaviour
     // private static readonly int OutlineColorID = Shader.PropertyToID("_OutlineColor"); //OutlineColorID
     // private static readonly int OutlineSizeID = Shader.PropertyToID("_OutlineSize"); //OutlineSizeID
     private float curHitAmount; //현재 Hit Amount
-    [Header("Human Preset")]
-    private int idx = 0;
+    // [Header("Human Preset")]
+    // private int idx = 0;
     // public Dictionary<string, int> preset;
 
     void Awake()

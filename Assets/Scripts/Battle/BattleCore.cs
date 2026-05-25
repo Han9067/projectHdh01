@@ -505,8 +505,6 @@ public class BattleCore : AutoSingleton<BattleCore>
         {
             case 2:
                 bMon.SetMonHData(objId, mId, gGrid[px, py].x, gGrid[px, py].y);
-                //프리셋 적용
-                // var preset = MonManager.I.GetHumanMonPreset(mId);
                 break;
             default:
                 bMon.SetMonNData(objId, mId, gGrid[px, py].x, gGrid[px, py].y);
@@ -1515,7 +1513,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 SetFixedEff(GetSkHitKey(attId), tgPos, 0f, () => { TurnAction(); });
                 StartCoroutine(UseObjTurn(0.4f));
                 break; //마법 발사체(피격 효과)
-            case 52001:
+            case 54001:
                 ApplyOneHit(tgId, tgPos, att, tgDef, crtRate, myPos, myFaction);
                 StartCoroutine(UseObjTurn(0.4f));
                 break; //물리 발사체
@@ -1657,12 +1655,12 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         switch (id)
         {
-            case 52001:
-                return "wp52001";
+            case 54001:
+                return "wp54001";
             case 2201:
                 return "IceThorn";
             default:
-                return "wp52001";
+                return "wp54001";
         }
     }
     IEnumerator UseObjTurn(float ct)
