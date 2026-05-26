@@ -3,9 +3,10 @@ using UnityEngine;
 using GB;
 using DG.Tweening;
 using UnityEngine.Rendering;
+using System.Collections.Generic;
 public class bMonster : MonoBehaviour
 {
-    public int objId, monsterId;
+    public int objId, monId;
     private int angIdx = 0;
     public string mName;
     public MonData monData;
@@ -22,13 +23,11 @@ public class bMonster : MonoBehaviour
     // private Color redColor = new Color(1, 0.5f, 0.5f, 1);
     private MaterialPropertyBlock mProp;
     Tween pbt, hft; //pushBackTween, hitFlashTween
-    private static readonly int HitColorID = Shader.PropertyToID("_HitColor"); //HitColorID
-    private static readonly int HitAmountID = Shader.PropertyToID("_HitAmount"); //HitAmountID
-    // private static readonly int OutlineID = Shader.PropertyToID("_Outline"); //OutlineID
-    // private static readonly int OutlineColorID = Shader.PropertyToID("_OutlineColor"); //OutlineColorID
-    // private static readonly int OutlineSizeID = Shader.PropertyToID("_OutlineSize"); //OutlineSizeID
     private float curHitAmount; //현재 Hit Amount
-    // [Header("Human Preset")]
+    [Header("Human Preset")]
+    private bool isHuman = false;
+    private Dictionary<string, int> presetList = new Dictionary<string, int>();
+    [SerializeField] private SpriteRenderer faceSpr, handSpr, wp1Spr, wp2Spr;
     // private int idx = 0;
     // public Dictionary<string, int> preset;
 
@@ -38,18 +37,10 @@ public class bMonster : MonoBehaviour
     }
     void Start()
     {
-        monData = MonManager.I.MonDataList[monsterId].Clone();
+        monData = MonManager.I.MonDataList[monId].Clone();
         w = monData.W;
         h = monData.H;
-        var mainSpr = mainObj.GetComponent<SpriteRenderer>();
-        mainSpr.sprite = ResManager.GetSprite("mon_" + monsterId);
-        shdObj.transform.localScale = new Vector3(monData.SdwScr, monData.SdwScr, 1);
-        mainObj.transform.localPosition = new Vector3(0, 0.4f, 0);
-        shdObj.transform.localPosition = new Vector3((w - 1) * 0.6f, -0.35f, 0);
-        ggParent.SetActive(false);
-        ggParent.transform.localPosition = new Vector3(0, monData.GgY, 0);
-        bodyObj.transform.localPosition = new Vector3((w - 1) * 0.6f, 0, 0);
-        backupBodyPos = new Vector3((w - 1) * 0.6f, 0, 0); //이동시 점프 후 백업 위치로 이동 시키기 위한 벡터
+        #region 정보 및 능력치 설정
         mName = monData.Name;
         maxHp = monData.HP;
         hp = maxHp;
@@ -64,21 +55,79 @@ public class bMonster : MonoBehaviour
         gainExp = monData.GainExp;
         lv = monData.Lv;
         Rng = monData.Rng;
+        #endregion
+
+        #region 스프라이트 설정
+        string res = $"mon_{monId}";
+        if (isHuman)
+        {
+            List<int> wpList = MonManager.I.GetMonWp(presetList["Weapon"]);
+            wp1Spr.sprite = ResManager.GetSprite($"wp{wpList[0]}");
+            int hand = 1;
+            switch (ItemManager.I.GetItemType(wpList[0]))
+            {
+                case 12:
+                case 14:
+                case 16:
+                    //양손무기
+                    hand = 3;
+                    wp1Spr.transform.localPosition = new Vector3(0.38f, 1.045f, 0);
+                    wp1Spr.transform.rotation = Quaternion.Euler(0, 0, -25f);
+                    break;
+                case 19:
+                case 20:
+                    //창
+                    hand = 2;
+                    wp1Spr.transform.localPosition = new Vector3(-0.395f, -0.062f, 0);
+                    wp1Spr.transform.rotation = Quaternion.Euler(0, 0, 83f);
+                    break;
+                case 21:
+                    //활
+                    wp1Spr.transform.localPosition = new Vector3(-0.685f, 0.26f, 0);
+                    break;
+                default:
+                    //한손무기
+                    mProp = new MaterialPropertyBlock();
+                    wp2Spr.gameObject.SetActive(true);
+                    wp2Spr.sprite = ResManager.GetSprite($"wp{wpList[1]}");
+                    //추후 2번째 무기가 방패인데 한손 무기인지 체크해줘야함
+                    break;
+            }
+            //mon_63_1
+            mainSpr.sprite = ResManager.GetSprite($"{res}_body");
+            handSpr.sprite = ResManager.GetSprite($"{res}_{hand}");
+            faceSpr.sprite = ResManager.GetSprite($"{res}_face");
+        }
+        else
+        {
+            mainSpr.sprite = ResManager.GetSprite(res);
+            shdObj.transform.localScale = new Vector3(monData.SdwScr, monData.SdwScr, 1);
+            mainObj.transform.localPosition = new Vector3(0, 0.4f, 0);
+            shdObj.transform.localPosition = new Vector3((w - 1) * 0.6f, -0.35f, 0);
+        }
+        ggParent.SetActive(false);
+        ggParent.transform.localPosition = new Vector3(0, monData.GgY, 0);
+        bodyObj.transform.localPosition = new Vector3((w - 1) * 0.6f, 0, 0);
+        backupBodyPos = new Vector3((w - 1) * 0.6f, 0, 0); //이동시 점프 후 백업 위치로 이동 시키기 위한 벡터
+
         dmgPosY = mainSpr.bounds.size.y * 0.5f;
+        #endregion
     }
-    public void SetMonNData(int objId, int monId, float px, float py)
+    public void SetMonNData(int oid, int mId, float px, float py)
     {
-        this.objId = objId;
-        this.monsterId = monId;
+        objId = oid;
+        monId = mId;
         transform.position = new Vector3(px, py, 0);
         //w에 따라 내부 자식 리소스 x좌표 변경
     }
-    public void SetMonHData(int objId, int monId, float px, float py)
+    public void SetMonHData(int oid, int mId, float px, float py)
     {
-        this.objId = objId;
-        this.monsterId = monId;
+        isHuman = true;
+        objId = oid;
+        monId = mId;
         transform.position = new Vector3(px, py, 0);
         //w에 따라 내부 자식 리소스 x좌표 변경
+        presetList = MonManager.I.GetHumanMonPreset(monId);
     }
     public float GetObjDir()
     {
@@ -172,17 +221,21 @@ public class bMonster : MonoBehaviour
         curHitAmount = 1f;
 
         // 초기 상태: 흰색 플래시
-        mainSpr.GetPropertyBlock(mProp);
-        mProp.SetColor(HitColorID, Color.red);
-        mProp.SetFloat(HitAmountID, 1f);
-        mainSpr.SetPropertyBlock(mProp);
-
+        ObjShd.ApplyShd(mainSpr, mProp, Color.white);
+        if (isHuman)
+        {
+            ApplyHumanShd(Color.white);
+        }
         hft = DOTween.To(
             () => curHitAmount,
             x =>
             {
-                curHitAmount = x; mainSpr.GetPropertyBlock(mProp);
-                mProp.SetFloat(HitAmountID, x); mainSpr.SetPropertyBlock(mProp);
+                curHitAmount = x;
+                ObjShd.ApplyShd(mainSpr, mProp, Color.white, x);
+                if (isHuman)
+                {
+                    ApplyHumanShd(Color.white, x);
+                }
             }, 0f, 0.3f
         ).SetEase(Ease.OutQuad).SetAutoKill(true).OnKill(() => hft = null);
     }
@@ -200,16 +253,16 @@ public class bMonster : MonoBehaviour
     public void StateOutline(bool on)
     {
         isOutline = on;
-        mainSpr.GetPropertyBlock(mProp);
-        mProp.SetColor(HitColorID, Color.red);
-        mProp.SetFloat(HitAmountID, on ? 0.5f : 0);
-        mainSpr.SetPropertyBlock(mProp);
-        // isOutline = on;
-        // mainSpr.GetPropertyBlock(mProp);
-        // mProp.SetFloat(OutlineID, on ? 1f : 0);
-        // mProp.SetColor(OutlineColorID, Color.red);
-        // mProp.SetFloat(OutlineSizeID, 10);
-        // mainSpr.SetPropertyBlock(mProp);
-        // mainSpr.color = on ? redColor : Color.white;
+        ObjShd.ApplyShd(mainSpr, mProp, Color.red, on ? 0.5f : 0f);
+        if (!isHuman) return;
+        ApplyHumanShd(Color.red, on ? 0.5f : 0f);
+    }
+    private void ApplyHumanShd(Color color, float amount = 1f)
+    {
+        ObjShd.ApplyShd(faceSpr, mProp, color, amount);
+        ObjShd.ApplyShd(handSpr, mProp, color, amount);
+        ObjShd.ApplyShd(wp1Spr, mProp, color, amount);
+        if (wp2Spr.gameObject.activeSelf)
+            ObjShd.ApplyShd(wp2Spr, mProp, color, amount);
     }
 }

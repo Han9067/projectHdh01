@@ -274,7 +274,7 @@ public class GsManager : AutoSingleton<GsManager>
             mGameObj[addKey + "EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
             mGameObj[addKey + "EqBody"].SetActive(true);
             mGameObj[addKey + "EqHand2"].SetActive(true);
-            if (eq["Armor"].ItemId < 10501) //상점 npc 복장엔 손1번이 없다.
+            if (eq["Armor"].ItemId < 11801) //상점 npc 복장엔 손1번이 없다.
             {
                 mGameObj[addKey + "EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
                 mGameObj[addKey + "EqHand1A"].SetActive(true);
@@ -296,7 +296,7 @@ public class GsManager : AutoSingleton<GsManager>
             mGameObj["EqBody"].SetActive(true);
             if (backUpKey != eqStr + "_body")
             {
-                if (eq["Armor"].ItemId > 10500)
+                if (eq["Armor"].ItemId > 11800)
                 {
                     mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
                     mGameObj["EqHand2"].SetActive(true);
@@ -316,6 +316,12 @@ public class GsManager : AutoSingleton<GsManager>
         List<string> parts = GetHandParts(eq);
         foreach (var v in parts)
             mGameObj[v].SetActive(true);
+        if (eq["Armor"] != null && eq["Armor"].App == 1)
+        {
+            string[] baseBodys = new string[] { "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth", "BaseBody" };
+            foreach (string v in baseBodys)
+                mGameObj[v].SetActive(false);
+        }
         if (eq["Hand1"] != null)
         {
             switch (eq["Hand1"].Hand)
@@ -469,6 +475,12 @@ public class GsManager : AutoSingleton<GsManager>
             ptSpr[PtType.EqBody].sprite = ResManager.GetSprite(data.EqSlot["Armor"].ItemId.ToString() + "_body");
             ptSpr[PtType.EqHand1A].sprite = ResManager.GetSprite(data.EqSlot["Armor"].ItemId.ToString() + "_hand1A");
             ptSpr[PtType.EqHand2].sprite = ResManager.GetSprite(data.EqSlot["Armor"].ItemId.ToString() + "_hand2");
+            if (data.EqSlot["Armor"].App == 1)
+            {
+                ptSpr[PtType.BaseBody].gameObject.SetActive(false);
+                ptSpr[PtType.BaseHand1A].gameObject.SetActive(false);
+                ptSpr[PtType.BaseHand2].gameObject.SetActive(false);
+            }
         }
     }
     public void SetObjAllEqParts(int uid, Dictionary<PtType, SpriteRenderer> ptSpr)
@@ -480,7 +492,7 @@ public class GsManager : AutoSingleton<GsManager>
         };
 
         foreach (PtType b in bodyParts) ptSpr[b].gameObject.SetActive(false);
-
+        ptSpr[PtType.BaseBody].gameObject.SetActive(true);
         var slot = uid == 0 ? PlayerManager.I.pData.EqSlot : NpcManager.I.NpcDataList[uid].EqSlot;
         int wpState = -1; //0: 맨손. 1 : 손1에 한손 착용. 2 : 손2에 한손 착용. 3 : 손1,2 각각 한손 착용. 4 : 양손검,도끼,둔기. 5 : 창, 지팡이
         //손1 체크
@@ -557,6 +569,12 @@ public class GsManager : AutoSingleton<GsManager>
             ptSpr[PtType.EqHand2].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_hand2");
             ptSpr[PtType.EqBoth].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_both");
             ptSpr[PtType.EqBody].gameObject.SetActive(true);
+            if (slot["Armor"].App == 1)
+            {
+                PtType[] baseBodys = new PtType[] { PtType.BaseBody, PtType.BaseHand1A, PtType.BaseHand2 };
+                foreach (PtType v in baseBodys)
+                    ptSpr[v].gameObject.SetActive(false);
+            }
         }
     }
     #endregion

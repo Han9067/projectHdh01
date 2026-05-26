@@ -16,9 +16,7 @@ public class bPlayer : MonoBehaviour
     Tween pbt, hft; //pushBackTween, hitFlashTween
     [SerializeField] private SortingGroup sGrp;
     public BoxCollider2D bColl;
-    #region ==== Hit Effect ====
-    private static readonly int HitColorID = Shader.PropertyToID("_HitColor"); //HitColorID
-    private static readonly int HitAmountID = Shader.PropertyToID("_HitAmount"); //HitAmountID
+    #region ==== Shd Effect ====
     private MaterialPropertyBlock pProp; //MaterialPropertyBlock
     private float curHitAmount; //현재 Hit Amount
     #endregion
@@ -119,10 +117,8 @@ public class bPlayer : MonoBehaviour
         // 초기 상태: 흰색 플래시
         foreach (var spr in ptSpr)
         {
-            spr.Value.GetPropertyBlock(pProp);
-            pProp.SetColor(HitColorID, Color.red);
-            pProp.SetFloat(HitAmountID, 1f);
-            spr.Value.SetPropertyBlock(pProp);
+            if (spr.Value.gameObject.activeSelf)
+                ObjShd.ApplyShd(spr.Value, pProp, Color.white);
         }
 
         hft = DOTween.To(
@@ -132,9 +128,8 @@ public class bPlayer : MonoBehaviour
                 curHitAmount = x;
                 foreach (var spr in ptSpr)
                 {
-                    spr.Value.GetPropertyBlock(pProp);
-                    pProp.SetFloat(HitAmountID, x);
-                    spr.Value.SetPropertyBlock(pProp);
+                    if (spr.Value.gameObject.activeSelf)
+                        ObjShd.ApplyShd(spr.Value, pProp, Color.white, x);
                 }
             },
             0f, 0.3f
@@ -144,11 +139,8 @@ public class bPlayer : MonoBehaviour
     {
         foreach (var spr in ptSpr)
         {
-            spr.Value.GetPropertyBlock(pProp);
-            pProp.SetColor(HitColorID, Color.red);
-            // pProp.SetFloat(HitAmountID, on ? 0.5f : 0);
-            pProp.SetFloat(HitAmountID, 0.5f);
-            spr.Value.SetPropertyBlock(pProp);
+            if (spr.Value.gameObject.activeSelf)
+                ObjShd.ApplyShd(spr.Value, pProp, Color.red, 0.5f);
         }
     }
 

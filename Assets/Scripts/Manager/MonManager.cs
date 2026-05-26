@@ -100,7 +100,7 @@ public class MonManager : AutoSingleton<MonManager>
             case 3:
                 return new List<int> { 38001, 56001 };
             case 4:
-                return new List<int> { 50002 };
+                return new List<int> { 50002, 54001 };
             case 11:
                 return new List<int> { 30022, 50021 };
             case 12:
@@ -108,7 +108,7 @@ public class MonManager : AutoSingleton<MonManager>
             case 13:
                 return new List<int> { 38021, 50021 };
             case 14:
-                return new List<int> { 50021 };
+                return new List<int> { 50021, 54001 };
             case 21:
                 return new List<int> { 30024, 50021 };
             case 22:
@@ -143,8 +143,9 @@ public class MonManager : AutoSingleton<MonManager>
         switch (mId)
         {
             case 61:
+                //Random.Range(1, 5)
                 //가죽갑옷에 노헬멧//근접 무기는 H급->30003,34003,38001에 방패 56001 //원거리는 50002
-                return new Dictionary<string, int> { { "Armor", 61 }, { "Weapon", Random.Range(1, 5) } };
+                return new Dictionary<string, int> { { "Armor", 61 }, { "Weapon", 1 } };
             case 62:
                 //갬비슨갑옷에 갬비슨헬멧//무기는 G급//근접 무기는 H급->30022,34022,38021 방패 56002 //원거리는 50021
                 return new Dictionary<string, int> { { "Armor", 62 }, { "Weapon", Random.Range(11, 15) } };

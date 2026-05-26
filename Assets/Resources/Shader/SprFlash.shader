@@ -7,8 +7,8 @@ Shader "Custom/SprFlash"
         [MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
         
         // --- 피격 효과 속성 ---
-        _HitColor ("Hit Color", Color) = (1,1,1,1)     // 기본 흰색
-        _HitAmount ("Hit Amount", Range(0, 1)) = 0     // 0:평소, 1:피격
+        _ShdColor ("Color", Color) = (1,1,1,1)     // 기본 흰색
+        _ShdAmount ("Amount", Range(0, 1)) = 0     // 0:평소, 1:아웃라인
     }
 
     SubShader
@@ -48,10 +48,10 @@ Shader "Custom/SprFlash"
                 fixed4 color    : COLOR;
                 float2 texcoord : TEXCOORD0;
             };
-            
+                
             fixed4 _Color;
-            fixed4 _HitColor;
-            float _HitAmount;
+            fixed4 _ShdColor;
+            float _ShdAmount;
 
             v2f vert(appdata_t IN)
             {
@@ -73,8 +73,8 @@ Shader "Custom/SprFlash"
                 fixed4 c = tex2D(_MainTex, IN.texcoord) * IN.color;
                 
                 // 2. 피격 효과 (Lerp)
-                // 원래 색(c.rgb)과 피격 색(_HitColor.rgb)을 _HitAmount 비율로 섞음
-                c.rgb = lerp(c.rgb, _HitColor.rgb, _HitAmount);
+                // 원래 색(c.rgb)과 피격 색(_ShdColor.rgb)을 _ShdAmount 비율로 섞음
+                c.rgb = lerp(c.rgb, _ShdColor.rgb, _ShdAmount);
                 
                 // 3. 투명도 적용
                 c.rgb *= c.a;

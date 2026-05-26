@@ -26,6 +26,7 @@ public class ItemManager : AutoSingleton<ItemManager>
         foreach (var eq in EqTable.Datas)
         {
             ItemDataList[eq.ItemID] = CreateItemData(eq.ItemID, eq.Name, eq.Type, eq.Price, eq.AttKey, eq.AttVal, 1, eq.W, eq.H, eq.Res, eq.Dur);
+            ItemDataList[eq.ItemID].App = eq.App;
         }
     }
     private void LoadWpData()
@@ -70,6 +71,10 @@ public class ItemManager : AutoSingleton<ItemManager>
         item.Y = y;
         item.Uid = GetUid();
         PlayerManager.I.pData.Inven.Add(item);
+    }
+    public int GetItemType(int itemId)
+    {
+        return ItemDataList[itemId].Type;
     }
     public static int GetGradeIndex(int gradeValue)
     {
@@ -199,6 +204,16 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         return val / 10;
     }
+    public int GetItemPrice(int price, int curDur, int maxDur)
+    {
+        float per = (float)curDur / maxDur;
+        return (int)(price * per);
+    }
+    public int GetUid()
+    {
+        return 10000000 + Random.Range(0, 89999999);
+    }
+    //테스트
     public void TestDropItem()
     {
         RewardItemIdList.Clear();
@@ -214,14 +229,5 @@ public class ItemManager : AutoSingleton<ItemManager>
 
         UIManager.ShowPopup("InvenPop");
         Presenter.Send("InvenPop", "OpenRwdPop");
-    }
-    public int GetItemPrice(int price, int curDur, int maxDur)
-    {
-        float per = (float)curDur / maxDur;
-        return (int)(price * per);
-    }
-    public int GetUid()
-    {
-        return 10000000 + Random.Range(0, 89999999);
     }
 }
