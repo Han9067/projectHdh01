@@ -1248,9 +1248,17 @@ public class BattleCore : AutoSingleton<BattleCore>
                 {
                     case BtObjState.IDLE:
                         var monData = mData[mId];
-                        if (GetAttackTarget(ot.tgId, ot.pos, monData.Rng, monData.w, monData.h))
+                        if (GetAttackTarget(ot.tgId, ot.pos, monData.rng, monData.w, monData.h))
                         {
-                            ActObjWithMeleeAtt(mObj[mId], BtObjType.MONSTER, mId, ot.tgId);
+                            switch (monData.atkType)
+                            {
+                                case 0:
+                                    ActObjWithMeleeAtt(mObj[mId], BtObjType.MONSTER, mId, ot.tgId);
+                                    break;
+                                case 1:
+                                    AttObjWithRanged(mObj[mId], BtObjType.MONSTER, mId, ot.tgId, monData.attId);
+                                    break;
+                            }
                         }
                         else
                         {
@@ -1335,7 +1343,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     mon.SetObjLayer(mapH - path[0].y); //몬스터 레이어 업데이트
                 }, () =>
                 {
-                    if (GetAttackTarget(data.tgId, data.pos, mon.Rng, mon.w, mon.h) || gGrid[path[0].x, path[0].y].tId != 0)
+                    if (GetAttackTarget(data.tgId, data.pos, mon.rng, mon.w, mon.h) || gGrid[path[0].x, path[0].y].tId != 0)
                         data.state = BtObjState.IDLE;
                 }));
             }
@@ -1455,7 +1463,8 @@ public class BattleCore : AutoSingleton<BattleCore>
                 mAtt = mData[myId].mAtt;
                 crt = mData[myId].crt;
                 crtRate = mData[myId].crtRate;
-                aniKey = "N_Att1";
+                aniKey = mData[myId].attKey;
+                Debug.Log(aniKey);
                 ePos = GetEdgePos(myId, mData[myId].w, mData[myId].h, ang);
                 break;
             case BtObjType.NPC:

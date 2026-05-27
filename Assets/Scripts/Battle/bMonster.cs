@@ -8,14 +8,14 @@ public class bMonster : MonoBehaviour
 {
     public int objId, monId;
     private int angIdx = 0;
-    public string mName;
+    public string mName, attKey;
     public MonData monData;
     public GameObject shdObj, mainObj, ggParent, ggObj, bodyObj;
     bool isGG = false;
     public float hp, maxHp;
     public float dir = 1, dmgPosY = 1f;
     public int att, mAtt, def, mDef, crt, crtRate, hit, eva, gainExp, lv;
-    public int w, h, Rng;
+    public int w, h, rng, atkType, attId = 0;
     [SerializeField] private SpriteRenderer mainSpr;
     public bool isOutline = false;
     private Vector3 backupPos, backupBodyPos;
@@ -54,7 +54,10 @@ public class bMonster : MonoBehaviour
         eva = monData.Eva;
         gainExp = monData.GainExp;
         lv = monData.Lv;
-        Rng = monData.Rng;
+        rng = GetAttRng(monData.MonType);
+        atkType = GetAttackType(monId);
+        attId = GetAttId(monId);
+        attKey = GetMonAttKey(monId);
         #endregion
 
         #region 스프라이트 설정
@@ -264,5 +267,80 @@ public class bMonster : MonoBehaviour
         ObjShd.ApplyShd(wp1Spr, mProp, color, amount);
         if (wp2Spr.gameObject.activeSelf)
             ObjShd.ApplyShd(wp2Spr, mProp, color, amount);
+    }
+    private int GetAttRng(int mType)
+    {
+        switch (mType)
+        {
+            case 2:
+                int wpId = MonManager.I.GetMonWp(presetList["Weapon"])[0];
+                return ItemManager.I.GetWpRng(wpId);
+            default:
+                return monData.Rng;
+        }
+    }
+    private int GetAttackType(int mId)
+    {
+        switch (mId)
+        {
+            case 43:
+                return 1;
+            case 61:
+            case 62:
+                int wpId = MonManager.I.GetMonWp(presetList["Weapon"])[0];
+                return wpId > 50000 && wpId < 54000 ? 1 : 0;
+            default:
+                return 0;
+        }
+    }
+    private int GetAttId(int mId)
+    {
+        switch (mId)
+        {
+            case 43:
+                return 54001;
+            case 61:
+            case 62:
+                int wpId = MonManager.I.GetMonWp(presetList["Weapon"])[0];
+                return wpId > 50000 && wpId < 54000 ? 54001 : 0;
+            default:
+                return 0;
+        }
+    }
+    public string GetMonAttKey(int id)
+    {
+        switch (id)
+        {
+            case 61:
+            case 62:
+            case 63:
+            case 81:
+            case 82:
+            case 83:
+                int wpType = ItemManager.I.GetItemType(MonManager.I.GetMonWp(presetList["Weapon"])[0]);
+                switch (wpType)
+                {
+                    case 11:
+                    case 12:
+                        return "N_Att2";
+                    case 13:
+                    case 14:
+                        return "N_Att3";
+                    case 15:
+                    case 16:
+                        return "N_Att4";
+                    case 17:
+                    case 18:
+                        return "N_Att1";
+                    case 19:
+                        return "N_Att5";
+                    case 20:
+                        return "Bow";
+                    default:
+                        return "N_Att1";
+                }
+            default:
+                return "N_Att1";
+        }
     }
 }

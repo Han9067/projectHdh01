@@ -334,7 +334,7 @@ public class ItemData
     public int ItemId, Type, Price, W, H, Dur, MaxDur, X, Y, Grade;
     public int Dir, Uid; //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
     public int Hand; // 0: 한손무기, 1: 양손무기, 2: 창, 3: 지팡이, 4: 활
-    public int App = 0;
+    public int App = 0, Rng = 1;
     public Dictionary<int, int> Att;
     public ItemData Clone()
     {
@@ -356,6 +356,7 @@ public class ItemData
             Grade = this.Grade,
             Hand = this.Hand,
             App = this.App,
+            Rng = this.Rng,
         };
     }
 }

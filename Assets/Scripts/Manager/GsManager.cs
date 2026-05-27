@@ -598,20 +598,6 @@ public class GsManager : AutoSingleton<GsManager>
         return null;
     }
     #endregion
-    #region 스탯 관련
-    public int GetWpRng(int wpType)
-    {
-        switch (wpType)
-        {
-            case 19:
-                return 2;
-            case 20:
-                return 5;
-            default:
-                return 1;
-        }
-    }
-    #endregion
     #region 특성 관리
     private AttTable _attTable;
     public AttTable AttTable => _attTable ?? (_attTable = GameDataManager.GetTable<AttTable>());

@@ -204,9 +204,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         int agi = pData.AGI / 4;
         pData.Hit = 60 + agi;
         pData.Eva = 10 + agi;
-        int wpType = pData.EqSlot["Hand1"] != null ? pData.EqSlot["Hand1"].Type : 0;
-        pData.Rng = wpType == 0 ? 1 : GsManager.I.GetWpRng(wpType);
-        //////
+        pData.Rng = pData.EqSlot["Hand1"] != null ? pData.EqSlot["Hand1"].Rng : 1;
+
         string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Necklace", "Ring1", "Ring2" };
         foreach (string e in eq)
         {

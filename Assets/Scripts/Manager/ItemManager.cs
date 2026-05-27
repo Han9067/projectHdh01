@@ -34,7 +34,7 @@ public class ItemManager : AutoSingleton<ItemManager>
         foreach (var wp in WpTable.Datas)
         {
             ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.AttKey, wp.AttVal, 1, wp.W, wp.H, wp.Res, wp.Dur, wp.Hand);
-            // ItemDataList[wp.ItemID].Both = wp.Both;
+            ItemDataList[wp.ItemID].Rng = wp.Rng;
         }
     }
     private void LoadItemData()
@@ -75,6 +75,10 @@ public class ItemManager : AutoSingleton<ItemManager>
     public int GetItemType(int itemId)
     {
         return ItemDataList[itemId].Type;
+    }
+    public int GetWpRng(int wpId)
+    {
+        return ItemDataList[wpId].Rng;
     }
     public static int GetGradeIndex(int gradeValue)
     {
