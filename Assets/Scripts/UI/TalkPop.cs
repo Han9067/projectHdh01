@@ -75,14 +75,14 @@ public class TalkPop : UIScreen
                                 ment = LocalizationManager.GetValue("Talk_QstG1_1");
                                 foreach (var q in PlayerManager.I.pData.QuestList)
                                 {
-                                    if (q.Qid == 101 && q.CityId == WorldCore.intoCity)
+                                    if (q.Qid == 1001 && q.CityId == WorldCore.intoCity)
                                     {
                                         PlayerManager.I.CompleteGuildQst(q.QUid);
                                         break;
                                     }
                                 }
                                 break;
-                            case 101:
+                            case 1001:
                                 switch (talkData.Order)
                                 {
                                     case 1:
@@ -122,7 +122,7 @@ public class TalkPop : UIScreen
                         Close();
                         break;
                     case "QstM_Tuto_1":
-                        PlayerManager.I.NextQuestOrder(101);
+                        PlayerManager.I.NextQuestOrder(1001);
                         Presenter.Send("CityEnterPop", "Tuto_Join");
                         Close();
                         break;
@@ -130,13 +130,13 @@ public class TalkPop : UIScreen
                         NextChat("QstM_Tuto_2_2", "Talk_QstM_Tuto_2_2");
                         break;
                     case "QstM_Tuto_2_2":
-                        PlayerManager.I.NextQuestOrder(101);
+                        PlayerManager.I.NextQuestOrder(1001);
                         WorldCore.I.CreateWorldMarker(new Vector3(-9.65f, -35.2f, 0), 999);
                         UIManager.ClosePopup("CityEnterPop");
                         Close();
                         break;
                     case "QstM_Tuto_5":
-                        PlayerManager.I.ClearMainQst(101);
+                        PlayerManager.I.ClearMainQst(1001);
                         Presenter.Send("WorldMainUI", "SetTraceQst");
                         UIManager.ClosePopup("CityEnterPop");
                         WorldCore.I.CheckAllAreaWorldMon();

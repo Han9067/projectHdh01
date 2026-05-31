@@ -13,15 +13,19 @@ public class GuildQuestPop : UIScreen
     private int curId = 0, cityId = 1, qIdx = 0, npcId = 0;
     private int qstState; //현재 퀘스트 상태 0: 수락 가능, 1: 수락 완료, 2: 퀘스트 완료
     private bool isUpgrade = false; //업그레이드 가능 여부
+    private Image[] mFilterImg = new Image[10];
     private void Awake()
     {
         Regist();
         RegistButton();
+        string[] arr = { "FilterH", "FilterG", "FilterF", "FilterE", "FilterD", "FilterC", "FilterB", "FilterA", "FilterS", "FilterSS" };
+        for (int i = 0; i < 10; i++)
+            mFilterImg[i] = mButtons[arr[i]].GetComponent<Image>();
     }
-
     private void OnEnable()
     {
         Presenter.Bind("GuildQuestPop", this);
+        SelFliterGrade(PlayerManager.I.pData.Grade - 1);
     }
     private void OnDisable()
     {
@@ -109,6 +113,16 @@ public class GuildQuestPop : UIScreen
                 if (!isUpgrade) return;
                 Debug.Log("Upgrade");
                 break;
+            case "FilterH": SelFliterGrade(0); break;
+            case "FilterG": SelFliterGrade(1); break;
+            case "FilterF": SelFliterGrade(2); break;
+            case "FilterE": SelFliterGrade(3); break;
+            case "FilterD": SelFliterGrade(4); break;
+            case "FilterC": SelFliterGrade(5); break;
+            case "FilterB": SelFliterGrade(6); break;
+            case "FilterA": SelFliterGrade(7); break;
+            case "FilterS": SelFliterGrade(8); break;
+            case "FilterSS": SelFliterGrade(9); break;
         }
     }
     public override void ViewQuick(string key, IOData data)
@@ -194,9 +208,9 @@ public class GuildQuestPop : UIScreen
     void UpdateQuestList(int cnt)
     {
         InitQuestList();
-        CreateMyQuest();
-        CreateCityQuest();
-        mTMPText["MyQstVal"].text = (cnt + 1).ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
+        // CreateMyQuest();
+        // CreateCityQuest();
+        // mTMPText["MyQstVal"].text = (cnt + 1).ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
     }
     void CreateMyQuest()
     {
@@ -232,5 +246,16 @@ public class GuildQuestPop : UIScreen
     void NotQuestList()
     {
 
+    }
+    private void SelFliterGrade(int idx)
+    {
+        string[] arr = { "FilterH", "FilterG", "FilterF", "FilterE", "FilterD", "FilterC", "FilterB", "FilterA", "FilterS", "FilterSS" };
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (i == idx)
+                mFilterImg[i].color = Color.yellow;
+            else
+                mFilterImg[i].color = Color.white;
+        }
     }
 }

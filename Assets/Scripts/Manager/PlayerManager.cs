@@ -362,12 +362,12 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     }
     public void StartTutorial()
     {
-        QuestData qData = QuestManager.I.QuestData[101];
+        QuestData qData = QuestManager.I.QuestData[1001];
         pData.QuestList.Add(new QuestInstData(qData.QuestID, 0, qData.Type, qData.Name, qData.IsTrace));
         int n = pData.QuestList.Count - 1;
         pData.QuestList[n].SetQuestBase(LocalizationManager.GetValue("QstM_Tuto_1_Desc"), 1, 1000, 1000, 100);
         pData.QuestList[n].Order = 1;
-        pData.TraceQId = 101;
+        pData.TraceQId = 1001;
 
         Presenter.Send("WorldMainUI", "SetTraceQst");
 

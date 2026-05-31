@@ -183,10 +183,9 @@ public class CityEnterPop : UIScreen
                 mButtons["OnJoin"].gameObject.SetActive(PlayerManager.I.pData.Grade == 0);
                 mButtons["OnQuest"].gameObject.SetActive(PlayerManager.I.pData.Grade > 0);
                 mButtons["OnWork"].gameObject.SetActive(false);
-                if (tGQstList.Any(x => x.Qid == 101)) //튜토리얼
+                if (tGQstList.Any(x => x.Qid == 1001)) //튜토리얼
                 {
-                    // int n = tGQstList.IndexOf(101);
-                    switch (PlayerManager.I.pData.QuestList.Find(q => q.Qid == 101).Order)
+                    switch (PlayerManager.I.pData.QuestList.Find(q => q.Qid == 1001).Order)
                     {
                         case 1:
                             mButtons["OnJoin"].gameObject.SetActive(false);
@@ -307,7 +306,7 @@ public class CityEnterPop : UIScreen
             }
         }
         //튜토리얼 체크
-        if (PlayerManager.I.pData.QuestList.FindIndex(q => q.Qid == 101) != -1)
+        if (PlayerManager.I.pData.QuestList.FindIndex(q => q.Qid == 1001) != -1)
         {
             foreach (var btn in mButtons.Where(b => b.Key.StartsWith("GoTo")))
                 btn.Value.gameObject.SetActive(false);
@@ -401,7 +400,7 @@ public class CityEnterPop : UIScreen
                                         dotList[idx].Add("DI_Talk");
                                 }
                                 break;
-                            case 101:
+                            case 1001:
                                 tGQstList.Add(q);
                                 switch (q.Order)
                                 {
@@ -460,14 +459,14 @@ public class CityEnterPop : UIScreen
     {
         // 퀘스트 ID별 처리 로직을 딕셔너리에 등록
         qstTalkHandlers.Clear();
-        qstTalkHandlers[101] = hQst101;
+        qstTalkHandlers[1001] = hQst1001;
         qstTalkHandlers[1] = hQst1;
         // 새로운 퀘스트 추가 시 여기에만 등록하면 됨
         // questTalkHandlers[102] = HandleQuest10
     }
-    private TalkData hQst101(int order)
+    private TalkData hQst1001(int order)
     {
-        return new TalkData("Qst", npcId, 101, order);
+        return new TalkData("Qst", npcId, 1001, order);
     }
     private TalkData hQst1(int order)
     {
@@ -480,7 +479,7 @@ public class CityEnterPop : UIScreen
         switch (sId)
         {
             case 1:
-                priority.Add(hQst101(0));
+                priority.Add(hQst1001(0));
                 priority.Add(hQst1(0));
                 break;
             case 2:
