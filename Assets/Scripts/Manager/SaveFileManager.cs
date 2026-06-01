@@ -14,7 +14,7 @@ public class GameSaveData
     public Vector3 playerPos;
     public PlayerData playerData;
     public bool isGate1Open;
-    public Dictionary<int, Dictionary<int, QuestInstData>> CityQuest;
+    public Dictionary<int, List<QuestInstData>> CityQuest;
     public Dictionary<int, WorldMonData> worldMonDataList;
     public List<List<int>> playerSkSlots;
 }

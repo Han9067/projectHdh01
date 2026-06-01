@@ -230,6 +230,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.AtkType = pData.EqSlot["Hand1"] != null && pData.EqSlot["Hand1"].Hand == 2 ? 1 : 0;
     }
     #endregion
+    #region 퀘스트
     public void ClearMainQst(int qid)
     {
         pData.QuestClearList.Add(qid);
@@ -272,6 +273,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.QuestList[n].Desc = LocalizationManager.GetValue($"{pData.QuestList[n].Name}_{pData.QuestList[n].Order}_Desc");
         Presenter.Send("WorldMainUI", "SetTraceQst");
     }
+    #endregion
     public void AddSkExp(int skId, int val)
     {
         if (pData.SkList.ContainsKey(skId))
@@ -363,9 +365,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public void StartTutorial()
     {
         QuestData qData = QuestManager.I.QuestData[1001];
-        pData.QuestList.Add(new QuestInstData(qData.QuestID, 0, qData.Type, qData.Name, qData.IsTrace));
+        pData.QuestList.Add(new QuestInstData(qData.QuestID, 0, qData.Type, 0, qData.Name, qData.IsTrace));
         int n = pData.QuestList.Count - 1;
-        pData.QuestList[n].SetQuestBase(LocalizationManager.GetValue("QstM_Tuto_1_Desc"), 1, 1000, 1000, 100);
+        pData.QuestList[n].SetQuestBase(LocalizationManager.GetValue("QstM_Tuto_1_Desc"), 1000, 1000, 100);
         pData.QuestList[n].Order = 1;
         pData.TraceQId = 1001;
 

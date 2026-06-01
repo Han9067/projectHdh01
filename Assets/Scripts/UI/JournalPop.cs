@@ -108,7 +108,7 @@ public class JournalPop : UIScreen
         {
             GameObject obj = Instantiate(ResManager.GetGameObject("MyQstBtn"), qListParent);
             obj.name = "MyQuest_" + i;
-            obj.GetComponent<QuestListBtn>().SetQuestListBtn(i, qData[i].Star, qData[i].QType, LocalizationManager.GetValue(qData[i].Name), "JournalPop");
+            obj.GetComponent<QuestListBtn>().SetQuestListBtn(i, qData[i].Grade, qData[i].QType, LocalizationManager.GetValue(qData[i].Name), "JournalPop");
             switch (qData[i].QType)
             {
                 case 1:
@@ -131,7 +131,7 @@ public class JournalPop : UIScreen
             qBtnList[i].GetComponent<Image>().color = Color.white;
         qBtnList[idx].GetComponent<Image>().color = Color.yellow;
         QuestInstData data = PlayerManager.I.pData.QuestList[idx];
-        UpdateStars(data.Star);
+        UpdateStars(data.Grade);
         mTMPText["DescVal"].text = data.Desc;
         if (data.State == 2)
         {
