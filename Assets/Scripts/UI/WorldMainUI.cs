@@ -299,7 +299,16 @@ public class WorldMainUI : UIScreen
     {
         mGameObject["QstBox"].SetActive(true);
         int qid = PlayerManager.I.pData.TraceQId;
-        foreach (var v in PlayerManager.I.pData.QuestList)
+        foreach (var v in PlayerManager.I.pData.MainQst)
+        {
+            if (qid == v.Qid)
+            {
+                mTMPText["QstName"].text = LocalizationManager.GetValue(v.Name);
+                mTMPText["QstDesc"].text = v.Desc;
+                break;
+            }
+        }
+        foreach (var v in PlayerManager.I.pData.GuildQst)
         {
             if (qid == v.Qid)
             {

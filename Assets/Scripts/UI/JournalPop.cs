@@ -63,7 +63,7 @@ public class JournalPop : UIScreen
         switch (key)
         {
             case "ClickQuestListBtn":
-                SelectQuestBtn(data.Get<int>());
+                // SelectQuestBtn(data.Get<int>());
                 break;
         }
     }
@@ -102,55 +102,59 @@ public class JournalPop : UIScreen
     }
     void SetQuestPannel()
     {
-        if (PlayerManager.I.pData.QuestList.Count == 0) return;
-        var qData = PlayerManager.I.pData.QuestList;
-        for (int i = 0; i < qData.Count; i++)
-        {
-            GameObject obj = Instantiate(ResManager.GetGameObject("MyQstBtn"), qListParent);
-            obj.name = "MyQuest_" + i;
-            obj.GetComponent<QuestListBtn>().SetQuestListBtn(i, qData[i].Grade, qData[i].QType, LocalizationManager.GetValue(qData[i].Name), "JournalPop");
-            switch (qData[i].QType)
-            {
-                case 1:
-                    obj.transform.SetSiblingIndex(mGameObject["SubQst"].transform.GetSiblingIndex());
-                    break;
-                case 2:
-                    obj.transform.SetSiblingIndex(mGameObject["GuildQst"].transform.GetSiblingIndex());
-                    break;
-                case 3:
-                    obj.transform.SetAsLastSibling();
-                    break;
-            }
-            qBtnList.Add(obj);
-        }
-        SelectQuestBtn(0);
+        // if (PlayerManager.I.pData.MainQst.Count == 0 &&
+        // PlayerManager.I.pData.SubQst.Count == 0 &&
+        // PlayerManager.I.pData.GuildQst.Count == 0) return;
+
+        // var qData = PlayerManager.I.pData.MainQst;
+        // for (int i = 0; i < qData.Count; i++)
+        // {
+        //     GameObject obj = Instantiate(ResManager.GetGameObject("MyQstBtn"), qListParent);
+        //     obj.name = "MyQuest_" + i;
+        //     obj.GetComponent<QuestListBtn>().SetQuestListBtn(i, qData[i].Grade, qData[i].QType, LocalizationManager.GetValue(qData[i].Name), "JournalPop");
+        //     switch (qData[i].QType)
+        //     {
+        //         case 1:
+        //             obj.transform.SetSiblingIndex(mGameObject["SubQst"].transform.GetSiblingIndex());
+        //             break;
+        //         case 2:
+        //             obj.transform.SetSiblingIndex(mGameObject["GuildQst"].transform.GetSiblingIndex());
+        //             break;
+        //         case 3:
+        //             obj.transform.SetAsLastSibling();
+        //             break;
+        //     }
+        //     qBtnList.Add(obj);
+        // }
+
+        // SelectQuestBtn(0);
     }
-    void SelectQuestBtn(int idx)
-    {
-        for (int i = 0; i < qBtnList.Count; i++)
-            qBtnList[i].GetComponent<Image>().color = Color.white;
-        qBtnList[idx].GetComponent<Image>().color = Color.yellow;
-        QuestInstData data = PlayerManager.I.pData.QuestList[idx];
-        UpdateStars(data.Grade);
-        mTMPText["DescVal"].text = data.Desc;
-        if (data.State == 2)
-        {
-            mTMPText["TgVal"].gameObject.SetActive(true);
-            mTMPText["TgVal"].text = LocalizationManager.GetValue("Completed");
-        }
-        else
-        {
-            mTMPText["TgVal"].gameObject.SetActive(false);
-            switch (data.Qid)
-            {
-                case 2:
-                case 3:
-                    mTMPText["TgVal"].gameObject.SetActive(true);
-                    mTMPText["TgVal"].text = data.CurCnt.ToString() + " / " + data.TgCnt.ToString();
-                    break;
-            }
-        }
-    }
+    // void SelectQuestBtn(int idx)
+    // {
+    //     for (int i = 0; i < qBtnList.Count; i++)
+    //         qBtnList[i].GetComponent<Image>().color = Color.white;
+    //     qBtnList[idx].GetComponent<Image>().color = Color.yellow;
+    //     QuestInstData data = PlayerManager.I.pData.QuestList[idx];
+    //     UpdateStars(data.Grade);
+    //     mTMPText["DescVal"].text = data.Desc;
+    //     if (data.State == 2)
+    //     {
+    //         mTMPText["TgVal"].gameObject.SetActive(true);
+    //         mTMPText["TgVal"].text = LocalizationManager.GetValue("Completed");
+    //     }
+    //     else
+    //     {
+    //         mTMPText["TgVal"].gameObject.SetActive(false);
+    //         switch (data.Qid)
+    //         {
+    //             case 2:
+    //             case 3:
+    //                 mTMPText["TgVal"].gameObject.SetActive(true);
+    //                 mTMPText["TgVal"].text = data.CurCnt.ToString() + " / " + data.TgCnt.ToString();
+    //                 break;
+    //         }
+    //     }
+    // }
     void UpdateStars(int star)
     {
         for (int i = 1; i <= 10; i++)

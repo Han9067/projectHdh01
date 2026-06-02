@@ -47,7 +47,7 @@ public class EventPop : UIScreen
                 {
                     case 1:
                         mTMPText["Ment"].text = LocalizationManager.GetValue("Event_QstG_FindMonGrp");
-                        foreach (var q in PlayerManager.I.pData.QuestList)
+                        foreach (var q in PlayerManager.I.pData.MainQst)
                         {
                             if (q.MarkerUid == list[1])
                             {

@@ -316,6 +316,11 @@ public class WorldCore : AutoSingleton<WorldCore>
             idx++;
         }
     }
+    public void HideAllCityHighlight()
+    {
+        foreach (var city in cityObjList)
+            city.Value.GetComponent<wCity>().StateHighlight(false);
+    }
     #endregion
     #region 월드맵 오브젝트 생성 관련
     public void CheckAllAreaWorldMon()

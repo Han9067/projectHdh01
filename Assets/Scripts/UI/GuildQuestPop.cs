@@ -7,10 +7,10 @@ public class GuildQuestPop : UIScreen
 {
     [SerializeField] private Transform parent;
     public Slider mSlider;
-    private List<GameObject> questBtn = new List<GameObject>(); //퀘스트 버튼 오브젝트
+    private List<QuestListBtn> questBtn = new List<QuestListBtn>(); //퀘스트 버튼 오브젝트
     private List<QuestInstData> qList = new List<QuestInstData>(); //생성된 퀘스트 데이터
 
-    private int curId = 0, cityId = 1, qIdx = 0, npcId = 0;
+    private int curIdx = 0, cityId = 1, qIdx = 0, npcId = 0;
     private int qstState; //현재 퀘스트 상태 0: 수락 가능, 1: 수락 완료, 2: 퀘스트 완료
     private bool isUpgrade = false; //업그레이드 가능 여부
     private Image[] mFilterImg = new Image[10];
@@ -40,6 +40,7 @@ public class GuildQuestPop : UIScreen
         qstState = 0;
         cityId = 1;
         npcId = 0;
+        curIdx = 0;
     }
     public void RegistButton()
     {
@@ -55,28 +56,30 @@ public class GuildQuestPop : UIScreen
                 Close();
                 break;
             case "OnQstAccept":
-                // if (qstState == 1) return;
-                // qList[curId].QNpcId = npcId;
-                // var qst = PlayerManager.I.pData.QuestList;
-                // qst.Add(qList[curId]);
-                // int n = qst.Count - 1;
-                // qst[n].State = 1;
-                // // QuestManager.I.CityQuest[cityId].Remove(qList[curId].Qid);
+                if (qstState == 1) return;
+                int uid = qList[curIdx].QUid;
+                qList[curIdx].QNpcId = npcId;
+                var qst = PlayerManager.I.pData.GuildQst;
+                qst.Add(qList[curIdx]);
+                int n = qst.Count - 1;
+                qst[n].State = 1;
+                var cityQst = QuestManager.I.CityQuest[cityId];
+                foreach (var v in cityQst)
+                {
+                    if (v.QUid == uid)
+                    {
+                        cityQst.Remove(v);
+                        break;
+                    }
+                }
+                UpdateQuestList(qList[curIdx].Grade);
                 // switch (qst[n].Qid)
-                // {
-                //     case 21:
-                //         qst[n].CurCnt = PlayerManager.I.GetQstItemCnt(qst[n].ItemId);
-                //         if (qst[n].CurCnt >= qst[n].TgCnt)
-                //             qst[n].State = 2;
-                //         break;
                 //     case 31:
                 //         WorldCore.I.CreateWorldMarker(qst[n].TgPos, 1); //2번째 매개변수 1~10은 길드 퀘스트용 마커-> 1은 몬스터 토벌용
                 //         qst[n].MarkerUid = QuestManager.I.curMkUid;
                 //         QuestManager.I.curMkUid = 0;
                 //         break;
                 // }
-                // UpdateQuestList(n);
-                // questBtn[n].GetComponent<QuestListBtn>().OnButtonClick();
                 break;
             case "OnQstComplete":
                 // Debug.Log("보상내역: " + qList[curId].Crown + " " + qList[curId].Exp + " " + qList[curId].GradeExp);
@@ -130,66 +133,34 @@ public class GuildQuestPop : UIScreen
                 npcId = rcv[1];
                 qIdx = 0;
                 UpdateGradeGgSlider();
-                //MyRankBadge
-                // List<int> rcv = data.Get<List<int>>(); //receive
-                // cityId = rcv[0];
-                // npcId = rcv[1];
-                // qIdx = 0;
-                // UpdateGradeGgSlider();
-                // bool not = true;
-                // if (PlayerManager.I.pData.QuestList.Count > 0)
-                // {
-                //     CreateMyQuest();
-                //     not = false;
-                // }
-                // mTMPText["MyQstVal"].text = PlayerManager.I.pData.QuestList.Count.ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
-                // if (QuestManager.I.CityQuest[cityId].Count > 0)
-                // {
-                //     CreateCityQuest();
-                //     not = false;
-                //     questBtn[0].GetComponent<QuestListBtn>().OnButtonClick();
-                // }
-                // if (not)
-                //     NotQuestList(); //퀘스트가 없을떄 표시
                 break;
             case "ClickQuestListBtn":
-                // curId = data.Get<int>();
-                // UpdateStars(qList[curId].Grade);
-                // mTMPText["DescVal"].text = qList[curId].Desc;
-                // mTMPText["ExpVal"].text = qList[curId].Exp.ToString();
-                // mTMPText["CrownVal"].text = qList[curId].Crown.ToString();
-                // mTMPText["GdExpVal"].text = qList[curId].GradeExp.ToString();
-                // mTMPText["CurCnt"].gameObject.SetActive(false);
-                // for (int i = 0; i < questBtn.Count; i++)
-                // {
-                //     switch (qList[i].State)
-                //     {
-                //         case 0:
-                //             questBtn[i].GetComponent<Image>().color = Color.white;
-                //             break;
-                //         case 1:
-                //             questBtn[i].GetComponent<Image>().color = Color.gray;
-                //             if (i != curId) continue;
-                //             switch (qList[i].Qid)
-                //             {
-                //                 case 2:
-                //                 case 3:
-                //                     mTMPText["CurCnt"].gameObject.SetActive(true);
-                //                     int curCnt = qList[i].CurCnt >= qList[i].TgCnt ? qList[i].TgCnt : qList[i].CurCnt;
-                //                     mTMPText["CurCnt"].text = curCnt.ToString() + " / " + qList[i].TgCnt.ToString();
-                //                     break;
-                //             }
-                //             break;
-                //         case 2:
-                //             questBtn[i].GetComponent<Image>().color = Color.green;
-                //             break;
-                //     }
-                // }
-                // questBtn[curId].GetComponent<Image>().color = Color.yellow;
-                // qstState = qList[curId].State;
-                // mButtons["OnQstAccept"].gameObject.SetActive(qstState == 0);
-                // mButtons["OnQstComplete"].gameObject.SetActive(qstState == 2);
-                // mGameObject["tObjProgress"].SetActive(qstState == 1);
+                curIdx = data.Get<int>();
+                QuestInstData q = qList[curIdx];
+                UpdateStars(q.Grade);
+                mTMPText["QstName"].text = LocalizationManager.GetValue(q.Name);
+                mTMPText["DescVal"].text = q.Desc;
+                mTMPText["ExpVal"].text = q.Exp.ToString();
+                mTMPText["CrownVal"].text = q.Crown.ToString();
+                mTMPText["GdExpVal"].text = q.GradeExp.ToString();
+                mTMPText["CurCnt"].gameObject.SetActive(false);
+                CheckQstBtn(curIdx);
+                if (q.State == 1)
+                {
+                    switch (q.Qid)
+                    {
+                        case 2:
+                        case 3:
+                            mTMPText["CurCnt"].gameObject.SetActive(true);
+                            int curCnt = q.CurCnt >= q.TgCnt ? q.TgCnt : q.CurCnt;
+                            mTMPText["CurCnt"].text = curCnt.ToString() + " / " + q.TgCnt.ToString();
+                            break;
+                    }
+                }
+                qstState = qList[curIdx].State;
+                mButtons["OnQstAccept"].gameObject.SetActive(qstState == 0);
+                mButtons["OnQstComplete"].gameObject.SetActive(qstState == 2);
+                mGameObject["tObjProgress"].SetActive(qstState == 1);
                 break;
         }
     }
@@ -221,10 +192,10 @@ public class GuildQuestPop : UIScreen
     }
     private void InitQuestList()
     {
-        foreach (GameObject btn in questBtn)
+        foreach (QuestListBtn btn in questBtn)
         {
             if (btn != null)
-                Destroy(btn);
+                Destroy(btn.gameObject);
         }
         questBtn.Clear();
         qList.Clear();
@@ -235,64 +206,39 @@ public class GuildQuestPop : UIScreen
     {
         InitQuestList();
         List<QuestInstData> qstList = new List<QuestInstData>();
-        var myQst = PlayerManager.I.pData.QuestList;
-        Debug.Log("myQst: " + myQst.Count);
+        var myQst = PlayerManager.I.pData.GuildQst;
         foreach (var v in myQst)
         {
             if (v.Grade == grade)
                 qstList.Add(v);
         }
         var cityQst = QuestManager.I.CityQuest[cityId];
-        Debug.Log("cityQst: " + cityQst.Count);
         foreach (var v in cityQst)
         {
             if (v.Grade == grade)
                 qstList.Add(v);
         }
-        Debug.Log("qstList: " + qstList.Count);
         foreach (var v in qstList)
         {
             GameObject obj = Instantiate(ResManager.GetGameObject("GuildQstBtn"), parent);
             obj.name = "GuildQuest_" + qIdx;
-            obj.GetComponent<QuestListBtn>().SetQuestListBtn(qIdx, v.Grade, v.QType, LocalizationManager.GetValue(v.Name), "GuildQuestPop");
-            questBtn.Add(obj);
+            QuestListBtn qst = obj.GetComponent<QuestListBtn>();
+            qst.SetQuestListBtn(qIdx, v.Grade, v.QType, LocalizationManager.GetValue(v.Name), "GuildQuestPop");
+            questBtn.Add(qst);
             qList.Add(v);
             qIdx++;
         }
-        mTMPText["MyQstVal"].text = myQst.Count.ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
-
-        // ShowGuildQuest(grade);
-        // CreateMyQuest();
-        // CreateCityQuest();
-        // mTMPText["MyQstVal"].text = (cnt + 1).ToString() + " / " + PlayerManager.I.pData.QuestMax.ToString();
+        mTMPText["MyQstVal"].text = myQst.Count.ToString() + " / " + PlayerManager.I.pData.GuildQstMax.ToString();
+        Presenter.Send("GuildQuestPop", "ClickQuestListBtn", curIdx);
     }
-    private void ShowGuildQuest(int grade)
+    private void CheckQstBtn(int selIdx)
     {
-        var myQst = PlayerManager.I.pData.QuestList;
-        //클릭된 등급 초기화하고 생성하고 반복
-        // var qData = PlayerManager.I.pData.QuestList;
-        // for (int i = 0; i < qData.Count; i++)
-        // {
-        //     GameObject obj = Instantiate(ResManager.GetGameObject("GuildQstBtn"), parent);
-        //     obj.name = "MyQuest_" + qIdx;
-        //     obj.GetComponent<QuestListBtn>().SetQuestListBtn(qIdx, qData[i].Grade, qData[i].QType, LocalizationManager.GetValue(qData[i].Name), "GuildQuestPop");
-        //     questBtn.Add(obj);
-        //     qList.Add(qData[i]);
-        //     qIdx++;
-        // }
-    }
-    void CreateCityQuest()
-    {
-        // var qData = QuestManager.I.CityQuest[cityId];
-        // foreach (var v in qData)
-        // {
-        //     GameObject obj = Instantiate(ResManager.GetGameObject("GuildQstBtn"), parent);
-        //     obj.name = "CityQuest_" + qIdx;
-        //     obj.GetComponent<QuestListBtn>().SetQuestListBtn(qIdx, v.Value.Star, v.Value.QType, LocalizationManager.GetValue(v.Value.Name), "GuildQuestPop");
-        //     questBtn.Add(obj);
-        //     qList.Add(v.Value);
-        //     qIdx++;
-        // }
+        int cnt = qList.Count;
+        for (int i = 0; i < cnt; i++)
+        {
+            questBtn[i].sel.SetActive(i == selIdx);
+            questBtn[i].StateTxtColor(qList[i].State);
+        }
     }
     void UpdateStars(int star)
     {

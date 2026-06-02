@@ -110,10 +110,13 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Hair = data.Hair;
         pData.HairColor = data.HairColor;
 
-        pData.QuestList = data.QuestList;
-        pData.QuestClearList = data.QuestClearList;
-        // pData.QuestMax = data.QuestMax;
-        pData.QuestMax = 5;
+        pData.MainQst = data.MainQst;
+        pData.SubQst = data.SubQst;
+        pData.GuildQst = data.GuildQst;
+        pData.MainQstClear = data.MainQstClear;
+        pData.SubQstClear = data.SubQstClear;
+        pData.GuildQstClear = data.GuildQstClear;
+        pData.GuildQstMax = 5;
         pData.TraceQId = data.TraceQId;
 
         pData.SkList = data.SkList;
@@ -175,9 +178,13 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.MP = pData.MaxMP;
         pData.SP = pData.MaxSP;
 
-        pData.QuestList = new List<QuestInstData>();
-        pData.QuestClearList = new List<int>();
-        pData.QuestMax = 5;
+        pData.MainQst = new List<QuestInstData>();
+        pData.SubQst = new List<QuestInstData>();
+        pData.GuildQst = new List<QuestInstData>();
+        pData.MainQstClear = new List<int>();
+        pData.SubQstClear = new List<int>();
+        pData.GuildQstClear = 0;
+        pData.GuildQstMax = 5;
         pData.TraceQId = 0;
 
         pData.EP = 70; //기본이 100
@@ -233,20 +240,20 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     #region 퀘스트
     public void ClearMainQst(int qid)
     {
-        pData.QuestClearList.Add(qid);
-        pData.QuestList.Sort((a, b) => a.Qid.CompareTo(b.Qid)); //혹시 몰라 클리어 퀘스트 정렬
-        foreach (var q in pData.QuestList)
+        pData.MainQstClear.Add(qid);
+        pData.MainQst.Sort((a, b) => a.Qid.CompareTo(b.Qid)); //혹시 몰라 클리어 퀘스트 정렬
+        foreach (var q in pData.MainQst)
         {
             if (q.Qid == qid)
             {
-                pData.QuestList.Remove(q);
+                pData.MainQst.Remove(q);
                 break;
             }
         }
     }
     public void CompleteGuildQst(int quid)
     {
-        foreach (var q in pData.QuestList)
+        foreach (var q in pData.GuildQst)
         {
             if (q.QUid == quid)
             {
@@ -257,20 +264,21 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     }
     public void ClearGuildQst(int quid)
     {
-        foreach (var q in pData.QuestList)
+        foreach (var q in pData.GuildQst)
         {
             if (q.QUid == quid)
             {
-                pData.QuestList.Remove(q);
+                pData.GuildQstClear++;
+                pData.GuildQst.Remove(q);
                 break;
             }
         }
     }
-    public void NextQuestOrder(int qid)
+    public void NextMainQstOrder(int qid)
     {
-        int n = pData.QuestList.FindIndex(q => q.Qid == qid);
-        pData.QuestList[n].Order++;
-        pData.QuestList[n].Desc = LocalizationManager.GetValue($"{pData.QuestList[n].Name}_{pData.QuestList[n].Order}_Desc");
+        int n = pData.MainQst.FindIndex(q => q.Qid == qid);
+        pData.MainQst[n].Order++;
+        pData.MainQst[n].Desc = LocalizationManager.GetValue($"{pData.MainQst[n].Name}_{pData.MainQst[n].Order}_Desc");
         Presenter.Send("WorldMainUI", "SetTraceQst");
     }
     #endregion
@@ -365,10 +373,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public void StartTutorial()
     {
         QuestData qData = QuestManager.I.QuestData[1001];
-        pData.QuestList.Add(new QuestInstData(qData.QuestID, 0, qData.Type, 0, qData.Name, qData.IsTrace));
-        int n = pData.QuestList.Count - 1;
-        pData.QuestList[n].SetQuestBase(LocalizationManager.GetValue("QstM_Tuto_1_Desc"), 1000, 1000, 100);
-        pData.QuestList[n].Order = 1;
+        pData.MainQst.Add(new QuestInstData(qData.QuestID, 0, qData.Type, 0, qData.Name, qData.IsTrace));
+        int n = pData.MainQst.Count - 1;
+        pData.MainQst[n].SetQuestBase(LocalizationManager.GetValue("QstM_Tuto_1_Desc"), 1000, 1000, 100);
+        pData.MainQst[n].Order = 1;
         pData.TraceQId = 1001;
 
         Presenter.Send("WorldMainUI", "SetTraceQst");

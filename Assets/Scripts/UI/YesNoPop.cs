@@ -38,8 +38,8 @@ public class YesNoPop : UIScreen
                 switch (callKey)
                 {
                     case "GuildJoin":
-                        if (PlayerManager.I.pData.QuestList.FindIndex(q => q.Qid == 1001) != -1)
-                            PlayerManager.I.NextQuestOrder(1001);
+                        if (PlayerManager.I.pData.MainQst.FindIndex(q => q.Qid == 1001) != -1)
+                            PlayerManager.I.NextMainQstOrder(1001);
                         UIManager.ShowPopup("OneBtnPop");
                         Presenter.Send("OneBtnPop", "GuildJoin");
                         break;

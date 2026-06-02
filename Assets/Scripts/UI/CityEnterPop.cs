@@ -42,11 +42,14 @@ public class CityEnterPop : UIScreen
         shopIdList.Clear();
         tGQstList.Clear();
         sId = 0; sKey = "";
+        WorldCore.I.HideAllCityHighlight(); //도시 하이라이트 숨기기
+        // Presenter.Send("WorldMainUI", "SetBlock", true); //하위 UI 제어를 위한 블럭 활성화
         if (GsManager.gameState == GameState.World) GsManager.I.InitCursor(); //월드맵에서 도시 입장 시 커서 초기화
     }
     private void OnDisable()
     {
         Presenter.UnBind("CityEnterPop", this);
+        // Presenter.Send("WorldMainUI", "SetBlock", false);
         isActive = false;
         //도시 안으로 들어간 플레이어 활성화
         WorldCore.I.StatePlayer(true);
@@ -185,7 +188,7 @@ public class CityEnterPop : UIScreen
                 mButtons["OnWork"].gameObject.SetActive(false);
                 if (tGQstList.Any(x => x.Qid == 1001)) //튜토리얼
                 {
-                    switch (PlayerManager.I.pData.QuestList.Find(q => q.Qid == 1001).Order)
+                    switch (PlayerManager.I.pData.MainQst.Find(q => q.Qid == 1001).Order)
                     {
                         case 1:
                             mButtons["OnJoin"].gameObject.SetActive(false);
@@ -306,7 +309,7 @@ public class CityEnterPop : UIScreen
             }
         }
         //튜토리얼 체크
-        if (PlayerManager.I.pData.QuestList.FindIndex(q => q.Qid == 1001) != -1)
+        if (PlayerManager.I.pData.MainQst.FindIndex(q => q.Qid == 1001) != -1)
         {
             foreach (var btn in mButtons.Where(b => b.Key.StartsWith("GoTo")))
                 btn.Value.gameObject.SetActive(false);
@@ -388,18 +391,11 @@ public class CityEnterPop : UIScreen
             switch (p.Key)
             {
                 case "GoToGuild":
-                    foreach (var q in PlayerManager.I.pData.QuestList)
+                    //메인
+                    foreach (var q in PlayerManager.I.pData.MainQst)
                     {
                         switch (q.Qid)
                         {
-                            case 1:
-                                if (q.State == 1 && q.CityId == cityId)
-                                {
-                                    tGQstList.Add(q);
-                                    if (!dotList[idx].Contains("DI_Talk"))
-                                        dotList[idx].Add("DI_Talk");
-                                }
-                                break;
                             case 1001:
                                 tGQstList.Add(q);
                                 switch (q.Order)
@@ -415,6 +411,21 @@ public class CityEnterPop : UIScreen
                         }
                         if (q.State == 2 && !dotList[idx].Contains("DI_Quest"))
                             dotList[idx].Add("DI_Quest");
+                    }
+                    //길드
+                    foreach (var q in PlayerManager.I.pData.GuildQst)
+                    {
+                        switch (q.Qid)
+                        {
+                            case 1:
+                                if (q.State == 1 && q.CityId == cityId)
+                                {
+                                    tGQstList.Add(q);
+                                    if (!dotList[idx].Contains("DI_Talk"))
+                                        dotList[idx].Add("DI_Talk");
+                                }
+                                break;
+                        }
                     }
                     break;
                 case "GoToInn":

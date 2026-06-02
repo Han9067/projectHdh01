@@ -4,16 +4,17 @@ using UnityEngine;
 using GB;
 using UnityEngine.UI;
 using TMPro;
-public class QuestListBtn : MonoBehaviour
+using UnityEngine.EventSystems;
+public class QuestListBtn : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public int uId, star, type;
     private string qName, popName;
-    public List<GameObject> starList = new List<GameObject>();
+    [SerializeField] private Image mImg;
     [SerializeField] private TextMeshProUGUI mTxtName;
-    [SerializeField] private Button btn;
+    public GameObject sel;
+    // [SerializeField] private Button btn;
     public void OnButtonClick()
     {
-        // Debug.Log("QuestListBtn 클릭되었습니다!");
         Presenter.Send(popName, "ClickQuestListBtn", uId);
     }
     public void SetQuestListBtn(int u, int st, int tp, string name, string pName)
@@ -26,14 +27,37 @@ public class QuestListBtn : MonoBehaviour
     }
     private void Start()
     {
-        btn.onClick.AddListener(OnButtonClick);
-
         mTxtName.text = qName;
-        for (int i = 0; i < 10; i++)
-            starList[i].SetActive(i < star);
     }
-    private void OnDestroy()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        btn.onClick.RemoveListener(OnButtonClick);
+        if (eventData.button == PointerEventData.InputButton.Left && !eventData.dragging)
+            OnButtonClick();
+    }
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        mImg.color = new Color(1, 1, 1, 0.5f);
+    }
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        mImg.color = Color.clear;
+    }
+    public void StateTxtColor(int idx)
+    {
+        switch (idx)
+        {
+            case 1:
+                mTxtName.color = Color.yellow;
+                break;
+            case 2:
+                mTxtName.color = Color.green;
+                break;
+            case 3:
+                mTxtName.color = Color.gray;
+                break;
+            default:
+                mTxtName.color = Color.white;
+                break;
+        }
     }
 }

@@ -135,10 +135,10 @@ public class PlayerData : ICharData
     public int Att, Def, MAtt, MDef;
     public int Crt, CrtRate, Hit, Eva; // 치명타율, 치명타확률, 명중, 회피
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
-    public int QuestMax, TraceQId;
+    public int GuildQstMax, GuildQstClear, TraceQId;
     public int Rng, AtkType;
-    public List<QuestInstData> QuestList;
-    public List<int> QuestClearList;
+    public List<QuestInstData> MainQst, SubQst, GuildQst;
+    public List<int> MainQstClear, SubQstClear;
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     public List<ItemData> Inven = new List<ItemData>();
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
@@ -429,17 +429,17 @@ public class QuestInstData
     public Vector3 TgPos;
     public QuestInstData(int qid, int qscid, int qtype, int grade, string name, bool isTrace)
     {
-        this.Qid = qid;
-        this.QSCid = qscid;
-        this.QType = qtype;
-        this.Grade = grade;
-        this.Name = name;
-        this.IsTrace = isTrace;
-        this.QUid = QuestManager.I.GetQstUid();
-        this.State = 0;
-        this.Order = 0;
-        this.MarkerUid = 0;
-        this.TgPos = Vector3.zero;
+        this.Qid = qid; //퀘스트 ID
+        this.QSCid = qscid; //퀘스트를 수락하여 시작한 도시 ID
+        this.QType = qtype; //퀘스트 타입
+        this.Grade = grade; //퀘스트 등급
+        this.Name = name; //퀘스트 이름
+        this.IsTrace = isTrace; //퀘스트 추적 여부
+        this.QUid = QuestManager.I.GetQstUid(); //퀘스트 고유 ID
+        this.State = 0; //퀘스트 상태 0: 미수락, 1: 수락 및 진행중, 2: 완료
+        this.Order = 0; //퀘스트 순서
+        this.MarkerUid = 0; //마커 ID
+        this.TgPos = Vector3.zero; //타겟 위치
     }
     public void SetQuestBase(string desc, int exp, int crown, int gradeExp)
     {
