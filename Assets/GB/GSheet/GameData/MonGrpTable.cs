@@ -31,6 +31,7 @@ public class MonGrpTable  : GameData
 				case "GrpID": return true;
 				case "Grade": return true;
 				case "Type": return true;
+				case "Spd": return true;
 				case "Min": return true;
 				case "Max": return true;
 				case "LeaderID": return true;
@@ -63,6 +64,7 @@ public class MonGrpTable  : GameData
 				case "GrpID": return data.GrpID;
 				case "Grade": return data.Grade;
 				case "Type": return data.Type;
+				case "Spd": return data.Spd;
 				case "Min": return data.Min;
 				case "Max": return data.Max;
 				case "LeaderID": return data.LeaderID;
@@ -86,6 +88,7 @@ public class MonGrpTable  : GameData
 				case "GrpID": return data.GrpID;
 				case "Grade": return data.Grade;
 				case "Type": return data.Type;
+				case "Spd": return data.Spd;
 				case "Min": return data.Min;
 				case "Max": return data.Max;
 				case "LeaderID": return data.LeaderID;
@@ -110,11 +113,12 @@ public class MonGrpTable  : GameData
 				case 0: return data.GrpID;
 				case 1: return data.Grade;
 				case 2: return data.Type;
-				case 3: return data.Min;
-				case 4: return data.Max;
-				case 5: return data.LeaderID;
-				case 6: return data.List;
-				case 7: return data.Note;
+				case 3: return data.Spd;
+				case 4: return data.Min;
+				case 5: return data.Max;
+				case 6: return data.LeaderID;
+				case 7: return data.List;
+				case 8: return data.Note;
 
                 default: return null;
             }
@@ -160,6 +164,7 @@ public class MonGrpTableProb : GameDataProb
 		[JsonProperty] public readonly int GrpID;
 	[JsonProperty] public readonly int Grade;
 	[JsonProperty] public readonly int Type;
+	[JsonProperty] public readonly float Spd;
 	[JsonProperty] public readonly int Min;
 	[JsonProperty] public readonly int Max;
 	[JsonProperty] public readonly int LeaderID;

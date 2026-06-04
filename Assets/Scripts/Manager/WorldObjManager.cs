@@ -20,6 +20,8 @@ public class WorldMonData
     public List<int> monList = new List<int>();
     public Vector3 pos, tgPos;
     public List<Vector3> path = new List<Vector3>();
+    public float spd;
+    public int gType;
 }
 public class WorldMarkerData
 {
@@ -34,6 +36,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         public int x, y;
         public string tName, tType;
         public Vector3 worldPos;
+        public int areaID;
         public float tCost; //타일 비용
     }
     private static readonly Vector3Int[] v3Dir8 = new Vector3Int[]
@@ -70,6 +73,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
                 wmGrid grid = new wmGrid();
                 grid.x = x;
                 grid.y = y;
+                grid.areaID = 0;
                 grid.tName = tile != null ? tile.name : "wt_o";
                 grid.tType = grid.tName.Substring(3, 1);
                 grid.worldPos = tilemap.CellToWorld(tPos) + tilemap.cellSize * 0.5f;  // 월드 좌표도 저장
@@ -100,9 +104,9 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
                         break;
                     default:
                         int id = type == "wt_n_" ? num : 100 + num;
+                        kvp.Value.areaID = id;
                         if (!wAreaPos.ContainsKey(id))
                             wAreaPos[id] = new List<Vector3>();
-
                         wAreaPos[id].Add(grid.worldPos);  // 캐싱된 월드 좌표 사용
                         break;
                 }
@@ -129,7 +133,17 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         }
         #endregion
     }
-
+    Vector3Int[] checkDir = new Vector3Int[]
+    {
+            new Vector3Int(-1, 1, 0),
+            new Vector3Int(0, 1, 0),
+            new Vector3Int(1, 1, 0),
+            new Vector3Int(-1, 0, 0),
+            new Vector3Int(1, 0, 0),
+            new Vector3Int(-1, -1, 0),
+            new Vector3Int(0, -1, 0),
+            new Vector3Int(1, -1, 0),
+    };
     public List<Vector3Int> FindRoadPath(Vector3Int sPos, Vector3Int ePos)
     {
         Queue<Vector3Int> queue = new Queue<Vector3Int>();
@@ -192,6 +206,16 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
             default:
                 return 1f;
         }
+    }
+    public bool GetEqualAroundAreaID(Vector3Int cen, int monAreaID)
+    {
+        foreach (var dir in checkDir)
+        {
+            Vector3Int pos = cen + dir;
+            if (wGridDic[(pos.x, pos.y)] == null) continue;
+            if (monAreaID == wGridDic[(pos.x, pos.y)].areaID) return true;
+        }
+        return false;
     }
     #endregion
     #region A* 일반 필드 길찾기
@@ -595,7 +619,8 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
     public void CreateWorldAreaData()
     {
         foreach (var monGrp in MonGrpTable.Datas)
-            monGrpData[monGrp.GrpID] = new MonGrpData(monGrp.GrpID, monGrp.Grade, monGrp.Type, monGrp.Min, monGrp.Max, monGrp.LeaderID, monGrp.List);
+            monGrpData[monGrp.GrpID] = new MonGrpData(monGrp.GrpID, monGrp.Grade,
+            monGrp.Type, monGrp.Min, monGrp.Max, monGrp.LeaderID, monGrp.List, monGrp.Spd);
 
         foreach (var spawnMon in SpawnMonTable.Datas)
         {
@@ -619,7 +644,8 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         //추후에 curCnt는 세이브 데이터를 통해 갱신해야 함
         //curCnt는 maxCnt만큼만 적용되는데 적용되는 시점은 스폰타임(현재 1주일간격)에 1번 적용
     }
-    public void AddWorldMonData(int uId, int areaID, int leaderID, List<int> monList, Vector3 pos, Vector3 tgPos, List<Vector3> path)
+    public void AddWorldMonData(int uId, int areaID, int leaderID, List<int> monList,
+    Vector3 pos, Vector3 tgPos, List<Vector3> path, float spd, int type)
     {
         worldMonDataList[uId] = new WorldMonData
         {
@@ -629,6 +655,8 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
             pos = pos,
             tgPos = tgPos,
             path = path,
+            spd = spd,
+            gType = type,
         };
     }
     public void RemoveWorldMonData(int uId)

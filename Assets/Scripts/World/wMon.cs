@@ -17,9 +17,11 @@ public class wMon : MonoBehaviour
     public bool isOutline = false;
     private float alpha = 1f;
     public Vector3 tgPos, myPos;
-    public float mSpd = 0.4f; //몬스터 이동 속도
+    public float mSpd = 0.4f, tcSpd = 0.4f; //몬스터 이동 속도, 추적 몬스터 이동 속도
     public List<Vector3> path = new List<Vector3>();
-    public int pathIdx = 0;
+    public int pathIdx = 0, grpType = 0;
+    public bool isTrace = false;
+    public float traceItv = 0f;
     void Start()
     {
         sGrp = GetComponent<SortingGroup>();
@@ -42,12 +44,15 @@ public class wMon : MonoBehaviour
     {
         sGrp.sortingOrder = (int)((80 - y) * 10);
     }
-    public void SetMonData(int uid, int area, int mId, List<int> mList)
+    public void SetMonData(int uid, int area, int mId, List<int> mList, float spd, int type)
     {
         uId = uid;
         areaID = area;
         monId = mId;
         monGrp = mList;
+        mSpd = spd * 0.5f;
+        tcSpd = spd;
+        grpType = type;
     }
 
     public void TraceObj(bool on)
@@ -62,7 +67,7 @@ public class wMon : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (WorldCore.mTraceObjUid != uId) return;
+            // if (WorldCore.mTraceObjUid != uId) return;
             WorldCore.I.StopPlayer();
             string result = WorldObjManager.I.GetAroundMon(monGrp, uId, other.transform.position.x, other.transform.position.y, monIdx);
 
@@ -104,5 +109,9 @@ public class wMon : MonoBehaviour
                 }
                 break;
         }
+    }
+    public void SetTrace(bool on)
+    {
+        isTrace = on;
     }
 }

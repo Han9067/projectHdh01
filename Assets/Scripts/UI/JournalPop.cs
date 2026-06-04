@@ -6,8 +6,9 @@ using System.Collections.Generic;
 public class JournalPop : UIScreen
 {
     public static bool isActive = false;
-    [SerializeField] private Transform qListParent;
-    private List<GameObject> qBtnList = new List<GameObject>();
+    [SerializeField] private Transform questBtnParent;
+    private List<QuestListBtn> questBtn = new List<QuestListBtn>();
+    private List<QuestInstData> qList = new List<QuestInstData>();
     private string curTab = "OnTabQuest";
 
     private void Awake()
@@ -56,6 +57,9 @@ public class JournalPop : UIScreen
                 StateTabsColor(key);
                 StatePannel(key);
                 break;
+            case "QstMain": SetQst(0); break;
+            case "QstSub": SetQst(1); break;
+            case "QstGuild": SetQst(2); break;
         }
     }
     public override void ViewQuick(string key, IOData data)
@@ -71,10 +75,7 @@ public class JournalPop : UIScreen
 
     void InitJournalPop()
     {
-        if (qBtnList.Count == 0) return;
-        for (int i = 0; i < qBtnList.Count; i++)
-            Destroy(qBtnList[i]);
-        qBtnList.Clear();
+        InitQst();
     }
     void StatePannel(string key)
     {
@@ -85,7 +86,7 @@ public class JournalPop : UIScreen
         {
             case "OnTabQuest":
                 mGameObject["QuestUiPannel"].SetActive(true);
-                SetQuestPannel();
+                SetQst(-1);
                 break;
         }
     }
@@ -100,61 +101,113 @@ public class JournalPop : UIScreen
         }
         mButtons[key].GetComponent<Image>().color = Color.yellow;
     }
-    void SetQuestPannel()
+    private void InitQst()
     {
-        // if (PlayerManager.I.pData.MainQst.Count == 0 &&
-        // PlayerManager.I.pData.SubQst.Count == 0 &&
-        // PlayerManager.I.pData.GuildQst.Count == 0) return;
-
-        // var qData = PlayerManager.I.pData.MainQst;
-        // for (int i = 0; i < qData.Count; i++)
-        // {
-        //     GameObject obj = Instantiate(ResManager.GetGameObject("MyQstBtn"), qListParent);
-        //     obj.name = "MyQuest_" + i;
-        //     obj.GetComponent<QuestListBtn>().SetQuestListBtn(i, qData[i].Grade, qData[i].QType, LocalizationManager.GetValue(qData[i].Name), "JournalPop");
-        //     switch (qData[i].QType)
-        //     {
-        //         case 1:
-        //             obj.transform.SetSiblingIndex(mGameObject["SubQst"].transform.GetSiblingIndex());
-        //             break;
-        //         case 2:
-        //             obj.transform.SetSiblingIndex(mGameObject["GuildQst"].transform.GetSiblingIndex());
-        //             break;
-        //         case 3:
-        //             obj.transform.SetAsLastSibling();
-        //             break;
-        //     }
-        //     qBtnList.Add(obj);
-        // }
-
-        // SelectQuestBtn(0);
+        mTMPText["QstName"].text = "";
+        mTMPText["DescVal"].text = "";
+        mTMPText["TgVal"].text = "";
+        foreach (QuestListBtn btn in questBtn)
+        {
+            if (btn != null)
+                Destroy(btn.gameObject);
+        }
+        questBtn.Clear();
+        UpdateStars(0);
     }
-    // void SelectQuestBtn(int idx)
-    // {
-    //     for (int i = 0; i < qBtnList.Count; i++)
-    //         qBtnList[i].GetComponent<Image>().color = Color.white;
-    //     qBtnList[idx].GetComponent<Image>().color = Color.yellow;
-    //     QuestInstData data = PlayerManager.I.pData.QuestList[idx];
-    //     UpdateStars(data.Grade);
-    //     mTMPText["DescVal"].text = data.Desc;
-    //     if (data.State == 2)
-    //     {
-    //         mTMPText["TgVal"].gameObject.SetActive(true);
-    //         mTMPText["TgVal"].text = LocalizationManager.GetValue("Completed");
-    //     }
-    //     else
-    //     {
-    //         mTMPText["TgVal"].gameObject.SetActive(false);
-    //         switch (data.Qid)
-    //         {
-    //             case 2:
-    //             case 3:
-    //                 mTMPText["TgVal"].gameObject.SetActive(true);
-    //                 mTMPText["TgVal"].text = data.CurCnt.ToString() + " / " + data.TgCnt.ToString();
-    //                 break;
-    //         }
-    //     }
-    // }
+    void SetQst(int idx)
+    {
+        InitQst();
+        if (PlayerManager.I.pData.MainQst.Count == 0 &&
+        PlayerManager.I.pData.SubQst.Count == 0 &&
+        PlayerManager.I.pData.GuildQst.Count == 0) return;
+        int showIdx = idx == -1 ? 0 : idx;
+        if (idx == -1)
+        {
+            if (PlayerManager.I.pData.MainQst.Count == 0) showIdx = 1;
+            if (PlayerManager.I.pData.SubQst.Count == 0) showIdx = 2;
+        }
+        else
+        {
+            if (showIdx == 0 && PlayerManager.I.pData.MainQst.Count == 0) return;
+            if (showIdx == 1 && PlayerManager.I.pData.SubQst.Count == 0) return;
+            if (showIdx == 2 && PlayerManager.I.pData.GuildQst.Count == 0) return;
+        }
+
+        string[] tabs = { "QstMain", "QstSub", "QstGuild" };
+        foreach (string v in tabs)
+        {
+            Image img = mButtons[v].GetComponent<Image>();
+            if (v == tabs[showIdx])
+                img.color = Color.yellow;
+            else
+            {
+                if (img.color != Color.white)
+                    img.color = Color.white;
+            }
+        }
+        var qData = new List<QuestInstData>();
+        switch (showIdx)
+        {
+            case 0: qData = PlayerManager.I.pData.MainQst; break;
+            case 1: qData = PlayerManager.I.pData.SubQst; break;
+            case 2: qData = PlayerManager.I.pData.GuildQst; break;
+        }
+        for (int i = 0; i < qData.Count; i++)
+        {
+            GameObject obj = Instantiate(ResManager.GetGameObject("QstBtn"), questBtnParent);
+            obj.name = "MyQst_" + i;
+            QuestListBtn qst = obj.GetComponent<QuestListBtn>();
+            qst.SetQuestListBtn(i, qData[i].Grade, qData[i].QType, LocalizationManager.GetValue(qData[i].Name), "JournalPop");
+            questBtn.Add(qst);
+            qList.Add(qData[i]);
+        }
+        SelQstBtn(0);
+    }
+    private void SelQstBtn(int idx)
+    {
+        CheckQstBtn(idx);
+        var data = qList[idx];
+        UpdateStars(data.Grade);
+        mTMPText["QstName"].text = LocalizationManager.GetValue(data.Name);
+        mTMPText["DescVal"].text = data.Desc;
+        if (data.State == 2)
+        {
+            mTMPText["TgVal"].gameObject.SetActive(true);
+            mTMPText["TgVal"].text = LocalizationManager.GetValue("Completed");
+            return;
+        }
+        switch (data.QType)
+        {
+            case 1: //메인
+                break;
+            case 2: //서브
+                break;
+            default: //길드
+                switch (data.Qid)
+                {
+                    case 2:
+                    case 3:
+                        mTMPText["TgVal"].gameObject.SetActive(true);
+                        int curCnt = data.CurCnt >= data.TgCnt ? data.TgCnt : data.CurCnt;
+                        mTMPText["TgVal"].text = curCnt.ToString() + " / " + data.TgCnt.ToString();
+                        break;
+                    default:
+                        mTMPText["TgVal"].gameObject.SetActive(false);
+                        break;
+                }
+                break;
+        }
+        mTMPText["TgVal"].text = data.CurCnt.ToString() + " / " + data.TgCnt.ToString();
+    }
+    private void CheckQstBtn(int selIdx)
+    {
+        int cnt = questBtn.Count;
+        for (int i = 0; i < cnt; i++)
+        {
+            questBtn[i].sel.SetActive(i == selIdx);
+            questBtn[i].StateTxtColor(qList[i].State);
+        }
+    }
     void UpdateStars(int star)
     {
         for (int i = 1; i <= 10; i++)

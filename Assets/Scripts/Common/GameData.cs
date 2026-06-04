@@ -291,8 +291,9 @@ public class MonGrpData
 {
     //GrpID	Grade	Type	Min	Max	LeaderID	List
     public int GrpID, Grade, Type, Min, Max, LeaderID;
+    public float Spd;
     public List<int> List;
-    public MonGrpData(int grpID, int grade, int type, int min, int max, int leaderID, string list)
+    public MonGrpData(int grpID, int grade, int type, int min, int max, int leaderID, string list, float spd)
     {
         this.GrpID = grpID;
         this.Grade = grade;
@@ -301,6 +302,7 @@ public class MonGrpData
         this.Max = max;
         this.LeaderID = leaderID;
         this.List = list.Split('_').Select(int.Parse).ToList();
+        this.Spd = spd;
     }
 }
 

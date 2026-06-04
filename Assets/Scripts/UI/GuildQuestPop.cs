@@ -143,7 +143,6 @@ public class GuildQuestPop : UIScreen
                 mTMPText["ExpVal"].text = q.Exp.ToString();
                 mTMPText["CrownVal"].text = q.Crown.ToString();
                 mTMPText["GdExpVal"].text = q.GradeExp.ToString();
-                mTMPText["CurCnt"].gameObject.SetActive(false);
                 CheckQstBtn(curIdx);
                 if (q.State == 1)
                 {
@@ -154,6 +153,9 @@ public class GuildQuestPop : UIScreen
                             mTMPText["CurCnt"].gameObject.SetActive(true);
                             int curCnt = q.CurCnt >= q.TgCnt ? q.TgCnt : q.CurCnt;
                             mTMPText["CurCnt"].text = curCnt.ToString() + " / " + q.TgCnt.ToString();
+                            break;
+                        default:
+                            mTMPText["CurCnt"].gameObject.SetActive(false);
                             break;
                     }
                 }
@@ -220,8 +222,8 @@ public class GuildQuestPop : UIScreen
         }
         foreach (var v in qstList)
         {
-            GameObject obj = Instantiate(ResManager.GetGameObject("GuildQstBtn"), parent);
-            obj.name = "GuildQuest_" + qIdx;
+            GameObject obj = Instantiate(ResManager.GetGameObject("QstBtn"), parent);
+            obj.name = "GuildQst_" + qIdx;
             QuestListBtn qst = obj.GetComponent<QuestListBtn>();
             qst.SetQuestListBtn(qIdx, v.Grade, v.QType, LocalizationManager.GetValue(v.Name), "GuildQuestPop");
             questBtn.Add(qst);
@@ -233,7 +235,7 @@ public class GuildQuestPop : UIScreen
     }
     private void CheckQstBtn(int selIdx)
     {
-        int cnt = qList.Count;
+        int cnt = questBtn.Count;
         for (int i = 0; i < cnt; i++)
         {
             questBtn[i].sel.SetActive(i == selIdx);
