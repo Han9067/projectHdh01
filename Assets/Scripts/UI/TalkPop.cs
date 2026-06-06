@@ -131,7 +131,8 @@ public class TalkPop : UIScreen
                         break;
                     case "QstM_Tuto_2_2":
                         PlayerManager.I.NextMainQstOrder(1001);
-                        WorldCore.I.CreateWorldMarker(new Vector3(-9.65f, -35.2f, 0), 999);
+                        WorldCore.I.CreateWorldMarker(new Vector3(-9.65f, -35.2f, 0),
+                             0, 999, 1, 999, new List<int>() { 1, 1, 1 }, false); //추후 수정
                         UIManager.ClosePopup("CityEnterPop");
                         Close();
                         break;

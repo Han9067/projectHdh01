@@ -9,8 +9,7 @@ public class WorldAreaData
 {
     public int areaID;
     public int areaType;
-    public int curCnt;
-    public int maxCnt;
+    public int curCnt, maxCnt;
     public Dictionary<int, List<int>> grpByGrade = new Dictionary<int, List<int>>();
 }
 public class WorldMonData
@@ -25,9 +24,20 @@ public class WorldMonData
 }
 public class WorldMarkerData
 {
-    public int type;
+    public int uId, type, mkEventID, Grade;
+    public bool isGuildQst;
     public List<int> monList = new List<int>();
     public Vector3 pos;
+    public WorldMarkerData(int id, int t, bool isGQst, int g, Vector3 p, int eid, List<int> mList)
+    {
+        uId = id;
+        type = t;
+        isGuildQst = isGQst;
+        Grade = g;
+        pos = p;
+        mkEventID = eid;
+        monList = mList;
+    }
 }
 public class WorldObjManager : AutoSingleton<WorldObjManager>
 {
@@ -612,7 +622,10 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
     public SpawnMonTable SpawnMonTable => _spawnMonTable ?? (_spawnMonTable = GameDataManager.GetTable<SpawnMonTable>());
     private MonGrpTable _monGrpTable;
     public MonGrpTable MonGrpTable => _monGrpTable ?? (_monGrpTable = GameDataManager.GetTable<MonGrpTable>());
+    private EventTable _eventTable;
+    public EventTable EventTable => _eventTable ?? (_eventTable = GameDataManager.GetTable<EventTable>());
     public Dictionary<int, MonGrpData> monGrpData = new Dictionary<int, MonGrpData>();
+    public Dictionary<int, EventData> eventData = new Dictionary<int, EventData>();
     public Dictionary<int, WorldAreaData> areaDataList = new Dictionary<int, WorldAreaData>(); //월드맵 구역 데이터
     public Dictionary<int, WorldMonData> worldMonDataList = new Dictionary<int, WorldMonData>();
     public Dictionary<int, WorldMarkerData> worldMarkerDataList = new Dictionary<int, WorldMarkerData>();
@@ -641,6 +654,9 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
             areaDataList[id].grpByGrade.Add(6, spawnMon.MG6.Split('_').Select(int.Parse).ToList());
             areaDataList[id].grpByGrade.Add(7, spawnMon.MG7.Split('_').Select(int.Parse).ToList());
         }
+
+        foreach (var evt in EventTable.Datas)
+            eventData[evt.EventID] = new EventData(evt.EventID, evt.Name);
         //추후에 curCnt는 세이브 데이터를 통해 갱신해야 함
         //curCnt는 maxCnt만큼만 적용되는데 적용되는 시점은 스폰타임(현재 1주일간격)에 1번 적용
     }
@@ -704,13 +720,9 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
             worldMonDataList.Remove(t);
         btMonGrpUid.Clear();
     }
-    public void AddWorldMarkerData(int uId, int type, Vector3 pos)
+    public void AddWorldMarkerData(int uId, int type, int g, Vector3 pos, int eid, List<int> mList)
     {
-        worldMarkerDataList[uId] = new WorldMarkerData
-        {
-            type = type,
-            pos = pos,
-        };
+        worldMarkerDataList.Add(uId, new WorldMarkerData(uId, type, false, g, pos, eid, mList));
     }
     #endregion
     #region 전투 참여 몬스터 관리
@@ -744,7 +756,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         str = str.TrimEnd('_');
         return str;
     }
-    public void SetEventMon(List<int> list)
+    public void SetMonList(List<int> list)
     {
         btMonList.Clear();
         foreach (var m in list)
@@ -762,6 +774,87 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         // btMonList.Add(2);
         // btMonList.Add(1);
         // btMonList.Add(1);
+    }
+    #endregion
+    #region 마커 관련
+    public int[] GetMkData(int areaID, int grade)
+    {
+        int[] mkData = new int[2];
+        if (areaID > 100)
+        {
+            mkData[0] = Random.Range(2, 4);
+            if (mkData[0] == 2)
+                mkData[1] = GetMkRandomEventID(areaID, grade);
+            else
+                mkData[1] = GetMkExploreEventID(areaID, grade);
+        }
+        else
+        {
+            mkData[0] = 2;
+            mkData[1] = GetMkRandomEventID(areaID, grade);
+        }
+        return mkData;
+    }
+    private int GetMkRandomEventID(int areaID, int grade)
+    {
+        //현재는 몬스터 처치관련 이벤트만 적용하고 추후에 다른 랜덤 이벤트들도 넣어줘야함
+        int[] arr;
+        switch (areaID)
+        {
+            case 102:
+                arr = grade < 2 ?
+                new int[] { 100061, 100062, 100101 } :
+                new int[] { 200001, 100062, 100063, 100101, 100102 };
+                return arr[Random.Range(0, arr.Length)];
+            case 103:
+                arr = new int[] { 100022, 100041, 100121, 200002 };
+                return arr[Random.Range(0, arr.Length)];
+            default:
+                arr = grade < 2 ?
+                new int[] { 100001, 100021, 100041, 100061 } :
+                new int[] { 100001, 100021, 100022, 100041, 100062, 100063 };
+                return arr[Random.Range(0, arr.Length)];
+        }
+    }
+    private int GetMkExploreEventID(int areaID, int grade)
+    {
+        int[] arr;
+        switch (areaID)
+        {
+            case 102:
+                arr = new int[] { 300001, 300002, 300003 };
+                return arr[Random.Range(0, arr.Length)];
+            default:
+                arr = new int[] { 300001, 300002 };
+                return arr[Random.Range(0, arr.Length)];
+        }
+    }
+    public List<int> GetEventMonList(int eventID)
+    {
+        List<int> monList = new List<int>();
+        if (eventID < 200000)
+        {
+            MonGrpData grp = monGrpData[eventID];
+            int cnt = Random.Range(grp.Min, grp.Max);
+            for (int i = 0; i < cnt; i++)
+            {
+                int m = grp.List[Random.Range(0, grp.List.Count)];
+                monList.Add(m);
+            }
+        }
+        else
+        {
+            switch (eventID)
+            {
+                case 200001:
+                    //도적요새 61,62,63
+                    break;
+                case 200002:
+                    //오크요새 121,122,123
+                    break;
+            }
+        }
+        return monList;
     }
     #endregion
 

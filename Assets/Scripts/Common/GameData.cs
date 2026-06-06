@@ -305,7 +305,17 @@ public class MonGrpData
         this.Spd = spd;
     }
 }
-
+[System.Serializable]
+public class EventData
+{
+    public int EventID;
+    public string Name;
+    public EventData(int id, string name)
+    {
+        EventID = id;
+        Name = name;
+    }
+}
 
 [System.Serializable]
 public class ShopData

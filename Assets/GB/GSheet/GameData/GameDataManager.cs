@@ -58,6 +58,8 @@ public class GameDataManager : AutoSingleton<GameDataManager>
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<AttTable>(AttTabledata,(result)=>{ I._Tables[TABLE.AttTable] = result;}));
                 string MakeTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/MakeTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<MakeTable>(MakeTabledata,(result)=>{ I._Tables[TABLE.MakeTable] = result;}));
+                string EventTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/EventTable").text);
+            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<EventTable>(EventTabledata,(result)=>{ I._Tables[TABLE.EventTable] = result;}));
                 
 
         gbCoroutine.OnComplete(()=>{complete?.Invoke();}).Play();
@@ -188,6 +190,11 @@ case TABLE.MakeTable:
         d_MakeTable.SetJson(data);
         obj  = d_MakeTable;
         break;
+case TABLE.EventTable:
+        EventTable d_EventTable = new EventTable();
+        d_EventTable.SetJson(data);
+        obj  = d_EventTable;
+        break;
         }
 
         return obj;
@@ -302,5 +309,6 @@ public enum TABLE
 	SkTable,
 	AttTable,
 	MakeTable,
+	EventTable,
 
 }

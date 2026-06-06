@@ -60,7 +60,7 @@ public class EventPop : UIScreen
                                     int m = grp.List[Random.Range(0, grp.List.Count)];
                                     monList.Add(m);
                                 }
-                                WorldObjManager.I.SetEventMon(monList);
+                                WorldObjManager.I.SetMonList(monList);
                                 break;
                             }
                         }

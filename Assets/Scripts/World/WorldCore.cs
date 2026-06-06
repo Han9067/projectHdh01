@@ -42,7 +42,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     private Dictionary<int, wMon> wMonObj = new Dictionary<int, wMon>();
     [Header("Marker")]
     [SerializeField] private Transform wMarkerParent;
-    private Dictionary<int, wMarker> wMarkerObj = new Dictionary<int, wMarker>();
+    private Dictionary<int, wMarker> wMkObj = new Dictionary<int, wMarker>();
     #endregion
     void Awake()
     {
@@ -200,7 +200,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         moveTgPos.z = 0f;
         Vector3Int start = worldMapTile.WorldToCell(pPos);
         Vector3Int end = worldMapTile.WorldToCell(moveTgPos);
-        movePath = GetWorldMovePath(start, end, pPos, moveTgPos);
+        movePath = GetWorldMovePath(start, end, moveTgPos);
         int xSpd = GsManager.worldSpd;
         if (xSpd == 0)
             Presenter.Send("WorldMainUI", "ChangeGameSpd", "X1");
@@ -244,7 +244,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             traceItv = 0f;
             Vector3Int sc = worldMapTile.WorldToCell(curPos);
             Vector3Int ec = worldMapTile.WorldToCell(wMonObj[mTraceObjUid].transform.position);
-            movePath = GetWorldMovePath(sc, ec, curPos, wMonObj[mTraceObjUid].transform.position);
+            movePath = GetWorldMovePath(sc, ec, wMonObj[mTraceObjUid].transform.position);
         }
     }
     private void InitMovingPlayer()
@@ -337,6 +337,44 @@ public class WorldCore : AutoSingleton<WorldCore>
             }
         }
     }
+    public void CheckAllAreaWorldMkEvent()
+    {
+        InitWorldMkEvent();
+        foreach (var area in WorldObjManager.I.areaDataList)
+        {
+            int areaID = area.Value.areaID;
+            int cnt = areaID < 100 ? Random.Range(0, 1) : Random.Range(0, 2);
+            if (cnt == 0) continue;
+            for (int i = 0; i < cnt; i++)
+            {
+                int uId = 1000000 + (areaID * 100) + i;
+                int grade = Random.Range(-1, 1) + PlayerManager.I.pData.Grade;
+                if (grade < 1) grade = 1;
+                Vector3 pos = WorldObjManager.I.GetSpawnPos(areaID);
+                int[] mkData = WorldObjManager.I.GetMkData(areaID, grade); //2 -> 랜덤,3 -> 탐험,4->보스
+                int mkType = mkData[0];
+                int mkEventID = mkData[1];
+                List<int> monList = WorldObjManager.I.GetEventMonList(mkEventID);
+                //20만번대 던전 ID는 별도의 몬스터 리스트를 가지지 않음
+                CreateWorldMarker(pos, uId, mkType, grade, mkEventID, monList, false);
+            }
+        }
+    }
+    private void InitWorldMkEvent()
+    {
+        WorldObjManager.I.worldMarkerDataList.Clear();
+        foreach (var mk in wMkObj)
+        {
+            if (mk.Value.isGuildQst)
+            {
+                WorldObjManager.I.AddWorldMarkerData(mk.Value.mkUid, mk.Value.mkType,
+                    mk.Value.Grade, mk.Value.mkPos, mk.Value.eventID, mk.Value.monList);
+                continue;
+            }
+            Destroy(mk.Value.gameObject); //마커 삭제
+        }
+        wMkObj.Clear(); //마커 오브젝트 초기화
+    }
     private void CreateWorldMon(int areaID, int remain)
     {
         int[] grpList = WorldObjManager.I.areaDataList[areaID].grpByGrade[PlayerManager.I.pData.Grade].ToArray();
@@ -386,7 +424,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             wm.SetObjLayer(wm.myPos.y);
             wm.pathIdx = 0;
             wMonObj.Add(uId, wm);
-            wm.path = GetWorldMovePath(worldMapTile.WorldToCell(wm.myPos), worldMapTile.WorldToCell(wm.tgPos), wm.myPos, wm.tgPos); //이동경로 설정
+            wm.path = GetWorldMovePath(worldMapTile.WorldToCell(wm.myPos), worldMapTile.WorldToCell(wm.tgPos), wm.tgPos); //이동경로 설정
             WorldObjManager.I.AddWorldMonData(uId, areaID, leaderID, mList, wm.myPos, wm.tgPos, wm.path, wm.tcSpd, grpData.Type);
             // wm.transform.position = wm.myPos;
             wm.transform.position = wm.path[0];
@@ -422,34 +460,27 @@ public class WorldCore : AutoSingleton<WorldCore>
         AllRemoveWorldMon();
         CheckAllAreaWorldMon();
     }
-    public void CreateWorldMarker(Vector3 pos, int type)
+    public void CreateWorldMarker(Vector3 pos, int uId, int type, int grade, int eventID, List<int> monList, bool isGQst)
     {
-        int uId = Random.Range(1000000, 9999999); //마커 그룹은 7자리로 구분
         var obj = Instantiate(ResManager.GetGameObject("wMarker"), wMarkerParent);
-        obj.name = "Marker" + uId;
-        obj.transform.position = pos;
+        obj.name = "Marker_" + eventID;
         var wm = obj.GetComponent<wMarker>();
-        wm.SetMarkerData(uId, type);
-        wMarkerObj.Add(uId, wm);
-        WorldObjManager.I.AddWorldMarkerData(uId, type, pos);
-        if (type == 1)
-            QuestManager.I.curMkUid = uId;
+        wm.SetMarkerData(uId, eventID, type, grade, pos, monList, isGQst);
+        wMkObj.Add(eventID, wm);
+        WorldObjManager.I.AddWorldMarkerData(eventID, type, grade, pos, eventID, monList);
+        wm.transform.position = pos;
     }
     public void RemoveMarker(int uId)
     {
-        Destroy(wMarkerObj[uId].gameObject);
-        wMarkerObj.Remove(uId);
+        Destroy(wMkObj[uId].gameObject);
+        wMkObj.Remove(uId);
     }
     private void LoadWorldMarker()
     {
-        foreach (var wMarker in WorldObjManager.I.worldMarkerDataList)
+        foreach (var mk in WorldObjManager.I.worldMarkerDataList)
         {
-            var obj = Instantiate(ResManager.GetGameObject("wMarker"), wMarkerParent);
-            obj.name = "Marker" + wMarker.Key;
-            var wm = obj.GetComponent<wMarker>();
-            wm.SetMarkerData(wMarker.Key, wMarker.Value.type);
-            wm.transform.position = wMarker.Value.pos;
-            wMarkerObj.Add(wMarker.Key, wm);
+            CreateWorldMarker(mk.Value.pos, mk.Value.uId, mk.Value.type,
+                mk.Value.Grade, mk.Value.mkEventID, mk.Value.monList, mk.Value.isGuildQst);
         }
     }
     #endregion
@@ -483,7 +514,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     #endregion
     #region 월드맵 오브젝트 제어 관련
-    private List<Vector3> GetWorldMovePath(Vector3Int sc, Vector3Int ec, Vector3 sp, Vector3 ep)
+    private List<Vector3> GetWorldMovePath(Vector3Int sc, Vector3Int ec, Vector3 ep)
     {
         //sc : 시작 셀, ec : 목표 셀, sp : 시작 월드 좌표, ep : 목표 월드 좌표
         List<Vector3> path = WorldObjManager.I.FindPathOptimized(sc, ec);
@@ -530,7 +561,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             }
         }
         //마커
-        foreach (var mk in wMarkerObj)
+        foreach (var mk in wMkObj)
         {
         }
     }
@@ -546,7 +577,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             if (wm.pathIdx >= wm.path.Count)
             {
                 wm.tgPos = SetWorldMonNextPos(wm);
-                wm.path = GetWorldMovePath(worldMapTile.WorldToCell(wm.myPos), worldMapTile.WorldToCell(wm.tgPos), wm.myPos, wm.tgPos);
+                wm.path = GetWorldMovePath(worldMapTile.WorldToCell(wm.myPos), worldMapTile.WorldToCell(wm.tgPos), wm.tgPos);
                 wm.pathIdx = 0;
             }
         }
@@ -567,7 +598,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             wm.traceItv = 0f;
             Vector3Int sc = worldMapTile.WorldToCell(curPos);
             Vector3Int ec = worldMapTile.WorldToCell(player.transform.position);
-            wm.path = GetWorldMovePath(sc, ec, curPos, player.transform.position);
+            wm.path = GetWorldMovePath(sc, ec, player.transform.position);
         }
         wm.transform.position = wm.myPos;
     }
@@ -582,7 +613,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             wm.traceItv = 0f;
             Vector3Int sc = worldMapTile.WorldToCell(wm.myPos);
             Vector3Int ec = worldMapTile.WorldToCell(player.transform.position);
-            wm.path = GetWorldMovePath(sc, ec, wm.myPos, player.transform.position);
+            wm.path = GetWorldMovePath(sc, ec, player.transform.position);
         }
     }
     private void CheckOutAreaMon(wMon wm)
@@ -593,7 +624,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             Debug.Log("몬스터 영역 이탈하여 복귀");
             wm.SetTrace(false);
             wm.tgPos = SetWorldMonNextPos(wm);
-            wm.path = GetWorldMovePath(worldMapTile.WorldToCell(wm.myPos), worldMapTile.WorldToCell(wm.tgPos), wm.myPos, wm.tgPos);
+            wm.path = GetWorldMovePath(worldMapTile.WorldToCell(wm.myPos), worldMapTile.WorldToCell(wm.tgPos), wm.tgPos);
             wm.pathIdx = 0;
         }
     }
