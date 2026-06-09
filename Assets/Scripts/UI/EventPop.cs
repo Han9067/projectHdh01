@@ -32,8 +32,10 @@ public class EventPop : UIScreen
     {
         switch (key)
         {
-            case "OnBattle":
+            case "OnLeft":
                 WorldCore.I.SceneFadeOut(); //페이드
+                break;
+            case "OnRight":
                 break;
         }
     }
@@ -43,29 +45,50 @@ public class EventPop : UIScreen
         {
             case "SetEvent":
                 List<int> list = data.Get<List<int>>();
-                switch (list[0])
+                int mkUid = list[0];
+                int eventID = list[1];
+                string title = "";
+                string ment = "";
+                if (eventID < 200001)
                 {
-                    case 1:
-                        mTMPText["Ment"].text = LocalizationManager.GetValue("Event_QstG_FindMonGrp");
-                        foreach (var q in PlayerManager.I.pData.MainQst)
+                    title = LocalizationManager.GetValue("Evt_FindMonGrp_Title");
+                    ment = LocalizationManager.GetValue("Evt_FindMonGrp_Ment");
+                    foreach (var q in PlayerManager.I.pData.MainQst)
+                    {
+                        if (q.MarkerUid == mkUid)
                         {
-                            if (q.MarkerUid == list[1])
+                            MonGrpData grp = WorldObjManager.I.monGrpData[q.MonId];
+                            int cnt = Random.Range(grp.Min, grp.Max) * 2;
+                            List<int> monList = new List<int>();
+                            for (int i = 0; i < cnt; i++)
                             {
-                                MonGrpData grp = WorldObjManager.I.monGrpData[q.MonId];
-                                // int cnt = Random.Range(grp.Min, grp.Max) * 2;
-                                int cnt = grp.Min; //테스트용
-                                List<int> monList = new List<int>();
-                                for (int i = 0; i < cnt; i++)
-                                {
-                                    int m = grp.List[Random.Range(0, grp.List.Count)];
-                                    monList.Add(m);
-                                }
-                                WorldObjManager.I.SetMonList(monList);
-                                break;
+                                int m = grp.List[Random.Range(0, grp.List.Count)];
+                                monList.Add(m);
                             }
+                            WorldObjManager.I.SetMonList(monList);
                         }
-                        break;
+                    }
                 }
+                else if (eventID < 300001)
+                {
+                    switch (eventID)
+                    {
+                        case 200001:
+                            title = LocalizationManager.GetValue("Evt_BanditFortress_Title");
+                            ment = LocalizationManager.GetValue("Evt_BanditFortress_Ment");
+                            break;
+                        case 200002:
+                            title = LocalizationManager.GetValue("Evt_OrcFortress_Title");
+                            ment = LocalizationManager.GetValue("Evt_OrcFortress_Ment");
+                            break;
+                    }
+                }
+                else if (eventID < 400001)
+                {
+
+                }
+                mTMPText["Title"].text = title;
+                mTMPText["Ment"].text = ment;
                 break;
         }
     }

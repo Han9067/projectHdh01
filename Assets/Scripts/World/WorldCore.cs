@@ -19,13 +19,13 @@ public class WorldCore : AutoSingleton<WorldCore>
     private Camera cmr;
     private float moveSpd = 20f, zoomSpd = 10f; // 카메라 이동 속도, 줌 속도
     private float minZoom = 5f, maxZoom = 10f;  // 줌 범위
-    public static int intoCity = 0, worldWorkId = 0, mOverObjUid = 0, mTraceObjUid = 0;
+    public static int intoPlace = 0, worldWorkId = 0, mOverObjUid = 0, mTraceObjUid = 0;
     //도시 진입, 일 작업, 마우스 오버 몬스터, 추적 몬스터
     private Vector2 mapMin, mapMax;
 
     [Header("City")]
     [SerializeField] private Transform cityParent;
-    [SerializeField] private Dictionary<int, GameObject> cityObjList = new Dictionary<int, GameObject>();
+    [SerializeField] private Dictionary<int, wPlace> cityList = new Dictionary<int, wPlace>();
     [Header("Tile")]
     [SerializeField] private Tilemap worldMapTile;
     private Vector3Int lastCellPos = Vector3Int.zero;
@@ -65,6 +65,8 @@ public class WorldCore : AutoSingleton<WorldCore>
         {
             PlayerManager.I.isObjCreated = true;
             CheckAllAreaWorldMon();
+            ////
+            CreateWorldMarker(new Vector3(-14f, -34f, 0f), 1000000, 2, 1, 200001, new List<int> { }, false);
         }
         else
         {
@@ -279,10 +281,10 @@ public class WorldCore : AutoSingleton<WorldCore>
         InitMovingPlayer();
         Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
 
-        if (PlayerManager.I.currentCity > 0)
+        if (PlayerManager.I.curPlace > 0)
         {
-            int id = PlayerManager.I.currentCity;
-            Vector3 pos = cityObjList[id].transform.position;
+            int id = PlayerManager.I.curPlace;
+            Vector3 pos = cityList[id].transform.position;
             MoveCamera(pos);
             player.transform.position = pos;
             UIManager.ShowPopup("CityEnterPop");
@@ -297,6 +299,10 @@ public class WorldCore : AutoSingleton<WorldCore>
             Presenter.Send("WorkPop", "SetWork", worldWorkId);
             worldWorkId = 0;
         }
+    }
+    public Vector3Int GetPlayerCellPos()
+    {
+        return worldMapTile.WorldToCell(PlayerManager.I.worldPos);
     }
     public void StatePlayer(bool on)
     {
@@ -313,16 +319,16 @@ public class WorldCore : AutoSingleton<WorldCore>
     void LoadCityObj()
     {
         int idx = 1;
-        foreach (Transform child in cityParent)
+        foreach (Transform city in cityParent)
         {
-            cityObjList.Add(idx, child.gameObject);
+            cityList.Add(idx, city.GetComponent<wPlace>());
             idx++;
         }
     }
     public void HideAllCityHighlight()
     {
-        foreach (var city in cityObjList)
-            city.Value.GetComponent<wCity>().StateHighlight(false);
+        foreach (var city in cityList)
+            city.Value.StateHighlight(false);
     }
     #endregion
     #region 월드맵 오브젝트 생성 관련
@@ -689,6 +695,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         Presenter.Send("WorldMainUI", "SaveAllTime");
         DOTween.KillAll();
         WorldObjManager.I.RemoveWorldMonGrp();
+
         GsManager.gameState = GameState.Battle; //스테이터스 변경
         UIManager.ChangeScene("Battle");
         // blackImg.gameObject.SetActive(true);

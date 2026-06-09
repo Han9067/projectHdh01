@@ -12,6 +12,7 @@ public class GsManager : AutoSingleton<GsManager>
 {
     public static GameState gameState;
     public static int worldSpd = 1; //월드맵 속도
+    public string btSeed = ""; //전투 맵 시드
     private void Awake()
     {
         #region 초기화
@@ -137,6 +138,11 @@ public class GsManager : AutoSingleton<GsManager>
         string[] arr = new string[] { msg, main };
         UIManager.ShowPopup("TstMsgPop");
         Presenter.Send("TstMsgPop", "ShowTstMsgArr" + type, arr);
+    }
+    public void SetBtSeed()
+    {
+        Vector3Int p = WorldCore.I.GetPlayerCellPos();
+        btSeed = "Tile_" + WorldObjManager.I.GetCurTileFieldType(p);
     }
     #endregion
     #region 커서 관리

@@ -36,6 +36,9 @@ public class BattleReadyPop : UIScreen
         switch (key)
         {
             case "ClickBattleStart":
+                // //시드 설정
+                // GsManager.I.btSeed = Random.Range(10000000, 99999999);
+
                 WorldCore.I.SceneFadeOut(); //페이드
                 break;
             case "ClickBattleEscape":
@@ -47,6 +50,10 @@ public class BattleReadyPop : UIScreen
         switch (key)
         {
             case "MonInfo":
+                // Debug.Log(WorldCore.I.GetCurTileType());
+                //PlayerManager.I.worldPos
+                GsManager.I.SetBtSeed();
+
                 string str = data.Get<string>();
                 int[] tot = str.Split('_').Select(int.Parse).ToArray();
                 Dictionary<int, int> dict = new Dictionary<int, int>();

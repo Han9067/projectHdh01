@@ -9,7 +9,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
     public static bool isZeroCt = true; //스킬 쿨타임 없애기
     public static bool isZeroHpMpSp = true; //체력, 마나, 스페셜 없애기
     [Header("플레이어 데이터")]
-    public int currentCity = 0;
+    public int curPlace = 0;
     public PlayerData pData;
     public List<List<InvenGrid>> grids;
     public Vector3 worldPos = new Vector3(0, 0, 0);

@@ -103,7 +103,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     private List<RngGrid> skRng = new List<RngGrid>();
     private int pSkRngType = 0; // 현재 스킬 타입 ->단일인지 다중인지 등
     private int pSkTgType = 0; //0 : 적, 1 : 자신, 2 : 아군 버프
-    private int lcx = 0, rcx = 0;//좌, 우 플레이어 또는 NPC, 몬스터의 기준 x좌표
+    private int lcx = 0, rcx = 0, ccy = 0;//좌, 우 플레이어 또는 NPC, 몬스터의 기준 x좌표, 기준 y좌표
 
     [Header("====Player====")]
     [SerializeField] private GameObject pObj;
@@ -328,13 +328,39 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (gGrid != null)
             gGrid = null;
         //mapSeed -> 1~100 필드 101부터 던전 및 특수 맵
+        string seed = GsManager.I.btSeed;
         mapSeed = 1; //던전 맵 시드
-        tileMapObj = GameObject.Find($"Tile_{mapSeed}_1");
+        switch (seed)
+        {
+            case "Tile_101_1":
+            case "Tile_101_2":
+            case "Tile_101_3":
+            case "Tile_101_4":
+                mapSeed = 101;
+                lcx = 13;
+                rcx = 24;
+                ccy = 13;
+                break;
+            case "Tile_201":
+                mapSeed = 201;
+                lcx = 10;
+                rcx = 17;
+                ccy = 11;
+                break;
+            default:
+                mapSeed = 1;
+                lcx = 13;
+                rcx = 24;
+                ccy = 13;
+                break;
+        }
+
+        tileMapObj = GameObject.Find(seed);
         if (tileMapObj == null)
-            tileMapObj = Instantiate(ResManager.GetGameObject($"Tile_{mapSeed}_1"), transform);
-        //lcx, rcx 설정
-        lcx = mapSeed < 101 ? 13 : 10;
-        rcx = mapSeed < 101 ? 24 : 17;
+            tileMapObj = Instantiate(ResManager.GetGameObject(seed), transform);
+        //lcx, rcx, cy 설정
+        // lcx = mapSeed < 101 ? 13 : 10;
+        // rcx = mapSeed < 101 ? 24 : 17;
 
         gMap = tileMapObj.transform.Find("Bg")?.GetComponent<Tilemap>();
         var pMap = tileMapObj.transform.Find("Prop")?.GetComponent<Tilemap>();
@@ -421,18 +447,18 @@ public class BattleCore : AutoSingleton<BattleCore>
             pObj = GameObject.FindGameObjectWithTag("Player");
         player = pObj.GetComponent<bPlayer>();
         //추후 NPC 생성
-        if (mapSeed < 1000) // 맵 시드가 1000 미만이면 일반 필드 1001부터는 특수 장소(던전이나 숲 등)
+        if (mapSeed < 201) // 맵 시드가 1000 미만이면 일반 필드 1001부터는 특수 장소(던전이나 숲 등)
         {
             //추후엔 특정 이벤트(기습, 매복 등) 으로 배치 상황이 특수해질 경우도 대응해야함
             pDir = Random.Range(0, 2); // 0:좌, 1:우 -> 파티의 방향 설정
-            int cx = pDir == 0 ? lcx : rcx, cy = mapSeed < 101 ? 13 : 11;
+            int cx = pDir == 0 ? lcx : rcx;
             player.SetObjDir(pDir == 0 ? -1 : 1);
 
-            var pos = GetStartPos(cx, cy); //추후 문제가 생길수있음...
+            var pos = GetStartPos(cx, ccy); //추후 문제가 생길수있음...
             pObj.transform.position = new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
             cpPos = pos;
             gGrid[pos.x, pos.y].tId = 1000;
-            player.SetObjLayer(mapH - cy);
+            player.SetObjLayer(mapH - ccy);
             objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos, 1, 1));
         }
     }
@@ -442,12 +468,13 @@ public class BattleCore : AutoSingleton<BattleCore>
 
         if (WorldObjManager.I.btMonList.Count > 0)
         {
-            int cx = pDir == 0 ? rcx : lcx, cy = mapSeed < 101 ? 13 : 11, idx = 0;
+            int cx = pDir == 0 ? rcx : lcx, idx = 0;
             //추후 핵심 시스템 끝나면 중심점과 rng 값을 조정할 생각 
             int mCnt = WorldObjManager.I.btMonList.Count, rx = (mCnt / 2) + 1, ry = (mCnt / 4) + 1;
+            //요새 공략 같은 200번대 맵에 대한 위치 설정도 적용
             for (int i = 0; i < mCnt; i++)
             {
-                int mx = cx + Random.Range(-rx, rx + 1), my = cy + Random.Range(-ry, ry + 1);
+                int mx = cx + Random.Range(-rx, rx + 1), my = ccy + Random.Range(-ry, ry + 1);
                 var p = GetStartPos(mx, my);
                 int mId = WorldObjManager.I.btMonList[idx];
                 var mData = MonManager.I.MonDataList[mId];

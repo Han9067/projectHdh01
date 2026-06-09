@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 40, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4536245099030690130
 CanvasRenderer:
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.078431375, g: 0.078431375, b: 0.23529412, a: 0.8627451}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.7058824}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 9151686279659319776}
   - component: {fileID: 3311354000386323005}
   - component: {fileID: 3710333785558962325}
+  - component: {fileID: 3078871124657535049}
   m_Layer: 0
   m_Name: Txt
   m_TagString: Untagged
@@ -333,6 +334,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3078871124657535049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357324643651398226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad2bf7f7c938c6479ce134e2d147c40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Right
 --- !u!1 &1351774582703608050
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,7 +361,7 @@ GameObject:
   - component: {fileID: 8270296822420058162}
   - component: {fileID: 4539872218973503511}
   m_Layer: 0
-  m_Name: Btn_Escape
+  m_Name: Btn_Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -468,7 +482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: OnEscape
+  Key: OnRight
 --- !u!1 &1489451427848991276
 GameObject:
   m_ObjectHideFlags: 0
@@ -704,6 +718,7 @@ GameObject:
   - component: {fileID: 7314483001930350136}
   - component: {fileID: 954573928782564564}
   - component: {fileID: 4001045071969777853}
+  - component: {fileID: 3613502033418686687}
   m_Layer: 0
   m_Name: Txt
   m_TagString: Untagged
@@ -827,6 +842,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3613502033418686687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4887373787961697230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad2bf7f7c938c6479ce134e2d147c40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Left
 --- !u!1 &4998835421680949717
 GameObject:
   m_ObjectHideFlags: 0
@@ -916,7 +944,7 @@ GameObject:
   - component: {fileID: 3513727165774879800}
   - component: {fileID: 3792209064727622434}
   m_Layer: 0
-  m_Name: Btn_Battle
+  m_Name: Btn_Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1037,7 +1065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfad7bd27fe8b4a17a73ab10255eb676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: OnBattle
+  Key: OnLeft
 --- !u!1 &7472371750580085902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1119,10 +1147,10 @@ MonoBehaviour:
     list: []
   mButtons:
     list:
-    - key: OnBattle
+    - key: OnLeft
       value: {fileID: 3513727165774879800}
       duplicatedKey: 0
-    - key: OnEscape
+    - key: OnRight
       value: {fileID: 8270296822420058162}
       duplicatedKey: 0
   mGameObject:
@@ -1131,6 +1159,15 @@ MonoBehaviour:
     list: []
   mTMPText:
     list:
+    - key: Title
+      value: {fileID: 6050026805069358409}
+      duplicatedKey: 0
+    - key: Left
+      value: {fileID: 4001045071969777853}
+      duplicatedKey: 0
+    - key: Right
+      value: {fileID: 3710333785558962325}
+      duplicatedKey: 0
     - key: Ment
       value: {fileID: 863021040578491819}
       duplicatedKey: 0
@@ -1220,6 +1257,7 @@ GameObject:
   - component: {fileID: 8203131003256974344}
   - component: {fileID: 5503786325077843545}
   - component: {fileID: 6050026805069358409}
+  - component: {fileID: 4816444384300068244}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -1343,3 +1381,16 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4816444384300068244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9203273326369376700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad2bf7f7c938c6479ce134e2d147c40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Title

@@ -16,21 +16,21 @@ public class wCity : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
-            PlayerManager.I.currentCity = id;
+            PlayerManager.I.curPlace = id;
     }
     private void OnTriggerExit2D(Collider2D other)
     {
-        PlayerManager.I.currentCity = 0;
+        PlayerManager.I.curPlace = 0;
     }
     private void OnMouseEnter()
     {
-        WorldCore.intoCity = id;
+        WorldCore.intoPlace = id;
         if (CityEnterPop.isActive) return;
         StateHighlight(true);
     }
     private void OnMouseExit()
     {
-        WorldCore.intoCity = 0;
+        WorldCore.intoPlace = 0;
         if (CityEnterPop.isActive) return;
         StateHighlight(false);
     }

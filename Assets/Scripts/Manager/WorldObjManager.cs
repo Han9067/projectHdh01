@@ -227,6 +227,32 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         }
         return false;
     }
+    public string GetCurTileFieldType(Vector3Int p)
+    {
+        string cen = wGridDic[(p.x, p.y)].tType;
+        switch (cen)
+        {
+            case "r":
+                foreach (var dir in v3Dir8)
+                {
+                    Vector3Int pos = p + dir;
+                    if (wGridDic[(pos.x, pos.y)] == null || wGridDic[(pos.x, pos.y)].tType == "r") continue;
+                    switch (wGridDic[(pos.x, pos.y)].tType)
+                    {
+                        case "f":
+                            return $"1_{Random.Range(1, 5)}";
+                        default:
+                            return $"2_{Random.Range(1, 5)}";
+                    }
+                }
+                return $"1_{Random.Range(1, 5)}";
+            case "f":
+                return $"2_{Random.Range(1, 5)}";
+            default:
+                //case "n"
+                return $"1_{Random.Range(1, 5)}";
+        }
+    }
     #endregion
     #region A* 일반 필드 길찾기
     public class PathNode

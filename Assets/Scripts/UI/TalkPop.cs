@@ -75,7 +75,7 @@ public class TalkPop : UIScreen
                                 ment = LocalizationManager.GetValue("Talk_QstG1_1");
                                 foreach (var q in PlayerManager.I.pData.GuildQst)
                                 {
-                                    if (q.Qid == 1 && q.CityId == WorldCore.intoCity)
+                                    if (q.Qid == 1 && q.CityId == WorldCore.intoPlace)
                                     {
                                         PlayerManager.I.CompleteGuildQst(q.QUid);
                                         break;
@@ -132,7 +132,7 @@ public class TalkPop : UIScreen
                     case "QstM_Tuto_2_2":
                         PlayerManager.I.NextMainQstOrder(1001);
                         WorldCore.I.CreateWorldMarker(new Vector3(-9.65f, -35.2f, 0),
-                             0, 999, 1, 999, new List<int>() { 1, 1, 1 }, false); //추후 수정
+                             0, 1, 1, 999, new List<int>() { 1, 1, 1 }, false); //추후 수정
                         UIManager.ClosePopup("CityEnterPop");
                         Close();
                         break;

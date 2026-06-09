@@ -10,6 +10,13 @@ public class wMarker : MonoBehaviour
     public List<int> monList = new List<int>();
     public bool isGuildQst = false;
     [SerializeField] private SpriteRenderer spr;
+    static readonly int shdColorID = Shader.PropertyToID("_ShdColor");
+    static readonly int shdAmountID = Shader.PropertyToID("_ShdAmount");
+    private MaterialPropertyBlock markerProp;
+    private void Awake()
+    {
+        markerProp = new MaterialPropertyBlock();
+    }
     void Start()
     {
         switch (mkType)
@@ -25,9 +32,6 @@ public class wMarker : MonoBehaviour
                 break;
             case 4:
                 spr.sprite = ResManager.GetSprite("mark_boss");
-                break;
-            case 999:
-                spr.sprite = ResManager.GetSprite("mark_qst");
                 break;
         }
     }
@@ -46,18 +50,35 @@ public class wMarker : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             WorldCore.I.StopPlayer();
-            switch (mkType)
+            // switch (mkType)
+            switch (eventID)
             {
-                case 1:
-                    UIManager.ShowPopup("EventPop");
-                    Presenter.Send("EventPop", "SetEvent", new List<int> { mkType, mkUid });
-                    break;
                 case 999:
                     WorldObjManager.I.TutoMon();
                     UIManager.ShowPopup("BattleReadyPop");
                     Presenter.Send("BattleReadyPop", "MonInfo", "1");
                     break;
+                default:
+                    UIManager.ShowPopup("EventPop");
+                    Presenter.Send("EventPop", "SetEvent", new List<int> { mkUid, eventID });
+                    break;
             }
         }
+    }
+
+    private void OnMouseEnter()
+    {
+        StateHighlight(true);
+    }
+    private void OnMouseExit()
+    {
+        StateHighlight(false);
+    }
+    public void StateHighlight(bool on)
+    {
+        spr.GetPropertyBlock(markerProp);
+        markerProp.SetColor(shdColorID, on ? Color.white : Color.clear);
+        markerProp.SetFloat(shdAmountID, on ? 0.35f : 0f);
+        spr.SetPropertyBlock(markerProp);
     }
 }
