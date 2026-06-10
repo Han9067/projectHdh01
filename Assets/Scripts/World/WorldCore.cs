@@ -66,7 +66,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             PlayerManager.I.isObjCreated = true;
             CheckAllAreaWorldMon();
             ////
-            CreateWorldMarker(new Vector3(-14f, -34f, 0f), 1000000, 2, 1, 200001, new List<int> { }, false);
+            CreateWorldMarker(new Vector3(-12.9f, -34.8f, 0f), 1000000, 2, 1, 200001, new List<int> { }, false);
         }
         else
         {

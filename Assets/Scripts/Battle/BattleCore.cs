@@ -329,6 +329,8 @@ public class BattleCore : AutoSingleton<BattleCore>
             gGrid = null;
         //mapSeed -> 1~100 필드 101부터 던전 및 특수 맵
         string seed = GsManager.I.btSeed;
+        if (seed == "")
+            seed = "Tile_201"; //테스트
         mapSeed = 1; //던전 맵 시드
         switch (seed)
         {
@@ -345,7 +347,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 mapSeed = 201;
                 lcx = 10;
                 rcx = 17;
-                ccy = 11;
+                ccy = 17;
                 break;
             default:
                 mapSeed = 1;
@@ -464,7 +466,15 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void LoadEnemyGrp()
     {
-        WorldObjManager.I.TestCreateMon(); //테스트용
+        switch (mapSeed)
+        {
+            case 201:
+                WorldObjManager.I.CreateBanditFortress();
+                break;
+            default:
+                WorldObjManager.I.TestCreateMon(); //테스트용
+                break;
+        }
 
         if (WorldObjManager.I.btMonList.Count > 0)
         {
