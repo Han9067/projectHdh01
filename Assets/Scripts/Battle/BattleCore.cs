@@ -96,6 +96,9 @@ public class BattleCore : AutoSingleton<BattleCore>
     [SerializeField] private GameObject rngParent, escParent, propParent, prop2Parent; // 공격 범위 그리드 부모, 탈출존 프리팹, 부모, 환경 프리팹 부모, 환경2 프리팹 부모
     [SerializeField] private List<PropObj> propObj = new List<PropObj>(); // 환경 프리팹 리스트
     [SerializeField] private List<PropObj> prop2Obj = new List<PropObj>(); // 환경 프리팹2 리스트
+    List<Vector2Int> ePosList = new List<Vector2Int>(); //일반 적 스폰 포지션 리스트
+    List<Vector2Int> bossPosList = new List<Vector2Int>(); //보스 스폰 포지션 리스트
+
     [Header("====Rng====")]
     private Vector2Int attPos = new Vector2Int(-1, -1);
     private Vector2Int selSkPos = new Vector2Int(-1, -1);
@@ -212,6 +215,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         if (isActionable)
         {
             Vector2Int t = GetTilePos(wPos);
+            // Debug.Log(t.x + " " + t.y);
             if (t.x == -1 && t.y == -1)
             {
                 if (focus.activeSelf) focus.SetActive(false);
@@ -345,9 +349,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                 break;
             case "Tile_201":
                 mapSeed = 201;
-                lcx = 10;
-                rcx = 17;
-                ccy = 17;
+                lcx = 12;
+                rcx = 15;
+                ccy = 1;
                 break;
             default:
                 mapSeed = 1;
@@ -363,6 +367,8 @@ public class BattleCore : AutoSingleton<BattleCore>
         //lcx, rcx, cy 설정
         // lcx = mapSeed < 101 ? 13 : 10;
         // rcx = mapSeed < 101 ? 24 : 17;
+        ePosList.Clear();
+        bossPosList.Clear();
 
         gMap = tileMapObj.transform.Find("Bg")?.GetComponent<Tilemap>();
         var pMap = tileMapObj.transform.Find("Prop")?.GetComponent<Tilemap>();
@@ -422,11 +428,17 @@ public class BattleCore : AutoSingleton<BattleCore>
                             case "btEsc":
                                 gGrid[x, y].tId = 1;
                                 //탈출용 오브젝트 생성
-                                var obj = Instantiate(ResManager.GetGameObject("EcsObj"), escParent.transform);
-                                obj.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
+                                // var obj = Instantiate(ResManager.GetGameObject("EcsObj"), escParent.transform);
+                                // obj.transform.position = new Vector3(gGrid[x, y].x, gGrid[x, y].y, 0);
                                 break;
                             case "btBlk":
                                 gGrid[x, y].tId = 2;
+                                break;
+                            case "btSp":
+                                ePosList.Add(new Vector2Int(x, y));
+                                break;
+                            case "btSp2":
+                                bossPosList.Add(new Vector2Int(x, y));
                                 break;
                             default:
                                 gGrid[x, y].tId = 0;
@@ -440,6 +452,12 @@ public class BattleCore : AutoSingleton<BattleCore>
 
             camLimit[0] = mapLimit[0] + 7f; camLimit[1] = mapLimit[1] - 7f;
             camLimit[2] = mapLimit[2] + 4f; camLimit[3] = mapLimit[3] - 4f;
+
+            if (mapSeed == 201)
+            {
+                CreatePropObj("Prop2Obj", "banditWall_1", 999, prop2Obj, -7.2f, -10.95f, prop2Parent);
+                CreatePropObj("Prop2Obj", "banditWall_2", 999, prop2Obj, 9.6f, -10.95f, prop2Parent);
+            }
         }
         pMap.gameObject.SetActive(false);
     }
@@ -449,43 +467,55 @@ public class BattleCore : AutoSingleton<BattleCore>
             pObj = GameObject.FindGameObjectWithTag("Player");
         player = pObj.GetComponent<bPlayer>();
         //추후 NPC 생성
-        if (mapSeed < 201) // 맵 시드가 1000 미만이면 일반 필드 1001부터는 특수 장소(던전이나 숲 등)
-        {
-            //추후엔 특정 이벤트(기습, 매복 등) 으로 배치 상황이 특수해질 경우도 대응해야함
-            pDir = Random.Range(0, 2); // 0:좌, 1:우 -> 파티의 방향 설정
-            int cx = pDir == 0 ? lcx : rcx;
-            player.SetObjDir(pDir == 0 ? -1 : 1);
+        //추후엔 특정 이벤트(기습, 매복 등) 으로 배치 상황이 특수해질 경우도 대응해야함
+        pDir = Random.Range(0, 2); // 0:좌, 1:우 -> 파티의 방향 설정
+        int cx = pDir == 0 ? lcx : rcx;
+        player.SetObjDir(pDir == 0 ? -1 : 1);
 
-            var pos = GetStartPos(cx, ccy); //추후 문제가 생길수있음...
-            pObj.transform.position = new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
-            cpPos = pos;
-            gGrid[pos.x, pos.y].tId = 1000;
-            player.SetObjLayer(mapH - ccy);
-            objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos, 1, 1));
-        }
+        var pos = GetStartPos(cx, ccy); //추후 문제가 생길수있음...
+        pObj.transform.position = new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
+        cpPos = pos;
+        gGrid[pos.x, pos.y].tId = 1000;
+        player.SetObjLayer(mapH - ccy);
+        objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos, 1, 1));
     }
     void LoadEnemyGrp()
     {
+        //해당 스위치 문에서 몬스터 좌표값도 설정해줘야함
+        int eCnt; //일반 적 카운트
+        int bossCnt; //보스 카운트
         switch (mapSeed)
         {
             case 201:
-                WorldObjManager.I.CreateBanditFortress();
+                eCnt = ePosList.Count;
+                bossCnt = bossPosList.Count;
+                WorldObjManager.I.CreateBanditFortress(eCnt, bossCnt);
                 break;
             default:
                 WorldObjManager.I.TestCreateMon(); //테스트용
+                eCnt = WorldObjManager.I.btMonList.Count;
+                bossCnt = 0;
+                int rx = (eCnt / 2) + 1, ry = (eCnt / 4) + 1;
+                int cx = pDir == 0 ? rcx : lcx;
+                for (int i = 0; i < eCnt; i++)
+                {
+                    int mx = cx + Random.Range(-rx, rx + 1), my = ccy + Random.Range(-ry, ry + 1);
+                    var p = GetStartPos(mx, my);
+                    ePosList.Add(p);
+                }
                 break;
         }
 
         if (WorldObjManager.I.btMonList.Count > 0)
         {
-            int cx = pDir == 0 ? rcx : lcx, idx = 0;
-            //추후 핵심 시스템 끝나면 중심점과 rng 값을 조정할 생각 
-            int mCnt = WorldObjManager.I.btMonList.Count, rx = (mCnt / 2) + 1, ry = (mCnt / 4) + 1;
+            // int cx = pDir == 0 ? rcx : lcx, idx = 0;
+            // //추후 핵심 시스템 끝나면 중심점과 rng 값을 조정할 생각 
+            // int rx = (mCnt / 2) + 1, ry = (mCnt / 4) + 1;
             //요새 공략 같은 200번대 맵에 대한 위치 설정도 적용
-            for (int i = 0; i < mCnt; i++)
+            int idx = 0;
+            for (int i = 0; i < eCnt; i++)
             {
-                int mx = cx + Random.Range(-rx, rx + 1), my = ccy + Random.Range(-ry, ry + 1);
-                var p = GetStartPos(mx, my);
+                var p = ePosList[i];
                 int mId = WorldObjManager.I.btMonList[idx];
                 var mData = MonManager.I.MonDataList[mId];
                 int w = mData.W, h = mData.H;
@@ -494,6 +524,22 @@ public class BattleCore : AutoSingleton<BattleCore>
                 objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p, w, h));
                 objId++;
                 idx++;
+            }
+            if (bossCnt > 0)
+            {
+                //추후 간결화
+                for (int i = 0; i < bossCnt; i++)
+                {
+                    var p = bossPosList[i];
+                    int mId = WorldObjManager.I.btMonList[idx];
+                    var mData = MonManager.I.MonDataList[mId];
+                    int w = mData.W, h = mData.H;
+                    CreateMon(mId, p.x, p.y, mData.MonType);
+                    UpdateGrid(p.x, p.y, p.x, p.y, w, h, objId);
+                    objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p, w, h));
+                    objId++;
+                    idx++;
+                }
             }
         }
     }
@@ -1126,7 +1172,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     private void ChangeAlphaWithProps(int idx, float val)
     {
-        propObj[idx].SetAlpha(val);
+        // propObj[idx].SetAlpha(val);
         prop2Obj[idx].SetAlpha(val);
     }
     private void ShowMoveGuide(Vector2Int[] path)
@@ -1299,6 +1345,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                         }
                         else
                         {
+                            //요새 토벌같이 특정 장소에서는 플레이어와 적과 거리가 멀면 대기상태에 있도록함
                             //추적 시작
                             ot.state = BtObjState.TRACK;
                             TrackMon(ot, mId, tIdx == 0 ? 0.3f : 0);

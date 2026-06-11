@@ -25,8 +25,8 @@ public class GsManager : AutoSingleton<GsManager>
         #endregion
 
         #region 커서 관리
-        string[] strArr = { "default", "attack", "notMove", "enter" };
-        Vector2[] offsetArr = { new Vector2(28, 14), new Vector2(32, 32), new Vector2(28, 14), new Vector2(32, 32) };
+        string[] strArr = { "default", "attack", "notMove", "enter", "escape" };
+        Vector2[] offsetArr = { new Vector2(28, 14), new Vector2(32, 32), new Vector2(28, 14), new Vector2(32, 32), new Vector2(32, 32) };
         for (int i = 0; i < strArr.Length; i++)
         {
             Texture2D cursorTexture = Resources.Load<Texture2D>($"Images/UI/Cursor/cursor_{strArr[i]}");

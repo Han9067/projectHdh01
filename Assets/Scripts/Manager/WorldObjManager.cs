@@ -793,12 +793,13 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         btMonList.Clear();
         btMonList.Add(1);
     }
-    public void CreateBanditFortress()
+    public void CreateBanditFortress(int eCnt, int bossCnt)
     {
         //int grade = PlayerManager.I.pData.Grade; //추후 등급에 맞춰 도적들이 등장하도록 설정
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < eCnt; i++)
             btMonList.Add(61);
-        btMonList.Add(81);
+        for (int i = 0; i < bossCnt; i++)
+            btMonList.Add(81);
     }
     public void TestCreateMon()
     {
