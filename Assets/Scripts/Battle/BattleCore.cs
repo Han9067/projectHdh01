@@ -75,8 +75,9 @@ public class BattleCore : AutoSingleton<BattleCore>
     private Vector3 velocity = Vector3.zero; //카메라 속도
 
     [Header("====UI====")]
-    public GameObject dmgTxtParent;
+    public GameObject txtParent;
     private List<DmgTxt> dmgTxtList = new List<DmgTxt>();
+    private List<DynTxt> dynTxtList = new List<DynTxt>();
     public Image bloodScreen;
     [Header("====Map====")]
     private GameObject tileMapObj; // 맵 타일 오브젝트
@@ -241,7 +242,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     focusBackupPos = focus.transform.position;
                     //
                     if (pPath != null) pPath = null;
-                    pPath = BattlePathManager.I.GetPath(cpPos, t, gGrid);
+                    pPath = BattlePathManager.I.GetMovePath(cpPos, t, gGrid);
                     ShowMoveGuide(pPath);
                 }
             }
@@ -1333,7 +1334,17 @@ public class BattleCore : AutoSingleton<BattleCore>
                 switch (ot.state)
                 {
                     case BtObjState.ALERT:
-                        //경계 상태->매 턴마다 상대편을 감지
+                        //경계 상태->매 턴마다 상대편을 감지->경계는 오직 적 진영에서만 설정되는 행동
+                        //적이 아군진영을 감지하도록 검색 함수 만들어야함
+                        tgId = GetActAlertEnemy(ot.objId, ot.pos);
+                        if (tgId != -1)
+                        {
+                            Debug.Log("타깃 발견 및 추적 시작: " + tgId);
+                            ot.state = BtObjState.TRACK; //발견하여 추적
+                            ot.tgId = tgId;
+                        }
+                        else
+                            StartCoroutine(UseObjTurn(0f));
                         break;
                     case BtObjState.IDLE:
                         var monData = mData[mId];
@@ -1422,7 +1433,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             // Dictionary 중복 접근 최적화
             var mon = mData[mId];
             // 자기 자신의 ID(mId)를 전달하여 자신이 차지한 공간은 빈 공간으로 취급
-            Vector2Int[] path = BattlePathManager.I.GetPath(data.pos, cpPos, gGrid, mon.w, mon.h, mId);
+            Vector2Int[] path = BattlePathManager.I.GetMovePath(data.pos, cpPos, gGrid, mon.w, mon.h, mId);
             if (path.Length > 0)
             {
                 StartCoroutine(MoveObj(mObj[mId], mId, data.pos, path[0], ct, () =>
@@ -1523,6 +1534,31 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
         return oId;
+    }
+    private int GetActAlertEnemy(int objId, Vector2Int pos)
+    {
+        int tgId = -1;
+        const int range = 4;
+        foreach (var t in objTurn)
+        {
+            if (t.objId == objId) continue;
+            if (t.state == BtObjState.DEAD) continue;
+            if (t.faction == BtFaction.ENEMY) continue;
+            int dx = Mathf.Abs(t.pos.x - pos.x);
+            int dy = Mathf.Abs(t.pos.y - pos.y);
+            if (dx > range || dy > range) continue;
+            int tw = t.w, th = t.h;
+            int w = mData[objId].w, h = mData[objId].h;
+            Debug.Log(t.objId);
+            bool canAct = BattlePathManager.I.IsValidActPos(cpPos, t.pos, gGrid, w, h, tw, th, objId, t.objId);
+            if (canAct)
+            {
+                Debug.Log("타깃 발견 및 추적 시작: " + t.objId);
+                tgId = t.objId;
+                break;
+            }
+        }
+        return tgId;
     }
     private BtObjType GetObjType(int objId)
     {
@@ -1936,7 +1972,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         Vector3 oPos = pObj.transform.position, tPos = new Vector3(gGrid[tgPos.x, tgPos.y].x, gGrid[tgPos.x, tgPos.y].y, 0);
 
         Vector2Int myPos = GetTilePos(oPos);
-        var path = BattlePathManager.I.GetPath(myPos, tgPos, gGrid);
+        var path = BattlePathManager.I.GetMovePath(myPos, tgPos, gGrid);
         int len = path.Length;
 
         float dur = Mathf.Clamp(Vector3.Distance(oPos, tPos) * 0.05f, 0.1f, 1f);
@@ -1984,7 +2020,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     public void DashAttack(int oId, Vector2Int tgPos)
     {
         var myPos = GetObjGridPos(oId);
-        Vector2Int[] path = BattlePathManager.I.GetPath(myPos, tgPos, gGrid);
+        Vector2Int[] path = BattlePathManager.I.GetMovePath(myPos, tgPos, gGrid);
         Vector2Int last = path[path.Length - 2];
         DashToTile(last, oId, () =>
         {
@@ -2109,21 +2145,24 @@ public class BattleCore : AutoSingleton<BattleCore>
         HideAllOutline();
         HideAllAttRng();
     }
+    public void ShowDynTxt(string txt, Vector3 pos, float time = 0.5f)
+    {
+        var obj = Instantiate(ResManager.GetGameObject("DynTxt"), txtParent.transform);
+        var dynTxt = obj.GetComponent<DynTxt>();
+        dynTxtList.Add(dynTxt);
+        dynTxt.ShowDynTxt(txt, pos, time);
+    }
     public void ShowDmgTxt(int dmg, bool crt, Vector3 pos)
     {
         var txt = GetDmgTxt();
         if (txt == null)
         {
-            txt = Instantiate(ResManager.GetGameObject("DmgTxt"), dmgTxtParent.transform).GetComponent<DmgTxt>();
+            txt = Instantiate(ResManager.GetGameObject("DmgTxt"), txtParent.transform).GetComponent<DmgTxt>();
             dmgTxtList.Add(txt);
         }
         else
             txt.gameObject.SetActive(true);
         txt.ShowDmgTxt(dmg, crt, pos);
-        // if (crt)
-        // {
-        //     // StartCoroutine(CoCameraShake(0.22f, 0.18f));
-        // }
     }
     private IEnumerator CoCameraShake(float duration, float magnitude)
     {
@@ -2151,7 +2190,6 @@ public class BattleCore : AutoSingleton<BattleCore>
             yield return new WaitForSeconds(ct);
         }
     }
-
     DmgTxt GetDmgTxt()
     {
         foreach (var txt in dmgTxtList)
@@ -2255,7 +2293,6 @@ public class BattleCore : AutoSingleton<BattleCore>
     public void TestPlayer()
     {
         SetMovingEff("M_FireBall", Vector3.zero, Vector3.zero, 0f, () => { });
-        // ShowDmgTxt(100, true, player.transform.position);
     }
 }
 [CustomEditor(typeof(BattleCore))]

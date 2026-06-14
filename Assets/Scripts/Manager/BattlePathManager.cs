@@ -7,25 +7,25 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
 {
     // 경로 구성용 리스트 재사용 (가비지 컬렉션 최적화)
     private List<Vector2Int> pathList = new List<Vector2Int>();
-
+    #region move
     // 기존 메서드 (1x1 전용 - 하위 호환성)
-    public Vector2Int[] GetPath(Vector2Int sPos, Vector2Int ePos, BtGrid[,] gGrid)
+    public Vector2Int[] GetMovePath(Vector2Int sPos, Vector2Int ePos, BtGrid[,] gGrid)
     {
-        return GetPath(sPos, ePos, gGrid, 1, 1);
+        return GetMovePath(sPos, ePos, gGrid, 1, 1);
     }
 
     // 크기 고려 경로 탐색 (왼쪽 상단 기준)
-    public Vector2Int[] GetPath(Vector2Int sPos, Vector2Int ePos, BtGrid[,] gGrid, int width, int height)
+    public Vector2Int[] GetMovePath(Vector2Int sPos, Vector2Int ePos, BtGrid[,] gGrid, int width, int height)
     {
-        return GetPath(sPos, ePos, gGrid, width, height, 0); // 기본값 0 (자기 자신 ID 없음)
+        return GetMovePath(sPos, ePos, gGrid, width, height, 0); // 기본값 0 (자기 자신 ID 없음)
     }
 
     // 자기 자신 ID를 고려한 오버로드
-    public Vector2Int[] GetPath(Vector2Int sPos, Vector2Int ePos, BtGrid[,] gGrid, int width, int height, int selfId)
+    public Vector2Int[] GetMovePath(Vector2Int sPos, Vector2Int ePos, BtGrid[,] gGrid, int width, int height, int selfId)
     {
         // 빠른 조기 반환
         if (sPos == ePos) return new Vector2Int[] { sPos };
-        if (!IsValidPosition(sPos, gGrid) || !IsValidPosition(ePos, gGrid)) return new Vector2Int[] { };
+        if (!IsValidPos(sPos, gGrid) || !IsValidPos(ePos, gGrid)) return new Vector2Int[] { };
 
         // BFS용 큐와 방문 체크
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
@@ -42,7 +42,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
             foreach (Vector2Int dir in DirData.dir8_1)
             {
                 Vector2Int next = current + dir;
-                if (IsValidPosition(next, gGrid) && !cameFrom.ContainsKey(next) &&
+                if (IsValidPos(next, gGrid) && !cameFrom.ContainsKey(next) &&
                     IsAreaClear(next, ePos, gGrid, width, height, selfId))
                 {
                     queue.Enqueue(next);
@@ -91,9 +91,19 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
         return true;
     }
 
-    private bool IsValidPosition(Vector2Int pos, BtGrid[,] grid)
+    private bool IsValidPos(Vector2Int pos, BtGrid[,] grid)
     {
         return pos.x >= 0 && pos.x < grid.GetLength(0) &&
                pos.y >= 0 && pos.y < grid.GetLength(1);
     }
+    #endregion
+    #region act & detect
+    private enum ActDir { Up, Down, Left, Right }
+
+    public bool IsValidActPos(Vector2Int sPos, Vector2Int tPos, BtGrid[,] grid,
+        int sw = 1, int sh = 1, int tw = 1, int th = 1, int selfId = 0, int tgId = 0)
+    {
+        return false;
+    }
+    #endregion
 }

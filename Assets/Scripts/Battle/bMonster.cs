@@ -75,7 +75,7 @@ public class bMonster : MonoBehaviour
                     //양손무기
                     hand = 3;
                     wp1Spr.transform.localPosition = new Vector3(0.38f, 1.045f, 0);
-                    wp1Spr.transform.rotation = Quaternion.Euler(0, 0, -25f);
+                    wp1Spr.transform.rotation = Quaternion.Euler(0, 0, 25f);
                     break;
                 case 19:
                 case 20:

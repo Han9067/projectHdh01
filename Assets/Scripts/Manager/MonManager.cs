@@ -118,7 +118,7 @@ public class MonManager : AutoSingleton<MonManager>
             case 24:
                 return new List<int> { 32002 };
             case 25:
-                return new List<int> { 34021 };
+                return new List<int> { 36003 };
             case 26:
                 return new List<int> { 40002 };
             case 31:
