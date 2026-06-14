@@ -20,7 +20,7 @@ public class BtGrid
 }
 public enum BtObjState
 {
-    IDLE, DEAD, READY, MOVE, ATTACK, SKILL, TRACK
+    IDLE, DEAD, READY, MOVE, ATTACK, SKILL, TRACK, ALERT
 }
 public enum BtObjType
 {
@@ -484,12 +484,14 @@ public class BattleCore : AutoSingleton<BattleCore>
         //해당 스위치 문에서 몬스터 좌표값도 설정해줘야함
         int eCnt; //일반 적 카운트
         int bossCnt; //보스 카운트
+        bool isAlert = false;
         switch (mapSeed)
         {
             case 201:
                 eCnt = ePosList.Count;
                 bossCnt = bossPosList.Count;
                 WorldObjManager.I.CreateBanditFortress(eCnt, bossCnt);
+                isAlert = true;
                 break;
             default:
                 WorldObjManager.I.TestCreateMon(); //테스트용
@@ -521,7 +523,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 int w = mData.W, h = mData.H;
                 CreateMon(mId, p.x, p.y, mData.MonType);
                 UpdateGrid(p.x, p.y, p.x, p.y, w, h, objId);
-                objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p, w, h));
+                objTurn.Add(new TurnData(objId, isAlert ? BtObjState.ALERT : BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p, w, h));
                 objId++;
                 idx++;
             }
@@ -536,7 +538,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                     int w = mData.W, h = mData.H;
                     CreateMon(mId, p.x, p.y, mData.MonType);
                     UpdateGrid(p.x, p.y, p.x, p.y, w, h, objId);
-                    objTurn.Add(new TurnData(objId, BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p, w, h));
+                    objTurn.Add(new TurnData(objId, isAlert ? BtObjState.ALERT : BtObjState.IDLE, BtObjType.MONSTER, BtFaction.ENEMY, p, w, h));
                     objId++;
                     idx++;
                 }
@@ -1241,6 +1243,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     void TurnAction()
     {
+        //시간 될때 타입 분류를 ALLY, ENEMY로 분류해서 처리해야함
         //모든 오브젝트의 턴을 여기서 관리해야할듯...플레이어 떄문에 여기저기 분산으로 제어하니까 코드가 더러워짐
         int tgId = 0;
         var ot = objTurn[tIdx];
@@ -1329,6 +1332,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                 }
                 switch (ot.state)
                 {
+                    case BtObjState.ALERT:
+                        //경계 상태->매 턴마다 상대편을 감지
+                        break;
                     case BtObjState.IDLE:
                         var monData = mData[mId];
                         if (GetAttackTarget(ot.tgId, ot.pos, monData.rng, monData.w, monData.h))
