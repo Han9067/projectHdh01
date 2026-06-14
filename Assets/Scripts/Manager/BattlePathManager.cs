@@ -100,10 +100,46 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
     #region act & detect
     private enum ActDir { Up, Down, Left, Right }
 
-    public bool IsValidActPos(Vector2Int sPos, Vector2Int tPos, BtGrid[,] grid,
-        int sw = 1, int sh = 1, int tw = 1, int th = 1, int selfId = 0, int tgId = 0)
+    public bool IsValidActPos(Vector2Int sPos, Vector2Int tPos, BtGrid[,] grid, int sId, int tId)
     {
-        return false;
+        Vector2Int dif = tPos - sPos;
+        // 같은 칸
+        if (dif == Vector2Int.zero)
+            return false;
+        Vector2Int step;
+        ActDir dir;
+        if (dif.x == 0 && dif.y != 0)
+        {
+            // 수직 직선 (상/하)
+            step = new Vector2Int(0, dif.y > 0 ? 1 : -1);
+            dir = dif.y > 0 ? ActDir.Up : ActDir.Down;
+        }
+        else if (dif.y == 0 && dif.x != 0)
+        {
+            // 수평 직선 (좌/우)
+            step = new Vector2Int(dif.x > 0 ? 1 : -1, 0);
+            dir = dif.x > 0 ? ActDir.Right : ActDir.Left;
+        }
+        else
+        {
+            // 직선이 아님 (대각선 포함) → 현재는 미지원
+            // TODO: 추후 대각선 시야 필요 시 여기서 처리
+            return false;
+        }
+        return IsLineClear(sPos, tPos, step, grid);
+    }
+    private bool IsLineClear(Vector2Int sPos, Vector2Int tPos, Vector2Int step, BtGrid[,] grid)
+    {
+        Vector2Int cur = sPos + step;
+        while (cur != tPos)
+        {
+            if (!IsValidPos(cur, grid))
+                return false;
+            if (grid[cur.x, cur.y].tId != 0)
+                return false;
+            cur += step;
+        }
+        return true;
     }
     #endregion
 }

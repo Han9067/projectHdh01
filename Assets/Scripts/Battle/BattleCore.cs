@@ -344,14 +344,14 @@ public class BattleCore : AutoSingleton<BattleCore>
             case "Tile_101_3":
             case "Tile_101_4":
                 mapSeed = 101;
-                lcx = 13;
-                rcx = 24;
+                lcx = 10;
+                rcx = 17;
                 ccy = 13;
                 break;
             case "Tile_201":
                 mapSeed = 201;
-                lcx = 12;
-                rcx = 15;
+                lcx = 17;
+                rcx = 20;
                 ccy = 1;
                 break;
             default:
@@ -1549,8 +1549,8 @@ public class BattleCore : AutoSingleton<BattleCore>
             if (dx > range || dy > range) continue;
             int tw = t.w, th = t.h;
             int w = mData[objId].w, h = mData[objId].h;
-            Debug.Log(t.objId);
-            bool canAct = BattlePathManager.I.IsValidActPos(cpPos, t.pos, gGrid, w, h, tw, th, objId, t.objId);
+            // Debug.Log(t.objId);
+            bool canAct = BattlePathManager.I.IsValidActPos(pos, t.pos, gGrid, objId, t.objId);
             if (canAct)
             {
                 Debug.Log("타깃 발견 및 추적 시작: " + t.objId);
