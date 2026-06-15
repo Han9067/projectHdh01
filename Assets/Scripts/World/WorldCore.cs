@@ -67,6 +67,7 @@ public class WorldCore : AutoSingleton<WorldCore>
             CheckAllAreaWorldMon();
             ////
             CreateWorldMarker(new Vector3(-12.9f, -34.8f, 0f), 1000000, 2, 1, 200001, new List<int> { }, false);
+            CreateWorldMarker(new Vector3(-13.6f, -36.04f, 0f), 1000001, 3, 1, 300001, new List<int> { }, false);
         }
         else
         {
@@ -706,7 +707,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     #endregion
     public void ShowExplorePopup()
     {
-
+        Presenter.Send("ExplorePop", "ShowExplorePopup");
     }
 }
 

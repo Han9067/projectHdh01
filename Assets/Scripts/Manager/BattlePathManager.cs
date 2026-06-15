@@ -206,52 +206,19 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
         return lineList;
     }
 
-    // Bresenham 직선 시야: 선상·대각 코너 칸의 tId가 0이 아니면 차단. 양 끝 칸만 검사 제외.
+    // Bresenham 직선 시야(느슨): 선상 중간 칸만 검사. 코너 옆 벽은 막지 않음. to가 벽(tId==2)이면 차단.
     public bool HasBresenhamLineOfSight(Vector2Int from, Vector2Int to, BtGrid[,] grid)
     {
         if (from == to) return false;
         if (!IsValidPos(from, grid) || !IsValidPos(to, grid)) return false;
+        if (grid[to.x, to.y].tId == 2) return false;
 
-        int x = from.x, y = from.y;
-        int endX = to.x, endY = to.y;
-        int dx = Mathf.Abs(endX - x);
-        int dy = Mathf.Abs(endY - y);
-        int sx = x < endX ? 1 : -1;
-        int sy = y < endY ? 1 : -1;
-        int err = dx - dy;
-
-        while (true)
+        var line = GetBresenhamLine(from, to);
+        for (int i = 1; i < line.Count - 1; i++)
         {
-            var cell = new Vector2Int(x, y);
-            if (cell != from && cell != to && !IsBresenhamCellClear(cell, grid))
+            if (!IsBresenhamCellClear(line[i], grid))
                 return false;
-
-            if (x == endX && y == endY)
-                break;
-
-            int prevX = x, prevY = y;
-            int e2 = 2 * err;
-            if (e2 > -dy)
-            {
-                err -= dy;
-                x += sx;
-            }
-            if (e2 < dx)
-            {
-                err += dx;
-                y += sy;
-            }
-
-            // 대각 스텝 시 인접 코너 2칸 검사 (Bresenham 코너 관통 방지)
-            if (x != prevX && y != prevY)
-            {
-                if (!IsBresenhamCellClear(new Vector2Int(prevX + sx, prevY), grid))
-                    return false;
-                if (!IsBresenhamCellClear(new Vector2Int(prevX, prevY + sy), grid))
-                    return false;
-            }
         }
-
         return true;
     }
 
@@ -287,12 +254,13 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
         }
     }
 
-    // 선상 장애물: 빈 칸(tId == 0)만 통과
+    // 선상 장애물: 빈 칸(tId == 0), 탈출 타일(tId == 1) 통과
     private bool IsBresenhamCellClear(Vector2Int cell, BtGrid[,] grid)
     {
         if (!IsValidPos(cell, grid))
             return false;
-        return grid[cell.x, cell.y].tId == 0;
+        int tId = grid[cell.x, cell.y].tId;
+        return tId == 0 || tId == 1;
     }
 
     #endregion

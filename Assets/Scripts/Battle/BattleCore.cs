@@ -1034,6 +1034,15 @@ public class BattleCore : AutoSingleton<BattleCore>
         }
         grid.Remove((pos.x, pos.y));
         if (grid.Count > attRng.Count) CreateRngObj(grid.Count - attRng.Count, attRng);
+        var removeKeys = new List<(int x, int y)>();
+        foreach (var g in grid)
+        {
+            int x = g.Key.x, y = g.Key.y;
+            if (!BattlePathManager.I.HasBresenhamLineOfSight(pos, new Vector2Int(x, y), gGrid))
+                removeKeys.Add(g.Key);
+        }
+        foreach (var key in removeKeys)
+            grid.Remove(key);
         int a = 0;
         foreach (var g in grid)
         {
@@ -1366,11 +1375,11 @@ public class BattleCore : AutoSingleton<BattleCore>
                             //요새 토벌같이 특정 장소에서는 플레이어와 적과 거리가 멀면 대기상태에 있도록함
                             //추적 시작
                             ot.state = BtObjState.TRACK;
-                            TrackMon(ot, mId, tIdx == 0 ? 0.3f : 0);
+                            TrackAi(ot, mId, tIdx == 0 ? 0.3f : 0);
                         }
                         break;
                     case BtObjState.TRACK:
-                        TrackMon(ot, mId, tIdx == 0 ? 0.3f : 0);
+                        TrackAi(ot, mId, tIdx == 0 ? 0.3f : 0);
                         break;
                 }
                 break;
@@ -1402,10 +1411,6 @@ public class BattleCore : AutoSingleton<BattleCore>
         else
             mData[objId].SetObjDir(dir);
     }
-    private void IdleObj(int oId)
-    {
-        //휴식 및 대기
-    }
     IEnumerator MoveObj(GameObject obj, int objId, Vector2Int cv, Vector2Int mv, float ct, Action callA = null, Action callB = null)
     {
         SetObjDir(objId, cv, mv);
@@ -1426,13 +1431,20 @@ public class BattleCore : AutoSingleton<BattleCore>
         else
             mData[oid].OnJump(dur);
     }
-    private void TrackMon(TurnData data, int mId, float ct)
+    private void TrackAi(TurnData data, int mId, float ct)
     {
         data.isActObj = true; //행동 시작
         if (data.tgId == 1000)
         {
             // Dictionary 중복 접근 최적화
             var mon = mData[mId];
+            if (GetAttackTarget(data.tgId, data.pos, mon.rng, mon.w, mon.h))
+            {
+                data.state = BtObjState.IDLE;  // 또는 IDLE과 같은 공격 로직
+                data.isActObj = false;
+                TurnAction();
+                return;
+            }
             // 자기 자신의 ID(mId)를 전달하여 자신이 차지한 공간은 빈 공간으로 취급
             Vector2Int[] path = BattlePathManager.I.GetMovePath(data.pos, cpPos, gGrid, mon.w, mon.h, mId);
             if (path.Length > 0)
@@ -1555,12 +1567,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                 tgId = t.objId;
                 break;
             }
-            // bool canAct = BattlePathManager.I.IsValidActPos(pos, t.pos, gGrid, objId, t.objId);
-            // if (canAct)
-            // {
-            //     tgId = t.objId;
-            //     break;
-            // }
         }
         return tgId;
     }
