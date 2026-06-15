@@ -267,7 +267,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 else
                 {
                     cName = "notMove";
-                    if (!focus.activeSelf)
+                    if (!focus.activeSelf && !isSk)
                     {
                         focus.SetActive(true);
                         HideAllRng();
@@ -1339,12 +1339,13 @@ public class BattleCore : AutoSingleton<BattleCore>
                         tgId = GetActAlertEnemy(ot.objId, ot.pos);
                         if (tgId != -1)
                         {
-                            Debug.Log("타깃 발견 및 추적 시작: " + tgId);
                             ot.state = BtObjState.TRACK; //발견하여 추적
                             ot.tgId = tgId;
+                            var myObj = GetObj(ot.objId);
+                            if (myObj != null)
+                                ShowDynTxt(LocalizationManager.GetValue("Bt_Talk_FindEnemy"), myObj, ot.objId);
                         }
-                        else
-                            StartCoroutine(UseObjTurn(0f));
+                        StartCoroutine(UseObjTurn(0f));
                         break;
                     case BtObjState.IDLE:
                         var monData = mData[mId];
@@ -1549,14 +1550,17 @@ public class BattleCore : AutoSingleton<BattleCore>
             if (dx > range || dy > range) continue;
             int tw = t.w, th = t.h;
             int w = mData[objId].w, h = mData[objId].h;
-            // Debug.Log(t.objId);
-            bool canAct = BattlePathManager.I.IsValidActPos(pos, t.pos, gGrid, objId, t.objId);
-            if (canAct)
+            if (BattlePathManager.I.HasBresenhamLineOfSight(pos, t.pos, gGrid))
             {
-                Debug.Log("타깃 발견 및 추적 시작: " + t.objId);
                 tgId = t.objId;
                 break;
             }
+            // bool canAct = BattlePathManager.I.IsValidActPos(pos, t.pos, gGrid, objId, t.objId);
+            // if (canAct)
+            // {
+            //     tgId = t.objId;
+            //     break;
+            // }
         }
         return tgId;
     }
@@ -2145,12 +2149,17 @@ public class BattleCore : AutoSingleton<BattleCore>
         HideAllOutline();
         HideAllAttRng();
     }
-    public void ShowDynTxt(string txt, Vector3 pos, float time = 0.5f)
+    public void ShowDynTxt(string text, GameObject obj, int id)
     {
-        var obj = Instantiate(ResManager.GetGameObject("DynTxt"), txtParent.transform);
-        var dynTxt = obj.GetComponent<DynTxt>();
-        dynTxtList.Add(dynTxt);
-        dynTxt.ShowDynTxt(txt, pos, time);
+        var txt = GetDynTxt();
+        if (txt == null)
+        {
+            txt = Instantiate(ResManager.GetGameObject("DynTxt"), txtParent.transform).GetComponent<DynTxt>();
+            dynTxtList.Add(txt);
+        }
+        else
+            txt.gameObject.SetActive(true);
+        txt.ShowDynTxt(text, obj, id);
     }
     public void ShowDmgTxt(int dmg, bool crt, Vector3 pos)
     {
@@ -2199,6 +2208,15 @@ public class BattleCore : AutoSingleton<BattleCore>
                 txt.gameObject.SetActive(true);
                 return txt;
             }
+        }
+        return null;
+    }
+    DynTxt GetDynTxt()
+    {
+        foreach (var txt in dynTxtList)
+        {
+            if (!txt.gameObject.activeSelf)
+                return txt;
         }
         return null;
     }

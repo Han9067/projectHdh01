@@ -1,30 +1,61 @@
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
-using UnityEngine.UI;
 
 public class DynTxt : MonoBehaviour
 {
-    public TextMeshProUGUI dynTxt;
-    private float time;
-    public void ShowDynTxt(string txt, Vector3 pos, float t)
+    public TextMeshProUGUI txt;
+    public GameObject tObj;
+    [SerializeField] private float duration = 4f;
+    private Vector3 offset;
+
+    public void ShowDynTxt(string text, GameObject obj, int id)
     {
-        dynTxt.text = txt;
+        DOTween.Kill(this);
+        transform.DOKill();
+        txt.DOKill();
+        offset = GetOffset(id);
+        tObj = obj;
+        txt.text = text;
         gameObject.SetActive(true);
-        transform.position = pos;
-        time = t;
+
+        if (tObj != null)
+            transform.position = tObj.transform.position + offset;
+
         OnTween();
     }
+
     private void OnTween()
     {
-        DOTween.Sequence().SetAutoKill(true).Append(transform.DOMoveY(transform.position.y + 0.6f, time).SetEase(Ease.OutQuad))
-            .Join(dynTxt.DOFade(0f, 1f))
-            .Join(transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack))
-            .Append(transform.DOScale(1f, 0.2f))
+        if (tObj == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
+        DOTween.To(() => 0f, _ => { }, 1f, duration)
+            .SetEase(Ease.Linear)
+            .SetTarget(this)
+            .OnUpdate(() =>
+            {
+                if (tObj == null || !tObj.activeInHierarchy)
+                {
+                    DOTween.Kill(this);
+                    gameObject.SetActive(false);
+                    return;
+                }
+                transform.position = tObj.transform.position + offset;
+            })
             .OnComplete(() =>
             {
-                dynTxt.color = new Color(1f, 1f, 1f, 1f);
                 gameObject.SetActive(false);
             });
+    }
+    private Vector3 GetOffset(int objId)
+    {
+        if (objId == 1000)
+            return new Vector3(0f, 1.4f, 0f);
+        else
+            return new Vector3(0f, 1.41f, 0f); //추후 세분화
     }
 }

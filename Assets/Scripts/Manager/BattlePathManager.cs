@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GB;
@@ -7,6 +6,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
 {
     // 경로 구성용 리스트 재사용 (가비지 컬렉션 최적화)
     private List<Vector2Int> pathList = new List<Vector2Int>();
+    private List<Vector2Int> lineList = new List<Vector2Int>();
     #region move
     // 기존 메서드 (1x1 전용 - 하위 호환성)
     public Vector2Int[] GetMovePath(Vector2Int sPos, Vector2Int ePos, BtGrid[,] gGrid)
@@ -98,38 +98,95 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
     }
     #endregion
     #region act & detect
-    private enum ActDir { Up, Down, Left, Right }
+
+    private enum RelQuad { UpLeft, UpRight, DownLeft, DownRight }
 
     public bool IsValidActPos(Vector2Int sPos, Vector2Int tPos, BtGrid[,] grid, int sId, int tId)
     {
         Vector2Int dif = tPos - sPos;
         // 같은 칸
-        if (dif == Vector2Int.zero)
-            return false;
+        if (dif == Vector2Int.zero) return false;
         Vector2Int step;
-        ActDir dir;
+        // ActDir dir;
         if (dif.x == 0 && dif.y != 0)
-        {
-            // 수직 직선 (상/하)
             step = new Vector2Int(0, dif.y > 0 ? 1 : -1);
-            dir = dif.y > 0 ? ActDir.Up : ActDir.Down;
-        }
         else if (dif.y == 0 && dif.x != 0)
-        {
-            // 수평 직선 (좌/우)
             step = new Vector2Int(dif.x > 0 ? 1 : -1, 0);
-            dir = dif.x > 0 ? ActDir.Right : ActDir.Left;
-        }
         else
         {
-            // 직선이 아님 (대각선 포함) → 현재는 미지원
-            // TODO: 추후 대각선 시야 필요 시 여기서 처리
-            return false;
+            int dx = dif.x, dy = dif.y;
+            RelQuad quad = dy > 0 ? (dx < 0 ? RelQuad.UpLeft : RelQuad.UpRight)
+            : (dx < 0 ? RelQuad.DownLeft : RelQuad.DownRight);
+            List<Vector2Int> list = new List<Vector2Int>();
+            switch (quad)
+            {
+                case RelQuad.UpLeft:
+                    if (dx >= -2)
+                    {
+                        list.Add(sPos + new Vector2Int(0, 1));
+                        list.Add(sPos + new Vector2Int(-1, 1));
+                        list.Add(tPos + new Vector2Int(0, -1));
+                        list.Add(tPos + new Vector2Int(1, -1));
+                    }
+                    else
+                    {
+                        list.Add(sPos + new Vector2Int(0, 1));
+                        list.Add(tPos + new Vector2Int(0, -1));
+                    }
+                    break;
+                case RelQuad.UpRight:
+                    if (dx <= 2)
+                    {
+                        list.Add(sPos + new Vector2Int(0, 1));
+                        list.Add(sPos + new Vector2Int(1, 1));
+                        list.Add(tPos + new Vector2Int(0, -1));
+                        list.Add(tPos + new Vector2Int(-1, -1));
+                    }
+                    else
+                    {
+                        list.Add(sPos + new Vector2Int(0, 1));
+                        list.Add(tPos + new Vector2Int(0, -1));
+                    }
+                    break;
+                case RelQuad.DownLeft:
+                    if (dx >= -2)
+                    {
+                        list.Add(sPos + new Vector2Int(0, -1));
+                        list.Add(sPos + new Vector2Int(-1, -1));
+                        list.Add(tPos + new Vector2Int(0, 1));
+                        list.Add(tPos + new Vector2Int(1, 1));
+                    }
+                    else
+                    {
+                        list.Add(sPos + new Vector2Int(0, -1));
+                        list.Add(tPos + new Vector2Int(0, 1));
+                    }
+                    break;
+                case RelQuad.DownRight:
+                    if (dx <= 2)
+                    {
+                        list.Add(sPos + new Vector2Int(0, -1));
+                        list.Add(sPos + new Vector2Int(1, -1));
+                        list.Add(tPos + new Vector2Int(0, 1));
+                        list.Add(tPos + new Vector2Int(-1, 1));
+                    }
+                    else
+                    {
+                        list.Add(sPos + new Vector2Int(0, -1));
+                        list.Add(tPos + new Vector2Int(0, 1));
+                    }
+                    break;
+            }
+            foreach (var t in list)
+            {
+                if (!IsValidPos(t, grid))
+                    return false;
+                if (grid[t.x, t.y].tId != 0 && grid[t.x, t.y].tId != sId && grid[t.x, t.y].tId != tId)
+                    return false;
+            }
+            return true;
         }
-        return IsLineClear(sPos, tPos, step, grid);
-    }
-    private bool IsLineClear(Vector2Int sPos, Vector2Int tPos, Vector2Int step, BtGrid[,] grid)
-    {
+        // sPos, tPos 사이 칸만 검사 (양 끝점 제외)
         Vector2Int cur = sPos + step;
         while (cur != tPos)
         {
@@ -141,5 +198,102 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
         }
         return true;
     }
+
+    // Bresenham 선상 칸 나열 (시작·끝 포함). 반환 리스트는 내부 버퍼이므로 보관 시 복사 필요.
+    public List<Vector2Int> GetBresenhamLine(Vector2Int from, Vector2Int to)
+    {
+        BuildBresenhamLine(from, to, lineList);
+        return lineList;
+    }
+
+    // Bresenham 직선 시야: 선상·대각 코너 칸의 tId가 0이 아니면 차단. 양 끝 칸만 검사 제외.
+    public bool HasBresenhamLineOfSight(Vector2Int from, Vector2Int to, BtGrid[,] grid)
+    {
+        if (from == to) return false;
+        if (!IsValidPos(from, grid) || !IsValidPos(to, grid)) return false;
+
+        int x = from.x, y = from.y;
+        int endX = to.x, endY = to.y;
+        int dx = Mathf.Abs(endX - x);
+        int dy = Mathf.Abs(endY - y);
+        int sx = x < endX ? 1 : -1;
+        int sy = y < endY ? 1 : -1;
+        int err = dx - dy;
+
+        while (true)
+        {
+            var cell = new Vector2Int(x, y);
+            if (cell != from && cell != to && !IsBresenhamCellClear(cell, grid))
+                return false;
+
+            if (x == endX && y == endY)
+                break;
+
+            int prevX = x, prevY = y;
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                y += sy;
+            }
+
+            // 대각 스텝 시 인접 코너 2칸 검사 (Bresenham 코너 관통 방지)
+            if (x != prevX && y != prevY)
+            {
+                if (!IsBresenhamCellClear(new Vector2Int(prevX + sx, prevY), grid))
+                    return false;
+                if (!IsBresenhamCellClear(new Vector2Int(prevX, prevY + sy), grid))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void BuildBresenhamLine(Vector2Int from, Vector2Int to, List<Vector2Int> buffer)
+    {
+        buffer.Clear();
+
+        int x = from.x, y = from.y;
+        int endX = to.x, endY = to.y;
+        int dx = Mathf.Abs(endX - x);
+        int dy = Mathf.Abs(endY - y);
+        int sx = x < endX ? 1 : -1;
+        int sy = y < endY ? 1 : -1;
+        int err = dx - dy;
+
+        while (true)
+        {
+            buffer.Add(new Vector2Int(x, y));
+            if (x == endX && y == endY)
+                break;
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                y += sy;
+            }
+        }
+    }
+
+    // 선상 장애물: 빈 칸(tId == 0)만 통과
+    private bool IsBresenhamCellClear(Vector2Int cell, BtGrid[,] grid)
+    {
+        if (!IsValidPos(cell, grid))
+            return false;
+        return grid[cell.x, cell.y].tId == 0;
+    }
+
     #endregion
 }

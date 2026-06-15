@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5541681905879374941}
-  - component: {fileID: 7877568279308493984}
+  - component: {fileID: 2586397920513637766}
   m_Layer: 5
   m_Name: DynTxt
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 9104413936105649710}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7877568279308493984
+--- !u!114 &2586397920513637766
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,10 +42,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1560354113834559523}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f671608aa889194d8b6e68148ca2036, type: 3}
+  m_Script: {fileID: 11500000, guid: 0333f54af5f8a3b4a8e2cb90dfd8d220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dynTxt: {fileID: 7553974367857348760}
+  txt: {fileID: 7553974367857348760}
+  tObj: {fileID: 0}
+  duration: 3
+  offset: {x: 0, y: 0.8, z: 0}
 --- !u!1 &4260435896532683567
 GameObject:
   m_ObjectHideFlags: 0
@@ -81,7 +84,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 180, y: 50}
+  m_SizeDelta: {x: 180, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7959417878941849777
 CanvasRenderer:
