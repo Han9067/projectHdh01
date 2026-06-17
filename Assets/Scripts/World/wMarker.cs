@@ -68,10 +68,12 @@ public class wMarker : MonoBehaviour
 
     private void OnMouseEnter()
     {
+        if (CityEnterPop.isActive || EventPop.isActive || WorldMainUI.isExplore) return;
         StateHighlight(true);
     }
     private void OnMouseExit()
     {
+        if (CityEnterPop.isActive || EventPop.isActive || WorldMainUI.isExplore) return;
         StateHighlight(false);
     }
     public void StateHighlight(bool on)

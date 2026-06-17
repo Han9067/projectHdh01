@@ -158,6 +158,11 @@ public class WorldCore : AutoSingleton<WorldCore>
         p.y = Mathf.Clamp(p.y, minY, maxY);
         cmr.transform.position = p;
     }
+    public void SetCmrSpd(bool on)
+    {
+        moveSpd = on ? 20f : 0f;
+        zoomSpd = on ? 10f : 0f;
+    }
     #endregion
     #region 플레이어 관련
     private void MoveCamera(Vector3 v)
@@ -689,7 +694,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     #endregion
     #region 씬 이동
-    public void SceneFadeOut()
+    public void GoToBattle()
     {
         SavePlayerPos();
         WorldObjManager.I.UpdateWorldMonData(wMonObj); //몬스터 위치 갱신
@@ -705,24 +710,4 @@ public class WorldCore : AutoSingleton<WorldCore>
         // });
     }
     #endregion
-    public void ShowExplorePopup()
-    {
-        Presenter.Send("ExplorePop", "ShowExplorePopup");
-    }
-}
-
-[CustomEditor(typeof(WorldCore))]
-public class WorldCoreEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
-
-        WorldCore myScript = (WorldCore)target;
-
-        if (GUILayout.Button("탐험 팝업 테스트"))
-        {
-            myScript.ShowExplorePopup();
-        }
-    }
 }

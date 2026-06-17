@@ -344,6 +344,46 @@ MonoBehaviour:
           value: None
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: Fight
+      value:
+        list:
+        - key: 23
+          value: "\uC2F8\uC6B4\uB2E4"
+          duplicatedKey: 0
+        - key: 10
+          value: Fight
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Run
+      value:
+        list:
+        - key: 23
+          value: "\uB3C4\uB9DD\uCE58\uB2E4"
+          duplicatedKey: 0
+        - key: 10
+          value: Run
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Explore
+      value:
+        list:
+        - key: 23
+          value: "\uD0D0\uD5D8\uD558\uB2E4"
+          duplicatedKey: 0
+        - key: 10
+          value: Explore
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Leave
+      value:
+        list:
+        - key: 23
+          value: "\uB5A0\uB09C\uB2E4"
+          duplicatedKey: 0
+        - key: 10
+          value: Leave
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: Caelgrad
       value:
         list:
@@ -4639,7 +4679,7 @@ MonoBehaviour:
           value: "\uACE0\uBE14\uB9B0 \uC18C\uAD74 \uBC1C\uACAC"
           duplicatedKey: 0
         - key: 10
-          value: 
+          value: "\uACE0\uBE14\uB9B0 \uC18C\uAD74 \uBC1C\uACAC"
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Evt_ExpWolf_TItle
@@ -4649,7 +4689,17 @@ MonoBehaviour:
           value: "\uB291\uB300 \uC18C\uAD74 \uBC1C\uACAC"
           duplicatedKey: 0
         - key: 10
-          value: 
+          value: "\uB291\uB300 \uC18C\uAD74 \uBC1C\uACAC"
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Evt_ExpSpider_TItle
+      value:
+        list:
+        - key: 23
+          value: "\uB291\uB300 \uC18C\uAD74 \uBC1C\uACAC"
+          duplicatedKey: 0
+        - key: 10
+          value: "\uB291\uB300 \uC18C\uAD74 \uBC1C\uACAC"
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Evt_FindMonGrp_Ment
@@ -4658,11 +4708,12 @@ MonoBehaviour:
         - key: 23
           value: "\uAE38\uB4DC\uC5D0\uC11C \uBCF4\uACE0\uBC1B\uC740 \uC704\uCE58\uC5D0
             \uB3C4\uCC29\uD588\uC2B5\uB2C8\uB2E4. \uC804\uBC29\uC5D0 \uBAAC\uC2A4\uD130
-            \uBB34\uB9AC\uAC00 \uBCF4\uC785\uB2C8\uB2E4.\n\uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+            \uBB34\uB9AC\uAC00 \uBCF4\uC785\uB2C8\uB2E4.\n\n\uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
           duplicatedKey: 0
         - key: 10
           value: 'You have arrived at the location reported by the guild. A pack
             of monsters lies ahead.
+
 
             What will you do?'
           duplicatedKey: 0
@@ -4673,7 +4724,7 @@ MonoBehaviour:
         - key: 23
           value: "\uB2F9\uC2E0\uC740 \uC5EC\uD589 \uC911\uC5D0 \uC545\uD589\uC744
             \uC77C\uC0BC\uB294 \uB3C4\uC801\uB4E4\uC774 \uBA38\uBB3C\uACE0 \uC788\uB294
-            \uC694\uC0C8\uB97C \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\uC5B4\uB5BB\uAC8C
+            \uC694\uC0C8\uB97C \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\n\uC5B4\uB5BB\uAC8C
             \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
           duplicatedKey: 0
         - key: 10
@@ -4689,12 +4740,12 @@ MonoBehaviour:
         - key: 23
           value: "\uB2F9\uC2E0\uC740 \uC5EC\uD589 \uC911\uC5D0 \uD749\uC545\uD55C
             \uC624\uD06C\uB4E4\uC774 \uBA38\uBB3C\uACE0 \uC788\uB294 \uC694\uC0C8\uB97C
-            \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+            \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\n\uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
           duplicatedKey: 0
         - key: 10
           value: "\uB2F9\uC2E0\uC740 \uC5EC\uD589 \uC911\uC5D0 \uD749\uC545\uD55C
             \uC624\uD06C\uB4E4\uC774 \uBA38\uBB3C\uACE0 \uC788\uB294 \uC694\uC0C8\uB97C
-            \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+            \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\n\uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Evt_ExpGoblin_Ment
@@ -4702,12 +4753,12 @@ MonoBehaviour:
         list:
         - key: 23
           value: "\uB2F9\uC2E0\uC740 \uC5EC\uD589 \uC911\uC5D0 \uACE0\uBE14\uB9B0
-            \uC18C\uAD74\uC744 \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\uC5B4\uB5BB\uAC8C
+            \uC18C\uAD74\uC744 \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\n\uC5B4\uB5BB\uAC8C
             \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
           duplicatedKey: 0
         - key: 10
           value: "\uB2F9\uC2E0\uC740 \uC5EC\uD589 \uC911\uC5D0 \uACE0\uBE14\uB9B0
-            \uC18C\uAD74\uC744 \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\uC5B4\uB5BB\uAC8C
+            \uC18C\uAD74\uC744 \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\n\uC5B4\uB5BB\uAC8C
             \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
           duplicatedKey: 0
       duplicatedKey: 0
@@ -4716,11 +4767,25 @@ MonoBehaviour:
         list:
         - key: 23
           value: "\uB2F9\uC2E0\uC740 \uC5EC\uD589 \uC911\uC5D0 \uB291\uB300 \uC18C\uAD74\uC744
-            \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+            \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\n\uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
           duplicatedKey: 0
         - key: 10
           value: "\uB2F9\uC2E0\uC740 \uC5EC\uD589 \uC911\uC5D0 \uB291\uB300 \uC18C\uAD74\uC744
-            \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+            \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\n\uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Evt_ExpSpider_Ment
+      value:
+        list:
+        - key: 23
+          value: "\uB2F9\uC2E0\uC740 \uC5EC\uD589 \uC911\uC5D0 \uAC70\uBBF8\uB4E4\uC758
+            \uC11C\uC2DD\uC9C0\uB97C \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\n\uC5B4\uB5BB\uAC8C
+            \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+          duplicatedKey: 0
+        - key: 10
+          value: "\uB2F9\uC2E0\uC740 \uC5EC\uD589 \uC911\uC5D0 \uAC70\uBBF8\uB4E4\uC758
+            \uC11C\uC2DD\uC9C0\uB97C \uBC1C\uACAC\uD558\uC600\uC2B5\uB2C8\uB2E4.\n\n\uC5B4\uB5BB\uAC8C
+            \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Talk_QstG1_1

@@ -262,6 +262,5 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
         int tId = grid[cell.x, cell.y].tId;
         return tId == 0 || tId == 1;
     }
-
     #endregion
 }

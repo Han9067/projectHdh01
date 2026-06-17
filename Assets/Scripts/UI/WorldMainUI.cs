@@ -1,7 +1,7 @@
 using GB;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
+using System.Collections.Generic;
 public class WorldMainUI : UIScreen
 {
     public static bool isBlock = false;
@@ -10,12 +10,14 @@ public class WorldMainUI : UIScreen
     private float wTime = 0, actTime, endActTime, actTick = 0;
     private int tDay = 0, wYear, wMonth, wDay;
     private bool isAct = false, isRest = false; //일하기, 휴식 상태 유무
+    public static bool isExplore = false;
     private void Awake()
     {
         Regist();
         RegistButton();
         mGameObject["IngPop"].SetActive(false);
         mGameObject["ExplorePop"].SetActive(false);
+        isExplore = false;
     }
     private void Start()
     {
@@ -33,6 +35,12 @@ public class WorldMainUI : UIScreen
     private void OnDisable()
     {
         Presenter.UnBind("WorldMainUI", this);
+        if (isExplore)
+        {
+            mGameObject["ExplorePop"].SetActive(false);
+            isExplore = false;
+            GsManager.I.CheckWorldCmr();
+        }
     }
 
     public void RegistButton()
@@ -215,8 +223,11 @@ public class WorldMainUI : UIScreen
                 SetTraceQst();
                 break;
             case "ShowExplorePop":
+                GsManager.I.SetCurNodeData(data.Get<int>());
                 mGameObject["ExplorePop"].SetActive(true);
-                SetExplore();
+                isExplore = true;
+                GsManager.I.CheckWorldCmr();
+                DrawExpMap();
                 break;
         }
     }
@@ -320,9 +331,13 @@ public class WorldMainUI : UIScreen
     }
     #endregion
     #region 탐험 팝업
-    private void SetExplore()
+    private void DrawExpMap()
     {
-
+        List<CurNodeData> nodeList = GsManager.I.CurNodeList;
+        foreach (var n in nodeList)
+        {
+            Debug.Log(n.pos.x + ", " + n.pos.y + ", " + n.eType);
+        }
     }
     #endregion
     public override void Refresh()

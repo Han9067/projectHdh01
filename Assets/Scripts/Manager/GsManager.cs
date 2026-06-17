@@ -40,6 +40,7 @@ public class GsManager : AutoSingleton<GsManager>
         LoadAttData();
         LoadSkData();
         LoadMakeData();
+        LoadExpData();
         #endregion
 
         #region 매니저 스크립트 초기화
@@ -143,6 +144,14 @@ public class GsManager : AutoSingleton<GsManager>
     {
         Vector3Int p = WorldCore.I.GetPlayerCellPos();
         btSeed = "Tile_" + WorldObjManager.I.GetCurTileFieldType(p);
+    }
+    public void SetBtSeed(string str)
+    {
+        btSeed = str;
+    }
+    public void CheckWorldCmr()
+    {
+        WorldCore.I.SetCmrSpd(!(WorldMainUI.isExplore || CityEnterPop.isActive || EventPop.isActive));
     }
     #endregion
     #region 커서 관리
@@ -732,6 +741,65 @@ public class GsManager : AutoSingleton<GsManager>
     public bool IsCrt(int crtRate)
     {
         return Random.Range(0, 100) < crtRate ? true : false;
+    }
+    #endregion
+
+    #region 탐험 관련
+    private ExpTable _expTable;
+    public ExpTable ExpTable => _expTable ?? (_expTable = GameDataManager.GetTable<ExpTable>());
+    public Dictionary<int, ExpData> ExpDataList = new Dictionary<int, ExpData>();
+    public List<CurNodeData> CurNodeList = new List<CurNodeData>(); //현재 탐험 노드 리스트
+    private void LoadExpData()
+    {
+        foreach (var exp in ExpTable.Datas)
+        {
+            ExpDataList[exp.ExpID] = new ExpData(exp.ExpID, exp.NodeCnt, exp.NodeData);
+        }
+    }
+    public void SetCurNodeData(int eventID)
+    {
+        ExpData expData = ExpDataList[GetExpId(eventID)];
+        CurNodeList.Clear();
+        foreach (var n in expData.NodeData)
+            CurNodeList.Add(new CurNodeData(n.Pos, GetEvtType(n.nType)));
+    }
+    private int GetExpId(int eventID)
+    {
+        int nCnt = 0;
+        switch (eventID)
+        {
+            case 300001:
+            case 300002:
+                nCnt = Random.Range(5, 8); //5~7개의 노드
+                break;
+        }
+        List<int> list = new List<int>();
+        foreach (var n in ExpDataList)
+        {
+            if (nCnt == n.Value.NodeCnt)
+                list.Add(n.Key);
+        }
+        return list[Random.Range(0, list.Count)];
+    }
+    private int GetEvtType(int nType)
+    {
+        // nType 설명
+        // 0은 시작 노드 이며 어떠한 이벤트도 없이 지나갈수있는 노드.
+        // 1은 끝 노드,
+        // 2는 일반 전투& 어떠한 이벤트도 없이 지나갈수있는 노드.
+        // 3은 보통 막힌 길에 있는 이벤트로 아무 행동 없이 받는 보상 & 
+        // 전투 후 보물상자 획득으로 보상 & 퍼즐을 풀어 얻는 보상 등 보상 위주의 이벤트의 노드
+
+        //evtType 설명
+        //0: 시작(빈 공간), 1: 끝(보스 및 종착지), 11: 일반 전투, 12: 빈 공간, 13: 휴식 
+        // 21 : 일반 보상, 22: 전투 후 보상, 23: 퍼즐 보상
+        switch (nType)
+        {
+            case 0: return 0;
+            case 1: return 1;
+            case 3: return Random.Range(21, 23);
+            default: return Random.Range(11, 13);
+        }
     }
     #endregion
 }

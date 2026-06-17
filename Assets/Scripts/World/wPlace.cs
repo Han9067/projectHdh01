@@ -25,13 +25,13 @@ public class wPlace : MonoBehaviour
     private void OnMouseEnter()
     {
         WorldCore.intoPlace = pcId;
-        if (CityEnterPop.isActive) return;
+        if (CityEnterPop.isActive || EventPop.isActive || WorldMainUI.isExplore) return;
         StateHighlight(true);
     }
     private void OnMouseExit()
     {
         WorldCore.intoPlace = 0;
-        if (CityEnterPop.isActive) return;
+        if (CityEnterPop.isActive || EventPop.isActive || WorldMainUI.isExplore) return;
         StateHighlight(false);
     }
     public void StateHighlight(bool on)

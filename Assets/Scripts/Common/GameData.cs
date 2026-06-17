@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using JetBrains.Annotations;
 
 
 public static class SV //State Value
@@ -484,6 +485,51 @@ public class TalkData
     }
 }
 
+//탐험 클래스
+[System.Serializable]
+public class ExpData
+{
+    public int ExpID, NodeCnt;
+    // public string MapData;
+    public List<NodeData> NodeData = new List<NodeData>();
+    public ExpData(int id, int cnt, string str)
+    {
+        ExpID = id;
+        NodeCnt = cnt;
+        string[] arr = str.Split('/');
+        foreach (var a in arr)
+        {
+            string[] pos = a.Split('_');
+            int x = int.Parse(pos[0]);
+            int y = int.Parse(pos[1]);
+            int type = int.Parse(pos[2]);
+            NodeData.Add(new NodeData(new Vector2Int(x, y), type));
+        }
+    }
+}
+[System.Serializable]
+public class NodeData
+{
+    public Vector2Int Pos;
+    public int nType;
+    public NodeData(Vector2Int pos, int type)
+    {
+        Pos = pos;
+        nType = type;
+    }
+}
+[System.Serializable]
+public class CurNodeData
+{
+    public Vector2Int pos;
+    public int eType; //이벤트 타입
+    //0: 빈 공간, 1: 일반 전투, 2: 휴식, 11: 일반 보상, 12: 전투 후 보상, 13: 퍼즐 보상, 99: 보스 및 종착지
+    public CurNodeData(Vector2Int p, int type)
+    {
+        pos = p;
+        eType = type;
+    }
+}
 //색상 클래스
 [System.Serializable]
 public static class ColorData

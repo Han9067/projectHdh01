@@ -37,6 +37,7 @@ public class CityEnterPop : UIScreen
     {
         Presenter.Bind("CityEnterPop", this);
         isActive = true;
+        GsManager.I.CheckWorldCmr();
         cityId = 0; // 초기화
         splitData.Clear();
         shopIdList.Clear();
@@ -51,6 +52,7 @@ public class CityEnterPop : UIScreen
         Presenter.UnBind("CityEnterPop", this);
         // Presenter.Send("WorldMainUI", "SetBlock", false);
         isActive = false;
+        GsManager.I.CheckWorldCmr();
         //도시 안으로 들어간 플레이어 활성화
         WorldCore.I.StatePlayer(true);
     }

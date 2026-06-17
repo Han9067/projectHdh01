@@ -77,6 +77,7 @@
     <Compile Include="Assets\GB\ResManager\ObjectPooling\PoolingType.cs" />
     <Compile Include="Assets\GB\GSheet\GameData\WpTable.cs" />
     <Compile Include="Assets\GB\Localization\LocalizationManager.cs" />
+    <Compile Include="Assets\GB\GSheet\GameData\ExpTable.cs" />
     <Compile Include="Assets\Scripts\UI\EventPop.cs" />
     <Compile Include="Assets\GB\ResManager\SoundManager.cs" />
     <Compile Include="Assets\Scripts\UiObj\WorkRewardList.cs" />
@@ -121,7 +122,6 @@
     <Compile Include="Assets\GB\GSheet\GameData\CityTable.cs" />
     <Compile Include="Assets\Scripts\Manager\PlaceManager.cs" />
     <Compile Include="Assets\Scripts\Common\GameData.cs" />
-    <Compile Include="Assets\Scripts\World\wCity.cs" />
     <Compile Include="Assets\Scripts\Battle\RngGrid.cs" />
     <Compile Include="Assets\Scripts\Battle\SkEffObj.cs" />
     <Compile Include="Assets\Scripts\World\wMon.cs" />
@@ -191,6 +191,7 @@
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Resources\Json\MakeTable.txt" />
     <None Include="Assets\Resources\Json\QuestTable.txt" />
+    <None Include="Assets\Resources\Json\ExpTable.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\GB\Version\Localization.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />

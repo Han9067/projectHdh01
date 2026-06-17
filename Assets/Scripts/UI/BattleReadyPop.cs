@@ -39,7 +39,7 @@ public class BattleReadyPop : UIScreen
                 // //시드 설정
                 // GsManager.I.btSeed = Random.Range(10000000, 99999999);
 
-                WorldCore.I.SceneFadeOut(); //페이드
+                WorldCore.I.GoToBattle(); //페이드
                 break;
             case "ClickBattleEscape":
                 break;
