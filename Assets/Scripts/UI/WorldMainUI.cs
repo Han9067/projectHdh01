@@ -11,6 +11,8 @@ public class WorldMainUI : UIScreen
     private int tDay = 0, wYear, wMonth, wDay;
     private bool isAct = false, isRest = false; //일하기, 휴식 상태 유무
     public static bool isExplore = false;
+    private List<NodeObj> nodeObj = new List<NodeObj>();
+    [SerializeField] private Transform nodeParent;
     private void Awake()
     {
         Regist();
@@ -333,10 +335,24 @@ public class WorldMainUI : UIScreen
     #region 탐험 팝업
     private void DrawExpMap()
     {
+        // List<List<int>> nodePosList = new List<List<int>>
+        // {
+        //     // 1번째 행 (Y = 240)
+        //     new List<int> { -400, 240 }, new List<int> { -240, 240 }, new List<int> { -80, 240 }, new List<int> { 80, 240 }, new List<int> { 240, 240 }, new List<int> { 400, 240 },
+        //     // 2번째 행 (Y = 80)
+        //     new List<int> { -400, 80 }, new List<int> { -240, 80 }, new List<int> { -80, 80 }, new List<int> { 80, 80 }, new List<int> { 240, 80 }, new List<int> { 400, 80 },
+        //     // 3번째 행 (Y = -80)
+        //     new List<int> { -400, -80 }, new List<int> { -240, -80 }, new List<int> { -80, -80 }, new List<int> { 80, -80 }, new List<int> { 240, -80 }, new List<int> { 400, -80 },
+        //     // 4번째 행 (Y = -240)
+        //     new List<int> { -400, -240 }, new List<int> { -240, -240 }, new List<int> { -80, -240 }, new List<int> { 80, -240 }, new List<int> { 240, -240 }, new List<int> { 400, -240 }
+        // };
         List<CurNodeData> nodeList = GsManager.I.CurNodeList;
         foreach (var n in nodeList)
         {
-            Debug.Log(n.pos.x + ", " + n.pos.y + ", " + n.eType);
+            //"nodeObj" 프리팹 생성
+            GameObject obj = Instantiate(ResManager.GetGameObject("NodeObj"), nodeParent);
+            obj.GetComponent<NodeObj>().SetNode(n.pos.x, n.pos.y, n.eType);
+            nodeObj.Add(obj.GetComponent<NodeObj>());
         }
     }
     #endregion
