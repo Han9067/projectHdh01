@@ -763,6 +763,12 @@ public class GsManager : AutoSingleton<GsManager>
         foreach (var n in expData.NodeData)
             CurNodeList.Add(new CurNodeData(n.Pos, GetEvtType(n.nType)));
     }
+    public void SetNodeClear(int x, int y)
+    {
+        CurNodeList.Find(n => n.pos.x == x && n.pos.y == y).isClear = true;
+        // 메세지 전달
+        // Presenter.Send("WorldMainUI", "SetNodeClear", x, y);
+    }
     private int GetExpId(int eventID)
     {
         int nCnt = 0;

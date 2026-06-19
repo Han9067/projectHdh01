@@ -10,9 +10,12 @@ public class WorldMainUI : UIScreen
     private float wTime = 0, actTime, endActTime, actTick = 0;
     private int tDay = 0, wYear, wMonth, wDay;
     private bool isAct = false, isRest = false; //일하기, 휴식 상태 유무
+    #region 탐험 관련
     public static bool isExplore = false;
     private List<NodeObj> nodeObj = new List<NodeObj>();
     [SerializeField] private Transform nodeParent;
+    [SerializeField] private RectTransform hereRt;
+    #endregion
     private void Awake()
     {
         Regist();
@@ -332,7 +335,7 @@ public class WorldMainUI : UIScreen
         }
     }
     #endregion
-    #region 탐험 팝업
+    #region 탐험
     private void DrawExpMap()
     {
         // List<List<int>> nodePosList = new List<List<int>>
@@ -351,9 +354,11 @@ public class WorldMainUI : UIScreen
         {
             //"nodeObj" 프리팹 생성
             GameObject obj = Instantiate(ResManager.GetGameObject("NodeObj"), nodeParent);
-            obj.GetComponent<NodeObj>().SetNode(n.pos.x, n.pos.y, n.eType);
+            obj.GetComponent<NodeObj>().SetNode(n.pos.x, n.pos.y, n.nType, n.eType, n.isClear);
             nodeObj.Add(obj.GetComponent<NodeObj>());
         }
+        // hereObj.transform
+        //hereObj
     }
     #endregion
     public override void Refresh()
