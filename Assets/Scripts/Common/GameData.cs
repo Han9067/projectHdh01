@@ -503,48 +503,38 @@ public class ExpData
             int x = int.Parse(pos[0]);
             int y = int.Parse(pos[1]);
             int type = int.Parse(pos[2]);
-            NodeData.Add(new NodeData(new Vector2Int(x, y), type));
+            Vector2Int prev = type == 3 ? new Vector2Int(int.Parse(pos[3]), int.Parse(pos[4])) : Vector2Int.zero;
+            NodeData.Add(new NodeData(new Vector2Int(x, y), prev, type));
         }
     }
 }
 [System.Serializable]
 public class NodeData
 {
-    public Vector2Int Pos;
+    public Vector2Int pos, prev;
     public int nType;
-    public NodeData(Vector2Int pos, int type)
+    public NodeData(Vector2Int p, Vector2Int pv, int type)
     {
-        Pos = pos;
+        pos = p;
+        prev = pv;
         nType = type;
     }
 }
 [System.Serializable]
 public class CurNodeData
 {
-    public Vector2Int pos;
+    public Vector2Int pos, prev;
     public int nType, eType; //노드 타입, 이벤트 타입
     public bool isClear; //노드 클리어 여부
-    //0: 빈 공간, 1: 일반 전투, 2: 휴식, 11: 일반 보상, 12: 전투 후 보상, 13: 퍼즐 보상, 99: 보스 및 종착지
-    public CurNodeData(Vector2Int p, int nt)
+    //nType -> 0: 시작, 1: 끝, 2: 일반 노드, 3: 막힌 길 노드
+    //eType -> 0: 빈 공간, 1: 일반 전투, 2: 휴식, 11: 일반 보상, 12: 전투 후 보상, 13: 퍼즐 보상, 99: 보스 및 종착지
+    public CurNodeData(Vector2Int p, Vector2Int pv, int nt, int et)
     {
         pos = p;
+        prev = pv;
         nType = nt;
+        eType = et;
         isClear = false;
-        switch (nt)
-        {
-            case 0:
-                eType = 0;
-                break; //시작
-            case 1:
-                eType = 1;
-                break; //끝
-            case 2:
-                eType = Random.Range(0, 3);
-                break; //일반 노드
-            case 3:
-                eType = Random.Range(11, 13);
-                break; //막힌 길 노드
-        }
     }
 }
 //색상 클래스

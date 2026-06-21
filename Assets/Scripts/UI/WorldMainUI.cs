@@ -2,6 +2,7 @@ using GB;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using DG.Tweening;
 public class WorldMainUI : UIScreen
 {
     public static bool isBlock = false;
@@ -14,7 +15,10 @@ public class WorldMainUI : UIScreen
     public static bool isExplore = false;
     private List<NodeObj> nodeObj = new List<NodeObj>();
     [SerializeField] private Transform nodeParent;
-    [SerializeField] private RectTransform hereRt;
+    [SerializeField] private GameObject pObj;
+    private RectTransform pRt;
+    private Vector2Int pPos = Vector2Int.zero;
+    public static bool isMoveNode = false;
     #endregion
     private void Awake()
     {
@@ -23,6 +27,8 @@ public class WorldMainUI : UIScreen
         mGameObject["IngPop"].SetActive(false);
         mGameObject["ExplorePop"].SetActive(false);
         isExplore = false;
+        pRt = pObj.GetComponent<RectTransform>();
+        pObj.SetActive(false);
     }
     private void Start()
     {
@@ -228,11 +234,17 @@ public class WorldMainUI : UIScreen
                 SetTraceQst();
                 break;
             case "ShowExplorePop":
-                GsManager.I.SetCurNodeData(data.Get<int>());
+                isMoveNode = false;
+                GsManager.I.CurExpId = data.Get<int>();
+                GsManager.I.SetCurNodeData();
                 mGameObject["ExplorePop"].SetActive(true);
                 isExplore = true;
                 GsManager.I.CheckWorldCmr();
                 DrawExpMap();
+                break;
+            case "ClickNode":
+                isMoveNode = true;
+                MoveNode(data.Get<Vector2Int>());
                 break;
         }
     }
@@ -338,17 +350,6 @@ public class WorldMainUI : UIScreen
     #region 탐험
     private void DrawExpMap()
     {
-        // List<List<int>> nodePosList = new List<List<int>>
-        // {
-        //     // 1번째 행 (Y = 240)
-        //     new List<int> { -400, 240 }, new List<int> { -240, 240 }, new List<int> { -80, 240 }, new List<int> { 80, 240 }, new List<int> { 240, 240 }, new List<int> { 400, 240 },
-        //     // 2번째 행 (Y = 80)
-        //     new List<int> { -400, 80 }, new List<int> { -240, 80 }, new List<int> { -80, 80 }, new List<int> { 80, 80 }, new List<int> { 240, 80 }, new List<int> { 400, 80 },
-        //     // 3번째 행 (Y = -80)
-        //     new List<int> { -400, -80 }, new List<int> { -240, -80 }, new List<int> { -80, -80 }, new List<int> { 80, -80 }, new List<int> { 240, -80 }, new List<int> { 400, -80 },
-        //     // 4번째 행 (Y = -240)
-        //     new List<int> { -400, -240 }, new List<int> { -240, -240 }, new List<int> { -80, -240 }, new List<int> { 80, -240 }, new List<int> { 240, -240 }, new List<int> { 400, -240 }
-        // };
         List<CurNodeData> nodeList = GsManager.I.CurNodeList;
         foreach (var n in nodeList)
         {
@@ -357,8 +358,78 @@ public class WorldMainUI : UIScreen
             obj.GetComponent<NodeObj>().SetNode(n.pos.x, n.pos.y, n.nType, n.eType, n.isClear);
             nodeObj.Add(obj.GetComponent<NodeObj>());
         }
-        // hereObj.transform
-        //hereObj
+        pRt.anchoredPosition = new Vector2(-400 + nodeList[0].pos.x * 160, 240 - nodeList[0].pos.y * 160);
+        pObj.SetActive(true);
+        pObj.transform.SetAsLastSibling();
+        pPos = nodeList[0].pos;
+        CheckMoveableNode();
+    }
+    private void CheckMoveableNode()
+    {
+        var dir4 = new List<Vector2Int> { new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(-1, 0) };
+        foreach (var n in nodeObj)
+            n.StateMoveable(false);
+        List<CurNodeData> nodeList = GsManager.I.CurNodeList;
+        foreach (var d in dir4)
+        {
+            Vector2Int np = pPos + d;
+            foreach (var n in nodeList)
+            {
+                if (n.pos == np)
+                {
+                    if (n.nType == 3 && n.prev != pPos) continue;
+                    nodeObj.Find(x => x.pos == n.pos).StateMoveable(true);
+                    break;
+                }
+            }
+        }
+    }
+    private void MoveNode(Vector2Int pos)
+    {
+        //pPos 에서 pos 로 이동
+        pRt.DOAnchorPos(new Vector2(-400 + pos.x * 160, 240 - pos.y * 160), 0.5f)
+            .SetEase(Ease.Linear)
+            .SetUpdate(true)
+            .OnComplete(() =>
+            {
+                pPos = pos;
+                isMoveNode = false;
+                CheckMoveableNode();
+                CheckCurNodeEvt();
+            });
+    }
+    private void CheckCurNodeEvt()
+    {
+        foreach (var n in nodeObj)
+        {
+            if (n.pos == pPos)
+            {
+                Debug.Log("CheckCurNodeEvt: " + n.eType);
+                //GsManager.I.CurExpId 증가
+                // GsManager.I.CurExpId++;
+                switch (n.eType)
+                {
+                    default: break;
+                    case 1:
+                        //전투 이벤트 발생
+                        break;
+                    case 2:
+                        //회복 이벤트 발생
+                        break;
+                    case 11:
+                        // 일반 보상 이벤트 발생
+                        break;
+                    case 12:
+                        // 전투 후 보상 이벤트 발생
+                        break;
+                        // case 13:
+                        //     // 퍼즐 보상 이벤트 발생
+                        //     break;
+
+                }
+                break;
+            }
+        }
     }
     #endregion
     public override void Refresh()

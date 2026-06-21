@@ -749,6 +749,7 @@ public class GsManager : AutoSingleton<GsManager>
     public ExpTable ExpTable => _expTable ?? (_expTable = GameDataManager.GetTable<ExpTable>());
     public Dictionary<int, ExpData> ExpDataList = new Dictionary<int, ExpData>();
     public List<CurNodeData> CurNodeList = new List<CurNodeData>(); //현재 탐험 노드 리스트
+    public int CurExpId = 0;
     private void LoadExpData()
     {
         foreach (var exp in ExpTable.Datas)
@@ -756,12 +757,32 @@ public class GsManager : AutoSingleton<GsManager>
             ExpDataList[exp.ExpID] = new ExpData(exp.ExpID, exp.NodeCnt, exp.NodeData);
         }
     }
-    public void SetCurNodeData(int eventID)
+    public void SetCurNodeData()
     {
-        ExpData expData = ExpDataList[GetExpId(eventID)];
+        ExpData expData = ExpDataList[GetExpId(CurExpId)];
         CurNodeList.Clear();
         foreach (var n in expData.NodeData)
-            CurNodeList.Add(new CurNodeData(n.Pos, GetEvtType(n.nType)));
+            CurNodeList.Add(new CurNodeData(n.pos, n.prev, n.nType, GetEvtType(n.nType)));
+        CheckCurNodeEvt();
+    }
+    public void InitExp()
+    {
+        CurExpId = 0;
+        CurNodeList.Clear();
+    }
+    private void CheckCurNodeEvt()
+    {
+        var list = new List<CurNodeData>();
+        bool hasCombat = false;
+        foreach (var n in CurNodeList)
+        {
+            if (n.nType != 2) continue;
+            list.Add(n);
+            if (n.eType == 1)
+                hasCombat = true;
+        }
+        if (list.Count == 0 || hasCombat) return;
+        list[Random.Range(0, list.Count)].eType = 1;
     }
     public void SetNodeClear(int x, int y)
     {
@@ -797,14 +818,14 @@ public class GsManager : AutoSingleton<GsManager>
         // 전투 후 보물상자 획득으로 보상 & 퍼즐을 풀어 얻는 보상 등 보상 위주의 이벤트의 노드
 
         //evtType 설명
-        //0: 시작(빈 공간), 1: 끝(보스 및 종착지), 11: 일반 전투, 12: 빈 공간, 13: 휴식 
-        // 21 : 일반 보상, 22: 전투 후 보상, 23: 퍼즐 보상
+        //0: 시작(빈 공간), 99: 끝(보스 및 종착지), 1: 일반 전투, 2: 휴식 
+        // 11 : 일반 보상, 12: 전투 후 보상, 13: 퍼즐 보상
         switch (nType)
         {
             case 0: return 0;
-            case 1: return 1;
-            case 3: return Random.Range(21, 23);
-            default: return Random.Range(11, 13);
+            case 1: return 99;
+            case 3: return Random.Range(11, 13);
+            default: return Random.Range(0, 3);
         }
     }
     #endregion

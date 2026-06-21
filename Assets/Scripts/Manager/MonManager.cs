@@ -165,4 +165,31 @@ public class MonManager : AutoSingleton<MonManager>
                 return new Dictionary<string, int>();
         }
     }
+    public List<int> GetExpMonList()
+    {
+        //GsManager.I.CurExpId
+        List<int> list = new List<int>();
+        switch (GsManager.I.CurExpId)
+        {
+            case 300001:
+                //고블린 소굴
+                list.Add(300001);
+                list.Add(300011);
+                list.Add(300021);
+                break;
+            case 300002:
+                //늑대 소굴
+                list.Add(300002);
+                list.Add(300012);
+                list.Add(300022);
+                break;
+            case 300003:
+                //거미 서식지
+                list.Add(300003);
+                list.Add(300013);
+                list.Add(300023);
+                break;
+        }
+        return list;
+    }
 }

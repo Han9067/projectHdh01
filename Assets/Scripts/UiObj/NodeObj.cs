@@ -5,19 +5,24 @@ using UnityEngine.EventSystems;
 
 public class NodeObj : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public int x, y, nType, eType; //node type, event type
+    public Vector2Int pos;
+    public int nType, eType; //node type, event type
     public Image icon, highlight;
     public bool isClear = false;
+    public bool isMoveable = false;
     [SerializeField] private RectTransform rt;
     public void SetNode(int xx, int yy, int nt, int et, bool clear)
     {
-        x = xx;
-        y = yy;
+        pos = new Vector2Int(xx, yy);
         isClear = clear;
         nType = nt;
         eType = et;
-        rt.anchoredPosition = new Vector2(-400 + x * 160, 240 - y * 160);
+        rt.anchoredPosition = new Vector2(-400 + pos.x * 160, 240 - pos.y * 160);
         // icon.sprite = ResManager.GetSprite("node_" + type);
+    }
+    public void StateMoveable(bool on)
+    {
+        isMoveable = on;
     }
     public void SetClear()
     {
@@ -26,15 +31,18 @@ public class NodeObj : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        // if (eventData.button == PointerEventData.InputButton.Left && !eventData.dragging)
-        //     Presenter.Send("NodePop", "ClickNode", x, y);
+        if (eventData.button == PointerEventData.InputButton.Left && !eventData.dragging
+        && isMoveable && !WorldMainUI.isMoveNode)
+            Presenter.Send("WorldMainUI", "ClickNode", pos);
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!isMoveable) return;
         highlight.gameObject.SetActive(true);
     }
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (!isMoveable) return;
         highlight.gameObject.SetActive(false);
     }
 }
