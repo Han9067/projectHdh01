@@ -14,11 +14,13 @@ public class WorldMainUI : UIScreen
     #region 탐험 관련
     public static bool isExplore = false;
     private List<NodeObj> nodeObj = new List<NodeObj>();
+    private List<GameObject> nodeLine = new List<GameObject>();
     [SerializeField] private Transform nodeParent;
     [SerializeField] private GameObject pObj;
     private RectTransform pRt;
     private Vector2Int pPos = Vector2Int.zero;
     public static bool isMoveNode = false;
+    public List<ExpEvtBtn> evtBtns = new List<ExpEvtBtn>();
     #endregion
     private void Awake()
     {
@@ -246,6 +248,12 @@ public class WorldMainUI : UIScreen
                 isMoveNode = true;
                 MoveNode(data.Get<Vector2Int>());
                 break;
+            case "StartBattle":
+                break;
+            case "TakeRest":
+                break;
+            case "OpenBox":
+                break;
         }
     }
     #region 메인 UI
@@ -350,10 +358,50 @@ public class WorldMainUI : UIScreen
     #region 탐험
     private void DrawExpMap()
     {
+        InitNode();
+        mTMPText["EvtDesc"].gameObject.SetActive(false);
+        foreach (var v in evtBtns)
+            v.gameObject.SetActive(false);
         List<CurNodeData> nodeList = GsManager.I.CurNodeList;
+        List<List<Vector2Int>> lineList = new List<List<Vector2Int>>();
+
+        var dir4 = new Vector2Int[]
+        {
+            new Vector2Int(0, 1), new Vector2Int(1, 0),
+            new Vector2Int(0, -1), new Vector2Int(-1, 0)
+        };
+        var drawn = new HashSet<string>();
+        //lineList 수집
         foreach (var n in nodeList)
         {
-            //"nodeObj" 프리팹 생성
+            foreach (var d in dir4)
+            {
+                Vector2Int np = n.pos + d;
+                CurNodeData target = nodeList.Find(x => x.pos == np);
+                if (target == null) continue;
+                Vector2Int posA = n.pos;
+                Vector2Int posB = target.pos;
+                bool canAtoB = target.nType != 3 || target.prev == posA;
+                bool canBtoA = n.nType != 3 || n.prev == posB;
+                // 양방향 중 하나라도 가능할 때만 연결
+                if (!canAtoB && !canBtoA) continue;
+                // (A,B) / (B,A) 중복 제거
+                string key = GetEdgeKey(posA, posB);
+                if (drawn.Contains(key)) continue;
+                drawn.Add(key);
+                lineList.Add(new List<Vector2Int> { posA, posB });
+            }
+        }
+
+        foreach (var line in lineList)
+        {
+            GameObject lObj = Instantiate(ResManager.GetGameObject("NodeLine"), nodeParent);
+            SetupNodeLine(lObj.GetComponent<RectTransform>(), line[0], line[1]);
+            nodeLine.Add(lObj);
+        }
+
+        foreach (var n in nodeList)
+        {
             GameObject obj = Instantiate(ResManager.GetGameObject("NodeObj"), nodeParent);
             obj.GetComponent<NodeObj>().SetNode(n.pos.x, n.pos.y, n.nType, n.eType, n.isClear);
             nodeObj.Add(obj.GetComponent<NodeObj>());
@@ -363,6 +411,36 @@ public class WorldMainUI : UIScreen
         pObj.transform.SetAsLastSibling();
         pPos = nodeList[0].pos;
         CheckMoveableNode();
+    }
+    string GetEdgeKey(Vector2Int a, Vector2Int b)
+    {
+        if (a.x < b.x || (a.x == b.x && a.y < b.y))
+            return $"{a.x}_{a.y}-{b.x}_{b.y}";
+        return $"{b.x}_{b.y}-{a.x}_{a.y}";
+    }
+    Vector2 GridToAnchored(Vector2Int gridPos)
+    {
+        return new Vector2(-400 + gridPos.x * 160, 240 - gridPos.y * 160);
+    }
+    void SetupNodeLine(RectTransform lineRt, Vector2Int posA, Vector2Int posB)
+    {
+        Vector2 anchoredA = GridToAnchored(posA);
+        Vector2 anchoredB = GridToAnchored(posB);
+        Vector2 delta = anchoredB - anchoredA;
+        lineRt.anchoredPosition = (anchoredA + anchoredB) * 0.5f;
+        if (Mathf.Abs(delta.x) > 0)
+            lineRt.localEulerAngles = Vector3.zero;       // 가로
+        else
+            lineRt.localEulerAngles = new Vector3(0, 0, 90); // 세로
+        lineRt.sizeDelta = new Vector2(120, 30);
+        lineRt.SetAsFirstSibling();
+    }
+    private void InitNode()
+    {
+        foreach (var n in nodeObj) Destroy(n.gameObject);
+        foreach (var l in nodeLine) Destroy(l);
+        nodeObj.Clear();
+        nodeLine.Clear();
     }
     private void CheckMoveableNode()
     {
@@ -386,17 +464,26 @@ public class WorldMainUI : UIScreen
     }
     private void MoveNode(Vector2Int pos)
     {
+        foreach (var n in nodeObj)
+            n.StateHighlight(false);
+        InitEvtPannel();
         //pPos 에서 pos 로 이동
         pRt.DOAnchorPos(new Vector2(-400 + pos.x * 160, 240 - pos.y * 160), 0.5f)
-            .SetEase(Ease.Linear)
-            .SetUpdate(true)
-            .OnComplete(() =>
-            {
-                pPos = pos;
-                isMoveNode = false;
-                CheckMoveableNode();
-                CheckCurNodeEvt();
-            });
+        .SetEase(Ease.Linear)
+        .SetUpdate(true)
+        .OnComplete(() =>
+        {
+            pPos = pos;
+            isMoveNode = false;
+            CheckMoveableNode();
+            CheckCurNodeEvt();
+        });
+    }
+    private void InitEvtPannel()
+    {
+        foreach (var v in evtBtns)
+            v.gameObject.SetActive(false);
+        mTMPText["EvtDesc"].gameObject.SetActive(false);
     }
     private void CheckCurNodeEvt()
     {
@@ -407,26 +494,36 @@ public class WorldMainUI : UIScreen
                 Debug.Log("CheckCurNodeEvt: " + n.eType);
                 //GsManager.I.CurExpId 증가
                 // GsManager.I.CurExpId++;
+                evtBtns[0].gameObject.SetActive(true);
+                string desc = "";
                 switch (n.eType)
                 {
-                    default: break;
+                    default:
+                        evtBtns[0].gameObject.SetActive(false);
+                        desc = "Evt_Exp_Empty";
+                        break; //빈 공간인 경우
                     case 1:
-                        //전투 이벤트 발생
-                        break;
+                        evtBtns[0].SetEvtBtn("StartBattle");
+                        desc = "Evt_Exp_Battle";
+                        break; //전투 이벤트인 경우
                     case 2:
-                        //회복 이벤트 발생
-                        break;
+                        evtBtns[0].SetEvtBtn("TakeRest");
+                        desc = "Evt_Exp_Rest";
+                        break; //회복 이벤트인 경우
                     case 11:
-                        // 일반 보상 이벤트 발생
-                        break;
+                        evtBtns[0].SetEvtBtn("OpenBox");
+                        desc = "Evt_Exp_RanBox";
+                        break; //랜덤 상자 이벤트인 경우
                     case 12:
-                        // 전투 후 보상 이벤트 발생
-                        break;
+                        evtBtns[0].SetEvtBtn("StartBattle");
+                        desc = "Evt_Exp_BattleBox";
+                        break; // 전투 후 보물상자 획득 이벤트 발생
                         // case 13:
                         //     // 퍼즐 보상 이벤트 발생
                         //     break;
-
                 }
+                mTMPText["EvtDesc"].text = LocalizationManager.GetValue(desc);
+                mTMPText["EvtDesc"].gameObject.SetActive(true);
                 break;
             }
         }

@@ -35,14 +35,23 @@ public class NodeObj : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
         && isMoveable && !WorldMainUI.isMoveNode)
             Presenter.Send("WorldMainUI", "ClickNode", pos);
     }
+    public void StateHighlight(bool on)
+    {
+        highlight.gameObject.SetActive(on);
+    }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!isMoveable) return;
-        highlight.gameObject.SetActive(true);
+        if (!isMoveable)
+        {
+            if (highlight.gameObject.activeSelf)
+                StateHighlight(false);
+            return;
+        }
+        StateHighlight(true);
     }
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!isMoveable) return;
-        highlight.gameObject.SetActive(false);
+        StateHighlight(false);
     }
 }
