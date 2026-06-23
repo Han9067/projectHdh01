@@ -503,7 +503,7 @@ public class ExpData
             int x = int.Parse(pos[0]);
             int y = int.Parse(pos[1]);
             int type = int.Parse(pos[2]);
-            Vector2Int prev = type == 3 ? new Vector2Int(int.Parse(pos[3]), int.Parse(pos[4])) : Vector2Int.zero;
+            Vector2Int prev = type == 3 ? new Vector2Int(int.Parse(pos[3]), int.Parse(pos[4])) : new Vector2Int(-1, -1);
             NodeData.Add(new NodeData(new Vector2Int(x, y), prev, type));
         }
     }

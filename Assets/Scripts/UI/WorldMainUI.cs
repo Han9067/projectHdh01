@@ -18,8 +18,8 @@ public class WorldMainUI : UIScreen
     [SerializeField] private Transform nodeParent;
     [SerializeField] private GameObject pObj;
     private RectTransform pRt;
-    private Vector2Int pPos = Vector2Int.zero;
-    public static bool isMoveNode = false;
+    private Vector2Int pPos = Vector2Int.zero, tPos = Vector2Int.zero;
+    public static bool isActNode = false;
     public List<ExpEvtBtn> evtBtns = new List<ExpEvtBtn>();
     #endregion
     private void Awake()
@@ -236,7 +236,7 @@ public class WorldMainUI : UIScreen
                 SetTraceQst();
                 break;
             case "ShowExplorePop":
-                isMoveNode = false;
+                isActNode = true;
                 GsManager.I.CurExpId = data.Get<int>();
                 GsManager.I.SetCurNodeData();
                 mGameObject["ExplorePop"].SetActive(true);
@@ -245,14 +245,18 @@ public class WorldMainUI : UIScreen
                 DrawExpMap();
                 break;
             case "ClickNode":
-                isMoveNode = true;
-                MoveNode(data.Get<Vector2Int>());
+                isActNode = false;
+                tPos = data.Get<Vector2Int>();
+                MoveToNodeEdge();
                 break;
             case "StartBattle":
+                ClearCurNodeEvt();
                 break;
             case "TakeRest":
+                ClearCurNodeEvt();
                 break;
             case "OpenBox":
+                ClearCurNodeEvt();
                 break;
         }
     }
@@ -381,9 +385,8 @@ public class WorldMainUI : UIScreen
                 if (target == null) continue;
                 Vector2Int posA = n.pos;
                 Vector2Int posB = target.pos;
-                bool canAtoB = target.nType != 3 || target.prev == posA;
-                bool canBtoA = n.nType != 3 || n.prev == posB;
-                // 양방향 중 하나라도 가능할 때만 연결
+                bool canAtoB = CanMoveBetween(posA, n, posB, target);
+                bool canBtoA = CanMoveBetween(posB, target, posA, n);
                 if (!canAtoB && !canBtoA) continue;
                 // (A,B) / (B,A) 중복 제거
                 string key = GetEdgeKey(posA, posB);
@@ -411,6 +414,12 @@ public class WorldMainUI : UIScreen
         pObj.transform.SetAsLastSibling();
         pPos = nodeList[0].pos;
         CheckMoveableNode();
+    }
+    bool CanMoveBetween(Vector2Int from, CurNodeData fromNode, Vector2Int to, CurNodeData toNode)
+    {
+        if (fromNode.nType == 3 && fromNode.prev != to) return false;
+        if (toNode.nType == 3 && toNode.prev != from) return false;
+        return true;
     }
     string GetEdgeKey(Vector2Int a, Vector2Int b)
     {
@@ -448,36 +457,46 @@ public class WorldMainUI : UIScreen
         foreach (var n in nodeObj)
             n.StateMoveable(false);
         List<CurNodeData> nodeList = GsManager.I.CurNodeList;
+        CurNodeData curNode = nodeList.Find(x => x.pos == pPos);
+        if (curNode == null) return;
         foreach (var d in dir4)
         {
             Vector2Int np = pPos + d;
-            foreach (var n in nodeList)
-            {
-                if (n.pos == np)
-                {
-                    if (n.nType == 3 && n.prev != pPos) continue;
-                    nodeObj.Find(x => x.pos == n.pos).StateMoveable(true);
-                    break;
-                }
-            }
+            CurNodeData target = nodeList.Find(x => x.pos == np);
+            if (target == null) continue;
+            if (!CanMoveBetween(pPos, curNode, np, target)) continue;
+            nodeObj.Find(x => x.pos == target.pos).StateMoveable(true);
         }
     }
-    private void MoveNode(Vector2Int pos)
+    private void MoveToNodeEdge()
     {
         foreach (var n in nodeObj)
             n.StateHighlight(false);
         InitEvtPannel();
-        //pPos 에서 pos 로 이동
-        pRt.DOAnchorPos(new Vector2(-400 + pos.x * 160, 240 - pos.y * 160), 0.5f)
-        .SetEase(Ease.Linear)
-        .SetUpdate(true)
-        .OnComplete(() =>
-        {
-            pPos = pos;
-            isMoveNode = false;
-            CheckMoveableNode();
-            CheckCurNodeEvt();
-        });
+        isActNode = false; // 이동 중 클릭 방지
+        Vector2 edgePos = GetNodeEdgePos(pPos, tPos);
+        NodeObj tg = nodeObj.Find(x => x.pos == tPos);
+        pRt.DOKill();
+        pRt.DOAnchorPos(edgePos, 0.5f)
+            .SetEase(Ease.Linear)
+            .SetUpdate(true)
+            .OnComplete(() =>
+            {
+                // pPos = tPos;
+                isActNode = true;
+                CheckCurNodeEvt(tg); // 대상 노드 전달
+                tg.ShowCurEvtIcon();
+            });
+    }
+    private Vector2 GetNodeEdgePos(Vector2Int from, Vector2Int to)
+    {
+        Vector2 center = GridToAnchored(to);
+        Vector2Int dir = to - from;
+        if (dir.x > 0) center.x -= 50f; // 왼쪽에서 진입 → 왼쪽 외곽
+        else if (dir.x < 0) center.x += 50; // 오른쪽에서 진입
+        else if (dir.y > 0) center.y += 50; // 위에서 진입 (grid y+)
+        else if (dir.y < 0) center.y -= 50; // 아래에서 진입
+        return center;
     }
     private void InitEvtPannel()
     {
@@ -485,48 +504,65 @@ public class WorldMainUI : UIScreen
             v.gameObject.SetActive(false);
         mTMPText["EvtDesc"].gameObject.SetActive(false);
     }
-    private void CheckCurNodeEvt()
+    private void MoveToNodeCenter()
+    {
+        foreach (var n in nodeObj)
+            n.StateHighlight(false);
+        InitEvtPannel();
+        pRt.DOKill();
+        pRt.DOAnchorPos(GridToAnchored(tPos), 0.25f)
+            .SetEase(Ease.Linear)
+            .SetUpdate(true)
+            .OnComplete(() =>
+            {
+                pPos = tPos;
+                CheckMoveableNode();
+            });
+    }
+    private void CheckCurNodeEvt(NodeObj node)
+    {
+        if (node == null) return;
+        evtBtns[0].gameObject.SetActive(true);
+        string desc;
+        bool showEvtIcon = false;
+        switch (node.eType)
+        {
+            case 0:
+                evtBtns[0].gameObject.SetActive(false);
+                desc = "Evt_Exp_Empty";
+                break;
+            case 1:
+                evtBtns[0].SetEvtBtn("StartBattle");
+                desc = "Evt_Exp_Battle";
+                showEvtIcon = true; // icon1 → icon2 전환 대상
+                break;
+            case 2:
+                evtBtns[0].SetEvtBtn("TakeRest");
+                desc = "Evt_Exp_Rest";
+                showEvtIcon = true;
+                break;
+            default:
+                evtBtns[0].gameObject.SetActive(false);
+                mTMPText["EvtDesc"].gameObject.SetActive(false);
+                return;
+        }
+        mTMPText["EvtDesc"].text = LocalizationManager.GetValue(desc);
+        mTMPText["EvtDesc"].gameObject.SetActive(true);
+        // 이벤트 활성화와 동시에 아이콘 전환
+        if (showEvtIcon && node.icon2.sprite != null)
+            node.ShowCurEvtIcon();
+    }
+    public void ClearCurNodeEvt()
     {
         foreach (var n in nodeObj)
         {
-            if (n.pos == pPos)
+            if (n.pos == tPos)
             {
-                Debug.Log("CheckCurNodeEvt: " + n.eType);
-                //GsManager.I.CurExpId 증가
-                // GsManager.I.CurExpId++;
-                evtBtns[0].gameObject.SetActive(true);
-                string desc = "";
-                switch (n.eType)
-                {
-                    default:
-                        evtBtns[0].gameObject.SetActive(false);
-                        desc = "Evt_Exp_Empty";
-                        break; //빈 공간인 경우
-                    case 1:
-                        evtBtns[0].SetEvtBtn("StartBattle");
-                        desc = "Evt_Exp_Battle";
-                        break; //전투 이벤트인 경우
-                    case 2:
-                        evtBtns[0].SetEvtBtn("TakeRest");
-                        desc = "Evt_Exp_Rest";
-                        break; //회복 이벤트인 경우
-                    case 11:
-                        evtBtns[0].SetEvtBtn("OpenBox");
-                        desc = "Evt_Exp_RanBox";
-                        break; //랜덤 상자 이벤트인 경우
-                    case 12:
-                        evtBtns[0].SetEvtBtn("StartBattle");
-                        desc = "Evt_Exp_BattleBox";
-                        break; // 전투 후 보물상자 획득 이벤트 발생
-                        // case 13:
-                        //     // 퍼즐 보상 이벤트 발생
-                        //     break;
-                }
-                mTMPText["EvtDesc"].text = LocalizationManager.GetValue(desc);
-                mTMPText["EvtDesc"].gameObject.SetActive(true);
+                n.SetClear();
                 break;
             }
         }
+        MoveToNodeCenter();
     }
     #endregion
     public override void Refresh()

@@ -30,6 +30,6 @@ public class ExpEvtBtn : MonoBehaviour
     }
     public void OnClick()
     {
-        Presenter.Send("EventPop", "OnClick", sKey);
+        Presenter.Send("WorldMainUI", sKey);
     }
 }
