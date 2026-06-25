@@ -46,7 +46,7 @@ public class NodeObj : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
                     }
                     break;
                 case 3:
-                    icon1.sprite = ResManager.GetSprite("exp_rwd");
+                    icon1.sprite = ResManager.GetSprite("exp_box");
                     break;
             }
         }

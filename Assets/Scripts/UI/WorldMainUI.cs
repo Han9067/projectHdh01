@@ -504,7 +504,7 @@ public class WorldMainUI : UIScreen
             v.gameObject.SetActive(false);
         mTMPText["EvtDesc"].gameObject.SetActive(false);
     }
-    private void MoveToNodeCenter()
+    private void MoveToNodeCen()
     {
         foreach (var n in nodeObj)
             n.StateHighlight(false);
@@ -530,6 +530,7 @@ public class WorldMainUI : UIScreen
             case 0:
                 evtBtns[0].gameObject.SetActive(false);
                 desc = "Evt_Exp_Empty";
+                MoveToNodeCen();
                 break;
             case 1:
                 evtBtns[0].SetEvtBtn("StartBattle");
@@ -540,6 +541,20 @@ public class WorldMainUI : UIScreen
                 evtBtns[0].SetEvtBtn("TakeRest");
                 desc = "Evt_Exp_Rest";
                 showEvtIcon = true;
+                break;
+            case 11:
+                desc = "Evt_Exp_Empty";
+                evtBtns[0].SetEvtBtn("OpenBox");
+                evtBtns[1].gameObject.SetActive(true);
+                evtBtns[1].SetEvtBtn("Ignore");
+                break;
+            case 12:
+                desc = "Evt_Exp_Empty";
+                evtBtns[1].gameObject.SetActive(true);
+                break;
+            case 13:
+                desc = "Evt_Exp_Empty";
+                evtBtns[1].gameObject.SetActive(true);
                 break;
             default:
                 evtBtns[0].gameObject.SetActive(false);
@@ -562,7 +577,7 @@ public class WorldMainUI : UIScreen
                 break;
             }
         }
-        MoveToNodeCenter();
+        MoveToNodeCen();
     }
     #endregion
     public override void Refresh()
