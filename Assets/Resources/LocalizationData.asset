@@ -154,6 +154,16 @@ MonoBehaviour:
           value: Year
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: Close
+      value:
+        list:
+        - key: 23
+          value: "\uB2EB\uAE30"
+          duplicatedKey: 0
+        - key: 10
+          value: Close
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: Yes
       value:
         list:
@@ -394,6 +404,16 @@ MonoBehaviour:
           value: StartBattle
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: StartBossBattle
+      value:
+        list:
+        - key: 23
+          value: "\uBCF4\uC2A4\uC640 \uC804\uD22C\uB97C \uC2DC\uC791\uD55C\uB2E4"
+          duplicatedKey: 0
+        - key: 10
+          value: Start Boss Battle
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: TakeRest
       value:
         list:
@@ -422,6 +442,26 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Ignore
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: SolveThePuzzle
+      value:
+        list:
+        - key: 23
+          value: "\uD37C\uC990\uC744 \uD47C\uB2E4"
+          duplicatedKey: 0
+        - key: 10
+          value: Solve The Puzzle
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: ViewRewards
+      value:
+        list:
+        - key: 23
+          value: "\uBCF4\uC0C1 \uD655\uC778"
+          duplicatedKey: 0
+        - key: 10
+          value: View Rewards
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Caelgrad
@@ -4351,6 +4391,18 @@ MonoBehaviour:
           value: Congratulations! Adventurer Rank Up!
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: One_ExpClear
+      value:
+        list:
+        - key: 23
+          value: "\uCD95\uD558\uD569\uB2C8\uB2E4. \uD574\uB2F9 \uC7A5\uC18C\uC758
+            \uD0D0\uD5D8\uC744 \uC644\uB8CC\uD558\uC600\uC2B5\uB2C8\uB2E4."
+          duplicatedKey: 0
+        - key: 10
+          value: "\uCD95\uD558\uD569\uB2C8\uB2E4. \uD574\uB2F9 \uC7A5\uC18C\uC758
+            \uD0D0\uD5D8\uC744 \uC644\uB8CC\uD558\uC600\uC2B5\uB2C8\uB2E4."
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: QstG_Delivery
       value:
         list:
@@ -4874,14 +4926,14 @@ MonoBehaviour:
       value:
         list:
         - key: 23
-          value: "\uC801\uB4E4\uC744 \uBC1C\uACAC\uD558\uC600\uC73C\uBA70 \uADF8\uB4E4\uC758
-            \uB4A4\uC5D0\uB294 \uBCF4\uBB3C \uC0C1\uC790\uAC00 \uC788\uC2B5\uB2C8\uB2E4.
-            \uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+          value: "\uB2F9\uC2E0\uC740 \uBCF4\uBB3C \uC0C1\uC790\uB97C \uBC1C\uACAC\uD558\uC600\uC9C0\uB9CC
+            \uBCF4\uBB3C \uC0C1\uC790 \uC8FC\uC704\uB85C \uC801\uB4E4\uC774 \uB098\uD0C0\uB098
+            \uC804\uD22C\uB97C \uC900\uBE44\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: "\uC801\uB4E4\uC744 \uBC1C\uACAC\uD558\uC600\uC73C\uBA70 \uADF8\uB4E4\uC758
-            \uB4A4\uC5D0\uB294 \uBCF4\uBB3C \uC0C1\uC790\uAC00 \uC788\uC2B5\uB2C8\uB2E4.
-            \uC5B4\uB5BB\uAC8C \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+          value: "\uB2F9\uC2E0\uC740 \uBCF4\uBB3C \uC0C1\uC790\uB97C \uBC1C\uACAC\uD558\uC600\uC9C0\uB9CC
+            \uBCF4\uBB3C \uC0C1\uC790 \uC8FC\uC704\uB85C \uC801\uB4E4\uC774 \uB098\uD0C0\uB098
+            \uC804\uD22C\uB97C \uC900\uBE44\uD569\uB2C8\uB2E4."
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Evt_Exp_PuzzleBox
@@ -4902,12 +4954,12 @@ MonoBehaviour:
       value:
         list:
         - key: 23
-          value: "\uD0D0\uD5D8 \uC9C0\uC5ED\uC758 \uB9C8\uC9C0\uB9C9\uC5D0 \uB3C4\uCC29\uD558\uC600\uC2B5\uB2C8\uB2E4.
-            \uBCF4\uC2A4\uC640\uC758 \uC804\uD22C\uAC00 \uC2DC\uC791\uB429\uB2C8\uB2E4."
+          value: "\uD0D0\uD5D8 \uC9C0\uC5ED \uB9C8\uC9C0\uB9C9\uC5D0 \uB3C4\uCC29\uD558\uC5EC
+            \uC9C0\uC5ED\uC758 \uBCF4\uC2A4\uC640\uC758 \uC804\uD22C\uAC00 \uC2DC\uC791\uB429\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: "\uD0D0\uD5D8 \uC9C0\uC5ED\uC758 \uB9C8\uC9C0\uB9C9\uC5D0 \uB3C4\uCC29\uD558\uC600\uC2B5\uB2C8\uB2E4.
-            \uBCF4\uC2A4\uC640\uC758 \uC804\uD22C\uAC00 \uC2DC\uC791\uB429\uB2C8\uB2E4."
+          value: "\uD0D0\uD5D8 \uC9C0\uC5ED \uB9C8\uC9C0\uB9C9\uC5D0 \uB3C4\uCC29\uD558\uC5EC
+            \uC9C0\uC5ED\uC758 \uBCF4\uC2A4\uC640\uC758 \uC804\uD22C\uAC00 \uC2DC\uC791\uB429\uB2C8\uB2E4."
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Evt_Exp_BoxRwd

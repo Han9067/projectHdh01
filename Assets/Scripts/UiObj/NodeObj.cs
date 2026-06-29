@@ -59,7 +59,7 @@ public class NodeObj : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
         icon1.gameObject.SetActive(true);
         SetAlpha(icon1, 1f);
 
-        if (eType == 0)
+        if (eType == 0 || eType == 99)
         {
             icon2.gameObject.SetActive(false);
             icon1.DOFade(0f, duration).SetUpdate(true)

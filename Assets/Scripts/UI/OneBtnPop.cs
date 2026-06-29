@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class OneBtnPop : UIScreen
 {
+    [SerializeField] private string oneBtnKey;
     private void Awake()
     {
         Regist();
@@ -11,6 +12,7 @@ public class OneBtnPop : UIScreen
     private void OnEnable()
     {
         Presenter.Bind("OneBtnPop", this);
+        InitMainObj();
     }
     private void OnDisable()
     {
@@ -27,16 +29,33 @@ public class OneBtnPop : UIScreen
     {
         switch (key)
         {
-            case "ClickClose":
-                Close();
+            case "BtnObj":
+                switch (oneBtnKey)
+                {
+                    case "ViewRewards":
+                        //추후 보상 팝업 활성화
+                        Close();
+                        break;
+                    default:
+                        Close();
+                        break;
+                }
                 break;
         }
+    }
+    private void InitMainObj()
+    {
+        mGameObject["Grade"].SetActive(false);
+        mGameObject["Clear"].SetActive(false);
     }
     public override void ViewQuick(string key, IOData data)
     {
         switch (key)
         {
             case "GuildJoin":
+                oneBtnKey = "GuildJoin";
+                mGameObject["Grade"].SetActive(true);
+                SetBtnInfo(LocalizationManager.GetValue("Close"));
                 PlayerManager.I.pData.Grade = 1;
                 mImages["GradeIcon"].sprite = ResManager.GetSprite("icon_badge_H");
                 mTMPText["GradeDesc"].text = LocalizationManager.GetValue("One_GuildJoin");
@@ -44,12 +63,23 @@ public class OneBtnPop : UIScreen
                 Presenter.Send("CityEnterPop", "UpdateCityList");
                 break;
             case "GradeUp":
-                PlayerManager.I.pData.Grade++;
-                mImages["GradeIcon"].sprite = ResManager.GetSprite($"icon_badge_{GsManager.GetGradeName(PlayerManager.I.pData.Grade)}");
-                mTMPText["GradeName"].text = string.Format(LocalizationManager.GetValue("ItemGrade"), GsManager.GetGradeName(PlayerManager.I.pData.Grade));
+                oneBtnKey = "GradeUp";
+                mGameObject["Grade"].SetActive(true);
+                SetBtnInfo(LocalizationManager.GetValue("Close"));
+                mTMPText["ClearDesc"].text = LocalizationManager.GetValue("ItemGrade");
                 Presenter.Send("CityEnterPop", "UpdateCityList");
                 break;
+            case "ExpClear":
+                oneBtnKey = "ExpClear";
+                mGameObject["Clear"].SetActive(true);
+                SetBtnInfo(LocalizationManager.GetValue("ViewRewards"));
+                mTMPText["ClearDesc"].text = LocalizationManager.GetValue("One_ExpClear");
+                break;
         }
+    }
+    private void SetBtnInfo(string txt)
+    {
+        mTMPText["BtnTxt"].text = txt;
     }
     public override void Refresh() { }
 }

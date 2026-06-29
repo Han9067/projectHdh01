@@ -1,6 +1,4 @@
-using System.Collections;
 using GB;
-using Unity.Mathematics;
 
 
 public class YesNoPop : UIScreen
@@ -60,7 +58,7 @@ public class YesNoPop : UIScreen
                 // callKey = data.Get<string>();
                 string[] arr = data.Get<string>().Split('/');
                 callKey = arr[0];
-                mTexts["TxtDesc"].text = GB.LocalizationManager.GetValue(arr[1]);
+                mTexts["TxtDesc"].text = LocalizationManager.GetValue(arr[1]);
 
                 break;
         }

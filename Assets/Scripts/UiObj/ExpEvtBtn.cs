@@ -15,18 +15,7 @@ public class ExpEvtBtn : MonoBehaviour
     public void SetEvtBtn(string key)
     {
         sKey = key;
-        switch (sKey)
-        {
-            case "StartBattle":
-                txt.text = "전투를 시작한다";
-                break;
-            case "TakeRest":
-                txt.text = "휴식을 취한다";
-                break;
-            case "OpenBox":
-                txt.text = "상자를 연다";
-                break;
-        }
+        txt.text = LocalizationManager.GetValue(sKey);
     }
     public void OnClick()
     {

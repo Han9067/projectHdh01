@@ -258,6 +258,17 @@ public class WorldMainUI : UIScreen
             case "OpenBox":
                 ClearCurNodeEvt();
                 break;
+            case "SolveThePuzzle":
+                ClearCurNodeEvt();
+                break;
+            case "Ignore":
+                ClearCurNodeEvt();
+                break;
+            case "StartBossBattle":
+                ClearCurNodeEvt();
+                UIManager.ShowPopup("OneBtnPop");
+                Presenter.Send("OneBtnPop", "ExpClear");
+                break;
         }
     }
     #region 메인 UI
@@ -543,18 +554,25 @@ public class WorldMainUI : UIScreen
                 showEvtIcon = true;
                 break;
             case 11:
-                desc = "Evt_Exp_Empty";
+                desc = "Evt_Exp_RanBox";
                 evtBtns[0].SetEvtBtn("OpenBox");
                 evtBtns[1].gameObject.SetActive(true);
                 evtBtns[1].SetEvtBtn("Ignore");
                 break;
             case 12:
-                desc = "Evt_Exp_Empty";
-                evtBtns[1].gameObject.SetActive(true);
+                desc = "Evt_Exp_BattleBox";
+                evtBtns[0].SetEvtBtn("StartBattle");
+                showEvtIcon = true;
                 break;
             case 13:
-                desc = "Evt_Exp_Empty";
+                desc = "Evt_Exp_PuzzleBox";
+                evtBtns[0].SetEvtBtn("SolveThePuzzle");
                 evtBtns[1].gameObject.SetActive(true);
+                evtBtns[1].SetEvtBtn("Ignore");
+                break;
+            case 99:
+                desc = "Evt_Exp_Boss";
+                evtBtns[0].SetEvtBtn("StartBossBattle");
                 break;
             default:
                 evtBtns[0].gameObject.SetActive(false);
