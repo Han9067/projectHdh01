@@ -78,7 +78,7 @@ public class InvenPop : UIScreen
     }
     private void OnDisable()
     {
-        Debug.Log("OnDisable");
+        // Debug.Log("OnDisable");
         isActive = false;
         if (ShopInvenPop.isActive)
             UIManager.ClosePopup("ShopInvenPop");

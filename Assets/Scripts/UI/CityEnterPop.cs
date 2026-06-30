@@ -79,6 +79,10 @@ public class CityEnterPop : UIScreen
                 case "GoToApothecary": sId = 5; sKey = "Apothecary"; break;
                 case "GoToBook": sId = 6; sKey = "Book"; break; // 서점
                 case "GoToMarket": sId = 7; sKey = "Market"; break; // 시장
+                case "GoToSquare":
+                    UIManager.ShowPopup("NpcListPop");
+                    Presenter.Send("NpcListPop", "SetSquare", cityId);
+                    return;
             }
             StateCity(1);
         }
@@ -317,6 +321,7 @@ public class CityEnterPop : UIScreen
                 btn.Value.gameObject.SetActive(false);
             mButtons["GoToGuild"].gameObject.SetActive(true);
         }
+        mButtons["GoToSquare"].gameObject.SetActive(true);
     }
 
     void StateVisiblePop(int alpha)
@@ -443,6 +448,8 @@ public class CityEnterPop : UIScreen
                 case "GoToTG":
                     break;
                 case "GoToArena":
+                    break;
+                case "GoToSquare":
                     break;
             }
             idx++;
