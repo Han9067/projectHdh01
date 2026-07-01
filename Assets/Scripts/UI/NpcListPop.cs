@@ -1,10 +1,12 @@
-using GB;
 using UnityEngine;
 using TMPro;
+using GB;
+
 
 public class NpcListPop : UIScreen
 {
     private int cityId;
+    [SerializeField] private Transform listParent;
     private void Awake()
     {
         Regist();
@@ -51,9 +53,5 @@ public class NpcListPop : UIScreen
 
     public override void Refresh()
     {
-
     }
-
-
-
 }
