@@ -17,6 +17,9 @@ public class CityEnterPop : UIScreen
     private string sKey = ""; //상점 & 장소 키
     private CanvasGroup canvasGrp;
     #endregion
+    #region NPC 관련 변수
+    private List<int> cityNpcIdList = new List<int>();
+    #endregion
     #region 닷 관련
     private Dictionary<int, List<string>> dotList = new Dictionary<int, List<string>>();
     #endregion
@@ -518,5 +521,7 @@ public class CityEnterPop : UIScreen
         // 일반 채팅
         return new TalkData("Normal", npcId, 0, 0);
     }
+    #endregion
+    #region NPC 관련
     #endregion
 }

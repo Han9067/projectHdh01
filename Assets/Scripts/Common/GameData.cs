@@ -170,7 +170,7 @@ public class PlayerData : ICharData
 public class NpcData : ICharData
 {
     public string Name;
-    public int Age, Fame, Rls; //Relationship
+    public int Age, Fame, Rls, CityId; //Relationship
     public int NpcId, Lv, Exp, NextExp, GainExp, Grade, GradeExp, GradeNext;
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def, MAtt, MDef, Crt, CrtRate, Hit, Eva;

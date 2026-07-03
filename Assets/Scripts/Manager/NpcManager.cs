@@ -53,6 +53,8 @@ public class NpcManager : AutoSingleton<NpcManager>
             // data.GainExp = GsManager.I.GetGainExp(data.HP, data.SP, data.MP, data.STR, data.AGI, data.INT, data.CHA, data.LUK);
             data.GainExp = 0;
             NpcDataList[id] = data;
+
+            data.CityId = npc.City;
         }
     }
     private void CalcNpcStat(NpcData npcData)
@@ -101,5 +103,15 @@ public class NpcManager : AutoSingleton<NpcManager>
     public void AddNpcRls(int npcId, int val)
     {
         NpcDataList[npcId].Rls += val;
+    }
+    public List<NpcData> GetCityNpcList(int cityId)
+    {
+        List<NpcData> npcDataList = new List<NpcData>();
+        foreach (var npc in NpcDataList)
+        {
+            if (npc.Key > 1000 && npc.Value.CityId == cityId)
+                npcDataList.Add(npc.Value);
+        }
+        return npcDataList;
     }
 }
