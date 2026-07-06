@@ -1,6 +1,7 @@
 using GB;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class NpcManager : AutoSingleton<NpcManager>
 {
@@ -48,10 +49,9 @@ public class NpcManager : AutoSingleton<NpcManager>
             /////
             CalcNpcStat(data);
 
-            data.Exp = 0;
             data.NextExp = GsManager.I.GetNextExp(data.Lv);
-            // data.GainExp = GsManager.I.GetGainExp(data.HP, data.SP, data.MP, data.STR, data.AGI, data.INT, data.CHA, data.LUK);
-            data.GainExp = 0;
+            data.GainExp = GsManager.I.GetGainExp(data.HP, data.SP, data.MP, data.STR, data.AGI, data.INT, data.CHA, data.LUK);
+            data.Exp = Random.Range(0, data.GainExp);
             NpcDataList[id] = data;
 
             data.CityId = npc.City;

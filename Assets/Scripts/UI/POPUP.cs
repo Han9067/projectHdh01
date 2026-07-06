@@ -11,6 +11,7 @@ namespace GB
 	public const string InvenPop =  "InvenPop"; 
 	public const string ItemInfoPop =  "ItemInfoPop"; 
 	public const string JournalPop =  "JournalPop"; 
+	public const string NpcInfoPop =  "NpcInfoPop"; 
 	public const string NpcListPop =  "NpcListPop"; 
 	public const string ObjInfoPop =  "ObjInfoPop"; 
 	public const string OneBtnPop =  "OneBtnPop"; 

@@ -173,7 +173,7 @@ public class GsManager : AutoSingleton<GsManager>
     }
     #endregion
 
-    #region 레벨 관리
+    #region 오브젝트 데이터 관리
     public int GetLv(int VIT, int END, int STR, int AGI, int FOR, int INT, int CHA, int LUK)
     {
         int total = (VIT + END + STR + AGI + FOR + INT + CHA + LUK) - 40;
@@ -189,6 +189,10 @@ public class GsManager : AutoSingleton<GsManager>
     {
         double score = _hp + (_sp + _mp) * 1 + (_str + _agi) * 0.8 + (_int + _cha + _luk) * 0.5;
         return (int)(score * 4);
+    }
+    public string GetGen(int gen)
+    {
+        return LocalizationManager.GetValue(gen == 0 ? "Male" : "Female");
     }
     #endregion
 

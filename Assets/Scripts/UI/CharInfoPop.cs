@@ -135,6 +135,8 @@ public class CharInfoPop : UIScreen
         mTMPText["IntVal"].text = pData.INT.ToString();
         mTMPText["ChaVal"].text = pData.CHA.ToString();
         mTMPText["LukVal"].text = pData.LUK.ToString();
+
+        mTMPText["GenVal"].text = GsManager.I.GetGen(pData.Gen);
         #endregion
         GsManager.I.SetUiAllEqParts(pData, curBodyKey, mGameObject);
         if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)

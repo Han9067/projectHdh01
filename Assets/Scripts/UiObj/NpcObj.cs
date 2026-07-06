@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using GB;
 
 public class NpcObj : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -29,6 +30,8 @@ public class NpcObj : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     private void OnButtonClick()
     {
         Debug.Log("OnButtonClick");
+        UIManager.ShowPopup("NpcInfoPop");
+        Presenter.Send("NpcInfoPop", "SetInfo", data);
     }
     // private Color GetColor(int g)
     // {
