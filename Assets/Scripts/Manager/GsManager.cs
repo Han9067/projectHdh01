@@ -246,6 +246,7 @@ public class GsManager : AutoSingleton<GsManager>
         }
         //*1~100 남자 머리A타입(앞머리,뒷머리 존재)/ 101~200 남자 머리B타입(앞머리만 존재)
         //*201~300 여자 머리A타입(앞머리, 뒷머리 존재)/301~400 여자 머리B타입(앞머리만 존재)
+        Debug.Log("data.Hair: " + data.Hair);
         switch (data.Hair)
         {
             case 1:

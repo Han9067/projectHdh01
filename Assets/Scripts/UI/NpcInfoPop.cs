@@ -1,11 +1,12 @@
 using GB;
+using UnityEngine;
 using UnityEngine.UI;
-
 
 public class NpcInfoPop : UIScreen
 {
     private NpcData npcData;
     private int npcId;
+    private string curBodyKey = "";
     private void Awake()
     {
         Regist();
@@ -70,8 +71,11 @@ public class NpcInfoPop : UIScreen
         mTMPText["NextExpVal"].text = npcData.NextExp.ToString();
         mTMPText["GenVal"].text = GsManager.I.GetGen(npcData.Gen);
 
-        GsManager.I.SetUiBaseParts(npcId, mGameObject, true);
-        GsManager.I.SetUiEqParts(npcData, mGameObject);
+        Debug.Log("npcId: " + npcId);
+        GsManager.I.SetUiBaseParts(npcId, mGameObject);
+        GsManager.I.SetUiAllEqParts(npcData, curBodyKey, mGameObject);
+        if (curBodyKey != mGameObject["EqBody"].GetComponent<Image>().sprite.name)
+            curBodyKey = mGameObject["EqBody"].GetComponent<Image>().sprite.name;
         #endregion
 
         #region 상세 정보
