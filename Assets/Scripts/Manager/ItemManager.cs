@@ -15,6 +15,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     // 필요시 아이템 관련 메서드 추가 가능
     public List<int> RewardItemIdList = new List<int>();
     public bool isDrop = false;
+    private int[] gradePfm = new int[] { 0, 100, 200, 400, 800, 1600, 2400, 4000, 6000, 10000 };
     public void LoadItemManager()
     {
         LoadEqData();
@@ -216,6 +217,17 @@ public class ItemManager : AutoSingleton<ItemManager>
     public int GetUid()
     {
         return 10000000 + Random.Range(0, 89999999);
+    }
+    public int GetCurItemGrade(int g, int pfm)
+    {
+        int curG = g;
+        int curPfm = pfm;
+        while (curPfm >= gradePfm[curG])
+        {
+            curG++;
+            curPfm -= gradePfm[curG];
+        }
+        return curG;
     }
     //테스트
     public void TestDropItem()

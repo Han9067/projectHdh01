@@ -41,6 +41,7 @@ public class NpcTable  : GameData
 				case "Eq": return true;
 				case "Wp": return true;
 				case "Att": return true;
+				case "IsView": return true;
 				case "Note1": return true;
 				case "Note2": return true;
 				case "Note3": return true;
@@ -81,6 +82,7 @@ public class NpcTable  : GameData
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
 				case "Att": return data.Att;
+				case "IsView": return data.IsView;
 				case "Note1": return data.Note1;
 				case "Note2": return data.Note2;
 				case "Note3": return data.Note3;
@@ -112,6 +114,7 @@ public class NpcTable  : GameData
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
 				case "Att": return data.Att;
+				case "IsView": return data.IsView;
 				case "Note1": return data.Note1;
 				case "Note2": return data.Note2;
 				case "Note3": return data.Note3;
@@ -144,9 +147,10 @@ public class NpcTable  : GameData
 				case 10: return data.Eq;
 				case 11: return data.Wp;
 				case 12: return data.Att;
-				case 13: return data.Note1;
-				case 14: return data.Note2;
-				case 15: return data.Note3;
+				case 13: return data.IsView;
+				case 14: return data.Note1;
+				case 15: return data.Note2;
+				case 16: return data.Note3;
 
                 default: return null;
             }
@@ -202,6 +206,7 @@ public class NpcTableProb : GameDataProb
 	[JsonProperty] public readonly string Eq;
 	[JsonProperty] public readonly string Wp;
 	[JsonProperty] public readonly string Att;
+	[JsonProperty] public readonly int IsView;
 	[JsonProperty] public readonly string Note1;
 	[JsonProperty] public readonly string Note2;
 	[JsonProperty] public readonly string Note3;

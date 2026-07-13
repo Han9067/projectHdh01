@@ -115,6 +115,15 @@ public class WorldCore : AutoSingleton<WorldCore>
                 }
             }
             SetCursor(mPos); //커서 설정
+
+            #region Camera Act
+            // Time.unscaledDeltaTime을 사용하여 일시정지 상태에서도 일정한 속도로 이동
+            cmr.transform.position += moveDir * moveSpd * Time.unscaledDeltaTime;
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            cmr.orthographicSize -= scroll * zoomSpd;
+            cmr.orthographicSize = Mathf.Clamp(cmr.orthographicSize, minZoom, maxZoom);
+            ClampCmrToMap();
+            #endregion
         }
 
         if (mOverObjUid == 0)
@@ -132,14 +141,6 @@ public class WorldCore : AutoSingleton<WorldCore>
                 TracePlayer();
             CheckWorldObj();
         }
-        #endregion
-        #region Camera Act
-        // Time.unscaledDeltaTime을 사용하여 일시정지 상태에서도 일정한 속도로 이동
-        cmr.transform.position += moveDir * moveSpd * Time.unscaledDeltaTime;
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        cmr.orthographicSize -= scroll * zoomSpd;
-        cmr.orthographicSize = Mathf.Clamp(cmr.orthographicSize, minZoom, maxZoom);
-        ClampCmrToMap();
         #endregion
     }
     #region 카메라 관련

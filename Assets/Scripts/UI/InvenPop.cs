@@ -21,6 +21,7 @@ public class InvenPop : UIScreen
     private Vector2 ivPos, subPos, itemBasePos;
     private Color gridColor, greenColor, yellowColor, redColor;
     public static bool isInstantMove = false; //왼쪽 컨트롤키+마우스왼쪽 클릭시 활성화되는 버튼으로 클릭되는 아이템을 반대쪽 인벤토리로 빠르게 이동시키는 변수
+    private bool isInGridArea = false; //아이템을 클릭하여 move상태일때, 현재 지정된 인벤토리 영역 내부에 있는지 체크하는 변수
     #endregion
     #region 제작 팝업 변수
     public List<MakeList> makeList = new List<MakeList>();
@@ -49,7 +50,6 @@ public class InvenPop : UIScreen
         ivSlot = mGameObject["IvSlot"].transform;
         iPrt = mGameObject["Item"].transform;
         eqPrt = mGameObject["Eq"].transform;
-        // ivPos = new Vector2(ivSlot.position.x - 288, ivSlot.position.y + 288);
         InitAllGrids();
     }
     private void Start()
@@ -215,6 +215,8 @@ public class InvenPop : UIScreen
             curItem.transform.position = Input.mousePosition;
             if (posType >= 0)
             {
+                if (!isInGridArea)
+                    isInGridArea = true;
                 CheckGrids(posType);
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -227,6 +229,19 @@ public class InvenPop : UIScreen
                         case 1:
                             ChangeItem(curItem.itemData.W, curItem.itemData.H, curItemX, curItemY);
                             break;
+                    }
+                }
+            }
+            else
+            {
+                if (isInGridArea)
+                {
+                    isInGridArea = false;
+                    ResetAllGrids();
+                    foreach (var v in itemList)
+                    {
+                        if (v.x > -1 && v.y > -1)
+                            v.SetBgAlpha(1f);
                     }
                 }
             }
@@ -296,7 +311,6 @@ public class InvenPop : UIScreen
         curItem.SetBgAlpha(0f);
         moveOn = true;
         CheckCurEq(curItem.itemData.ItemId, curItem.itemData.Type);
-
 
         if (curItem.x > -1 && curItem.y > -1)
         {

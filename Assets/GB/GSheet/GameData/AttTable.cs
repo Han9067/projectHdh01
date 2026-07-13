@@ -30,6 +30,7 @@ public class AttTable  : GameData
         {
 				case "AttID": return true;
 				case "Name": return true;
+				case "Note": return true;
 
 		  default: return false;
 
@@ -56,6 +57,7 @@ public class AttTable  : GameData
             {
 				case "AttID": return data.AttID;
 				case "Name": return data.Name;
+				case "Note": return data.Note;
 
 
                 default: return null;
@@ -73,6 +75,7 @@ public class AttTable  : GameData
             {
 				case "AttID": return data.AttID;
 				case "Name": return data.Name;
+				case "Note": return data.Note;
 
 
                 default: return null;
@@ -91,6 +94,7 @@ public class AttTable  : GameData
             {
 				case 0: return data.AttID;
 				case 1: return data.Name;
+				case 2: return data.Note;
 
                 default: return null;
             }
@@ -135,5 +139,6 @@ public class AttTableProb : GameDataProb
 {
 		[JsonProperty] public readonly int AttID;
 	[JsonProperty] public readonly string Name;
+	[JsonProperty] public readonly string Note;
 
 }

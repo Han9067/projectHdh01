@@ -14,12 +14,11 @@ public class NpcManager : AutoSingleton<NpcManager>
     }
     private void LoadNpcData()
     {
+        //나중에 NPC는 플레이어 데이터처럼 저장된 데이터가 있다면 거기서 불러오도록 해야함
         foreach (var npc in NpcTable.Datas)
         {
             int[] stat = npc.Stat.Split('_').Select(int.Parse).ToArray(); //VIT_END_STR_AGI_FOR_INT_CHA_LUK
             int[] parts = npc.Parts.Split('_').Select(int.Parse).ToArray(); //Skin_Face_Eyebrow_Eye_EyeColor_Ear_Nose_Mouth_Hair_HairColor
-            int[] eq = npc.Eq.Split('_').Select(int.Parse).ToArray(); //상하의_신발_투구_장갑_벨트_망토_목걸이_반지1_반지2
-            int[] wp = npc.Wp.Split('_').Select(int.Parse).ToArray(); //손1_손2
             int id = npc.NpcID;
             NpcData data = new NpcData();
             data.NpcId = id;
@@ -35,18 +34,70 @@ public class NpcManager : AutoSingleton<NpcManager>
             data.Skin = parts[0]; data.Face = parts[1]; data.Eyebrow = parts[2]; data.Eye = parts[3]; data.EyeColor = parts[4];
             data.Ear = parts[5]; data.Nose = parts[6]; data.Mouth = parts[7]; data.Hair = parts[8]; data.HairColor = parts[9];
             data.Beard = parts[10]; data.BeardColor = parts[11];
+            data.IsView = npc.IsView == 0;
             /////
-            data.EqSlot["Armor"] = eq[0] == 0 ? null : ItemManager.I.ItemDataList[eq[0]];
-            data.EqSlot["Shoes"] = eq[1] == 0 ? null : ItemManager.I.ItemDataList[eq[1]];
-            data.EqSlot["Helmet"] = eq[2] == 0 ? null : ItemManager.I.ItemDataList[eq[2]];
-            data.EqSlot["Gloves"] = eq[3] == 0 ? null : ItemManager.I.ItemDataList[eq[3]];
-            data.EqSlot["Belt"] = eq[4] == 0 ? null : ItemManager.I.ItemDataList[eq[4]];
-            data.EqSlot["Necklace"] = eq[5] == 0 ? null : ItemManager.I.ItemDataList[eq[5]];
-            data.EqSlot["Ring1"] = eq[6] == 0 ? null : ItemManager.I.ItemDataList[eq[6]];
-            data.EqSlot["Ring2"] = eq[7] == 0 ? null : ItemManager.I.ItemDataList[eq[7]];
-            data.EqSlot["Hand1"] = wp[0] == 0 ? null : ItemManager.I.ItemDataList[wp[0]];
-            data.EqSlot["Hand2"] = wp[1] == 0 ? null : ItemManager.I.ItemDataList[wp[1]];
-            /////
+            string[] eq = npc.Eq.Split('/'); //상하의_신발_투구_장갑_벨트_목걸이_반지1_반지2
+            string[] eqName = new string[] { "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Necklace", "Ring1", "Ring2" };
+            foreach (string name in eqName)
+                data.EqSlot[name] = null;
+            for (int i = 0; i < eq.Length; i++)
+            {
+                string[] eqStr = eq[i].Split('_');
+                if (id == 1003)
+                {
+                    Debug.Log(eqStr[0]);
+                }
+                if (eqStr[0] == "0") continue;
+                int eqId = int.Parse(eqStr[0]);
+                ItemData item = ItemManager.I.ItemDataList[eqId].Clone();
+                if (eqStr.Length == 1) continue;
+                item.PfmVal = int.Parse(eqStr[1]);
+                int curG = ItemManager.I.GetCurItemGrade(item.Grade, item.PfmVal);
+                int diff = curG - item.Grade;
+                item.Grade = curG;
+                item.Att[1] += diff; //추후에 향상값을 디테일하게 수정
+                if (eqStr.Length == 2) continue;
+                //특성
+                for (int j = 2; j < eqStr.Length; j++)
+                {
+                    string[] attStr = eqStr[j].Split('+');
+                    int eqAttId = int.Parse(attStr[0]), eqAttVal = int.Parse(attStr[1]);
+                    if (item.Att.ContainsKey(eqAttId))
+                        item.Att[eqAttId] += eqAttVal;
+                    else
+                        item.Att.Add(eqAttId, eqAttVal);
+                }
+                data.EqSlot[eqName[i]] = item;
+            }
+            string[] wp = npc.Wp.Split('/'); //손1_손2
+            string[] wpName = new string[] { "Hand1", "Hand2" };
+            foreach (string name in wpName)
+                data.EqSlot[name] = null;
+            for (int i = 0; i < wp.Length; i++)
+            {
+                string[] wpStr = wp[i].Split('_');
+                if (wpStr[0] == "0") continue;
+                int wpId = int.Parse(wpStr[0]);
+                ItemData item = ItemManager.I.ItemDataList[wpId].Clone();
+                if (wpStr.Length == 1) continue;
+                item.PfmVal = int.Parse(wpStr[1]);
+                int curG = ItemManager.I.GetCurItemGrade(item.Grade, item.PfmVal);
+                int diff = curG - item.Grade;
+                item.Grade = curG;
+                item.Att[2] += diff * 2; //추후에 향상값을 디테일하게 수정
+                if (wpStr.Length == 2) continue;
+                //특성
+                for (int j = 2; j < wpStr.Length; j++)
+                {
+                    string[] attStr = wpStr[j].Split('+');
+                    int wpAttId = int.Parse(attStr[0]), wpAttVal = int.Parse(attStr[1]);
+                    if (item.Att.ContainsKey(wpAttId))
+                        item.Att[wpAttId] += wpAttVal;
+                    else
+                        item.Att.Add(wpAttId, wpAttVal);
+                }
+                data.EqSlot[wpName[i]] = item;
+            }
             CalcNpcStat(data);
 
             data.NextExp = GsManager.I.GetNextExp(data.Lv);
@@ -80,20 +131,18 @@ public class NpcManager : AutoSingleton<NpcManager>
         string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Necklace", "Ring1", "Ring2" };
         foreach (string e in eq)
         {
-            if (npcData.EqSlot[e] != null)
+            if (npcData.EqSlot[e] == null) continue;
+            foreach (var att in npcData.EqSlot[e].Att)
             {
-                switch (e)
+                switch (att.Key)
                 {
-                    case "Hand1":
-                    case "Hand2":
-                        npcData.Att += npcData.EqSlot[e].Att[2]; // 공격력
+                    case 1:
+                    case 20:
+                        npcData.Def += att.Value; // 방어력
                         break;
-                    case "Necklace":
-                    case "Ring1":
-                    case "Ring2":
-                        break;
-                    default:
-                        npcData.Def += npcData.EqSlot[e].Att[1]; // 방어력
+                    case 2:
+                    case 21:
+                        npcData.Att += att.Value; // 공격력
                         break;
                 }
             }

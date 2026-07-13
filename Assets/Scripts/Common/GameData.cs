@@ -29,8 +29,8 @@ public enum PtType
 {
     Face, Eyebrow, Eye1, Eye2, Ear, Nose, Mouth,
     BaseBody, BaseHand1A, BaseHand1B, BaseHand2, BaseBoth,
-    FrontHair1, FrontHair2, BackHair,
-    EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth,
+    Hair1A, Hair1B, Hair2,
+    EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth, EqHelmet,
     OneWp1, OneWp2, OneWp3, TwoWp1, TwoWp2
 }
 public interface ICharData
@@ -48,6 +48,7 @@ public interface ICharData
     int Beard { get; set; }
     int BeardColor { get; set; }
     int Gen { get; set; }
+    bool IsView { get; set; }
     Dictionary<string, ItemData> EqSlot { get; set; }
 }
 
@@ -159,11 +160,13 @@ public class PlayerData : ICharData
     public int HairColor { get; set; }
     public int Beard { get; set; }
     public int BeardColor { get; set; }
+    public bool IsView { get; set; }
     #endregion
     public PlayerData()
     {
         EqSlot.Add("Hand1", null); EqSlot.Add("Hand2", null); EqSlot.Add("Armor", null); EqSlot.Add("Shoes", null); EqSlot.Add("Helmet", null);
         EqSlot.Add("Gloves", null); EqSlot.Add("Belt", null); EqSlot.Add("Necklace", null); EqSlot.Add("Ring1", null); EqSlot.Add("Ring2", null);
+        IsView = true;
     } // 생성자
 }
 [System.Serializable]
@@ -194,6 +197,7 @@ public class NpcData : ICharData
     public int HairColor { get; set; }
     public int Beard { get; set; }
     public int BeardColor { get; set; }
+    public bool IsView { get; set; }
     #endregion
 }
 
@@ -348,6 +352,7 @@ public class ItemData
     public int Dir, Uid; //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
     public int Hand; // 0: 한손무기, 1: 양손무기, 2: 창, 3: 지팡이, 4: 활
     public int App = 0, Rng = 1;
+    public int PfmVal = 0; //퍼포먼스 값
     public Dictionary<int, int> Att;
     public ItemData Clone()
     {
@@ -370,6 +375,7 @@ public class ItemData
             Hand = this.Hand,
             App = this.App,
             Rng = this.Rng,
+            PfmVal = 0
         };
     }
 }

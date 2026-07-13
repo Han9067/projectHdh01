@@ -3572,6 +3572,9 @@ MonoBehaviour:
     - key: Hair1B
       value: {fileID: 6740490049835213332}
       duplicatedKey: 0
+    - key: EqHelmet
+      value: {fileID: 4618537215868938835}
+      duplicatedKey: 0
     - key: TwoWp1
       value: {fileID: 8135901456515461649}
       duplicatedKey: 0
@@ -7977,6 +7980,95 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: EvaVal
+--- !u!1 &4618537215868938835
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 401646011620629637}
+  - component: {fileID: 7690573600868679751}
+  - component: {fileID: 2067436739288909925}
+  - component: {fileID: 131789004485724515}
+  m_Layer: 0
+  m_Name: EqHelmet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &401646011620629637
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4618537215868938835}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7630607645408843048}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 108}
+  m_SizeDelta: {x: 300, y: 250}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &7690573600868679751
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4618537215868938835}
+  m_CullTransparentMesh: 1
+--- !u!114 &2067436739288909925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4618537215868938835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: e880b6d3e8781ac409d10d246ccc0b7d, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &131789004485724515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4618537215868938835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: EqHelmet
 --- !u!1 &4693777739629220012
 GameObject:
   m_ObjectHideFlags: 0
@@ -11156,7 +11248,7 @@ GameObject:
   - component: {fileID: 5618916065697664872}
   - component: {fileID: 833152358523857356}
   m_Layer: 0
-  m_Name: FrontHair2
+  m_Name: Hair1B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11209,7 +11301,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 012f1601a76f68744a4fbd6cbd253e1d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 39758c566e6e1144eba94fd57bec771a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12450,7 +12542,7 @@ GameObject:
   - component: {fileID: 2785872329554666759}
   - component: {fileID: 2228594831844267511}
   m_Layer: 0
-  m_Name: FrontHair1
+  m_Name: Hair1A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14553,6 +14645,7 @@ Transform:
   - {fileID: 4376631695961033865}
   - {fileID: 7780234719062744775}
   - {fileID: 2364710622937218295}
+  - {fileID: 401646011620629637}
   - {fileID: 7349091829376301535}
   - {fileID: 3477948526111380433}
   - {fileID: 4231463943405537064}
@@ -14892,7 +14985,7 @@ GameObject:
   - component: {fileID: 3418355950511580678}
   - component: {fileID: 3266612331130607746}
   m_Layer: 0
-  m_Name: BackHair
+  m_Name: Hair2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

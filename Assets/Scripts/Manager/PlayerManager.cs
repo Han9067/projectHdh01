@@ -109,6 +109,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Mouth = data.Mouth;
         pData.Hair = data.Hair;
         pData.HairColor = data.HairColor;
+        pData.Beard = data.Beard;
+        pData.BeardColor = data.BeardColor;
+        pData.IsView = data.IsView;
 
         pData.MainQst = data.MainQst;
         pData.SubQst = data.SubQst;
@@ -151,7 +154,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Eyebrow = 1; pData.Eye = 1;
         pData.EyeColor = 1; pData.Ear = 1;
         pData.Nose = 1; pData.Mouth = 1;
-        pData.Hair = 1; pData.HairColor = 1;
+        pData.Hair = 101; pData.HairColor = 1;
+        pData.Beard = 0; pData.BeardColor = 1;
+        pData.IsView = true;
 
         ItemManager.I.CreateInvenItem(32001, -1, -1); //양손검
         // ItemManager.I.CreateInvenItem(36001, -1, -1); //양손도끼
@@ -172,7 +177,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         ItemManager.I.CreateInvenItem(67001, 1, 0);
         ItemManager.I.CreateInvenItem(67001, 2, 0);
         ItemManager.I.CreateInvenItem(67001, 3, 0);
-
+        ItemManager.I.CreateInvenItem(12032, 2, 2);
         CalcPlayerStat();
         pData.HP = pData.MaxHP;
         pData.MP = pData.MaxMP;
@@ -216,20 +221,18 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Necklace", "Ring1", "Ring2" };
         foreach (string e in eq)
         {
-            if (pData.EqSlot[e] != null)
+            if (pData.EqSlot[e] == null) continue;
+            foreach (var att in pData.EqSlot[e].Att)
             {
-                switch (e)
+                switch (att.Key)
                 {
-                    case "Hand1":
-                    case "Hand2":
-                        pData.Att += pData.EqSlot[e].Att[2]; // 공격력
+                    case 1:
+                    case 20:
+                        pData.Def += att.Value; // 방어력
                         break;
-                    case "Necklace":
-                    case "Ring1":
-                    case "Ring2":
-                        break;
-                    default:
-                        pData.Def += pData.EqSlot[e].Att[1]; // 방어력
+                    case 2:
+                    case 21:
+                        pData.Att += att.Value; // 공격력
                         break;
                 }
             }
