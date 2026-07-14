@@ -317,7 +317,6 @@ public class GsManager : AutoSingleton<GsManager>
             "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "OneWp3", "TwoWp1", "TwoWp2", "EqHelmet"};
         foreach (var v in all)
             mGameObj[v].SetActive(false);
-
         if (eq["Armor"] != null)
         {
             string eqStr = eq["Armor"].ItemId.ToString();

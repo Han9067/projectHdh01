@@ -350,7 +350,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2814377245671302673
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2312,7 +2312,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4675459608526063979
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2875,7 +2875,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1513853377017442524
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2923,7 +2923,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6d2c39b5f6f4ae44386593c2d8a7ec07, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 41ffb297d8b94724d9fcaf646a22de84, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3574,6 +3574,9 @@ MonoBehaviour:
       duplicatedKey: 0
     - key: EqHelmet
       value: {fileID: 4618537215868938835}
+      duplicatedKey: 0
+    - key: Beard
+      value: {fileID: 8921202220206491001}
       duplicatedKey: 0
     - key: TwoWp1
       value: {fileID: 8135901456515461649}
@@ -4229,7 +4232,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4231463943405537064
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4277,7 +4280,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3db1acf58db0a5d4b953fdbabd2f84cb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a50ab30a11f5b97408f42432b150f339, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7584,7 +7587,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bdb438cbdcd3bf042a9d641b6b3c7c22, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 74ee2fc3e74a39e489192436a4064110, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8724,7 +8727,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7590029586174879450
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8772,7 +8775,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 67e99ccdaa9b96f4ba0a67729c46b5b8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 569ac94cb2f3a6a429530fa276809854, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9218,7 +9221,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e0d60c0f6cced8b4fadc89f0b6500716, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 46205de076ebb0b4897f06a3872dc9b6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10604,7 +10607,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3477948526111380433
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14647,6 +14650,7 @@ Transform:
   - {fileID: 2364710622937218295}
   - {fileID: 401646011620629637}
   - {fileID: 7349091829376301535}
+  - {fileID: 4767443469656425599}
   - {fileID: 3477948526111380433}
   - {fileID: 4231463943405537064}
   m_Father: {fileID: 2093892271763228256}
@@ -15925,6 +15929,95 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: DefVal
+--- !u!1 &8921202220206491001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4767443469656425599}
+  - component: {fileID: 1709057707765230380}
+  - component: {fileID: 3150380107527392368}
+  - component: {fileID: 1831223631586622522}
+  m_Layer: 0
+  m_Name: Beard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &4767443469656425599
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8921202220206491001}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7630607645408843048}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 4.5}
+  m_SizeDelta: {x: 150, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1709057707765230380
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8921202220206491001}
+  m_CullTransparentMesh: 1
+--- !u!114 &3150380107527392368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8921202220206491001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.11764706, g: 0.11764706, b: 0.11764706, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: a2d92beecdf199348ab9c50bf8fb69af, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1831223631586622522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8921202220206491001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Key: Beard
 --- !u!1 &8963399872427039174
 GameObject:
   m_ObjectHideFlags: 0

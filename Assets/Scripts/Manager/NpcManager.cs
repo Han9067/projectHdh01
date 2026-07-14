@@ -43,31 +43,31 @@ public class NpcManager : AutoSingleton<NpcManager>
             for (int i = 0; i < eq.Length; i++)
             {
                 string[] eqStr = eq[i].Split('_');
-                if (id == 1003)
-                {
-                    Debug.Log(eqStr[0]);
-                }
                 if (eqStr[0] == "0") continue;
+                string key = eqName[i];
                 int eqId = int.Parse(eqStr[0]);
-                ItemData item = ItemManager.I.ItemDataList[eqId].Clone();
+                data.EqSlot[key] = ItemManager.I.ItemDataList[eqId].Clone();
                 if (eqStr.Length == 1) continue;
-                item.PfmVal = int.Parse(eqStr[1]);
-                int curG = ItemManager.I.GetCurItemGrade(item.Grade, item.PfmVal);
-                int diff = curG - item.Grade;
-                item.Grade = curG;
-                item.Att[1] += diff; //추후에 향상값을 디테일하게 수정
-                if (eqStr.Length == 2) continue;
+                data.EqSlot[key].PfmVal = int.Parse(eqStr[1]);
+                int curG = ItemManager.I.GetCurItemGrade(data.EqSlot[key].Grade, data.EqSlot[key].PfmVal);
+                int diff = curG - data.EqSlot[key].Grade;
+                data.EqSlot[key].Grade = curG;
+                data.EqSlot[key].Att[1] += diff; //추후에 향상값을 디테일하게 수정
+                if (eqStr.Length == 2)
+                {
+                    data.EqSlot[key] = null;
+                    continue;
+                }
                 //특성
                 for (int j = 2; j < eqStr.Length; j++)
                 {
                     string[] attStr = eqStr[j].Split('+');
                     int eqAttId = int.Parse(attStr[0]), eqAttVal = int.Parse(attStr[1]);
-                    if (item.Att.ContainsKey(eqAttId))
-                        item.Att[eqAttId] += eqAttVal;
+                    if (data.EqSlot[key].Att.ContainsKey(eqAttId))
+                        data.EqSlot[key].Att[eqAttId] += eqAttVal;
                     else
-                        item.Att.Add(eqAttId, eqAttVal);
+                        data.EqSlot[key].Att.Add(eqAttId, eqAttVal);
                 }
-                data.EqSlot[eqName[i]] = item;
             }
             string[] wp = npc.Wp.Split('/'); //손1_손2
             string[] wpName = new string[] { "Hand1", "Hand2" };
@@ -77,26 +77,26 @@ public class NpcManager : AutoSingleton<NpcManager>
             {
                 string[] wpStr = wp[i].Split('_');
                 if (wpStr[0] == "0") continue;
+                string key = wpName[i];
                 int wpId = int.Parse(wpStr[0]);
-                ItemData item = ItemManager.I.ItemDataList[wpId].Clone();
+                data.EqSlot[key] = ItemManager.I.ItemDataList[wpId].Clone();
                 if (wpStr.Length == 1) continue;
-                item.PfmVal = int.Parse(wpStr[1]);
-                int curG = ItemManager.I.GetCurItemGrade(item.Grade, item.PfmVal);
-                int diff = curG - item.Grade;
-                item.Grade = curG;
-                item.Att[2] += diff * 2; //추후에 향상값을 디테일하게 수정
+                data.EqSlot[key].PfmVal = int.Parse(wpStr[1]);
+                int curG = ItemManager.I.GetCurItemGrade(data.EqSlot[key].Grade, data.EqSlot[key].PfmVal);
+                int diff = curG - data.EqSlot[key].Grade;
+                data.EqSlot[key].Grade = curG;
+                data.EqSlot[key].Att[2] += diff * 2; //추후에 향상값을 디테일하게 수정
                 if (wpStr.Length == 2) continue;
                 //특성
                 for (int j = 2; j < wpStr.Length; j++)
                 {
                     string[] attStr = wpStr[j].Split('+');
                     int wpAttId = int.Parse(attStr[0]), wpAttVal = int.Parse(attStr[1]);
-                    if (item.Att.ContainsKey(wpAttId))
-                        item.Att[wpAttId] += wpAttVal;
+                    if (data.EqSlot[key].Att.ContainsKey(wpAttId))
+                        data.EqSlot[key].Att[wpAttId] += wpAttVal;
                     else
-                        item.Att.Add(wpAttId, wpAttVal);
+                        data.EqSlot[key].Att.Add(wpAttId, wpAttVal);
                 }
-                data.EqSlot[wpName[i]] = item;
             }
             CalcNpcStat(data);
 

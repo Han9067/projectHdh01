@@ -20,6 +20,7 @@ public class NpcInfoPop : UIScreen
     private void OnDisable()
     {
         Presenter.UnBind("NpcInfoPop", this);
+        curBodyKey = "";
         npcId = 0;
         npcData = null;
     }
