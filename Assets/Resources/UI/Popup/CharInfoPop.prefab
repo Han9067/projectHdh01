@@ -3575,7 +3575,7 @@ MonoBehaviour:
     - key: EqHelmet
       value: {fileID: 4618537215868938835}
       duplicatedKey: 0
-    - key: Beard
+    - key: Beard1
       value: {fileID: 8921202220206491001}
       duplicatedKey: 0
     - key: TwoWp1
@@ -8001,7 +8001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &401646011620629637
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12550,7 +12550,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4376631695961033865
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14648,9 +14648,9 @@ Transform:
   - {fileID: 4376631695961033865}
   - {fileID: 7780234719062744775}
   - {fileID: 2364710622937218295}
+  - {fileID: 4767443469656425599}
   - {fileID: 401646011620629637}
   - {fileID: 7349091829376301535}
-  - {fileID: 4767443469656425599}
   - {fileID: 3477948526111380433}
   - {fileID: 4231463943405537064}
   m_Father: {fileID: 2093892271763228256}
@@ -14994,7 +14994,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5450739023362782115
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15942,12 +15942,12 @@ GameObject:
   - component: {fileID: 3150380107527392368}
   - component: {fileID: 1831223631586622522}
   m_Layer: 0
-  m_Name: Beard
+  m_Name: Beard1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4767443469656425599
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16017,7 +16017,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 863c5d4c5eda049c7a9b03c435cd9594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Key: Beard
+  Key: Beard1
 --- !u!1 &8963399872427039174
 GameObject:
   m_ObjectHideFlags: 0

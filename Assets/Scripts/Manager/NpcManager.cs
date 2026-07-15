@@ -33,7 +33,7 @@ public class NpcManager : AutoSingleton<NpcManager>
             /////
             data.Skin = parts[0]; data.Face = parts[1]; data.Eyebrow = parts[2]; data.Eye = parts[3]; data.EyeColor = parts[4];
             data.Ear = parts[5]; data.Nose = parts[6]; data.Mouth = parts[7]; data.Hair = parts[8]; data.HairColor = parts[9];
-            data.Beard = parts[10]; data.BeardColor = parts[11];
+            data.Beard1 = parts[10]; data.Beard2 = parts[11]; data.BeardColor = parts[12];
             data.IsView = npc.IsView == 0;
             /////
             string[] eq = npc.Eq.Split('/'); //상하의_신발_투구_장갑_벨트_목걸이_반지1_반지2

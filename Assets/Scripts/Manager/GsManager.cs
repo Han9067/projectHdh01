@@ -216,9 +216,9 @@ public class GsManager : AutoSingleton<GsManager>
         Dictionary<string, Image> img = new Dictionary<string, Image>();
         string[] str = isPrf ?
             new string[] { "Face", "Eyebrow", "Eye1", "Eye2", "Ear", "Nose", "Mouth", "BaseBody",
-            "BaseHand1A", "BaseHand2", "Hair1A", "Hair1B", "Hair2" } :
+            "BaseHand1A", "BaseHand2", "Hair1A", "Hair1B", "Hair2" ,"Beard1"} :
             new string[] { "Face", "Eyebrow", "Eye1", "Eye2", "Ear", "Nose", "Mouth", "BaseBody",
-            "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth", "Hair1A", "Hair1B", "Hair2" };
+            "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth", "Hair1A", "Hair1B", "Hair2" ,"Beard1"};
         for (int i = 0; i < str.Length; i++)
             img[str[i]] = obj[addKey + str[i]].GetComponent<Image>();
 
@@ -235,6 +235,7 @@ public class GsManager : AutoSingleton<GsManager>
         Color skinColor = ColorData.GetSkinColor(data.Skin);
         Color hairColor = ColorData.GetHairColor(data.HairColor);
         Color eyeColor = ColorData.GetEyeColor(data.EyeColor);
+        Color beardColor = ColorData.GetHairColor(data.BeardColor);
         img["BaseBody"].sprite = ResManager.GetSprite($"Body{data.Gen}");
         img["Face"].color = skinColor; img["Ear"].color = skinColor;
         img["BaseBody"].color = skinColor; img["BaseHand1A"].color = skinColor;
@@ -275,6 +276,15 @@ public class GsManager : AutoSingleton<GsManager>
             img["Hair1A"].color = hairColor;
         }
         img["Eye2"].color = eyeColor;
+
+        if (data.Beard1 > 0)
+        {
+            img["Beard1"].gameObject.SetActive(true);
+            img["Beard1"].sprite = ResManager.GetSprite("Beard_" + data.Beard1);
+            img["Beard1"].color = beardColor;
+        }
+        else
+            img["Beard1"].gameObject.SetActive(false);
     }
     public void SetUiEqParts(ICharData data, Dictionary<string, GameObject> mGameObj, string addKey = "")
     {
@@ -283,20 +293,25 @@ public class GsManager : AutoSingleton<GsManager>
         foreach (var v in parts)
             mGameObj[addKey + v].SetActive(false);
 
-        if (eq[addKey + "Armor"] != null)
+        int eqId = eq["Armor"] != null ? eq["Armor"].ItemId : data.Gen + 1;
+        string amStr = eqId.ToString();
+        mGameObj[addKey + "EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(amStr + "_body");
+        mGameObj[addKey + "EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(amStr + "_hand2");
+        mGameObj[addKey + "EqBody"].SetActive(true);
+        mGameObj[addKey + "EqHand2"].SetActive(true);
+        if (eqId < 11801) //상점 npc 복장엔 손1번이 없다.
         {
-            string amStr = eq[addKey + "Armor"].ItemId.ToString();
-            mGameObj[addKey + "EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(amStr + "_body");
-            mGameObj[addKey + "EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(amStr + "_hand2");
-            mGameObj[addKey + "EqBody"].SetActive(true);
-            mGameObj[addKey + "EqHand2"].SetActive(true);
-            if (eq[addKey + "Armor"].ItemId < 11801) //상점 npc 복장엔 손1번이 없다.
-            {
-                mGameObj[addKey + "EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(amStr + "_hand1A");
-                mGameObj[addKey + "EqHand1A"].SetActive(true);
-            }
+            mGameObj[addKey + "EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(amStr + "_hand1A");
+            mGameObj[addKey + "EqHand1A"].SetActive(true);
         }
-        if (eq[addKey + "EqHelmet"] != null && data.IsView && eq[addKey + "EqHelmet"].App == 1)
+        if (eq["Armor"] != null && eq["Armor"].App == 1)
+        {
+            string[] baseBodys = new string[] { "BaseHand1A", "BaseHand2", "BaseBody" };
+            foreach (string v in baseBodys)
+                mGameObj[addKey + v].SetActive(false);
+        }
+
+        if (eq["Helmet"] != null && data.IsView && eq["Helmet"].App == 1)
         {
             mGameObj[addKey + "EqHelmet"].GetComponent<Image>().sprite = ResManager.GetSprite("hm" + eq[addKey + "EqHelmet"].ItemId.ToString());
             mGameObj[addKey + "EqHelmet"].SetActive(true);
@@ -317,39 +332,39 @@ public class GsManager : AutoSingleton<GsManager>
             "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "OneWp3", "TwoWp1", "TwoWp2", "EqHelmet"};
         foreach (var v in all)
             mGameObj[v].SetActive(false);
-        if (eq["Armor"] != null)
+        int eqId = eq["Armor"] != null ? eq["Armor"].ItemId : data.Gen + 1;
+        string eqStr = eqId.ToString();
+        mGameObj["EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_body");
+        mGameObj["EqBody"].SetActive(true);
+        if (backUpKey != eqStr + "_body")
         {
-            string eqStr = eq["Armor"].ItemId.ToString();
-            mGameObj["EqBody"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_body");
-            mGameObj["EqBody"].SetActive(true);
-            if (backUpKey != eqStr + "_body")
+            if (eqId > 11800)
             {
-                if (eq["Armor"].ItemId > 11800)
-                {
-                    mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
-                    mGameObj["EqHand2"].SetActive(true);
-                    mGameObj["BaseHand2"].SetActive(true);
-                    mGameObj["BaseHand1A"].SetActive(true);
-                    return;
-                }
-                else
-                {
-                    mGameObj["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
-                    mGameObj["EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1B");
-                    mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
-                    mGameObj["EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_both");
-                }
+                mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
+                mGameObj["EqHand2"].SetActive(true);
+                mGameObj["BaseHand2"].SetActive(true);
+                mGameObj["BaseHand1A"].SetActive(true);
+                return;
+            }
+            else
+            {
+                mGameObj["EqHand1A"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1A");
+                mGameObj["EqHand1B"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand1B");
+                mGameObj["EqHand2"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_hand2");
+                mGameObj["EqBoth"].GetComponent<Image>().sprite = ResManager.GetSprite(eqStr + "_both");
             }
         }
         List<string> parts = GetHandParts(eq);
         foreach (var v in parts)
             mGameObj[v].SetActive(true);
+
         if (eq["Armor"] != null && eq["Armor"].App == 1)
         {
             string[] baseBodys = new string[] { "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth", "BaseBody" };
             foreach (string v in baseBodys)
                 mGameObj[v].SetActive(false);
         }
+
         if (eq["Hand1"] != null)
         {
             switch (eq["Hand1"].Hand)
@@ -403,32 +418,28 @@ public class GsManager : AutoSingleton<GsManager>
     {
         mGameObj[addKey + "EqHelmet"].SetActive(false);
         mGameObj[addKey + "Ear"].SetActive(true);
-        switch (hair)
+        if (hair > 300)
         {
-            default:
-                mGameObj[addKey + "Hair1A"].gameObject.SetActive(true); mGameObj[addKey + "Hair2"].gameObject.SetActive(true);
-                break;
-            case 101:
-            case 102:
-                mGameObj[addKey + "Hair1A"].gameObject.SetActive(true); mGameObj[addKey + "Hair2"].gameObject.SetActive(false);
-                break;
-            case 201:
-            case 202:
-            case 203:
-            case 204:
-                mGameObj[addKey + "Hair1B"].gameObject.SetActive(true); mGameObj[addKey + "Hair2"].gameObject.SetActive(true);
-                break;
-            case 301:
-                mGameObj[addKey + "Hair1B"].gameObject.SetActive(true); mGameObj[addKey + "Hair2"].gameObject.SetActive(false);
-                break;
+            mGameObj[addKey + "Hair1B"].gameObject.SetActive(true); mGameObj[addKey + "Hair2"].gameObject.SetActive(false);
+        }
+        else if (hair > 200)
+        {
+            mGameObj[addKey + "Hair1B"].gameObject.SetActive(true); mGameObj[addKey + "Hair2"].gameObject.SetActive(true);
+        }
+        else if (hair > 100)
+        {
+            mGameObj[addKey + "Hair1A"].gameObject.SetActive(true); mGameObj[addKey + "Hair2"].gameObject.SetActive(false);
+        }
+        else
+        {
+            mGameObj[addKey + "Hair1A"].gameObject.SetActive(true); mGameObj[addKey + "Hair2"].gameObject.SetActive(true);
         }
     }
     List<string> GetHandParts(Dictionary<string, ItemData> eq)
     {
-        bool hasArmor = eq["Armor"] != null;
         List<string> parts = new List<string>();
         if (eq["Hand1"] == null && eq["Hand2"] == null)
-            parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } : new List<string> { "BaseHand1A", "BaseHand2" };
+            parts = new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" };
         else
         {
             if (eq["Hand1"] != null)
@@ -437,7 +448,7 @@ public class GsManager : AutoSingleton<GsManager>
                 {
                     case 0:
                     case 2:
-                        parts = hasArmor ? new List<string> { "BaseHand1B", "BaseHand2", "EqHand1B", "EqHand2" } : new List<string> { "BaseHand1B", "BaseHand2" };
+                        parts = new List<string> { "BaseHand1B", "BaseHand2", "EqHand1B", "EqHand2" };
                         break;
                     case 1:
                         switch (eq["Hand1"].Type)
@@ -445,17 +456,17 @@ public class GsManager : AutoSingleton<GsManager>
                             case 12:
                             case 14:
                             case 16:
-                                parts = hasArmor ? new List<string> { "BaseBoth", "EqBoth" } : new List<string> { "BaseBoth" };
+                                parts = new List<string> { "BaseBoth", "EqBoth" };
                                 break; //양손 무기
                             case 19:
-                                parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } : new List<string> { "BaseHand1A", "BaseHand2" };
+                                parts = new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" };
                                 break; //창
                         }
                         break;
                 }
             }
             if (eq["Hand2"] != null && parts.Count == 0)
-                parts = hasArmor ? new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" } : new List<string> { "BaseHand1A", "BaseHand2" };
+                parts = new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" };
         }
         return parts;
     }
@@ -497,6 +508,7 @@ public class GsManager : AutoSingleton<GsManager>
         Color skinColor = ColorData.GetSkinColor(data.Skin);
         Color hairColor = ColorData.GetHairColor(data.HairColor);
         Color eyeColor = ColorData.GetEyeColor(data.EyeColor);
+        Color beardColor = ColorData.GetHairColor(data.BeardColor);
 
         foreach (PtType PtType in Enum.GetValues(typeof(PtType)))
         {
@@ -538,22 +550,31 @@ public class GsManager : AutoSingleton<GsManager>
             ptSpr[PtType.Hair1A].color = hairColor;
         }
         ptSpr[PtType.Eye2].color = eyeColor;
+
+        if (data.Beard1 > 0)
+        {
+            ptSpr[PtType.Beard1].gameObject.SetActive(true);
+            ptSpr[PtType.Beard1].sprite = ResManager.GetSprite("Beard_" + data.Beard1);
+            ptSpr[PtType.Beard1].color = beardColor;
+        }
+        else
+            ptSpr[PtType.Beard1].gameObject.SetActive(false);
     }
     public void SetObjBodyEqParts(int uid, Dictionary<PtType, SpriteRenderer> ptSpr)
     {
         ICharData data = uid == 0 ? PlayerManager.I.pData : NpcManager.I.NpcDataList[uid];
-        if (data.EqSlot["Armor"] != null)
+
+        int eqId = data.EqSlot["Armor"] != null ? data.EqSlot["Armor"].ItemId : data.Gen + 1;
+        ptSpr[PtType.EqBody].sprite = ResManager.GetSprite(eqId.ToString() + "_body");
+        ptSpr[PtType.EqHand1A].sprite = ResManager.GetSprite(eqId.ToString() + "_hand1A");
+        ptSpr[PtType.EqHand2].sprite = ResManager.GetSprite(eqId.ToString() + "_hand2");
+        if (data.EqSlot["Armor"] != null && data.EqSlot["Armor"].App == 1)
         {
-            ptSpr[PtType.EqBody].sprite = ResManager.GetSprite(data.EqSlot["Armor"].ItemId.ToString() + "_body");
-            ptSpr[PtType.EqHand1A].sprite = ResManager.GetSprite(data.EqSlot["Armor"].ItemId.ToString() + "_hand1A");
-            ptSpr[PtType.EqHand2].sprite = ResManager.GetSprite(data.EqSlot["Armor"].ItemId.ToString() + "_hand2");
-            if (data.EqSlot["Armor"].App == 1)
-            {
-                ptSpr[PtType.BaseBody].gameObject.SetActive(false);
-                ptSpr[PtType.BaseHand1A].gameObject.SetActive(false);
-                ptSpr[PtType.BaseHand2].gameObject.SetActive(false);
-            }
+            ptSpr[PtType.BaseBody].gameObject.SetActive(false);
+            ptSpr[PtType.BaseHand1A].gameObject.SetActive(false);
+            ptSpr[PtType.BaseHand2].gameObject.SetActive(false);
         }
+
         if (data.EqSlot["Helmet"] != null && data.IsView && data.EqSlot["Helmet"].App == 1)
         {
             ptSpr[PtType.EqHelmet].sprite = ResManager.GetSprite("hm" + data.EqSlot["Helmet"].ItemId.ToString());
@@ -565,9 +586,7 @@ public class GsManager : AutoSingleton<GsManager>
         else
         {
             if (!ptSpr[PtType.Ear].gameObject.activeSelf)
-            {
-
-            }
+                TakeOffHelmetObj(ptSpr, data.Hair);
         }
     }
     public void SetObjAllEqParts(int uid, Dictionary<PtType, SpriteRenderer> ptSpr)
@@ -636,33 +655,30 @@ public class GsManager : AutoSingleton<GsManager>
         }
         //0: 맨손. 1 : 손1에 한손 착용. 2 : 손2에 한손 착용. 3 : 손1,2 각각 한손 착용. 4 : 양손검,도끼,둔기. 5 : 창, 지팡이
         PtType[] arr = null;
-        bool hasArmor = slot["Armor"] != null;
         switch (wpState)
         {
-            case 0: case 2: arr = hasArmor ? new PtType[] { PtType.BaseHand1A, PtType.BaseHand2, PtType.EqHand1A, PtType.EqHand2 } : new PtType[] { PtType.BaseHand1A, PtType.BaseHand2 }; break;
-            case 1: case 3: arr = hasArmor ? new PtType[] { PtType.BaseHand1B, PtType.BaseHand2, PtType.EqHand1B, PtType.EqHand2 } : new PtType[] { PtType.BaseHand1B, PtType.BaseHand2 }; break;
-            case 4: arr = hasArmor ? new PtType[] { PtType.BaseBoth, PtType.EqBoth } : new PtType[] { PtType.BaseBoth }; break;
-            case 5: arr = hasArmor ? new PtType[] { PtType.BaseHand1A, PtType.BaseHand2, PtType.EqHand1A, PtType.EqHand2 } : new PtType[] { PtType.BaseHand1A, PtType.BaseHand2 }; break;
+            case 0: case 2: arr = new PtType[] { PtType.BaseHand1A, PtType.BaseHand2, PtType.EqHand1A, PtType.EqHand2 }; break;
+            case 1: case 3: arr = new PtType[] { PtType.BaseHand1B, PtType.BaseHand2, PtType.EqHand1B, PtType.EqHand2 }; break;
+            case 4: arr = new PtType[] { PtType.BaseBoth, PtType.EqBoth }; break;
+            case 5: arr = new PtType[] { PtType.BaseHand1A, PtType.BaseHand2, PtType.EqHand1A, PtType.EqHand2 }; break;
         }
         if (arr != null)
         {
             for (int i = 0; i < arr.Length; i++)
                 ptSpr[arr[i]].gameObject.SetActive(true);
         }
-        if (hasArmor)
+        int eqId = slot["Armor"] != null ? slot["Armor"].ItemId : data.Gen + 1;
+        ptSpr[PtType.EqBody].sprite = ResManager.GetSprite(eqId.ToString() + "_body");
+        ptSpr[PtType.EqHand1A].sprite = ResManager.GetSprite(eqId.ToString() + "_hand1A");
+        ptSpr[PtType.EqHand1B].sprite = ResManager.GetSprite(eqId.ToString() + "_hand1B");
+        ptSpr[PtType.EqHand2].sprite = ResManager.GetSprite(eqId.ToString() + "_hand2");
+        ptSpr[PtType.EqBoth].sprite = ResManager.GetSprite(eqId.ToString() + "_both");
+        ptSpr[PtType.EqBody].gameObject.SetActive(true);
+        if (slot["Armor"] != null && slot["Armor"].App == 1)
         {
-            ptSpr[PtType.EqBody].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_body");
-            ptSpr[PtType.EqHand1A].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_hand1A");
-            ptSpr[PtType.EqHand1B].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_hand1B");
-            ptSpr[PtType.EqHand2].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_hand2");
-            ptSpr[PtType.EqBoth].sprite = ResManager.GetSprite(slot["Armor"].ItemId.ToString() + "_both");
-            ptSpr[PtType.EqBody].gameObject.SetActive(true);
-            if (slot["Armor"].App == 1)
-            {
-                PtType[] baseBodys = new PtType[] { PtType.BaseBody, PtType.BaseHand1A, PtType.BaseHand2 };
-                foreach (PtType v in baseBodys)
-                    ptSpr[v].gameObject.SetActive(false);
-            }
+            PtType[] baseBodys = new PtType[] { PtType.BaseBody, PtType.BaseHand1A, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth };
+            foreach (PtType v in baseBodys)
+                ptSpr[v].gameObject.SetActive(false);
         }
 
         if (slot["Helmet"] != null && data.IsView && slot["Helmet"].App == 1)
@@ -676,7 +692,28 @@ public class GsManager : AutoSingleton<GsManager>
         else
         {
             if (!ptSpr[PtType.Ear].gameObject.activeSelf)
-                ptSpr[PtType.Ear].gameObject.SetActive(true);
+                TakeOffHelmetObj(ptSpr, data.Hair);
+        }
+    }
+    private void TakeOffHelmetObj(Dictionary<PtType, SpriteRenderer> ptSpr, int hair)
+    {
+        ptSpr[PtType.EqHelmet].gameObject.SetActive(false);
+        ptSpr[PtType.Ear].gameObject.SetActive(true);
+        if (hair > 300)
+        {
+            ptSpr[PtType.Hair1B].gameObject.SetActive(true); ptSpr[PtType.Hair2].gameObject.SetActive(false);
+        }
+        else if (hair > 200)
+        {
+            ptSpr[PtType.Hair1B].gameObject.SetActive(true); ptSpr[PtType.Hair2].gameObject.SetActive(true);
+        }
+        else if (hair > 100)
+        {
+            ptSpr[PtType.Hair1A].gameObject.SetActive(true); ptSpr[PtType.Hair2].gameObject.SetActive(false);
+        }
+        else
+        {
+            ptSpr[PtType.Hair1A].gameObject.SetActive(true); ptSpr[PtType.Hair2].gameObject.SetActive(true);
         }
     }
     #endregion

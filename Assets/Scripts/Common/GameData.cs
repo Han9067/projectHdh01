@@ -27,7 +27,7 @@ public class InvenGrid
 [System.Serializable]
 public enum PtType
 {
-    Face, Eyebrow, Eye1, Eye2, Ear, Nose, Mouth,
+    Face, Eyebrow, Eye1, Eye2, Ear, Nose, Mouth, Beard1, Beard2,
     BaseBody, BaseHand1A, BaseHand1B, BaseHand2, BaseBoth,
     Hair1A, Hair1B, Hair2,
     EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth, EqHelmet,
@@ -45,7 +45,8 @@ public interface ICharData
     int Mouth { get; set; }
     int Hair { get; set; }
     int HairColor { get; set; }
-    int Beard { get; set; }
+    int Beard1 { get; set; }
+    int Beard2 { get; set; }
     int BeardColor { get; set; }
     int Gen { get; set; }
     bool IsView { get; set; }
@@ -158,7 +159,8 @@ public class PlayerData : ICharData
     public int Mouth { get; set; }
     public int Hair { get; set; }
     public int HairColor { get; set; }
-    public int Beard { get; set; }
+    public int Beard1 { get; set; }
+    public int Beard2 { get; set; }
     public int BeardColor { get; set; }
     public bool IsView { get; set; }
     #endregion
@@ -195,7 +197,8 @@ public class NpcData : ICharData
     public int Mouth { get; set; }
     public int Hair { get; set; }
     public int HairColor { get; set; }
-    public int Beard { get; set; }
+    public int Beard1 { get; set; }
+    public int Beard2 { get; set; }
     public int BeardColor { get; set; }
     public bool IsView { get; set; }
     #endregion
