@@ -109,7 +109,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Mouth = data.Mouth;
         pData.Hair = data.Hair;
         pData.HairColor = data.HairColor;
-        pData.Beard1 = data.Beard1; pData.Beard2 = data.Beard2;
+        pData.Beard = data.Beard;
         pData.BeardColor = data.BeardColor;
         pData.IsView = data.IsView;
 
@@ -155,7 +155,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.EyeColor = 1; pData.Ear = 1;
         pData.Nose = 1; pData.Mouth = 1;
         pData.Hair = 101; pData.HairColor = 1;
-        pData.Beard1 = 0; pData.Beard2 = 0; pData.BeardColor = 1;
+        pData.Beard = 0; pData.BeardColor = 1;
         pData.IsView = true;
 
         ItemManager.I.CreateInvenItem(32001, -1, -1); //양손검

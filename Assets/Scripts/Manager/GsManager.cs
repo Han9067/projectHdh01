@@ -216,9 +216,9 @@ public class GsManager : AutoSingleton<GsManager>
         Dictionary<string, Image> img = new Dictionary<string, Image>();
         string[] str = isPrf ?
             new string[] { "Face", "Eyebrow", "Eye1", "Eye2", "Ear", "Nose", "Mouth", "BaseBody",
-            "BaseHand1A", "BaseHand2", "Hair1A", "Hair1B", "Hair2" ,"Beard1"} :
+            "BaseHand1A", "BaseHand2", "Hair1A", "Hair1B", "Hair2" ,"Beard"} :
             new string[] { "Face", "Eyebrow", "Eye1", "Eye2", "Ear", "Nose", "Mouth", "BaseBody",
-            "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth", "Hair1A", "Hair1B", "Hair2" ,"Beard1"};
+            "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth", "Hair1A", "Hair1B", "Hair2" ,"Beard"};
         for (int i = 0; i < str.Length; i++)
             img[str[i]] = obj[addKey + str[i]].GetComponent<Image>();
 
@@ -277,14 +277,14 @@ public class GsManager : AutoSingleton<GsManager>
         }
         img["Eye2"].color = eyeColor;
 
-        if (data.Beard1 > 0)
+        if (data.Beard > 0)
         {
-            img["Beard1"].gameObject.SetActive(true);
-            img["Beard1"].sprite = ResManager.GetSprite("Beard_" + data.Beard1);
-            img["Beard1"].color = beardColor;
+            img["Beard"].gameObject.SetActive(true);
+            img["Beard"].sprite = ResManager.GetSprite("Beard_" + data.Beard);
+            img["Beard"].color = beardColor;
         }
         else
-            img["Beard1"].gameObject.SetActive(false);
+            img["Beard"].gameObject.SetActive(false);
     }
     public void SetUiEqParts(ICharData data, Dictionary<string, GameObject> mGameObj, string addKey = "")
     {
@@ -551,14 +551,14 @@ public class GsManager : AutoSingleton<GsManager>
         }
         ptSpr[PtType.Eye2].color = eyeColor;
 
-        if (data.Beard1 > 0)
+        if (data.Beard > 0)
         {
-            ptSpr[PtType.Beard1].gameObject.SetActive(true);
-            ptSpr[PtType.Beard1].sprite = ResManager.GetSprite("Beard_" + data.Beard1);
-            ptSpr[PtType.Beard1].color = beardColor;
+            ptSpr[PtType.Beard].gameObject.SetActive(true);
+            ptSpr[PtType.Beard].sprite = ResManager.GetSprite("Beard_" + data.Beard);
+            ptSpr[PtType.Beard].color = beardColor;
         }
         else
-            ptSpr[PtType.Beard1].gameObject.SetActive(false);
+            ptSpr[PtType.Beard].gameObject.SetActive(false);
     }
     public void SetObjBodyEqParts(int uid, Dictionary<PtType, SpriteRenderer> ptSpr)
     {
