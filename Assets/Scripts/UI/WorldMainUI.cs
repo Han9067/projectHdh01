@@ -106,9 +106,9 @@ public class WorldMainUI : UIScreen
             {
                 actTime = 0;
                 actTick++;
-                PlayerManager.I.pData.EP += 2;
-                if (PlayerManager.I.pData.EP >= PlayerManager.I.pData.MaxEP)
-                    PlayerManager.I.pData.EP = PlayerManager.I.pData.MaxEP;
+                PlayerManager.I.pData.AP += 2;
+                if (PlayerManager.I.pData.AP >= PlayerManager.I.pData.MaxAP)
+                    PlayerManager.I.pData.AP = PlayerManager.I.pData.MaxAP;
                 UpdateEp();
             }
             if (actTick >= endActTime)
@@ -281,8 +281,8 @@ public class WorldMainUI : UIScreen
     }
     private void UpdateEp()
     {
-        mTMPText["EpVal"].text = PlayerManager.I.pData.EP.ToString();
-        mEnergyGg.value = (float)PlayerManager.I.pData.EP / PlayerManager.I.pData.MaxEP * 100f;
+        mTMPText["ActVal"].text = PlayerManager.I.pData.AP.ToString();
+        mEnergyGg.value = (float)PlayerManager.I.pData.AP / PlayerManager.I.pData.MaxAP * 100f;
     }
     private void CalcCalender()
     {

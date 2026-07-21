@@ -114,14 +114,9 @@ public class CityEnterPop : UIScreen
                     break;
                 case "OnTalk":
                     TalkData tList;
-                    switch (sId)
-                    {
-                        case 1:
-                            tList = CheckQstTalkList();
-                            UIManager.ShowPopup("TalkPop");
-                            Presenter.Send("TalkPop", "SetTalk", tList);
-                            break;
-                    }
+                    tList = CheckQstTalkList();
+                    UIManager.ShowPopup("TalkPop");
+                    Presenter.Send("TalkPop", "SetTalk", tList);
                     break;
                 case "OnQuest":
                     List<int> qList = new List<int> { cityId, npcId };
@@ -369,22 +364,22 @@ public class CityEnterPop : UIScreen
         }
         return "GuildReceptionist";
     }
-    string GetRlsState(int num)
+    string GetRlsState(int n)
     {
-        if (num > 4000)
-            return "매우 좋음";
-        else if (num > 1000)
-            return "좋음";
-        else if (num > 100)
-            return "약간 좋음";
-        else if (num >= 0)
+        if (n > 150)
+            return "신뢰";
+        else if (n > 100)
+            return "매우 호감";
+        else if (n > 20)
+            return "호감";
+        else if (n > -21)
             return "보통";
-        else if (num >= -100)
-            return "약간 나쁨";
-        else if (num >= -500)
-            return "나쁨";
+        else if (n > -100)
+            return "불편";
+        else if (n > -150)
+            return "혐오";
         else
-            return "매우 나쁨";
+            return "원수";
     }
     public override void Refresh() { }
     #region 기타
@@ -511,7 +506,7 @@ public class CityEnterPop : UIScreen
                 break;
         }
         if (priority.Count == 0)
-            return new TalkData("Normal", npcId, 0, 0);
+            return new TalkData("Place", npcId, 0, 0, GetPlaceName(sId));
         foreach (TalkData talkData in priority)
         {
             if (tGQstList.Any(x => x.Qid == talkData.Tid) && qstTalkHandlers.ContainsKey(talkData.Tid))
@@ -519,7 +514,21 @@ public class CityEnterPop : UIScreen
         }
 
         // 일반 채팅
-        return new TalkData("Normal", npcId, 0, 0);
+        return new TalkData("Place", npcId, 0, 0);
+    }
+    private string GetPlaceName(int id)
+    {
+        switch (id)
+        {
+            case 1: return "Guild";
+            case 2: return "Inn";
+            case 3: return "Smith";
+            case 4: return "Tailor";
+            case 5: return "Apothecary";
+            case 6: return "Book";
+            case 7: return "Market";
+        }
+        return "Guild";
     }
     #endregion
     #region NPC 관련

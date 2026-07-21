@@ -1,6 +1,7 @@
 using GB;
 using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
 
 public class TstMsgPop : UIScreen
 {
@@ -39,8 +40,12 @@ public class TstMsgPop : UIScreen
                 ShowTstBox(LocalizationManager.GetValue(data.Get<string>()));
                 break;
             case "ShowTstMsgArr1":
-                string[] arr = data.Get<string[]>();
-                ShowTstBox(string.Format(LocalizationManager.GetValue(arr[0]), arr[1]));
+                string[] arr1 = data.Get<string[]>();
+                ShowTstBox(string.Format(LocalizationManager.GetValue(arr1[0]), arr1[1]));
+                break;
+            case "ShowTstMsgArr2":
+                string[] arr2 = data.Get<string[]>();
+                ShowTstBox(string.Format(LocalizationManager.GetValue(arr2[0]), arr2[1], arr2[2]));
                 break;
         }
     }

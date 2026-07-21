@@ -55,10 +55,22 @@ public class TalkPop : UIScreen
                 TalkData talkData = data.Get<TalkData>();
                 int tType = 0;
                 string ment = "";
+                NpcData npc = NpcManager.I.NpcDataList[talkData.NpcId];
+                string meetType = npc.IsMeet ? GsManager.I.GetTalkRlsType(npc.Rls) : "Meet";
+                // bool isMeet = false;
                 switch (talkData.TalkKey)
                 {
+                    case "Place":
+                        string mkeyP = $"Talk_{talkData.Place}_Hi_{npc.Personality}_{meetType}_0";
+                        ment = string.Format(LocalizationManager.GetValue(mkeyP), npc.IsMeet ? PlayerManager.I.pData.Name : npc.Name);
+                        Presenter.Send("CityEnterPop", "AddNpcRls", 2);
+                        GsManager.I.ShowTstMsg("Tst_AddRlsNpc", npc.Name, "2");
+                        break;
                     case "Normal":
-                        ment = LocalizationManager.GetValue("Talk_Test");
+                        string mkeyN = $"Talk_NPC_Hi_{npc.Personality}_{meetType}_0";
+                        ment = string.Format(LocalizationManager.GetValue(mkeyN), npc.IsMeet ? PlayerManager.I.pData.Name : npc.Name);
+                        npc.Rls += 2;
+                        GsManager.I.ShowTstMsg("Tst_AddRlsNpc", npc.Name, "2");
                         break;
                     case "Rest":
                         ment = string.Format(LocalizationManager.GetValue("Talk_Inn_Rest_1"), 50);
@@ -107,6 +119,8 @@ public class TalkPop : UIScreen
                         break;
                 }
                 SetTalkType(tType, talkData.NpcId, ment);
+                if (!npc.IsMeet)
+                    npc.IsMeet = true;
                 break;
             case "OnClick":
                 string sKey = data.Get<string>();

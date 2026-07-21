@@ -133,7 +133,7 @@ public class PlayerData : ICharData
     // 레벨 및 경험치
     public int Lv, Exp, NextExp, GainExp, Grade, GradeExp, GradeNext;
     // 상태
-    public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP, EP, MaxEP; //ep: 에너지, maxep: 최대 에너지
+    public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP, AP, MaxAP; //ap: 행동 포인트, maxap: 최대 행동 포인트
     public int Att, Def, MAtt, MDef;
     public int Crt, CrtRate, Hit, Eva; // 치명타율, 치명타확률, 명중, 회피
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
@@ -173,12 +173,13 @@ public class PlayerData : ICharData
 public class NpcData : ICharData
 {
     public string Name;
-    public int Age, Fame, Rls, CityId; //Relationship
+    public int Age, Fame, Rls, CityId, Personality; //Relationship->호감도, Personality->성격
     public int NpcId, Lv, Exp, NextExp, GainExp, Grade, GradeExp, GradeNext;
     public int HP, MP, SP, AddHP, AddMP, AddSP, MaxHP, MaxMP, MaxSP;
     public int Att, Def, MAtt, MDef, Crt, CrtRate, Hit, Eva;
     public int VIT, END, STR, AGI, FOR, INT, CHA, LUK;
     public int Rng, AtkType;
+    public bool IsMeet, IsHi, IsSend; //만남 여부, 인사 여부, 선물 여부 -> 인사와 선물은 1일마다 false로 초기화
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
     public List<MakeData> MakeList = new List<MakeData>();
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
@@ -473,21 +474,29 @@ public class QuestInstData
 public class TalkData
 {
     //대화 타입에 대한 키, 퀘스트 또는 대화 ID, NPC ID, Order ID
-    public string TalkKey;
+    public string TalkKey, Place;
     public int Tid, NpcId, Order;
-    public TalkData(string talkKey, int npcId)
+    public TalkData(string tk, int n)
     {
-        this.TalkKey = talkKey;
-        this.NpcId = npcId;
-        this.Tid = 0;
-        this.Order = 0;
+        TalkKey = tk;
+        NpcId = n;
+        Tid = 0;
+        Order = 0;
     }
-    public TalkData(string talkKey, int npcId, int tid, int order)
+    public TalkData(string tk, int n, int t, int o)
     {
-        this.TalkKey = talkKey;
-        this.NpcId = npcId;
-        this.Tid = tid;
-        this.Order = order;
+        TalkKey = tk;
+        NpcId = n;
+        Tid = t;
+        Order = o;
+    }
+    public TalkData(string tk, int n, int tid, int o, string p)
+    {
+        TalkKey = tk;
+        NpcId = n;
+        Tid = tid;
+        Order = o;
+        Place = p;
     }
 }
 

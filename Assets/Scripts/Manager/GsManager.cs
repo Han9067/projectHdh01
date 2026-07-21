@@ -134,11 +134,17 @@ public class GsManager : AutoSingleton<GsManager>
         UIManager.ShowPopup("TstMsgPop");
         Presenter.Send("TstMsgPop", "ShowTstMsg", msg);
     }
-    public void ShowTstMsg(string msg, string main, int type = 1)
+    public void ShowTstMsg(string msg, string main)
     {
         string[] arr = new string[] { msg, main };
         UIManager.ShowPopup("TstMsgPop");
-        Presenter.Send("TstMsgPop", "ShowTstMsgArr" + type, arr);
+        Presenter.Send("TstMsgPop", "ShowTstMsgArr1", arr);
+    }
+    public void ShowTstMsg(string msg, string main, string sub)
+    {
+        string[] arr = new string[] { msg, main, sub };
+        UIManager.ShowPopup("TstMsgPop");
+        Presenter.Send("TstMsgPop", "ShowTstMsgArr2", arr);
     }
     public void SetBtSeed()
     {
@@ -152,6 +158,24 @@ public class GsManager : AutoSingleton<GsManager>
     public void CheckWorldCmr()
     {
         WorldCore.I.SetCmrSpd(!(WorldMainUI.isExplore || CityEnterPop.isActive || EventPop.isActive));
+    }
+    //NPC 호감도 타입 반환
+    public string GetTalkRlsType(int v)
+    {
+        if (v > 150)
+            return "3";
+        else if (v > 100)
+            return "2";
+        else if (v > 20)
+            return "1";
+        else if (v > -21)
+            return "0";
+        else if (v > -100)
+            return "-1";
+        else if (v > -150)
+            return "-2";
+        else
+            return "-3";
     }
     #endregion
     #region 커서 관리
@@ -176,7 +200,7 @@ public class GsManager : AutoSingleton<GsManager>
     #region 오브젝트 데이터 관리
     public int GetLv(int VIT, int END, int STR, int AGI, int FOR, int INT, int CHA, int LUK)
     {
-        int total = (VIT + END + STR + AGI + FOR + INT + CHA + LUK) - 40;
+        int total = VIT + END + STR + AGI + FOR + INT + CHA + LUK - 40;
         return total < 1 ? 1 : total;
     }
     public int GetNextExp(int Lv, double s = 30.0, double p = 2.8)

@@ -35,6 +35,8 @@ public class NpcManager : AutoSingleton<NpcManager>
             data.Ear = parts[5]; data.Nose = parts[6]; data.Mouth = parts[7]; data.Hair = parts[8]; data.HairColor = parts[9];
             data.Beard = parts[10]; data.BeardColor = parts[11];
             data.IsView = npc.IsView == 0;
+            data.IsMeet = false; data.IsHi = false; data.IsSend = false;
+            data.Personality = npc.Personality; //성격
             /////
             string[] eq = npc.Eq.Split('/'); //상하의_신발_투구_장갑_벨트_목걸이_반지1_반지2
             string[] eqName = new string[] { "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Necklace", "Ring1", "Ring2" };

@@ -128,7 +128,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.HP = data.HP;
         pData.MP = data.MP;
         pData.SP = data.SP;
-        pData.EP = data.EP; //원래 최대값 100이지만 추후 능력치 향상으로 증가할 수 있음
+        pData.AP = data.AP; //원래 최대값 100이지만 추후 능력치 향상으로 증가할 수 있음
 
         isObjCreated = true; //저장된 데이터이기에 해당 불대수 true로 설정
         worldPos = pos;
@@ -192,8 +192,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.GuildQstMax = 5;
         pData.TraceQId = 0;
 
-        pData.EP = 70; //기본이 100
-        pData.MaxEP = 100;
+        pData.AP = 100; //기본이 100
+        pData.MaxAP = 100;
         // pData.SkList = new Dictionary<int, SkData>();
         TestAddSkExp();
         // StartCoroutine(DelayedStartTutorial(0.2f)); //추후 튜토리얼 조건이 된다면 튜토리얼을 시작시킴

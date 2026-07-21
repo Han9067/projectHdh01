@@ -157,9 +157,9 @@ public class WorkPop : UIScreen
                     break;
             }
         }
-        mSlider.maxValue = PlayerManager.I.pData.MaxEP / 8f;
+        mSlider.maxValue = PlayerManager.I.pData.MaxAP / 8f;
         mSlider.value = 1;
-        mTMPText["EnergyVal"].text = (8 * daysVal).ToString();
+        mTMPText["ActVal"].text = (8 * daysVal).ToString();
     }
     private void CreateWorkReward(string img, string txt, int val, int type)
     {
@@ -207,7 +207,7 @@ public class WorkPop : UIScreen
                 }
             }
         }
-        mTMPText["EnergyVal"].text = (8 * daysVal).ToString();
+        mTMPText["ActVal"].text = (8 * daysVal).ToString();
     }
     private int GetCrownVal()
     {

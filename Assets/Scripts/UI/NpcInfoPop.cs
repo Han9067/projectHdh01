@@ -39,6 +39,8 @@ public class NpcInfoPop : UIScreen
                 Close();
                 break;
             case "OnTalk":
+                UIManager.ShowPopup("TalkPop");
+                Presenter.Send("TalkPop", "SetTalk", new TalkData("Normal", npcId));
                 break;
             case "OnGift":
                 break;
