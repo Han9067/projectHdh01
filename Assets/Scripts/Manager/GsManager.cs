@@ -353,7 +353,7 @@ public class GsManager : AutoSingleton<GsManager>
     {
         var eq = data.EqSlot;
         string[] all = new string[] { "BaseHand1A", "BaseHand1B", "BaseHand2", "BaseBoth",
-            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "OneWp3", "TwoWp1", "TwoWp2", "EqHelmet"};
+            "EqBody", "EqHand1A", "EqHand1B", "EqHand2", "EqBoth", "OneWp1", "OneWp2", "OneWp3", "TwoWp1", "TwoWp2", "EqHelmet", "Shield"};
         foreach (var v in all)
             mGameObj[v].SetActive(false);
         int eqId = eq["Armor"] != null ? eq["Armor"].ItemId : data.Gen + 1;
@@ -420,9 +420,19 @@ public class GsManager : AutoSingleton<GsManager>
         }
         if (eq["Hand2"] != null)
         {
+            Debug.Log("Hand2: " + eq["Hand2"].Hand);
             if (eq["Hand2"].Hand == 3) return;
-            mGameObj["OneWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand2"].ItemId.ToString());
-            mGameObj["OneWp2"].SetActive(true);
+            switch (eq["Hand2"].Hand)
+            {
+                default:
+                    mGameObj["OneWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand2"].ItemId.ToString());
+                    mGameObj["OneWp2"].SetActive(true);
+                    break;
+                case 4:
+                    mGameObj["Shield"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand2"].ItemId.ToString());
+                    mGameObj["Shield"].SetActive(true);
+                    break;
+            }
         }
         if (eq["Helmet"] != null && data.IsView && eq["Helmet"].App == 1)
         {
@@ -498,7 +508,7 @@ public class GsManager : AutoSingleton<GsManager>
     HashSet<PtType> noneWpTypes = new HashSet<PtType>
     {
         PtType.BaseHand1B,PtType.BaseBoth, PtType.EqBoth, PtType.EqHand1B,
-        PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.TwoWp1, PtType.TwoWp2
+        PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.TwoWp1, PtType.TwoWp2, PtType.Shield
     };
     HashSet<PtType> hairTypes = new HashSet<PtType>
     {
@@ -618,7 +628,7 @@ public class GsManager : AutoSingleton<GsManager>
         PtType[] bodyParts = new PtType[] {
             PtType.BaseHand1A, PtType.BaseHand1B, PtType.BaseHand2, PtType.BaseBoth,
             PtType.EqBody, PtType.EqHand1A, PtType.EqHand1B, PtType.EqHand2, PtType.EqBoth,
-            PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.TwoWp1, PtType.TwoWp2
+            PtType.OneWp1, PtType.OneWp2, PtType.OneWp3, PtType.TwoWp1, PtType.TwoWp2, PtType.Shield
         };
 
         foreach (PtType b in bodyParts) ptSpr[b].gameObject.SetActive(false);
@@ -673,8 +683,18 @@ public class GsManager : AutoSingleton<GsManager>
                     wpState = 3; //손1,2 각각 한손 착용
                 else
                     wpState = 2; //손2에 한손 착용
-                ptSpr[PtType.OneWp2].gameObject.SetActive(true);
-                ptSpr[PtType.OneWp2].sprite = ResManager.GetSprite("wp" + slot["Hand2"].ItemId.ToString());
+                switch (slot["Hand2"].Hand)
+                {
+                    default:
+                        ptSpr[PtType.OneWp2].gameObject.SetActive(true);
+                        ptSpr[PtType.OneWp2].sprite = ResManager.GetSprite("wp" + slot["Hand2"].ItemId.ToString());
+                        break;
+                    case 4:
+                        wpState = 1;
+                        ptSpr[PtType.Shield].gameObject.SetActive(true);
+                        ptSpr[PtType.Shield].sprite = ResManager.GetSprite("wp" + slot["Hand2"].ItemId.ToString());
+                        break;
+                }
             }
         }
         //0: 맨손. 1 : 손1에 한손 착용. 2 : 손2에 한손 착용. 3 : 손1,2 각각 한손 착용. 4 : 양손검,도끼,둔기. 5 : 창, 지팡이

@@ -31,7 +31,7 @@ public enum PtType
     BaseBody, BaseHand1A, BaseHand1B, BaseHand2, BaseBoth,
     Hair1A, Hair1B, Hair2,
     EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth, EqHelmet,
-    OneWp1, OneWp2, OneWp3, TwoWp1, TwoWp2
+    OneWp1, OneWp2, OneWp3, TwoWp1, TwoWp2, Shield
 }
 public interface ICharData
 {
