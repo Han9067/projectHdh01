@@ -1,7 +1,7 @@
 using GB;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
+using System.Linq;
 
 public class ItemManager : AutoSingleton<ItemManager>
 {
@@ -26,7 +26,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var eq in EqTable.Datas)
         {
-            ItemDataList[eq.ItemID] = CreateItemData(eq.ItemID, eq.Name, eq.Type, eq.Price, eq.AttKey, eq.AttVal, 1, eq.W, eq.H, eq.Res, eq.Dur);
+            ItemDataList[eq.ItemID] = CreateItemData(eq.ItemID, eq.Name, eq.Type, eq.Price, eq.AttKey, eq.AttVal, eq.Grade, eq.W, eq.H, eq.Res, eq.Dur);
             ItemDataList[eq.ItemID].App = eq.App;
         }
     }
@@ -34,7 +34,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var wp in WpTable.Datas)
         {
-            ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.AttKey, wp.AttVal, 1, wp.W, wp.H, wp.Res, wp.Dur, wp.Hand);
+            ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.AttKey, wp.AttVal, wp.Grade, wp.W, wp.H, wp.Res, wp.Dur, wp.Hand);
             ItemDataList[wp.ItemID].Rng = wp.Rng;
         }
     }
@@ -56,15 +56,55 @@ public class ItemManager : AutoSingleton<ItemManager>
 
         return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Att = att, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = grade, Hand = hand };
     }
-    public void CreateInvenItem(int id, int x, int y)
+    public void CreateInvenItem(int id, int x, int y, int prm = 0, Dictionary<int, int> addAtt = null)
     {
         ItemData item = ItemDataList[id].Clone();
         item.X = x;
         item.Y = y;
         item.Uid = GetUid();
+        item.PfmVal = prm;
+        if (item.PfmVal > 0)
+        {
+            int pfmG = GetCurItemGrade(item.Grade, item.PfmVal);
+            if (pfmG > item.Grade)
+            {
+                int add = CalcCurItemVal(item.Grade, pfmG, item.Type);
+
+                var keys = new List<int>(item.Att.Keys);
+                foreach (var key in keys)
+                    item.Att[key] += add;
+                item.Grade = pfmG;
+            }
+        }
+        if (addAtt != null)
+        {
+            foreach (var v in addAtt)
+                item.Att.Add(v.Key, v.Value);
+            var att = new Dictionary<int, int>(item.Att);
+            if (item.Type < 11)
+            {
+                if (att.ContainsKey(20)) att[1] += att[20];
+                if (att.ContainsKey(22))
+                {
+                    if (!att.ContainsKey(3)) att.Add(3, 0);
+                    att[3] += att[22];
+                }
+            }
+            else if (item.Type < 31)
+            {
+                if (att.ContainsKey(21)) att[2] += att[21];
+                if (att.ContainsKey(23))
+                {
+                    if (!att.ContainsKey(4)) att.Add(4, 0);
+                    att[4] += att[23];
+                }
+            }
+            else
+            { }
+            item.Att = att.OrderBy(kv => kv.Key).ToDictionary(kv => kv.Key, kv => kv.Value);
+        }
+        //원래 적용되어야하는 특성 데이터가 아닌 추가적으로 붙은 특성으로 인한 메인 특성에 대한 대응도 해야함.
         PlayerManager.I.pData.Inven.Add(item);
-        //추후에는 특수능력 또는 추가 능력치 붙는 아이템에 대한 대응도 해야함.
-        //고민중인건 매개변수에 배열을 두개 넣어서 한개는 능력치 값 id를 넣고 다른 하나는 능력치의 값을 적용할까함
     }
     public void CreateInvenItem(ItemData item, int x, int y)
     {
@@ -228,6 +268,27 @@ public class ItemManager : AutoSingleton<ItemManager>
             curPfm -= gradePfm[curG];
         }
         return curG;
+    }
+    public int CalcCurItemVal(int prevG, int curG, int iType)
+    {
+        int diff = curG - prevG;
+        if (iType < 11)
+            return diff;
+        else if (iType < 31)
+        {
+            switch (iType)
+            {
+                case 11:
+                case 13:
+                case 15:
+                case 17:
+                    return diff;
+                default:
+                    return diff * 2;
+            }
+        }
+        else
+            return 0;
     }
     //테스트
     public void TestDropItem()

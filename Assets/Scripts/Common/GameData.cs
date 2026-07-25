@@ -353,7 +353,7 @@ public class ItemData
     public int Dir, Uid; //dir: 0은 세로 1은 가로 모든 장비,무기,아이템은 디폴트가 0
     public int Hand; // 0: 한손무기, 1: 양손무기, 2: 창, 3: 지팡이, 4: 활
     public int App = 0, Rng = 1;
-    public int PfmVal = 0; //퍼포먼스 값
+    public int PfmVal = 0; //성능 점수
     public Dictionary<int, int> Att;
     public ItemData Clone()
     {

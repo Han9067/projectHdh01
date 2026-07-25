@@ -54,7 +54,21 @@ public class ItemInfoPop : UIScreen
                     if (v.Key == 0)
                         stat = LocalizationManager.GetValue("None");
                     else
-                        stat += $"{LocalizationManager.GetValue(GsManager.I.AttDataList[v.Key].Name)}: {v.Value}\n";
+                    {
+                        int addAtt = 0;
+                        switch (v.Key)
+                        {
+                            case 1: addAtt = 20; break;
+                            case 2: addAtt = 21; break;
+                            case 3: addAtt = 22; break;
+                            case 4: addAtt = 23; break;
+                            default: addAtt = 0; break;
+                        }
+                        if (addAtt > 0 && itemData.Att.ContainsKey(addAtt))
+                            stat += $"{LocalizationManager.GetValue(GsManager.I.AttDataList[v.Key].Name)}: {v.Value}(+{itemData.Att[addAtt]})\n";
+                        else
+                            stat += $"{LocalizationManager.GetValue(GsManager.I.AttDataList[v.Key].Name)}: {v.Value}\n";
+                    }
                     h1 += 30;
                 }
                 if (itemData.ItemId < 60000)

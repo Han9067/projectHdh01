@@ -158,7 +158,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Beard = 0; pData.BeardColor = 1;
         pData.IsView = true;
 
-        ItemManager.I.CreateInvenItem(32001, -1, -1); //양손검
+        Dictionary<int, int> att32001 = new Dictionary<int, int>() { { 21, 2 } };
+        ItemManager.I.CreateInvenItem(32001, -1, -1, 220, att32001); //양손검
         // ItemManager.I.CreateInvenItem(36001, -1, -1); //양손도끼
         // ItemManager.I.CreateInvenItem(40001, -1, -1); //양손둔기
         // ItemManager.I.CreateInvenItem(46001, -1, -1); //창
@@ -177,7 +178,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         ItemManager.I.CreateInvenItem(67001, 1, 0);
         ItemManager.I.CreateInvenItem(67001, 2, 0);
         ItemManager.I.CreateInvenItem(67001, 3, 0);
-        ItemManager.I.CreateInvenItem(12032, 2, 2);
+        Dictionary<int, int> att12032 = new Dictionary<int, int>() { { 20, 2 }, { 22, 2 } };
+        ItemManager.I.CreateInvenItem(12032, 2, 2, 210, att12032);
         CalcPlayerStat();
         pData.HP = pData.MaxHP;
         pData.MP = pData.MaxMP;
@@ -227,11 +229,11 @@ public class PlayerManager : AutoSingleton<PlayerManager>
                 switch (att.Key)
                 {
                     case 1:
-                    case 20:
+                        // case 20:
                         pData.Def += att.Value; // 방어력
                         break;
                     case 2:
-                    case 21:
+                        // case 21:
                         pData.Att += att.Value; // 공격력
                         break;
                 }
