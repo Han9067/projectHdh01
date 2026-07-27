@@ -115,7 +115,7 @@ public class SelectPop : UIScreen
                 PlayerManager.I.pData.Crown -= buyPrice;
                 Presenter.Send("InvenPop", "UpdateCrownTxt");
                 Presenter.Send("InvenPop", "AddItem", cloneItem);
-                Presenter.Send("CityEnterPop", "AddNpcRls", 2); //호감도
+                Presenter.Send("CityEnterPop", "AddNpcRls", 1); //호감도
                 Close();
                 break;
             case "OnSell":
@@ -123,7 +123,7 @@ public class SelectPop : UIScreen
                 PlayerManager.I.pData.Crown += sellPrice;
                 Presenter.Send("InvenPop", "UpdateCrownTxt");
                 Presenter.Send("InvenPop", "DeleteItem", selItem.Uid);
-                Presenter.Send("CityEnterPop", "AddNpcRls", 2); //호감도
+                Presenter.Send("ShopInvenPop", "CheckRlsItem", selItem.ItemId); //호감도 상승 아이템 확인
                 Close();
                 break;
             case "OnInfo":
@@ -200,7 +200,6 @@ public class SelectPop : UIScreen
         }
     }
     public override void Refresh() { }
-
     private IEnumerator SetPos()
     {
         yield return new WaitForEndOfFrame(); // 또는 yield return null;

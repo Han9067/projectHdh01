@@ -257,7 +257,9 @@ public class CityEnterPop : UIScreen
                 StateVisiblePop(data.Get<int>());
                 break;
             case "AddNpcRls":
-                NpcManager.I.NpcDataList[npcId].Rls += data.Get<int>();
+                int addRls = data.Get<int>();
+                NpcManager.I.NpcDataList[npcId].Rls += addRls;
+                GsManager.I.ShowTstMsg("Tst_AddRlsNpc", NpcManager.I.NpcDataList[npcId].Name, addRls.ToString());
                 mTMPText["RlsVal"].text = GetRlsState(NpcManager.I.NpcDataList[npcId].Rls);
                 break;
             case "Tuto_Join":

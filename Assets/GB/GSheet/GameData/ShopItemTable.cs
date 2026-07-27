@@ -31,6 +31,7 @@ public class ShopItemTable  : GameData
 				case "ShopID": return true;
 				case "ItemID": return true;
 				case "Type": return true;
+				case "Rls": return true;
 
 		  default: return false;
 
@@ -58,6 +59,7 @@ public class ShopItemTable  : GameData
 				case "ShopID": return data.ShopID;
 				case "ItemID": return data.ItemID;
 				case "Type": return data.Type;
+				case "Rls": return data.Rls;
 
 
                 default: return null;
@@ -76,6 +78,7 @@ public class ShopItemTable  : GameData
 				case "ShopID": return data.ShopID;
 				case "ItemID": return data.ItemID;
 				case "Type": return data.Type;
+				case "Rls": return data.Rls;
 
 
                 default: return null;
@@ -95,6 +98,7 @@ public class ShopItemTable  : GameData
 				case 0: return data.ShopID;
 				case 1: return data.ItemID;
 				case 2: return data.Type;
+				case 3: return data.Rls;
 
                 default: return null;
             }
@@ -140,5 +144,6 @@ public class ShopItemTableProb : GameDataProb
 		[JsonProperty] public readonly int ShopID;
 	[JsonProperty] public readonly int ItemID;
 	[JsonProperty] public readonly int Type;
+	[JsonProperty] public readonly int Rls;
 
 }

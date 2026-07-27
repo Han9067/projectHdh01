@@ -18,6 +18,7 @@ public class ShopInvenPop : UIScreen
         public int x;
         public int y;
     }
+    private int sId = 0; //상점 ID
     private void Awake()
     {
         Regist();
@@ -43,6 +44,7 @@ public class ShopInvenPop : UIScreen
     {
         Presenter.Bind("ShopInvenPop", this);
         isActive = true;
+        InitIcons();
     }
     private void OnDisable()
     {
@@ -70,21 +72,90 @@ public class ShopInvenPop : UIScreen
     }
     public override void ViewQuick(string key, IOData data)
     {
-        string name = "";
         switch (key)
         {
+            case "LoadGuild":
+                sId = 1;
+                SetShopInven(new List<string> { "Loot" }, "길드", data.Get<int>());
+                break;
+            case "LoadInn":
+                sId = 2;
+                SetShopInven(new List<string> { "Food" }, "여관", data.Get<int>());
+                break;
             case "LoadSmith":
-                name = "대장간";
+                sId = 3;
+                SetShopInven(new List<string> { "Metal", "Wood" }, "대장간", data.Get<int>());
                 break;
             case "LoadTailor":
-                name = "재봉사";
+                sId = 4;
+                SetShopInven(new List<string> { "Leather", "Cloth" }, "재봉사", data.Get<int>());
                 break;
             case "LoadApothecary":
-                name = "약제상";
+                sId = 5;
+                SetShopInven(new List<string> { "Potion" }, "약제상", data.Get<int>());
+                break;
+            case "LoadBook":
+                sId = 6;
+                SetShopInven(new List<string> { "Book" }, "서점", data.Get<int>());
+                break;
+            case "LoadMarket":
+                sId = 7;
+                SetShopInven(new List<string> { "TradeGood" }, "시장", data.Get<int>());
+                break;
+            case "LoadJeweler":
+                sId = 8;
+                SetShopInven(new List<string> { "Valuable" }, "보석상", data.Get<int>());
+                break;
+            case "OpenIconInfo":
+                string iKey = data.Get<string>();
+                mGameObject["IconInfoPop"].SetActive(true);
+                Vector3 pos = mGameObject[iKey].transform.position;
+                pos.x -= 250f; // 월드 단위라 Canvas Scale에 따라 "픽셀 90"과 다를 수 있음
+                mGameObject["IconInfoPop"].transform.position = pos;
+                mTMPText["IconInfoDesc"].text = LocalizationManager.GetValue("ShopIcon_" + iKey);
+                break;
+            case "CloseIconInfo":
+                mGameObject["IconInfoPop"].SetActive(false);
+                break;
+            case "CheckRlsItem":
+                int itemId = data.Get<int>();
+                switch (sId)
+                {
+                    case 1:
+                        if (ItemManager.I.ItemDataList[itemId].Type == 33)
+                            Presenter.Send("CityEnterPop", "AddNpcRls", 1);
+                        break;
+                    case 2:
+                        if (itemId > 62000 && itemId < 64001)
+                            Presenter.Send("CityEnterPop", "AddNpcRls", 1);
+                        break;
+                    case 3:
+                        if (ItemManager.I.ItemDataList[itemId].Type == 34 || ItemManager.I.ItemDataList[itemId].Type == 35)
+                            Presenter.Send("CityEnterPop", "AddNpcRls", 1);
+                        break;
+                    case 4:
+                        if (ItemManager.I.ItemDataList[itemId].Type == 36 || ItemManager.I.ItemDataList[itemId].Type == 37)
+                            Presenter.Send("CityEnterPop", "AddNpcRls", 1);
+                        break;
+                    case 5:
+                        if (itemId > 60000 && itemId < 60101)
+                            Presenter.Send("CityEnterPop", "AddNpcRls", 1);
+                        break;
+                    case 6:
+                        if (itemId > 60100 && itemId < 60501)
+                            Presenter.Send("CityEnterPop", "AddNpcRls", 1);
+                        break;
+                    case 7:
+                        if (ItemManager.I.ItemDataList[itemId].Type == 32)
+                            Presenter.Send("CityEnterPop", "AddNpcRls", 1);
+                        break;
+                    case 8:
+                        if (ItemManager.I.ItemDataList[itemId].Type == 38)
+                            Presenter.Send("CityEnterPop", "AddNpcRls", 1);
+                        break;
+                }
                 break;
         }
-        mTMPText["ShopName"].text = name;
-        CreateGrid(data.Get<int>());
     }
     public void CreateGrid(int id)
     {
@@ -115,7 +186,19 @@ public class ShopInvenPop : UIScreen
         PlaceItem(slotId, pos.x, pos.y, w, h);
         return pos;
     }
-
+    private void InitIcons()
+    {
+        string[] icons = new string[] { "Loot", "Food", "Metal", "Leather", "Cloth", "Potion", "Book", "Wood", "Valuable", "TradeGood" };
+        foreach (var i in icons)
+            mGameObject[i].SetActive(false);
+    }
+    private void SetShopInven(List<string> icons, string name, int id)
+    {
+        foreach (var i in icons)
+            mGameObject[i].SetActive(true);
+        mTMPText["ShopName"].text = name;
+        CreateGrid(id);
+    }
     private Vector2Int FindAvailablePosition(int w, int h)
     {
         // 항상 왼쪽 위(0,0)부터 오른쪽으로 차례대로 빈 공간 찾기
