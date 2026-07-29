@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using GB;
 
 public class wPlace : MonoBehaviour
 {
@@ -16,7 +15,20 @@ public class wPlace : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
-            PlayerManager.I.curPlace = pcId;
+        {
+            switch (pcId)
+            {
+                default:
+                    PlayerManager.I.curPlace = pcId;
+                    break;
+                case 201:
+                    UIManager.ShowPopup("WorkPop");
+                    Presenter.Send("WorkPop", "SetWork", 201);
+                    break; //광산
+                case 801:
+                    break; //관문
+            }
+        }
     }
     private void OnTriggerExit2D(Collider2D other)
     {

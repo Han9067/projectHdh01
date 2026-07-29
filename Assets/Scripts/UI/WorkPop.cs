@@ -25,7 +25,6 @@ public class WorkPop : UIScreen
     {
         Presenter.Bind("WorkPop", this);
         daysVal = 1;
-        mTMPText["WarningTxt"].gameObject.SetActive(false);
     }
 
     private void OnDisable()
@@ -111,22 +110,22 @@ public class WorkPop : UIScreen
             switch (workType)
             {
                 case 2:
-                    CreateWorkReward("skIcon_7", "AddSkill", skExpVal, 7);
+                    CreateWorkReward("skIcon_23", "AddSkill", skExpVal, 23);
                     break;
                 case 3:
-                    CreateWorkReward("skIcon_28", "AddSkill", skExpVal, 28);
+                    CreateWorkReward("skIcon_27", "AddSkill", skExpVal, 27);
                     break;
                 case 4:
                     CreateWorkReward("skIcon_29", "AddSkill", skExpVal, 29);
                     break;
                 case 5:
-                    CreateWorkReward("skIcon_30", "AddSkill", skExpVal, 30);
+                    CreateWorkReward("skIcon_29", "AddSkill", skExpVal, 29);
                     break;
                 case 6:
-                    CreateWorkReward("skIcon_27", "AddSkill", skExpVal, 27);
+                    CreateWorkReward("skIcon_20", "AddSkill", skExpVal, 20);
                     break;
                 case 7:
-                    CreateWorkReward("skIcon_21", "AddSkill", skExpVal, 21);
+                    CreateWorkReward("skIcon_26", "AddSkill", skExpVal, 26);
                     break;
                 case 21:
                     //농장
@@ -137,9 +136,6 @@ public class WorkPop : UIScreen
                 case 23:
                     //제재소
                     break;
-                case 24:
-                    //채굴장
-                    break;
             }
         }
         else
@@ -149,11 +145,13 @@ public class WorkPop : UIScreen
             {
                 case 101:
                     CreateWorkReward("icon_exp", "AddExp", expVal, 10001);
-                    CreateWorkReward("skIcon_26", "AddSkill", skExpVal, 26);
+                    CreateWorkReward("skIcon_25", "AddSkill", skExpVal, 25);
                     //사냥하기
                     break;
-                case 102:
+                case 201:
                     //채광하기
+                    CreateWorkReward("icon_exp", "AddExp", expVal, 10001);
+                    CreateWorkReward("skIcon_21", "AddSkill", skExpVal, 21);
                     break;
             }
         }

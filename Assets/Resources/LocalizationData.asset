@@ -2707,6 +2707,16 @@ MonoBehaviour:
           value: Bascinet
           duplicatedKey: 0
       duplicatedKey: 0
+    - key: GreatHelm
+      value:
+        list:
+        - key: 23
+          value: "\uADF8\uB808\uC774\uD2B8 \uD5EC\uB984"
+          duplicatedKey: 0
+        - key: 10
+          value: Great Helm
+          duplicatedKey: 0
+      duplicatedKey: 0
     - key: ShortShoes
       value:
         list:
@@ -2775,6 +2785,26 @@ MonoBehaviour:
           duplicatedKey: 0
         - key: 10
           value: Hunter Gloves
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: CottonBelt
+      value:
+        list:
+        - key: 23
+          value: "\uCC9C \uBCA8\uD2B8"
+          duplicatedKey: 0
+        - key: 10
+          value: Cotton Belt
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: BrownLeatherBelt
+      value:
+        list:
+        - key: 23
+          value: "\uAC08\uC0C9 \uAC00\uC8FD \uBCA8\uD2B8"
+          duplicatedKey: 0
+        - key: 10
+          value: Brown Leather Belt
           duplicatedKey: 0
       duplicatedKey: 0
     - key: TrainingSword
@@ -5205,57 +5235,69 @@ MonoBehaviour:
       value:
         list:
         - key: 23
-          value: "\uBAA8\uD5D8\uAC00\uB2D8, \uD1B5\uD589\uC99D\uC774 \uD544\uC694\uD558\uC2DC\uB2E4\uBA74
-            \uC81C \uC758\uB8B0\uB97C \uB9E1\uC544 \uD574\uACB0\uD574\uC8FC\uC2DC\uBA74
-            \uBC1C\uAE09\uD574\uB4DC\uB9AC\uACA0\uC2B5\uB2C8\uB2E4."
+          value: "\uB2F9\uC2E0\uC740....{0}\uAE09 \uBAA8\uD5D8\uAC00 {1}\uC774\uAD70\uC694.
+            \uBC18\uAC11\uC2B5\uB2C8\uB2E4. \uC800\uB294 \uC774 \uACF3\uC758 \uACBD\uBE44\uB300\uC7A5\uC73C\uB85C
+            \uC788\uB294 \uC544\uB180\uB4DC\uB77C\uACE0 \uD569\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: Adventurer, if you need a pass, take on my request and resolve it,
-            and I will issue it to you.
+          value: You must be... the Rank {0} adventurer, {1}. It's a pleasure to
+            meet you. I am Arnold, the Captain of the Guard here.
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Talk_QstM_PassGate1_2
       value:
         list:
         - key: 23
-          value: "\uC778\uC0AC\uAC00 \uB2A6\uC5C8\uAD70\uC694.\uC800\uB294 \uAD00\uBB38\uC744
-            \uC9C0\uD0A4\uB294 \uACBD\uBE44\uB300\uC7A5 \uC544\uB180\uB4DC\uB77C\uACE0
-            \uD569\uB2C8\uB2E4."
+          value: "\uC2E4\uB840\uAC00 \uB418\uC9C0 \uC54A\uB294\uB2E4\uBA74 \uC81C
+            \uBD80\uD0C1\uC744 \uB4E4\uC5B4\uC8FC\uC2E4 \uC218 \uC788\uC744\uAE4C\uC694?
+            \uB3C4\uC640\uC8FC\uC2E0\uB2E4\uBA74 \uD1B5\uD589\uC99D\uC744 \uBC1C\uAE09\uD574
+            \uB4DC\uB9AC\uACA0\uC2B5\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: My introduction is late. I am Guard Captain Arnold, guarding the
-            gate.
+          value: If it's not too much trouble, could I ask you a favor? If you help
+            me, I will issue you a travel pass.
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Talk_QstM_PassGate1_3
       value:
         list:
         - key: 23
-          value: "\uC218\uB3C4\uC5D0\uC11C \uC218\uBC30 \uC911\uC778 \uBAA8\uD5D8\uAC00\uAC00
-            \uCD5C\uADFC \uC774\uACF3\uC5D0 \uB098\uD0C0\uB098, \uC800\uC640 \uC81C
-            \uBD80\uD558\uB4E4\uACFC \uC2F8\uC6CC \uB9CE\uC740 \uC0AC\uC0C1\uC790\uB97C
-            \uB0B4\uACE0 \uB374\uC6B0\uB4DC \uB0A8\uCABD \uC232\uC73C\uB85C \uB3C4\uB9DD\uCCE4\uC2B5\uB2C8\uB2E4."
+          value: "\uCD5C\uADFC \uB374\uC6B0\uB4DC \uB0A8\uCABD \uC232\uC5D0\uC11C
+            \uC624\uC6B0\uAC70\uAC00 \uB098\uD0C0\uB098\uC11C \uC232\uC5D0 \uC788\uB358
+            \uBAA8\uD5D8\uAC00\uB4E4\uACFC \uC0AC\uB0E5\uAFBC\uB4E4\uC5D0\uAC8C \uD53C\uD574\uB97C
+            \uC8FC\uACE0 \uC788\uB2E4\uACE0 \uD569\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: An adventurer wanted in the Capital appeared here recently, fought
-            with me and my men, caused many casualties, and fled to Denwood South
-            Forest.
+          value: We've received reports that an ogre has recently appeared in the
+            southern forest of Denwood, attacking the adventurers and hunters there.
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Talk_QstM_PassGate1_4
       value:
         list:
         - key: 23
-          value: "\uADF8\uB294 \uC9C0\uAE08\uB3C4 \uB374\uC6B0\uB4DC\uC758 \uBAA9\uC218\uB4E4\uACFC
-            \uBAA8\uD5D8\uAC00\uB4E4\uC5D0\uAC8C \uD53C\uD574\uB97C \uC8FC\uACE0
-            \uC788\uB2E4\uACE0 \uD558\uB294\uB370 \uB374\uC6B0\uB4DC \uC0AC\uB78C\uB4E4\uACFC
-            \uC81C \uBD80\uD558\uB4E4\uC744 \uC704\uD574 \uADF8 \uBAA8\uD5D8\uAC00\uB97C
-            \uCC98\uCE58\uD574\uC8FC\uC2ED\uC2DC\uC624."
+          value: "\uD604\uC7AC \uC624\uC6B0\uAC70 \uD1A0\uBC8C \uC778\uC6D0\uC774
+            \uBD80\uC871\uD558\uC5EC \uAD00\uBB38\uC758 \uACBD\uBE44\uB300\uC6D0\uB4E4\uB3C4
+            \uD30C\uACAC \uB098\uAC14\uC9C0\uB9CC \uC18C\uC2DD\uC774 \uC804\uD600
+            \uC624\uACE0 \uC788\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4...."
           duplicatedKey: 0
         - key: 10
-          value: I hear he is still causing harm to the carpenters and adventurers
-            of Denwood. Please defeat that adventurer for the people of Denwood and
-            my men.
+          value: Due to a lack of manpower, we dispatched guards from the gate to
+            subjugate the ogre, but we haven't heard back from them at all...
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstM_PassGate1_5
+      value:
+        list:
+        - key: 23
+          value: "\uB374\uC6B0\uB4DC \uB0A8\uCABD \uC232\uC73C\uB85C \uAC00\uC11C
+            \uACBD\uBE44\uB300\uC6D0\uB4E4\uC758 \uC2E0\uC6D0\uC744 \uD30C\uC545\uD574
+            \uC8FC\uC2DC\uACE0 \uC624\uC6B0\uAC70 \uD1A0\uBC8C\uC744 \uC9C0\uC6D0\uD574
+            \uC8FC\uC2E4 \uC218 \uC788\uC744\uAE4C\uC694?"
+          duplicatedKey: 0
+        - key: 10
+          value: Could you go to the southern forest of Denwood, check on the status
+            of our guards, and assist in subjugating the ogre?
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Talk_Test
