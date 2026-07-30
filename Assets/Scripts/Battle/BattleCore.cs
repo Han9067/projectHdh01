@@ -1338,15 +1338,20 @@ public class BattleCore : AutoSingleton<BattleCore>
                     tgId = SearchNearbyAiObj(ot.pos, ot.faction);
                     if (tgId != 0)
                         ot.tgId = tgId;
-                    //추후에 버그 발생을 대응하기 위해 타깃이 없으면 해당 타입을 제외한 다른 타입들을 검색하여 씬을 종료시키든 마무리해야함.
+                    else
+                    {
+                        StartCoroutine(UseObjTurn(0f));
+                        break;
+                    }
                 }
                 switch (ot.state)
                 {
                     case BtObjState.ALERT:
+                        //해당 스테이트는 에너미 그룹만 사용
                         //경계 상태->매 턴마다 상대편을 감지->경계는 오직 적 진영에서만 설정되는 행동
-                        //적이 아군진영을 감지하도록 검색 함수 만들어야함
+                        //추후에는 적이 플레이어뿐만 아니라 아군진영을 감지하도록 검색 함수 만들어야함
                         tgId = GetActAlertEnemy(ot.objId, ot.pos);
-                        if (tgId != -1)
+                        if (tgId != -1) // -1은 경계모드에서만 사용되는 값
                         {
                             ot.state = BtObjState.TRACK; //발견하여 추적
                             ot.tgId = tgId;
@@ -1372,7 +1377,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                         }
                         else
                         {
-                            //요새 토벌같이 특정 장소에서는 플레이어와 적과 거리가 멀면 대기상태에 있도록함
                             //추적 시작
                             ot.state = BtObjState.TRACK;
                             TrackAi(ot, mId, tIdx == 0 ? 0.3f : 0);
@@ -1550,7 +1554,7 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     private int GetActAlertEnemy(int objId, Vector2Int pos)
     {
-        int tgId = -1;
+        int tgId = -1; //경계 상태일때는 -1로 줘야함. 원래는 0인데 0을 적용하면 몬스터가 경계모드에서 풀려버림
         const int range = 4;
         foreach (var t in objTurn)
         {
@@ -1587,6 +1591,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         SetObjDir(myId, myPos, tgPos); //현재 오브젝트가 타겟을 바라보도록
         // SetObjDir(tgId, tgPos, myPos); //타겟 오브젝트가 현재 오브젝트를 바라보도록
         int att = 0, mAtt = 0, crt = 0, crtRate = 0; float ct = 0.3f;
+        int hit = 0;
         string aniKey = "";
 
         Vector3 myNearPos = GetNearPos(myId, tgId), tgNearPos = GetNearPos(tgId, myId), ePos = Vector3.zero;
@@ -1599,8 +1604,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                 mAtt = mData[myId].mAtt;
                 crt = mData[myId].crt;
                 crtRate = mData[myId].crtRate;
+                hit = mData[myId].hit;
                 aniKey = mData[myId].attKey;
-                Debug.Log(aniKey);
+                // Debug.Log(aniKey);
                 ePos = GetEdgePos(myId, mData[myId].w, mData[myId].h, ang);
                 break;
             case BtObjType.NPC:
@@ -1613,6 +1619,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 mAtt = player.pData.MAtt;
                 crt = player.pData.Crt;
                 crtRate = player.pData.CrtRate;
+                hit = player.pData.Hit;
                 // att = (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[1101], 601) * 0.01f);
                 if (attId < 52000)
                     att = attId == 0 ? att : (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[attId], 601) * 0.01f);
@@ -1620,24 +1627,27 @@ public class BattleCore : AutoSingleton<BattleCore>
                 ePos = GetEdgePos(myId, 1, 1, ang);
                 break;
         }
-        int tgDef = 0, tgMDef = 0;
+        int tgDef = 0, tgMDef = 0, tgEva = 0;
         //타겟
         switch (tgType)
         {
             case BtObjType.MONSTER:
                 tgDef = mData[tgId].def;
                 tgMDef = mData[tgId].mDef;
+                tgEva = mData[tgId].eva;
                 break;
             case BtObjType.NPC:
                 break;
             case BtObjType.PLAYER:
                 tgDef = player.pData.Def; // tgMDef = player.pData.MDef;
+                tgMDef = player.pData.MDef;
+                tgEva = player.pData.Eva;
                 break;
         }
         switch (attId)
         {
             case 1101:
-                StartCoroutine(SetSqcDmgAct(2, tgId, tgPos, att, tgDef, crtRate, myPos, myFaction, 0.3f));
+                StartCoroutine(SetSqcDmgAct(2, tgId, tgPos, att, tgDef, crtRate, hit, tgEva, myPos, myFaction, 0.3f));
                 SetFixedEff(aniKey, tgPos, 0f);
                 StartCoroutine(UseObjTurn(0.8f));
                 break;
@@ -1647,28 +1657,28 @@ public class BattleCore : AutoSingleton<BattleCore>
                 {
                     int id = gGrid[t.Key.x, t.Key.y].tId;
                     if (id == 0) continue;
-                    ApplyOneHit(id, GetObj(id).transform.position, att, GetDef(id), crtRate, myPos, myFaction);
+                    ApplyOneHit(id, GetObj(id).transform.position, att, GetDef(id), crtRate, hit, tgEva, myPos, myFaction);
                 }
                 SetFixedEff(aniKey, GetEdgePos(myId, 1, 1, ang), ang, () => { TurnAction(); });
                 ct = 0.02f;
                 break;
             case 2001:
             case 2101:
-                ApplyOneHit(tgId, tgPos, mAtt, tgMDef, crtRate, myPos, myFaction);
+                ApplyOneHit(tgId, tgPos, mAtt, tgMDef, crtRate, hit, tgEva, myPos, myFaction);
                 SetFixedEff(GetSkHitKey(attId), tgPos, 0f, () => { TurnAction(); });
                 StartCoroutine(UseObjTurn(0.4f));
                 break; //마법 발사체(피격 효과)
             case 54001:
-                ApplyOneHit(tgId, tgPos, att, tgDef, crtRate, myPos, myFaction);
+                ApplyOneHit(tgId, tgPos, att, tgDef, crtRate, hit, tgEva, myPos, myFaction);
                 StartCoroutine(UseObjTurn(0.4f));
                 break; //물리 발사체
             case 2201:
-                ApplyOneHit(tgId, tgPos, mAtt, tgMDef, crtRate, myPos, myFaction);
+                ApplyOneHit(tgId, tgPos, mAtt, tgMDef, crtRate, hit, tgEva, myPos, myFaction);
                 StartCoroutine(UseObjTurn(0.4f));
                 break; //마법 발사체
             case 2301:
             case 2401:
-                ApplyOneHit(tgId, tgPos, mAtt, tgMDef, crtRate, myPos, myFaction);
+                ApplyOneHit(tgId, tgPos, mAtt, tgMDef, crtRate, hit, tgEva, myPos, myFaction);
                 SetFixedEff(aniKey, tgPos, 0f, () => { TurnAction(); });
                 break; //고정 위치 마법
             default:
@@ -1682,16 +1692,23 @@ public class BattleCore : AutoSingleton<BattleCore>
                         ePos.x += ang == 0f ? 0.5f : -0.5f;
                         break;
                 }
-                ApplyOneHit(tgId, tgPos, att, tgDef, crtRate, myPos, myFaction);
+                ApplyOneHit(tgId, tgPos, att, tgDef, crtRate, hit, tgEva, myPos, myFaction);
                 SetFixedEff(aniKey, ePos, ang, () => { TurnAction(); });
                 break;
         }
         StartCoroutine(SetSqcDmgTxt(dmgData, ct));
     }
-    private void ApplyOneHit(int tgId, Vector3 tgPos, int att, int tgDef, float crtRate, Vector3 myPos, BtFaction faction)
+    private void ApplyOneHit(int tgId, Vector3 tgPos, int att, int tgDef, float crtRate, int hit, int tgEva, Vector3 myPos, BtFaction faction)
     {
-        bool isCrt = GsManager.I.IsCrt((int)crtRate);
-        int dmg = isCrt ? GsManager.I.GetCrtDamage(att, tgDef, (int)crtRate) : GsManager.I.GetDamage(att, tgDef);
+        //hit는 공격자의 명중률, eva는 타겟의 회피률
+        int hitPer = hit - tgEva > 0 ? (hit - tgEva > 85 ? 85 : hit - tgEva) : 30;
+        int dmg = 0;
+        bool isCrt = false;
+        if (Random.Range(0, 100) < hitPer)
+        {
+            isCrt = GsManager.I.IsCrt((int)crtRate);
+            dmg = isCrt ? GsManager.I.GetCrtDamage(att, tgDef, (int)crtRate) : GsManager.I.GetDamage(att, tgDef);
+        }
         dmgData.Crt.Add(isCrt);
         dmgData.Dmg.Add(dmg);
         dmgData.Pos.Add(new Vector3(tgPos.x, tgPos.y + GetDmgPosY(tgId), 0f));
@@ -1813,11 +1830,11 @@ public class BattleCore : AutoSingleton<BattleCore>
         yield return new WaitForSeconds(ct);
         TurnAction();
     }
-    IEnumerator SetSqcDmgAct(int cnt, int tgId, Vector3 tgPos, int mAtt, int tgMDef, float crtRate, Vector3 myPos, BtFaction myFaction, float ct)
+    IEnumerator SetSqcDmgAct(int cnt, int tgId, Vector3 tgPos, int mAtt, int tgMDef, float crtRate, int hit, int tgEva, Vector3 myPos, BtFaction myFaction, float ct)
     {
         for (int i = 0; i < cnt; i++)
         {
-            ApplyOneHit(tgId, tgPos, mAtt, tgMDef, crtRate, myPos, myFaction);
+            ApplyOneHit(tgId, tgPos, mAtt, tgMDef, crtRate, hit, tgEva, myPos, myFaction);
             yield return new WaitForSeconds(ct);
             if (GetIsObjDead(tgId)) break;
         }
