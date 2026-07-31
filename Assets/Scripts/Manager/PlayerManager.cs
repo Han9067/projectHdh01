@@ -164,7 +164,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         // ItemManager.I.CreateInvenItem(40001, -1, -1); //양손둔기
         // ItemManager.I.CreateInvenItem(46001, -1, -1); //창
         // ItemManager.I.CreateInvenItem(50001, -1, -1); //활
-        ItemManager.I.CreateInvenItem(10001, -1, -1); //옷
+        ItemManager.I.CreateInvenItem(10005, -1, -1); //옷
         // ItemManager.I.CreateInvenItem(10061, -1, -1); //갑옷
         // ItemManager.I.CreateInvenItem(54001, -1, -1); //화살
         pData.EqSlot["Hand1"] = pData.Inven[0]; // 손1
