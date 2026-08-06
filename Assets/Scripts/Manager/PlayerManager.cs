@@ -154,7 +154,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Eyebrow = 1; pData.Eye = 1;
         pData.EyeColor = 1; pData.Ear = 1;
         pData.Nose = 1; pData.Mouth = 1;
-        pData.Hair = 101; pData.HairColor = 1;
+        pData.Hair = 1; pData.HairColor = 1;
         pData.Beard = 0; pData.BeardColor = 1;
         pData.IsView = true;
 
