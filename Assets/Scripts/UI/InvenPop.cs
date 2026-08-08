@@ -531,6 +531,7 @@ public class InvenPop : UIScreen
     }
     private void ChangeItem(int w, int h, int ex, int ey)
     {
+        if (ex == -1 && ey == -1) return;
         var grids = posType == 0 ? pGrids : subGrids;
         int uId = 0;
         for (int y = ey; y < ey + h; y++)

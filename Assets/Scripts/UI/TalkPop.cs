@@ -64,7 +64,6 @@ public class TalkPop : UIScreen
                         string mkeyP = $"Talk_{talkData.Place}_Hi_{npc.Personality}_{meetType}_0";
                         ment = string.Format(LocalizationManager.GetValue(mkeyP), npc.IsMeet ? PlayerManager.I.pData.Name : npc.Name);
                         Presenter.Send("CityEnterPop", "AddNpcRls", 2);
-                        GsManager.I.ShowTstMsg("Tst_AddRlsNpc", npc.Name, "2");
                         break;
                     case "Normal":
                         string mkeyN = $"Talk_NPC_Hi_{npc.Personality}_{meetType}_0";

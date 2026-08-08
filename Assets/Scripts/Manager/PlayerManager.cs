@@ -180,6 +180,10 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         ItemManager.I.CreateInvenItem(67001, 3, 0);
         Dictionary<int, int> att12032 = new Dictionary<int, int>() { { 20, 2 }, { 22, 2 } };
         ItemManager.I.CreateInvenItem(12032, 2, 2, 210, att12032);
+        Dictionary<int, int> att12201 = new Dictionary<int, int>() { { 20, 2 }, { 22, 6 } };
+        ItemManager.I.CreateInvenItem(12201, 5, 2, 410, att12201);
+        Dictionary<int, int> att12101 = new Dictionary<int, int>() { { 20, 2 }, { 22, 2 } };
+        ItemManager.I.CreateInvenItem(12101, 3, 5, 310, att12101);
         CalcPlayerStat();
         pData.HP = pData.MaxHP;
         pData.MP = pData.MaxMP;

@@ -20,7 +20,7 @@ public class NpcObj : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
 
         npcSpr = new Dictionary<string, GameObject>();
         string[] all = new string[] { "Face", "Eyebrow", "Eye1", "Eye2", "Ear", "Nose", "Mouth", "BaseBody",
-            "BaseHand1A", "BaseHand2", "Hair1A", "Hair1B", "Hair2" ,"Beard", "EqBody","EqHand1A","EqHand2","EqHelmet"};
+            "BaseHand1A", "BaseHand2", "Hair1A", "Hair1B", "Hair2" ,"Beard", "EqBody","EqHand1A","EqHand2","EqHelmet1","EqHelmet2"};
         foreach (string v in all)
             npcSpr[v] = npcMain.transform.Find(v).gameObject;
         GsManager.I.SetUiBaseParts(data.NpcId, npcSpr, true);

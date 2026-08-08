@@ -30,7 +30,7 @@ public enum PtType
     Face, Eyebrow, Eye1, Eye2, Ear, Nose, Mouth, Beard,
     BaseBody, BaseHand1A, BaseHand1B, BaseHand2, BaseBoth,
     Hair1A, Hair1B, Hair2,
-    EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth, EqHelmet,
+    EqBody, EqHand1A, EqHand1B, EqHand2, EqBoth, EqHelmet1, EqHelmet2,
     OneWp1, OneWp2, OneWp3, TwoWp1, TwoWp2, Shield
 }
 public interface ICharData
