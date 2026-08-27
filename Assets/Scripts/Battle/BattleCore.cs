@@ -335,7 +335,8 @@ public class BattleCore : AutoSingleton<BattleCore>
         //mapSeed -> 1~100 필드 101부터 던전 및 특수 맵
         string seed = GsManager.I.btSeed;
         if (seed == "")
-            seed = "Tile_201"; //테스트
+            seed = "Tile_1_1"; //테스트
+                               //seed = "Tile_201"; //테스트
         mapSeed = 1; //던전 맵 시드
         switch (seed)
         {

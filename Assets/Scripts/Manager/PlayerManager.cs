@@ -184,6 +184,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         ItemManager.I.CreateInvenItem(12201, 5, 2, 410, att12201);
         Dictionary<int, int> att12101 = new Dictionary<int, int>() { { 20, 2 }, { 22, 2 } };
         ItemManager.I.CreateInvenItem(12101, 3, 5, 310, att12101);
+        ItemManager.I.CreateInvenItem(12011, 6, 6);
         CalcPlayerStat();
         pData.HP = pData.MaxHP;
         pData.MP = pData.MaxMP;
