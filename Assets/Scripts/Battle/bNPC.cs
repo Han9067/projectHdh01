@@ -4,32 +4,43 @@ using GB;
 using UnityEngine.Rendering;
 using DG.Tweening;
 using System.Linq;
-public class bPlayer : MonoBehaviour
+using Unity.VisualScripting;
+
+public class bNPC : MonoBehaviour
 {
-    public int objId = 1000;
+    public int objId = 0, npcId = 0;
     private int angIdx = 0; //이동이 회전하며 움직일때 해당 변수는 0 또는 1이 변동되며 해당 값에 따라 왼쪽,오른쪽으로 회전
+    public float dmgPosY = 1f; //데미지 포지션 Y
     Dictionary<PtType, SpriteRenderer> ptSpr = new Dictionary<PtType, SpriteRenderer>();
-    public GameObject ptMain, bodyObj;
-    public PlayerData pData;
+    public GameObject ptMain, bodyObj, ggParent, ggObj;
+    public NpcData nData;
     private Vector3 backupPos;
     Tween pbt, hft; //pushBackTween, hitFlashTween
     [SerializeField] private SortingGroup sGrp;
-    public BoxCollider2D bColl;
-    #region ==== Shd Effect ====
-    private MaterialPropertyBlock pProp; //MaterialPropertyBlock
+    private MaterialPropertyBlock nProp;
     private float curHitAmount; //현재 Hit Amount
-    #endregion
-
+    public bool isOutline = false;
+    // bool isGG = false;
+    //-------------------------------
+    public int rng = 0, atkType = 0;
     void Awake()
     {
         GsManager.I.SetObjParts(ptSpr, ptMain);
-        pProp = new MaterialPropertyBlock();
+        nProp = new MaterialPropertyBlock();
+        ggParent.SetActive(false);
     }
     void Start()
     {
-        pData = PlayerManager.I.pData;
-        GsManager.I.SetObjAppearance(0, ptSpr);
-        GsManager.I.SetObjAllEqParts(0, ptSpr);
+        GsManager.I.SetObjAppearance(npcId, ptSpr);
+        GsManager.I.SetObjAllEqParts(npcId, ptSpr);
+        rng = nData.Rng;
+        atkType = nData.AtkType;
+    }
+    public void SetNpcData(int npcId, float px, float py)
+    {
+        this.npcId = npcId;
+        transform.position = new Vector3(px, py, 0);
+        nData = NpcManager.I.NpcDataList[npcId];
     }
     public float GetObjDir()
     {
@@ -41,7 +52,6 @@ public class bPlayer : MonoBehaviour
     }
     public void OnJump(float dur)
     {
-        //ptMain.transform.DOLocalJump(new Vector3(0, 0.1f, 0), jumpPower: 0.3f, numJumps: 1, duration: dur).SetEase(Ease.OutQuad);
         angIdx = angIdx == 0 ? 1 : 0;
         float ang = angIdx == 0 ? Random.Range(-12f, -4f) : Random.Range(4f, 12f);
 
@@ -52,22 +62,22 @@ public class bPlayer : MonoBehaviour
     }
     public void OnDamaged(int dmg, Vector3 pos)
     {
-        if (pData.HP <= 0) return; //이미 죽었으면 리턴
+        if (nData.HP <= 0) return; //이미 죽었으면 리턴
         //데미지가 0이하면 데미지를 받지 않으며 어떠한 연출이 안나오도록 처리
         if (dmg > 0)
         {
-            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Hit"), pData.Name, dmg));
+            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Hit"), nData.Name, dmg));
             OnHitAction(pos);
         }
         else
         {
-            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Miss"), pData.Name));
+            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Miss"), nData.Name));
             return;
         }
-        pData.HP -= dmg;
-        if (pData.HP <= 0)
+        nData.HP -= dmg;
+        if (nData.HP <= 0)
         {
-            pData.HP = 0;
+            nData.HP = 0;
             Debug.Log("Player Dead");
         }
 
@@ -116,7 +126,7 @@ public class bPlayer : MonoBehaviour
         foreach (var spr in ptSpr)
         {
             if (spr.Value.gameObject.activeSelf)
-                ObjShd.ApplyShd(spr.Value, pProp, Color.white);
+                ObjShd.ApplyShd(spr.Value, nProp, Color.white);
         }
 
         hft = DOTween.To(
@@ -127,21 +137,21 @@ public class bPlayer : MonoBehaviour
                 foreach (var spr in ptSpr)
                 {
                     if (spr.Value.gameObject.activeSelf)
-                        ObjShd.ApplyShd(spr.Value, pProp, Color.white, x);
+                        ObjShd.ApplyShd(spr.Value, nProp, Color.white, x);
                 }
             },
             0f, 0.3f
         ).SetEase(Ease.OutQuad).SetAutoKill(true).OnKill(() => hft = null);
     }
-    public void StateOutline()
+    public void StateOutline(bool on)
     {
+        isOutline = on;
         foreach (var spr in ptSpr)
         {
             if (spr.Value.gameObject.activeSelf)
-                ObjShd.ApplyShd(spr.Value, pProp, Color.red, 0.5f);
+                ObjShd.ApplyShd(spr.Value, nProp, Color.red, on ? 0.5f : 0f);
         }
     }
-
     #region ==== 🎨 ORDERING IN LAYER ====
     public void SetObjLayer(int y)
     {

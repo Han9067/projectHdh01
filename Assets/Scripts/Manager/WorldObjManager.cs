@@ -754,6 +754,7 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
     #region 전투 참여 몬스터 관리
     public List<int> btMonList = new List<int>();
     public List<int> btMonGrpUid = new List<int>();
+    public List<int> btNpcList = new List<int>();
     public string GetAroundMon(List<int> grp, int uid, float x, float y, int n)
     {
         btMonList.Clear(); //전투에 참여하는 몬스터 ID
@@ -809,6 +810,11 @@ public class WorldObjManager : AutoSingleton<WorldObjManager>
         // btMonList.Add(2);
         // btMonList.Add(1);
         // btMonList.Add(1);
+    }
+    public void TestCreateNpc()
+    {
+        btNpcList.Clear();
+        btNpcList.Add(1501); //킬러 등장
     }
     #endregion
     #region 마커 관련

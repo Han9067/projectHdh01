@@ -260,7 +260,7 @@ public class BattlePathManager : AutoSingleton<BattlePathManager>
         if (!IsValidPos(cell, grid))
             return false;
         int tId = grid[cell.x, cell.y].tId;
-        return tId == 0 || tId == 1;
+        return tId == 0 || tId == 1 || tId >= 1000; //탈출 타일, 탈출 타일, 동적 오브젝트 통과
     }
     #endregion
 }

@@ -105,6 +105,10 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                 BattleCore.I.BeginSkill(skId);
                 BattleCore.I.ShowSkRng(4, from, 1, 2);
                 break;
+            case 2303:
+                BattleCore.I.BeginSkill(skId);
+                BattleCore.I.ShowSkRng(5, from, 1, 2);
+                break;
         }
     }
 
@@ -157,14 +161,13 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
                 break;
             case 2001:
             case 2101:
-                BattleCore.I.ShotMagic1(1000, pos, skId);
-                break;
             case 2201:
-                BattleCore.I.ShotMagic2(1000, pos, skId);
+                BattleCore.I.ShotMagicProj(1000, pos, skId); //발사체 형태의 스킬
                 break;
             case 2301:
             case 2401:
-                BattleCore.I.ShotMagic3(1000, pos, skId);
+            case 2303:
+                BattleCore.I.ShotMagicFixed(1000, pos, skId); //고정 위치 형태의 스킬
                 break;
         }
         //스킬 쿨타임 시작

@@ -418,12 +418,14 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         AddSkExp(1002, 20); //질주
         AddSkExp(2001, 20); //마법 화살
         AddSkExp(2101, 20); //화염구
-        AddSkExp(2201, 20); //얼음가시
+        AddSkExp(2201, 20); //얼음구
+        AddSkExp(2303, 20); //낙뢰
 
         pSkSlots[0][0] = 1002; //스킬 슬롯에 장착
         pSkSlots[0][1] = 2001;
         pSkSlots[0][2] = 2101;
         pSkSlots[0][3] = 2201;
+        pSkSlots[0][4] = 2303;
 
     }
     public void TestDropItem()
