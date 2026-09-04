@@ -12,7 +12,7 @@ public class bMonster : MonoBehaviour
     public MonData monData;
     public GameObject shdObj, mainObj, ggParent, ggObj, bodyObj;
     bool isGG = false;
-    public float hp, maxHp;
+    public float hp, maxHp, mp, maxMp, sp, maxSp;
     public float dmgPosY = 1f;
     public int att, mAtt, def, mDef, crt, crtRate, hit, eva, gainExp, lv;
     public int w, h, rng, atkType, attId = 0;
@@ -43,7 +43,11 @@ public class bMonster : MonoBehaviour
         #region 정보 및 능력치 설정
         mName = monData.Name;
         maxHp = monData.HP;
+        maxMp = monData.MP;
+        maxSp = monData.SP;
         hp = maxHp;
+        mp = maxMp;
+        sp = maxSp;
         att = monData.Att;
         mAtt = monData.MAtt;
         def = monData.Def;
@@ -177,7 +181,7 @@ public class bMonster : MonoBehaviour
         }
 
         if (hp <= 0)
-            StartCoroutine(DeathMon(attacker));
+            StartCoroutine(DeathObj(attacker));
         else
         {
             ggObj.transform.localScale = new Vector3(hp / maxHp, 1, 1);
@@ -242,7 +246,7 @@ public class bMonster : MonoBehaviour
             }, 0f, 0.3f
         ).SetEase(Ease.OutQuad).SetAutoKill(true).OnKill(() => hft = null);
     }
-    private IEnumerator DeathMon(BtFaction attacker)
+    private IEnumerator DeathObj(BtFaction attacker)
     {
         BattleCore.I.DeathObj(objId, attacker);
         //몬스터 죽음 연출

@@ -101,6 +101,19 @@ public class NpcManager : AutoSingleton<NpcManager>
                 }
             }
             CalcNpcStat(data);
+            data.SkList = new Dictionary<int, SkData>();
+
+            //스킬
+            //             pData.SkList[skId] = GsManager.I.SkDataList[skId].Clone();
+            // pData.SkList[skId].Lv = 1;
+            // pData.SkList[skId].Exp = val;
+            // pData.SkList[skId].NextExp = GsManager.I.GetSkNextExp(1);
+            // foreach (var sk in data.SkList)
+            // {
+            //     if (sk.Key < 1000) continue;
+            //     npcData.Att += sk.Value.Att;
+            //     npcData.Def += sk.Value.Def;
+            // }
 
             data.NextExp = GsManager.I.GetNextExp(data.Lv);
             data.GainExp = GsManager.I.GetGainExp(data.HP, data.SP, data.MP, data.STR, data.AGI, data.INT, data.CHA, data.LUK);
@@ -115,9 +128,9 @@ public class NpcManager : AutoSingleton<NpcManager>
         npcData.MaxHP = npcData.VIT * SV.HpVal + npcData.AddHP;
         npcData.MaxMP = npcData.INT * SV.MpVal + npcData.AddMP;
         npcData.MaxSP = npcData.END * SV.SpVal + npcData.AddSP;
-        if (npcData.HP > npcData.MaxHP) npcData.HP = npcData.MaxHP;
-        if (npcData.MP > npcData.MaxMP) npcData.MP = npcData.MaxMP;
-        if (npcData.SP > npcData.MaxSP) npcData.SP = npcData.MaxSP;
+        if (npcData.HP == 0 || npcData.HP > npcData.MaxHP) npcData.HP = npcData.MaxHP;
+        if (npcData.MP == 0 || npcData.MP > npcData.MaxMP) npcData.MP = npcData.MaxMP;
+        if (npcData.SP == 0 || npcData.SP > npcData.MaxSP) npcData.SP = npcData.MaxSP;
 
         npcData.Att = npcData.STR * 2;
         npcData.MAtt = npcData.INT * 2;
@@ -126,8 +139,8 @@ public class NpcManager : AutoSingleton<NpcManager>
         npcData.Crt = 50 + (npcData.LUK * 2);
         npcData.CrtRate = npcData.LUK;
         int agi = npcData.AGI / 4;
-        npcData.Hit = 60 + agi;
-        npcData.Eva = 10 + agi;
+        npcData.Hit = 80 + agi;
+        npcData.Eva = 20 + agi;
         npcData.Rng = npcData.EqSlot["Hand1"] != null ? npcData.EqSlot["Hand1"].Rng : 1;
         //////
         string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Necklace", "Ring1", "Ring2" };

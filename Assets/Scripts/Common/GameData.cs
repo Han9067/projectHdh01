@@ -146,6 +146,8 @@ public class PlayerData : ICharData
     public Dictionary<int, SkData> SkList = new Dictionary<int, SkData>();
     public List<MakeData> MakeList = new List<MakeData>();
     public List<SEData> SE = new List<SEData>();
+    public List<int> PartyList = new List<int>();
+    public List<MonData> MonList = new List<MonData>();
     #region ICharData
     public int Gen { get; set; }
     public int Skin { get; set; }
@@ -184,6 +186,8 @@ public class NpcData : ICharData
     public List<MakeData> MakeList = new List<MakeData>();
     public Dictionary<string, ItemData> EqSlot { get; set; } = new Dictionary<string, ItemData>();
     public List<SEData> SE = new List<SEData>();
+    public int PartyId = 0;
+    public List<MonData> MonList = new List<MonData>();
     #region ICharData
     public int Gen { get; set; }
     public int Skin { get; set; }

@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using DG.Tweening;
 using System.Linq;
 using Unity.VisualScripting;
+using System.Collections;
 
 public class bNPC : MonoBehaviour
 {
@@ -20,9 +21,12 @@ public class bNPC : MonoBehaviour
     private MaterialPropertyBlock nProp;
     private float curHitAmount; //현재 Hit Amount
     public bool isOutline = false;
-    // bool isGG = false;
+    bool isGG = false;
     //-------------------------------
     public int rng = 0, atkType = 0;
+    public string nName;
+    public float hp, maxHp, mp, maxMp, sp, maxSp;
+    public int att, mAtt, def, mDef, crt, crtRate, hit, eva, gainExp, lv;
     void Awake()
     {
         GsManager.I.SetObjParts(ptSpr, ptMain);
@@ -35,6 +39,23 @@ public class bNPC : MonoBehaviour
         GsManager.I.SetObjAllEqParts(npcId, ptSpr);
         rng = nData.Rng;
         atkType = nData.AtkType;
+        nName = nData.Name;
+        hp = nData.HP;
+        maxHp = nData.MaxHP;
+        mp = nData.MP;
+        maxMp = nData.MaxMP;
+        sp = nData.SP;
+        maxSp = nData.MaxSP;
+        att = nData.Att;
+        mAtt = nData.MAtt;
+        def = nData.Def;
+        mDef = nData.MDef;
+        crt = nData.Crt;
+        crtRate = nData.CrtRate;
+        hit = nData.Hit;
+        eva = nData.Eva;
+        gainExp = nData.GainExp;
+        lv = nData.Lv;
     }
     public void SetNpcData(int npcId, float px, float py)
     {
@@ -60,29 +81,35 @@ public class bNPC : MonoBehaviour
         .Join(ptMain.transform.DOLocalRotate(new Vector3(0, 0, ang), dur * 0.45f).SetEase(Ease.OutQuad))
         .Append(ptMain.transform.DOLocalRotate(Vector3.zero, dur * 0.2f).SetEase(Ease.OutQuad));
     }
-    public void OnDamaged(int dmg, Vector3 pos)
+    public void OnDamaged(int dmg, BtFaction attacker, Vector3 pos)
     {
-        if (nData.HP <= 0) return; //이미 죽었으면 리턴
-        //데미지가 0이하면 데미지를 받지 않으며 어떠한 연출이 안나오도록 처리
+        if (hp <= 0) return; //죽은 몬스터는 데미지를 받지 않음
         if (dmg > 0)
         {
-            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Hit"), nData.Name, dmg));
+            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Hit"), nName, dmg));
             OnHitAction(pos);
         }
         else
         {
-            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Miss"), nData.Name));
+            Presenter.Send("BattleMainUI", "ShowMsg", string.Format(LocalizationManager.GetValue("Msg_Miss"), nName));
             return;
         }
-        nData.HP -= dmg;
-        if (nData.HP <= 0)
+
+        hp -= dmg;
+        if (hp > 0 && !isGG)
         {
-            nData.HP = 0;
-            Debug.Log("Player Dead");
+            ggParent.SetActive(true);
+            isGG = true;
         }
 
-        Presenter.Send("BattleMainUI", "GetPlayerHp");
-        BattleCore.I.ShowBloodScreen();
+        if (hp <= 0)
+            StartCoroutine(DeathObj(attacker));
+        else
+        {
+            ggObj.transform.localScale = new Vector3(hp / maxHp, 1, 1);
+            //피격에 대한 액션
+            OnHitAction(pos);
+        }
     }
     private void OnHitAction(Vector3 pos)
     {
@@ -142,6 +169,16 @@ public class bNPC : MonoBehaviour
             },
             0f, 0.3f
         ).SetEase(Ease.OutQuad).SetAutoKill(true).OnKill(() => hft = null);
+    }
+    private IEnumerator DeathObj(BtFaction attacker)
+    {
+        BattleCore.I.DeathObj(objId, attacker);
+        //NPC 죽음 연출
+        ggParent.SetActive(false);
+        bodyObj.GetComponent<SpriteRenderer>().DOFade(0f, 0.2f);
+        //경험치 획득
+        yield return new WaitForSeconds(0.3f);
+        Destroy(gameObject);
     }
     public void StateOutline(bool on)
     {

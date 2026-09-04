@@ -55,11 +55,17 @@ public class ObjInfoPop : UIScreen
     private void SetInfo(string str)
     {
         string[] strs = str.Split('_');
-        mTMPText["ObjName"].text = LocalizationManager.GetValue(strs[0]);
+        mTMPText["ObjNameVal"].text = strs[0];
         mTMPText["ObjLvVal"].text = strs[1];
         mTMPText["ObjHpVal"].text = strs[2];
-        mTMPText["ObjAttVal"].text = strs[3];
-        mTMPText["ObjDefVal"].text = strs[4];
+        mTMPText["ObjMpVal"].text = strs[3];
+        mTMPText["ObjSpVal"].text = strs[4];
+        mTMPText["ObjAttVal"].text = strs[5];
+        mTMPText["ObjDefVal"].text = strs[6];
+        mTMPText["ObjMAttVal"].text = strs[7];
+        mTMPText["ObjMDefVal"].text = strs[8];
+        mTMPText["ObjHitVal"].text = strs[9] + "%";
+        mTMPText["ObjEvaVal"].text = strs[10] + "%";
     }
 
 }

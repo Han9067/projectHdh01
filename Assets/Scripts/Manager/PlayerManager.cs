@@ -124,6 +124,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
 
         pData.SkList = data.SkList;
 
+        pData.PartyList = data.PartyList;
+        pData.MonList = data.MonList;
+
         CalcPlayerStat();
         pData.HP = data.HP;
         pData.MP = data.MP;
@@ -199,20 +202,27 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.GuildQstMax = 5;
         pData.TraceQId = 0;
 
+        pData.PartyList = new List<int>();
+        pData.MonList = new List<MonData>();
+
         pData.AP = 100; //기본이 100
         pData.MaxAP = 100;
         // pData.SkList = new Dictionary<int, SkData>();
         TestAddSkExp();
         // StartCoroutine(DelayedStartTutorial(0.2f)); //추후 튜토리얼 조건이 된다면 튜토리얼을 시작시킴
+
+        //Test
+        // pData.PartyList.Add(1017);
+        // pData.MonList.Add(GsManager.I.MonDataList[1]);
     }
     private void CalcPlayerStat()
     {
         pData.MaxHP = pData.VIT * SV.HpVal + pData.AddHP;
         pData.MaxMP = pData.INT * SV.MpVal + pData.AddMP;
         pData.MaxSP = pData.END * SV.SpVal + pData.AddSP;
-        if (pData.HP > pData.MaxHP) pData.HP = pData.MaxHP;
-        if (pData.MP > pData.MaxMP) pData.MP = pData.MaxMP;
-        if (pData.SP > pData.MaxSP) pData.SP = pData.MaxSP;
+        if (pData.HP == 0 || pData.HP > pData.MaxHP) pData.HP = pData.MaxHP;
+        if (pData.MP == 0 || pData.MP > pData.MaxMP) pData.MP = pData.MaxMP;
+        if (pData.SP == 0 || pData.SP > pData.MaxSP) pData.SP = pData.MaxSP;
 
         pData.Att = pData.STR * 2;
         pData.MAtt = pData.INT * 2;
@@ -221,8 +231,8 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.Crt = 50 + (pData.LUK * 2);
         pData.CrtRate = pData.LUK;
         int agi = pData.AGI / 4;
-        pData.Hit = 60 + agi;
-        pData.Eva = 10 + agi;
+        pData.Hit = 80 + agi;
+        pData.Eva = 20 + agi;
         pData.Rng = pData.EqSlot["Hand1"] != null ? pData.EqSlot["Hand1"].Rng : 1;
 
         string[] eq = new string[] { "Hand1", "Hand2", "Armor", "Shoes", "Helmet", "Gloves", "Belt", "Necklace", "Ring1", "Ring2" };

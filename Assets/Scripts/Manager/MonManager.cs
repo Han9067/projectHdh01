@@ -78,8 +78,8 @@ public class MonManager : AutoSingleton<MonManager>
             MDef = (int)(VIT * 0.5f),
             Crt = 50 + (LUK * 2),
             CrtRate = LUK + AGI,
-            Hit = 60 + (AGI / 4),
-            Eva = 10 + (AGI / 4),
+            Hit = 80 + (AGI / 4),
+            Eva = 20 + (AGI / 4),
 
             Rng = rng,
             AtkType = 0,

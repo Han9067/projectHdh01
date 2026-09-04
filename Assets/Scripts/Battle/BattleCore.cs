@@ -331,6 +331,12 @@ public class BattleCore : AutoSingleton<BattleCore>
                     Presenter.Send("SelectPop", "SetList", 2);
                 }
             }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (!isActionable) return;
+                objTurn[0].state = BtObjState.IDLE;
+                TurnAction();
+            }
             #endregion
         }
         MoveCamera(false);
@@ -488,6 +494,14 @@ public class BattleCore : AutoSingleton<BattleCore>
         gGrid[pos.x, pos.y].tId = 1000;
         player.SetObjLayer(mapH - ccy);
         objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos, 1, 1));
+
+        player.pData.PartyList.Add(1017);
+        foreach (var npc in player.pData.PartyList)
+        {
+            Debug.Log(npc);
+
+        }
+        // Debug.Log("--------------------------------");
     }
     void LoadEnemyGrp()
     {
@@ -928,12 +942,17 @@ public class BattleCore : AutoSingleton<BattleCore>
         else
             return mData[objId].def;
     }
-    private float GetDmgPosY(int objId)
+    private float GetDmgPosY(int oId)
     {
-        if (objId == 1000)
-            return 1f;
-        else
-            return mData[objId].dmgPosY;
+        switch (GetObjType(oId))
+        {
+            case BtObjType.MONSTER:
+                return mData[oId].dmgPosY;
+            case BtObjType.NPC:
+                return nData[oId].dmgPosY;
+            default:
+                return 1f;
+        }
     }
     private Vector3 GetGridToWorldPos(Vector2Int pos)
     {
@@ -1316,7 +1335,6 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     private void PlayerReady()
     {
-        // Debug.Log("READY");
         isSk = false;
         isActionable = true;
         Presenter.Send("BattleMainUI", "ReduceSkCt");
@@ -1343,7 +1361,8 @@ public class BattleCore : AutoSingleton<BattleCore>
                         return;
                     case BtObjState.IDLE:
                         ot.state = BtObjState.READY;
-                        //휴식
+                        Debug.Log("Rest");
+                        StartCoroutine(UseObjTurn(0.2f));
                         break;
                     case BtObjState.MOVE:
                         if (ot.mIdx >= ot.mPath.Length || GetNearbyEnemy(ot) || gGrid[ot.mPath[ot.mIdx].x, ot.mPath[ot.mIdx].y].tId != 0)
@@ -1776,7 +1795,12 @@ public class BattleCore : AutoSingleton<BattleCore>
                 ePos = GetEdgePos(myId, mData[myId].w, mData[myId].h, ang);
                 break;
             case BtObjType.NPC:
-                aniKey = "N_Att1";
+                att = nData[myId].att;
+                mAtt = nData[myId].mAtt;
+                crt = nData[myId].crt;
+                crtRate = nData[myId].crtRate;
+                hit = nData[myId].hit;
+                aniKey = attId == 0 ? GetMeleeAniKey(nData[myId].nData.EqSlot) : GetSkKey(attId);
                 ePos = GetEdgePos(myId, 1, 1, ang);
                 break;
             default:
@@ -1789,7 +1813,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 // att = (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[1101], 601) * 0.01f);
                 if (attId < 52000)
                     att = attId == 0 ? att : (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[attId], 601) * 0.01f);
-                aniKey = attId == 0 ? GetMeleeAniKey() : GetSkKey(attId);
+                aniKey = attId == 0 ? GetMeleeAniKey(player.pData.EqSlot) : GetSkKey(attId);
                 ePos = GetEdgePos(myId, 1, 1, ang);
                 break;
         }
@@ -1803,6 +1827,9 @@ public class BattleCore : AutoSingleton<BattleCore>
                 tgEva = mData[tgId].eva;
                 break;
             case BtObjType.NPC:
+                tgDef = nData[tgId].def;
+                tgMDef = nData[tgId].mDef;
+                tgEva = nData[tgId].eva;
                 break;
             case BtObjType.PLAYER:
                 tgDef = player.pData.Def; // tgMDef = player.pData.MDef;
@@ -1880,58 +1907,46 @@ public class BattleCore : AutoSingleton<BattleCore>
     }
     private void NotifyDmg(int tgId, int dmg, BtFaction faction, Vector3 pos)
     {
-        if (tgId == 1000)
-            player.OnDamaged(dmg, pos);
-        else
-            mData[tgId].OnDamaged(dmg, faction, pos);
-        //추후 아군&적 NPC와 아군 몬스터에 대한 처리도 필요
+        switch (GetObjType(tgId))
+        {
+            case BtObjType.MONSTER:
+                mData[tgId].OnDamaged(dmg, faction, pos);
+                break;
+            case BtObjType.NPC:
+                nData[tgId].OnDamaged(dmg, faction, pos);
+                break;
+            default:
+                player.OnDamaged(dmg, pos);
+                break;
+        }
     }
     private string GetMeleeAniKey()
     {
-        bool wpOn;
-        int wpType;
-        if (player.pData.EqSlot["Hand1"] != null)
-        {
-            if (player.pData.EqSlot["Hand2"] != null)
-                return "N_Att1";
-            else
-            {
-                wpOn = true;
-                wpType = player.pData.EqSlot["Hand1"].Type;
-            }
-        }
-        else if (player.pData.EqSlot["Hand2"] != null)
-        {
-            wpOn = true;
-            wpType = player.pData.EqSlot["Hand2"].Type;
-        }
-        else
+        return GetMeleeAniKey(player.pData.EqSlot);
+    }
+    private string GetMeleeAniKey(Dictionary<string, ItemData> eq)
+    {
+        ItemData hand1 = eq != null && eq.ContainsKey("Hand1") ? eq["Hand1"] : null;
+        ItemData hand2 = eq != null && eq.ContainsKey("Hand2") ? eq["Hand2"] : null;
+        if (hand1 != null && hand2 != null)
+            return "N_Att1"; // 양손 동시 장착 → 맨손/기본
+        int wpType = hand1 != null ? hand1.Type : (hand2 != null ? hand2.Type : 0);
+        if (wpType == 0)
             return "N_Att1";
-        if (wpOn)
+        switch (wpType)
         {
-            switch (wpType)
-            {
-                case 11:
-                case 12:
-                    return "N_Att2";
-                case 13:
-                case 14:
-                    return "N_Att3";
-                case 15:
-                case 16:
-                    return "N_Att4";
-                case 17:
-                case 18:
-                    return "N_Att1";
-                case 19:
-                    return "N_Att5";
-                case 20:
-                    return "Bow";
-            }
-            return "N_Att1";
+            case 11:
+            case 12: return "N_Att2";
+            case 13:
+            case 14: return "N_Att3";
+            case 15:
+            case 16: return "N_Att4";
+            case 17:
+            case 18: return "N_Att1";
+            case 19: return "N_Att5";
+            case 20: return "Bow";
+            default: return "N_Att1";
         }
-        else
-            return "N_Att1";
     }
     private string GetSkKey(int id)
     {
@@ -2433,8 +2448,27 @@ public class BattleCore : AutoSingleton<BattleCore>
     {
         UIManager.ShowPopup("ObjInfoPop");
         string data = "";
-        data += mData[curSelObjId].mName + "_" + mData[curSelObjId].lv + "_" + mData[curSelObjId].hp + " / " + mData[curSelObjId].maxHp + "_"
-         + mData[curSelObjId].att + "_" + mData[curSelObjId].def;
+        switch (GetObjType(curSelObjId))
+        {
+            case BtObjType.MONSTER:
+                data += LocalizationManager.GetValue(mData[curSelObjId].mName) + "_" + mData[curSelObjId].lv + "_" +
+                mData[curSelObjId].hp + " / " + mData[curSelObjId].maxHp + "_"
+                + mData[curSelObjId].mp + " / " + mData[curSelObjId].maxMp + "_"
+                + mData[curSelObjId].sp + " / " + mData[curSelObjId].maxSp + "_"
+                + mData[curSelObjId].att + "_" + mData[curSelObjId].def + "_"
+                + mData[curSelObjId].mAtt + "_" + mData[curSelObjId].mDef + "_"
+                + mData[curSelObjId].hit + "_" + mData[curSelObjId].eva;
+                break;
+            case BtObjType.NPC:
+                data += nData[curSelObjId].nName + "_" + nData[curSelObjId].lv + "_" +
+                nData[curSelObjId].hp + " / " + nData[curSelObjId].maxHp + "_"
+                + nData[curSelObjId].mp + " / " + nData[curSelObjId].maxMp + "_"
+                + nData[curSelObjId].sp + " / " + nData[curSelObjId].maxSp + "_"
+                + nData[curSelObjId].att + "_" + nData[curSelObjId].def + "_"
+                + nData[curSelObjId].mAtt + "_" + nData[curSelObjId].mDef + "_"
+                + nData[curSelObjId].hit + "_" + nData[curSelObjId].eva;
+                break;
+        }
         Presenter.Send("ObjInfoPop", "ObjInfoData", data);
     }
     #endregion
