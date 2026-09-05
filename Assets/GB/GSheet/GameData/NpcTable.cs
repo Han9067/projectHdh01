@@ -40,6 +40,7 @@ public class NpcTable  : GameData
 				case "Stat": return true;
 				case "Eq": return true;
 				case "Wp": return true;
+				case "ActSk": return true;
 				case "Att": return true;
 				case "IsView": return true;
 				case "IsCorrupt": return true;
@@ -84,6 +85,7 @@ public class NpcTable  : GameData
 				case "Stat": return data.Stat;
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
+				case "ActSk": return data.ActSk;
 				case "Att": return data.Att;
 				case "IsView": return data.IsView;
 				case "IsCorrupt": return data.IsCorrupt;
@@ -119,6 +121,7 @@ public class NpcTable  : GameData
 				case "Stat": return data.Stat;
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
+				case "ActSk": return data.ActSk;
 				case "Att": return data.Att;
 				case "IsView": return data.IsView;
 				case "IsCorrupt": return data.IsCorrupt;
@@ -155,14 +158,15 @@ public class NpcTable  : GameData
 				case 9: return data.Stat;
 				case 10: return data.Eq;
 				case 11: return data.Wp;
-				case 12: return data.Att;
-				case 13: return data.IsView;
-				case 14: return data.IsCorrupt;
-				case 15: return data.Nickname;
-				case 16: return data.LvData;
-				case 17: return data.Note1;
-				case 18: return data.Note2;
-				case 19: return data.Note3;
+				case 12: return data.ActSk;
+				case 13: return data.Att;
+				case 14: return data.IsView;
+				case 15: return data.IsCorrupt;
+				case 16: return data.Nickname;
+				case 17: return data.LvData;
+				case 18: return data.Note1;
+				case 19: return data.Note2;
+				case 20: return data.Note3;
 
                 default: return null;
             }
@@ -217,6 +221,7 @@ public class NpcTableProb : GameDataProb
 	[JsonProperty] public readonly string Stat;
 	[JsonProperty] public readonly string Eq;
 	[JsonProperty] public readonly string Wp;
+	[JsonProperty] public readonly string ActSk;
 	[JsonProperty] public readonly string Att;
 	[JsonProperty] public readonly int IsView;
 	[JsonProperty] public readonly int IsCorrupt;
