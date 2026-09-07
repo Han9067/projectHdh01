@@ -1958,7 +1958,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             case 17:
             case 18: return "N_Att1";
             case 19: return "N_Att5";
-            case 20: return "Bow";
+            case 20: return "N_Att2";
             default: return "N_Att1";
         }
     }

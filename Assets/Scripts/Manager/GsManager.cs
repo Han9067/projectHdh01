@@ -395,6 +395,7 @@ public class GsManager : AutoSingleton<GsManager>
                             mGameObj["TwoWp1"].SetActive(true);
                             break;
                         case 19:
+                        case 20:
                             mGameObj["TwoWp2"].GetComponent<Image>().sprite = ResManager.GetSprite("wp" + eq["Hand1"].ItemId.ToString());
                             mGameObj["TwoWp2"].SetActive(true);
                             break;
@@ -519,6 +520,7 @@ public class GsManager : AutoSingleton<GsManager>
                                 parts = new List<string> { "BaseBoth", "EqBoth" };
                                 break; //양손 무기
                             case 19:
+                            case 20:
                                 parts = new List<string> { "BaseHand1A", "BaseHand2", "EqHand1A", "EqHand2" };
                                 break; //창
                         }
@@ -673,6 +675,7 @@ public class GsManager : AutoSingleton<GsManager>
                             ptSpr[curWp].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
                             break;
                         case 19:
+                        case 20:
                             wpState = 5;
                             ptSpr[PtType.TwoWp2].gameObject.SetActive(true);
                             ptSpr[PtType.TwoWp2].sprite = ResManager.GetSprite("wp" + slot["Hand1"].ItemId.ToString());
