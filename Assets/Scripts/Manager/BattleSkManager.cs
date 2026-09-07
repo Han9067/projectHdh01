@@ -184,7 +184,7 @@ public class BattleSkManager : AutoSingleton<BattleSkManager>
         if (data?.Att == null) return 0;
         foreach (var at in data.Att)
         {
-            if (at.AttID == attId) return at.Val;
+            if (at.TraitID == attId) return at.Val;
         }
         return 0;
     }

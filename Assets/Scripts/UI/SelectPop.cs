@@ -132,7 +132,7 @@ public class SelectPop : UIScreen
                 Close();
                 break;
             case "OnUse":
-                foreach (var v in selItem.Att)
+                foreach (var v in selItem.Trait)
                 {
                     switch (v.Key)
                     {

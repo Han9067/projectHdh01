@@ -54,14 +54,14 @@ public class GameDataManager : AutoSingleton<GameDataManager>
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<QuestTable>(QuestTabledata,(result)=>{ I._Tables[TABLE.QuestTable] = result;}));
                 string SkTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/SkTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<SkTable>(SkTabledata,(result)=>{ I._Tables[TABLE.SkTable] = result;}));
-                string AttTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/AttTable").text);
-            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<AttTable>(AttTabledata,(result)=>{ I._Tables[TABLE.AttTable] = result;}));
                 string MakeTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/MakeTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<MakeTable>(MakeTabledata,(result)=>{ I._Tables[TABLE.MakeTable] = result;}));
                 string EventTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/EventTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<EventTable>(EventTabledata,(result)=>{ I._Tables[TABLE.EventTable] = result;}));
                 string ExpTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/ExpTable").text);
             gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<ExpTable>(ExpTabledata,(result)=>{ I._Tables[TABLE.ExpTable] = result;}));
+                string TraitTabledata = Gzip.DeCompression( Resources.Load<TextAsset>("Json/TraitTable").text);
+            gbCoroutine.AddIEnumerator(JsonLoader.LoadDataCoroutine<TraitTable>(TraitTabledata,(result)=>{ I._Tables[TABLE.TraitTable] = result;}));
                 
 
         gbCoroutine.OnComplete(()=>{complete?.Invoke();}).Play();
@@ -182,11 +182,6 @@ case TABLE.SkTable:
         d_SkTable.SetJson(data);
         obj  = d_SkTable;
         break;
-case TABLE.AttTable:
-        AttTable d_AttTable = new AttTable();
-        d_AttTable.SetJson(data);
-        obj  = d_AttTable;
-        break;
 case TABLE.MakeTable:
         MakeTable d_MakeTable = new MakeTable();
         d_MakeTable.SetJson(data);
@@ -201,6 +196,11 @@ case TABLE.ExpTable:
         ExpTable d_ExpTable = new ExpTable();
         d_ExpTable.SetJson(data);
         obj  = d_ExpTable;
+        break;
+case TABLE.TraitTable:
+        TraitTable d_TraitTable = new TraitTable();
+        d_TraitTable.SetJson(data);
+        obj  = d_TraitTable;
         break;
         }
 
@@ -314,9 +314,9 @@ public enum TABLE
 	MonGrpTable,
 	QuestTable,
 	SkTable,
-	AttTable,
 	MakeTable,
 	EventTable,
 	ExpTable,
+	TraitTable,
 
 }

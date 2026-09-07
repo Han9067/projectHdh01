@@ -41,7 +41,7 @@ public class NpcTable  : GameData
 				case "Eq": return true;
 				case "Wp": return true;
 				case "ActSk": return true;
-				case "Att": return true;
+				case "Trait": return true;
 				case "IsView": return true;
 				case "IsCorrupt": return true;
 				case "Nickname": return true;
@@ -86,7 +86,7 @@ public class NpcTable  : GameData
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
 				case "ActSk": return data.ActSk;
-				case "Att": return data.Att;
+				case "Trait": return data.Trait;
 				case "IsView": return data.IsView;
 				case "IsCorrupt": return data.IsCorrupt;
 				case "Nickname": return data.Nickname;
@@ -122,7 +122,7 @@ public class NpcTable  : GameData
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
 				case "ActSk": return data.ActSk;
-				case "Att": return data.Att;
+				case "Trait": return data.Trait;
 				case "IsView": return data.IsView;
 				case "IsCorrupt": return data.IsCorrupt;
 				case "Nickname": return data.Nickname;
@@ -159,7 +159,7 @@ public class NpcTable  : GameData
 				case 10: return data.Eq;
 				case 11: return data.Wp;
 				case 12: return data.ActSk;
-				case 13: return data.Att;
+				case 13: return data.Trait;
 				case 14: return data.IsView;
 				case 15: return data.IsCorrupt;
 				case 16: return data.Nickname;
@@ -222,7 +222,7 @@ public class NpcTableProb : GameDataProb
 	[JsonProperty] public readonly string Eq;
 	[JsonProperty] public readonly string Wp;
 	[JsonProperty] public readonly string ActSk;
-	[JsonProperty] public readonly string Att;
+	[JsonProperty] public readonly string Trait;
 	[JsonProperty] public readonly int IsView;
 	[JsonProperty] public readonly int IsCorrupt;
 	[JsonProperty] public readonly string Nickname;

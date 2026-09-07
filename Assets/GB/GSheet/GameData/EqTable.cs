@@ -34,8 +34,8 @@ public class EqTable  : GameData
 				case "Grade": return true;
 				case "App": return true;
 				case "Price": return true;
-				case "AttKey": return true;
-				case "AttVal": return true;
+				case "TraitKey": return true;
+				case "TraitVal": return true;
 				case "W": return true;
 				case "H": return true;
 				case "Dur": return true;
@@ -71,8 +71,8 @@ public class EqTable  : GameData
 				case "Grade": return data.Grade;
 				case "App": return data.App;
 				case "Price": return data.Price;
-				case "AttKey": return data.AttKey;
-				case "AttVal": return data.AttVal;
+				case "TraitKey": return data.TraitKey;
+				case "TraitVal": return data.TraitVal;
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Dur": return data.Dur;
@@ -99,8 +99,8 @@ public class EqTable  : GameData
 				case "Grade": return data.Grade;
 				case "App": return data.App;
 				case "Price": return data.Price;
-				case "AttKey": return data.AttKey;
-				case "AttVal": return data.AttVal;
+				case "TraitKey": return data.TraitKey;
+				case "TraitVal": return data.TraitVal;
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Dur": return data.Dur;
@@ -128,8 +128,8 @@ public class EqTable  : GameData
 				case 3: return data.Grade;
 				case 4: return data.App;
 				case 5: return data.Price;
-				case 6: return data.AttKey;
-				case 7: return data.AttVal;
+				case 6: return data.TraitKey;
+				case 7: return data.TraitVal;
 				case 8: return data.W;
 				case 9: return data.H;
 				case 10: return data.Dur;
@@ -183,8 +183,8 @@ public class EqTableProb : GameDataProb
 	[JsonProperty] public readonly int Grade;
 	[JsonProperty] public readonly int App;
 	[JsonProperty] public readonly int Price;
-	[JsonProperty] public readonly string AttKey;
-	[JsonProperty] public readonly string AttVal;
+	[JsonProperty] public readonly string TraitKey;
+	[JsonProperty] public readonly string TraitVal;
 	[JsonProperty] public readonly int W;
 	[JsonProperty] public readonly int H;
 	[JsonProperty] public readonly int Dur;

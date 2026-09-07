@@ -4,21 +4,21 @@ using Newtonsoft.Json;
 
 
 [Serializable]
-public class AttTable  : GameData
+public class TraitTable  : GameData
 {	
-	 [JsonProperty] public AttTableProb[] Datas{get; private set;}
-	 IReadOnlyDictionary<string, AttTableProb> _DicDatas;
+	 [JsonProperty] public TraitTableProb[] Datas{get; private set;}
+	 IReadOnlyDictionary<string, TraitTableProb> _DicDatas;
 
 	public void SetJson(string json)
     {
-        var data = JsonConvert.DeserializeObject <AttTable> (json);
-        AttTableProb[] arr = data.Datas;
+        var data = JsonConvert.DeserializeObject <TraitTable> (json);
+        TraitTableProb[] arr = data.Datas;
         Datas = arr;
 
-		var dic = new Dictionary<string, AttTableProb>();
+		var dic = new Dictionary<string, TraitTableProb>();
 
         for (int i = 0; i < Datas.Length; ++i)
-            dic[Datas[i].AttID.ToString()] = Datas[i];
+            dic[Datas[i].TraitID.ToString()] = Datas[i];
 
         _DicDatas = dic;
 
@@ -28,7 +28,7 @@ public class AttTable  : GameData
     {
         switch (name)
         {
-				case "AttID": return true;
+				case "TraitID": return true;
 				case "Name": return true;
 				case "Note": return true;
 
@@ -52,10 +52,10 @@ public class AttTable  : GameData
     {
         get
         {
-            AttTableProb data = this[row];
+            TraitTableProb data = this[row];
             switch (col)
             {
-				case "AttID": return data.AttID;
+				case "TraitID": return data.TraitID;
 				case "Name": return data.Name;
 				case "Note": return data.Note;
 
@@ -70,10 +70,10 @@ public class AttTable  : GameData
     {
         get
         {
-             AttTableProb data = this[row];
+             TraitTableProb data = this[row];
             switch (col)
             {
-				case "AttID": return data.AttID;
+				case "TraitID": return data.TraitID;
 				case "Name": return data.Name;
 				case "Note": return data.Note;
 
@@ -88,11 +88,11 @@ public class AttTable  : GameData
     {
         get
         {
-            AttTableProb data = Datas[row];
+            TraitTableProb data = Datas[row];
 
             switch (col)
             {
-				case 0: return data.AttID;
+				case 0: return data.TraitID;
 				case 1: return data.Name;
 				case 2: return data.Note;
 
@@ -101,7 +101,7 @@ public class AttTable  : GameData
         }
     }
 
-    public AttTableProb this[string name]
+    public TraitTableProb this[string name]
     {
         get
         {
@@ -110,7 +110,7 @@ public class AttTable  : GameData
     }
 
 
-    public AttTableProb this[int index]
+    public TraitTableProb this[int index]
     {
         get
         {
@@ -135,9 +135,9 @@ public class AttTable  : GameData
 }
 
 [Serializable]
-public class AttTableProb : GameDataProb
+public class TraitTableProb : GameDataProb
 {
-		[JsonProperty] public readonly int AttID;
+		[JsonProperty] public readonly int TraitID;
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly string Note;
 

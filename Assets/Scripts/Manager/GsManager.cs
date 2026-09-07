@@ -37,7 +37,7 @@ public class GsManager : AutoSingleton<GsManager>
         #endregion
 
         #region 데이터 로드
-        LoadAttData();
+        LoadTraitData();
         LoadSkData();
         LoadMakeData();
         LoadExpData();
@@ -827,18 +827,18 @@ public class GsManager : AutoSingleton<GsManager>
     }
     #endregion
     #region 특성 관리
-    private AttTable _attTable;
-    public AttTable AttTable => _attTable ?? (_attTable = GameDataManager.GetTable<AttTable>());
-    public Dictionary<int, AttData> AttDataList = new Dictionary<int, AttData>();
+    private TraitTable _traitTable;
+    public TraitTable TraitTable => _traitTable ?? (_traitTable = GameDataManager.GetTable<TraitTable>());
+    public Dictionary<int, TraitData> TraitDataList = new Dictionary<int, TraitData>();
 
-    private void LoadAttData()
+    private void LoadTraitData()
     {
-        foreach (var att in AttTable.Datas)
-            AttDataList[att.AttID] = new AttData(att.AttID, att.Name);
+        foreach (var trait in TraitTable.Datas)
+            TraitDataList[trait.TraitID] = new TraitData(trait.TraitID, trait.Name);
     }
-    public string GetAttName(int attId)
+    public string GetTraitName(int traitId)
     {
-        return AttDataList[attId].Name;
+        return TraitDataList[traitId].Name;
     }
     #endregion
     #region 스킬 관리

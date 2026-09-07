@@ -53,13 +53,13 @@ public interface ICharData
 }
 
 [System.Serializable]
-public class AttData
+public class TraitData
 {
-    public int StatID;
+    public int TraitID;
     public string Name;
-    public AttData(int id, string name)
+    public TraitData(int id, string name)
     {
-        this.StatID = id;
+        this.TraitID = id;
         this.Name = name;
     }
 }
@@ -90,18 +90,18 @@ public class SkData
 public class SkAttData
 {
     //0 : AttID -> 특성ID, 1 : Val -> 스킬 내 특성 초기값, 2 : Lim -> 특성 활성 레벨, 3 : ItvVal -> 레벨별 특성값 증가치
-    public int AttID, InitVal, Lim, ItvVal, ItvLv, Val;
+    public int TraitID, InitVal, Lim, ItvVal, ItvLv, Val;
     public string Name, Str;
     public SkAttData(string att)
     {
         if (att == "0")
         {
-            AttID = 0; InitVal = 0; Lim = 0; ItvVal = 0; ItvLv = 0; Val = 0;
+            TraitID = 0; InitVal = 0; Lim = 0; ItvVal = 0; ItvLv = 0; Val = 0;
             return;
         }
         string[] attVal = att.Split('_');
-        AttID = int.Parse(attVal[0]);
-        Name = GsManager.I.GetAttName(AttID);
+        TraitID = int.Parse(attVal[0]);
+        Name = GsManager.I.GetTraitName(TraitID);
         InitVal = int.Parse(attVal[1]);
         Lim = int.Parse(attVal[2]);
         ItvVal = int.Parse(attVal[3]);
@@ -358,7 +358,7 @@ public class ItemData
     public int Hand; // 0: 한손무기, 1: 양손무기, 2: 창, 3: 지팡이, 4: 활
     public int App = 0, Rng = 1;
     public int PfmVal = 0; //성능 점수
-    public Dictionary<int, int> Att;
+    public Dictionary<int, int> Trait;
     public ItemData Clone()
     {
         return new ItemData
@@ -368,7 +368,7 @@ public class ItemData
             ItemId = this.ItemId,
             Type = this.Type,
             Price = this.Price,
-            Att = this.Att,
+            Trait = this.Trait,
             W = this.W,
             H = this.H,
             Dur = this.Dur,

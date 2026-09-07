@@ -32,6 +32,8 @@ public class MonTable  : GameData
 				case "Name": return true;
 				case "Type": return true;
 				case "Stat": return true;
+				case "ActSk": return true;
+				case "Trait": return true;
 				case "W": return true;
 				case "H": return true;
 				case "Rng": return true;
@@ -68,6 +70,8 @@ public class MonTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Stat": return data.Stat;
+				case "ActSk": return data.ActSk;
+				case "Trait": return data.Trait;
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Rng": return data.Rng;
@@ -95,6 +99,8 @@ public class MonTable  : GameData
 				case "Name": return data.Name;
 				case "Type": return data.Type;
 				case "Stat": return data.Stat;
+				case "ActSk": return data.ActSk;
+				case "Trait": return data.Trait;
 				case "W": return data.W;
 				case "H": return data.H;
 				case "Rng": return data.Rng;
@@ -123,14 +129,16 @@ public class MonTable  : GameData
 				case 1: return data.Name;
 				case 2: return data.Type;
 				case 3: return data.Stat;
-				case 4: return data.W;
-				case 5: return data.H;
-				case 6: return data.Rng;
-				case 7: return data.SdwScr;
-				case 8: return data.GgY;
-				case 9: return data.Drop;
-				case 10: return data.LvData;
-				case 11: return data.Grade;
+				case 4: return data.ActSk;
+				case 5: return data.Trait;
+				case 6: return data.W;
+				case 7: return data.H;
+				case 8: return data.Rng;
+				case 9: return data.SdwScr;
+				case 10: return data.GgY;
+				case 11: return data.Drop;
+				case 12: return data.LvData;
+				case 13: return data.Grade;
 
                 default: return null;
             }
@@ -177,6 +185,8 @@ public class MonTableProb : GameDataProb
 	[JsonProperty] public readonly string Name;
 	[JsonProperty] public readonly int Type;
 	[JsonProperty] public readonly string Stat;
+	[JsonProperty] public readonly string ActSk;
+	[JsonProperty] public readonly  string Trait;
 	[JsonProperty] public readonly int W;
 	[JsonProperty] public readonly int H;
 	[JsonProperty] public readonly int Rng;

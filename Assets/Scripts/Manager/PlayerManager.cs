@@ -239,17 +239,17 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         foreach (string e in eq)
         {
             if (pData.EqSlot[e] == null) continue;
-            foreach (var att in pData.EqSlot[e].Att)
+            foreach (var trait in pData.EqSlot[e].Trait)
             {
-                switch (att.Key)
+                switch (trait.Key)
                 {
                     case 1:
                         // case 20:
-                        pData.Def += att.Value; // 방어력
+                        pData.Def += trait.Value; // 방어력
                         break;
                     case 2:
                         // case 21:
-                        pData.Att += att.Value; // 공격력
+                        pData.Att += trait.Value; // 공격력
                         break;
                 }
             }

@@ -54,7 +54,7 @@ public class NpcManager : AutoSingleton<NpcManager>
                 int curG = ItemManager.I.GetCurItemGrade(data.EqSlot[key].Grade, data.EqSlot[key].PfmVal);
                 int diff = curG - data.EqSlot[key].Grade;
                 data.EqSlot[key].Grade = curG;
-                data.EqSlot[key].Att[1] += diff; //추후에 향상값을 디테일하게 수정
+                data.EqSlot[key].Trait[1] += diff; //추후에 향상값을 디테일하게 수정
                 if (eqStr.Length == 2)
                 {
                     data.EqSlot[key] = null;
@@ -65,10 +65,10 @@ public class NpcManager : AutoSingleton<NpcManager>
                 {
                     string[] attStr = eqStr[j].Split('+');
                     int eqAttId = int.Parse(attStr[0]), eqAttVal = int.Parse(attStr[1]);
-                    if (data.EqSlot[key].Att.ContainsKey(eqAttId))
-                        data.EqSlot[key].Att[eqAttId] += eqAttVal;
+                    if (data.EqSlot[key].Trait.ContainsKey(eqAttId))
+                        data.EqSlot[key].Trait[eqAttId] += eqAttVal;
                     else
-                        data.EqSlot[key].Att.Add(eqAttId, eqAttVal);
+                        data.EqSlot[key].Trait.Add(eqAttId, eqAttVal);
                 }
             }
             string[] wp = npc.Wp.Split('/'); //손1_손2
@@ -87,21 +87,22 @@ public class NpcManager : AutoSingleton<NpcManager>
                 int curG = ItemManager.I.GetCurItemGrade(data.EqSlot[key].Grade, data.EqSlot[key].PfmVal);
                 int diff = curG - data.EqSlot[key].Grade;
                 data.EqSlot[key].Grade = curG;
-                data.EqSlot[key].Att[2] += diff * 2; //추후에 향상값을 디테일하게 수정
+                data.EqSlot[key].Trait[2] += diff * 2; //추후에 향상값을 디테일하게 수정
                 if (wpStr.Length == 2) continue;
                 //특성
                 for (int j = 2; j < wpStr.Length; j++)
                 {
                     string[] attStr = wpStr[j].Split('+');
                     int wpAttId = int.Parse(attStr[0]), wpAttVal = int.Parse(attStr[1]);
-                    if (data.EqSlot[key].Att.ContainsKey(wpAttId))
-                        data.EqSlot[key].Att[wpAttId] += wpAttVal;
+                    if (data.EqSlot[key].Trait.ContainsKey(wpAttId))
+                        data.EqSlot[key].Trait[wpAttId] += wpAttVal;
                     else
-                        data.EqSlot[key].Att.Add(wpAttId, wpAttVal);
+                        data.EqSlot[key].Trait.Add(wpAttId, wpAttVal);
                 }
             }
             CalcNpcStat(data);
             data.SkList = new Dictionary<int, SkData>();
+            //특성
 
             //스킬
             //             pData.SkList[skId] = GsManager.I.SkDataList[skId].Clone();
@@ -147,17 +148,17 @@ public class NpcManager : AutoSingleton<NpcManager>
         foreach (string e in eq)
         {
             if (npcData.EqSlot[e] == null) continue;
-            foreach (var att in npcData.EqSlot[e].Att)
+            foreach (var trait in npcData.EqSlot[e].Trait)
             {
-                switch (att.Key)
+                switch (trait.Key)
                 {
                     case 1:
                     case 20:
-                        npcData.Def += att.Value; // 방어력
+                        npcData.Def += trait.Value; // 방어력
                         break;
                     case 2:
                     case 21:
-                        npcData.Att += att.Value; // 공격력
+                        npcData.Att += trait.Value; // 공격력
                         break;
                 }
             }

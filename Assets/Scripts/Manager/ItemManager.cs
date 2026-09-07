@@ -26,7 +26,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var eq in EqTable.Datas)
         {
-            ItemDataList[eq.ItemID] = CreateItemData(eq.ItemID, eq.Name, eq.Type, eq.Price, eq.AttKey, eq.AttVal, eq.Grade, eq.W, eq.H, eq.Res, eq.Dur);
+            ItemDataList[eq.ItemID] = CreateItemData(eq.ItemID, eq.Name, eq.Type, eq.Price, eq.TraitKey, eq.TraitVal, eq.Grade, eq.W, eq.H, eq.Res, eq.Dur);
             ItemDataList[eq.ItemID].App = eq.App;
         }
     }
@@ -34,7 +34,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var wp in WpTable.Datas)
         {
-            ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.AttKey, wp.AttVal, wp.Grade, wp.W, wp.H, wp.Res, wp.Dur, wp.Hand);
+            ItemDataList[wp.ItemID] = CreateItemData(wp.ItemID, wp.Name, wp.Type, wp.Price, wp.TraitKey, wp.TraitVal, wp.Grade, wp.W, wp.H, wp.Res, wp.Dur, wp.Hand);
             ItemDataList[wp.ItemID].Rng = wp.Rng;
         }
     }
@@ -42,7 +42,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var item in ItemTable.Datas)
         {
-            ItemDataList[item.ItemID] = CreateItemData(item.ItemID, item.Name, item.Type, item.Price, item.AttKey, item.AttVal, item.Grade, item.W, item.H, item.Res, 0);
+            ItemDataList[item.ItemID] = CreateItemData(item.ItemID, item.Name, item.Type, item.Price, item.TraitKey, item.TraitVal, item.Grade, item.W, item.H, item.Res, 0);
         }
     }
     private ItemData CreateItemData(int id, string name, int type, int price, string keys,
@@ -50,11 +50,11 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         string[] kArr = keys.Split('_');
         string[] vArr = vals.Split('_');
-        Dictionary<int, int> att = new Dictionary<int, int>();
+        Dictionary<int, int> trait = new Dictionary<int, int>();
         for (int i = 0; i < kArr.Length; i++)
-            att[int.Parse(kArr[i])] = int.Parse(vArr[i]);
+            trait[int.Parse(kArr[i])] = int.Parse(vArr[i]);
 
-        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Att = att, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = grade, Hand = hand };
+        return new ItemData { ItemId = id, Name = name, Type = type, Price = price, Trait = trait, W = w, H = h, Res = res, Dur = dur, X = 0, Y = 0, Dir = 0, Grade = grade, Hand = hand };
     }
     public void CreateInvenItem(int id, int x, int y, int prm = 0, Dictionary<int, int> addAtt = null)
     {
@@ -70,38 +70,38 @@ public class ItemManager : AutoSingleton<ItemManager>
             {
                 int add = CalcCurItemVal(item.Grade, pfmG, item.Type);
 
-                var keys = new List<int>(item.Att.Keys);
+                var keys = new List<int>(item.Trait.Keys);
                 foreach (var key in keys)
-                    item.Att[key] += add;
+                    item.Trait[key] += add;
                 item.Grade = pfmG;
             }
         }
         if (addAtt != null)
         {
             foreach (var v in addAtt)
-                item.Att.Add(v.Key, v.Value);
-            var att = new Dictionary<int, int>(item.Att);
+                item.Trait.Add(v.Key, v.Value);
+            var trait = new Dictionary<int, int>(item.Trait);
             if (item.Type < 11)
             {
-                if (att.ContainsKey(20)) att[1] += att[20];
-                if (att.ContainsKey(22))
+                if (trait.ContainsKey(20)) trait[1] += trait[20];
+                if (trait.ContainsKey(22))
                 {
-                    if (!att.ContainsKey(3)) att.Add(3, 0);
-                    att[3] += att[22];
+                    if (!trait.ContainsKey(3)) trait.Add(3, 0);
+                    trait[3] += trait[22];
                 }
             }
             else if (item.Type < 31)
             {
-                if (att.ContainsKey(21)) att[2] += att[21];
-                if (att.ContainsKey(23))
+                if (trait.ContainsKey(21)) trait[2] += trait[21];
+                if (trait.ContainsKey(23))
                 {
-                    if (!att.ContainsKey(4)) att.Add(4, 0);
-                    att[4] += att[23];
+                    if (!trait.ContainsKey(4)) trait.Add(4, 0);
+                    trait[4] += trait[23];
                 }
             }
             else
             { }
-            item.Att = att.OrderBy(kv => kv.Key).ToDictionary(kv => kv.Key, kv => kv.Value);
+            item.Trait = trait.OrderBy(kv => kv.Key).ToDictionary(kv => kv.Key, kv => kv.Value);
         }
         //원래 적용되어야하는 특성 데이터가 아닌 추가적으로 붙은 특성으로 인한 메인 특성에 대한 대응도 해야함.
         PlayerManager.I.pData.Inven.Add(item);

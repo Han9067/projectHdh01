@@ -49,7 +49,7 @@ public class ItemInfoPop : UIScreen
                 string stat = "";
                 float tot = 380;
                 float h1 = 30f;
-                foreach (var v in itemData.Att)
+                foreach (var v in itemData.Trait)
                 {
                     if (v.Key == 0)
                         stat = LocalizationManager.GetValue("None");
@@ -64,10 +64,10 @@ public class ItemInfoPop : UIScreen
                             case 4: addAtt = 23; break;
                             default: addAtt = 0; break;
                         }
-                        if (addAtt > 0 && itemData.Att.ContainsKey(addAtt))
-                            stat += $"{LocalizationManager.GetValue(GsManager.I.AttDataList[v.Key].Name)}: {v.Value}(+{itemData.Att[addAtt]})\n";
+                        if (addAtt > 0 && itemData.Trait.ContainsKey(addAtt))
+                            stat += $"{LocalizationManager.GetValue(GsManager.I.TraitDataList[v.Key].Name)}: {v.Value}(+{itemData.Trait[addAtt]})\n";
                         else
-                            stat += $"{LocalizationManager.GetValue(GsManager.I.AttDataList[v.Key].Name)}: {v.Value}\n";
+                            stat += $"{LocalizationManager.GetValue(GsManager.I.TraitDataList[v.Key].Name)}: {v.Value}\n";
                     }
                     h1 += 30;
                 }

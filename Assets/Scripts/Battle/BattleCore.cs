@@ -488,18 +488,21 @@ public class BattleCore : AutoSingleton<BattleCore>
         int cx = pDir == 0 ? lcx : rcx;
         player.SetObjDir(pDir == 0 ? -1 : 1);
 
-        var pos = GetStartPos(cx, ccy); //추후 문제가 생길수있음...
+        var pos = GetStartPos(cx, ccy);
         pObj.transform.position = new Vector3(gGrid[pos.x, pos.y].x, gGrid[pos.x, pos.y].y, 0);
         cpPos = pos;
         gGrid[pos.x, pos.y].tId = 1000;
         player.SetObjLayer(mapH - ccy);
         objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos, 1, 1));
 
-        player.pData.PartyList.Add(1017);
-        foreach (var npc in player.pData.PartyList)
+        player.pData.PartyList.Add(1017); //테스트
+        foreach (int nId in player.pData.PartyList)
         {
-            Debug.Log(npc);
-
+            var np = GetStartPos(cpPos.x, cpPos.y, 3);
+            if (np.x < 0) continue;
+            CreateNpc(nId, np.x, np.y, player.GetObjDir());
+            UpdateGrid(np.x, np.y, np.x, np.y, 1, 1, nId);
+            objTurn.Add(new TurnData(nId, BtObjState.IDLE, BtObjType.NPC, BtFaction.ALLY, np, 1, 1));
         }
         // Debug.Log("--------------------------------");
     }
@@ -548,7 +551,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             {
                 var p = NPCSpawnPosList[i];
                 int npcId = WorldObjManager.I.btNpcList[i];
-                CreateNpc(npcId, p.x, p.y);
+                CreateNpc(npcId, p.x, p.y, pDir == 0 ? 1 : -1);
                 UpdateGrid(p.x, p.y, p.x, p.y, 1, 1, npcId);
                 objTurn.Add(new TurnData(npcId, isAlert ? BtObjState.ALERT : BtObjState.IDLE, BtObjType.NPC, BtFaction.ENEMY, p, 1, 1));
             }
@@ -591,30 +594,38 @@ public class BattleCore : AutoSingleton<BattleCore>
             }
         }
     }
-    private Vector2Int GetStartPos(int x, int y)
+    private bool IsEmptyGrid(int x, int y)
     {
-        if (x >= 0 && x < mapW && y >= 0 && y < mapH && gGrid[x, y].tId == 0)
+        return x >= 0 && x < mapW && y >= 0 && y < mapH && gGrid[x, y].tId == 0;
+    }
+    // maxRadius < 0 : 맵 전체 탐색(기존과 동일), 0 이상 : 해당 반경까지만.
+    // 실패 시 (-1, -1). 호출부에서 x < 0 으로 실패를 구분한다.
+    private Vector2Int GetStartPos(int x, int y, int maxRadius = -1)
+    {
+        if (IsEmptyGrid(x, y))
             return new Vector2Int(x, y);
-        int maxRadius = Mathf.Max(mapW, mapH);
-        for (int radius = 1; radius <= maxRadius; radius++)
+
+        int limit = maxRadius < 0 ? Mathf.Max(mapW, mapH) : maxRadius;
+        List<Vector2Int> cand = new List<Vector2Int>();
+        for (int radius = 1; radius <= limit; radius++)
         {
+            cand.Clear();
             for (int dx = -radius; dx <= radius; dx++)
             {
                 for (int dy = -radius; dy <= radius; dy++)
                 {
-                    // 현재 radius의 “테두리”만 보려면: max(|dx|,|dy|) == radius
                     if (Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy)) != radius)
                         continue;
                     int nx = x + dx;
                     int ny = y + dy;
-                    if (nx < 0 || nx >= mapW || ny < 0 || ny >= mapH)
-                        continue;
-                    if (gGrid[nx, ny].tId == 0)
-                        return new Vector2Int(nx, ny);
+                    if (IsEmptyGrid(nx, ny))
+                        cand.Add(new Vector2Int(nx, ny));
                 }
             }
+            if (cand.Count > 0)
+                return cand[Random.Range(0, cand.Count)];
         }
-        return new Vector2Int(0, 0);
+        return new Vector2Int(-1, -1);
     }
     private string GetMonType(int type)
     {
@@ -646,11 +657,11 @@ public class BattleCore : AutoSingleton<BattleCore>
         mObj.Add(objId, mon);
         mData.Add(objId, bMon);
     }
-    private void CreateNpc(int npcId, int px, int py)
+    private void CreateNpc(int npcId, int px, int py, float dir)
     {
         var npc = Instantiate(ResManager.GetGameObject("BtNpc"), npcParent);
         var bNpc = npc.GetComponent<bNPC>();
-        bNpc.SetObjDir(pDir == 0 ? 1 : -1);
+        bNpc.SetObjDir(dir);
         bNpc.SetNpcData(npcId, gGrid[px, py].x, gGrid[px, py].y);
         bNpc.SetObjLayer(mapH - py);
         npc.name = "Npc_" + npcId;
@@ -1892,13 +1903,16 @@ public class BattleCore : AutoSingleton<BattleCore>
     private void ApplyOneHit(int tgId, Vector3 tgPos, int att, int tgDef, float crtRate, int hit, int tgEva, Vector3 myPos, BtFaction faction)
     {
         //hit는 공격자의 명중률, eva는 타겟의 회피률
-        int hitPer = hit - tgEva > 0 ? (hit - tgEva > 85 ? 85 : hit - tgEva) : 30;
+        int hitPer = hit - tgEva + 25;
+        if (hitPer > 95) hitPer = 95;
+        if (hitPer < 50) hitPer = 50;
         int dmg = 0;
         bool isCrt = false;
         if (Random.Range(0, 100) < hitPer)
         {
             isCrt = GsManager.I.IsCrt((int)crtRate);
             dmg = isCrt ? GsManager.I.GetCrtDamage(att, tgDef, (int)crtRate) : GsManager.I.GetDamage(att, tgDef);
+            if (dmg < 1) dmg = 1;
         }
         dmgData.Crt.Add(isCrt);
         dmgData.Dmg.Add(dmg);
