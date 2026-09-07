@@ -41,9 +41,9 @@ public class NpcTable  : GameData
 				case "Eq": return true;
 				case "Wp": return true;
 				case "ActSk": return true;
+				case "SkList": return true;
 				case "Trait": return true;
 				case "IsView": return true;
-				case "IsCorrupt": return true;
 				case "Nickname": return true;
 				case "LvData": return true;
 				case "Note1": return true;
@@ -86,9 +86,9 @@ public class NpcTable  : GameData
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
 				case "ActSk": return data.ActSk;
+				case "SkList": return data.SkList;
 				case "Trait": return data.Trait;
 				case "IsView": return data.IsView;
-				case "IsCorrupt": return data.IsCorrupt;
 				case "Nickname": return data.Nickname;
 				case "LvData": return data.LvData;
 				case "Note1": return data.Note1;
@@ -122,9 +122,9 @@ public class NpcTable  : GameData
 				case "Eq": return data.Eq;
 				case "Wp": return data.Wp;
 				case "ActSk": return data.ActSk;
+				case "SkList": return data.SkList;
 				case "Trait": return data.Trait;
 				case "IsView": return data.IsView;
-				case "IsCorrupt": return data.IsCorrupt;
 				case "Nickname": return data.Nickname;
 				case "LvData": return data.LvData;
 				case "Note1": return data.Note1;
@@ -159,9 +159,9 @@ public class NpcTable  : GameData
 				case 10: return data.Eq;
 				case 11: return data.Wp;
 				case 12: return data.ActSk;
-				case 13: return data.Trait;
-				case 14: return data.IsView;
-				case 15: return data.IsCorrupt;
+				case 13: return data.SkList;
+				case 14: return data.Trait;
+				case 15: return data.IsView;
 				case 16: return data.Nickname;
 				case 17: return data.LvData;
 				case 18: return data.Note1;
@@ -222,9 +222,9 @@ public class NpcTableProb : GameDataProb
 	[JsonProperty] public readonly string Eq;
 	[JsonProperty] public readonly string Wp;
 	[JsonProperty] public readonly string ActSk;
+	[JsonProperty] public readonly string SkList;
 	[JsonProperty] public readonly string Trait;
 	[JsonProperty] public readonly int IsView;
-	[JsonProperty] public readonly int IsCorrupt;
 	[JsonProperty] public readonly string Nickname;
 	[JsonProperty] public readonly string LvData;
 	[JsonProperty] public readonly string Note1;

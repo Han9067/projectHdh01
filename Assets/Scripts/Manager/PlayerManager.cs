@@ -255,6 +255,9 @@ public class PlayerManager : AutoSingleton<PlayerManager>
             }
         }
         pData.AtkType = pData.EqSlot["Hand1"] != null && pData.EqSlot["Hand1"].Hand == 2 ? 1 : 0;
+
+        //추후 특성 추가
+        //TraitList
     }
     #endregion
     #region 퀘스트

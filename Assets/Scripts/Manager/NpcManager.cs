@@ -100,10 +100,7 @@ public class NpcManager : AutoSingleton<NpcManager>
                         data.EqSlot[key].Trait.Add(wpAttId, wpAttVal);
                 }
             }
-            CalcNpcStat(data);
             data.SkList = new Dictionary<int, SkData>();
-            //특성
-
             //스킬
             //             pData.SkList[skId] = GsManager.I.SkDataList[skId].Clone();
             // pData.SkList[skId].Lv = 1;
@@ -115,7 +112,14 @@ public class NpcManager : AutoSingleton<NpcManager>
             //     npcData.Att += sk.Value.Att;
             //     npcData.Def += sk.Value.Def;
             // }
-
+            //특성
+            if (npc.Trait != "0")
+            {
+                string[] tArr = npc.Trait.Split('_');
+                for (int i = 0; i < tArr.Length; i++)
+                    data.TraitList.Add(int.Parse(tArr[i]));
+            }
+            CalcNpcStat(data);
             data.NextExp = GsManager.I.GetNextExp(data.Lv);
             data.GainExp = GsManager.I.GetGainExp(data.HP, data.SP, data.MP, data.STR, data.AGI, data.INT, data.CHA, data.LUK);
             data.Exp = Random.Range(0, data.GainExp);
@@ -129,9 +133,6 @@ public class NpcManager : AutoSingleton<NpcManager>
         npcData.MaxHP = npcData.VIT * SV.HpVal + npcData.AddHP;
         npcData.MaxMP = npcData.INT * SV.MpVal + npcData.AddMP;
         npcData.MaxSP = npcData.END * SV.SpVal + npcData.AddSP;
-        if (npcData.HP == 0 || npcData.HP > npcData.MaxHP) npcData.HP = npcData.MaxHP;
-        if (npcData.MP == 0 || npcData.MP > npcData.MaxMP) npcData.MP = npcData.MaxMP;
-        if (npcData.SP == 0 || npcData.SP > npcData.MaxSP) npcData.SP = npcData.MaxSP;
 
         npcData.Att = npcData.STR * 2;
         npcData.MAtt = npcData.INT * 2;
@@ -164,6 +165,27 @@ public class NpcManager : AutoSingleton<NpcManager>
             }
         }
         npcData.AtkType = npcData.EqSlot["Hand1"] != null && npcData.EqSlot["Hand1"].Hand == 2 ? 1 : 0;
+
+        //NPC 개인 특성
+        foreach (int tId in npcData.TraitList)
+        {
+            switch (tId)
+            {
+                case 701:
+                    //타락함 특성 -> HP,MP,SP는 2배 증가. Att,MAtt는 1.5배 증가
+                    npcData.IsCorrupt = true;
+                    npcData.MaxHP *= 2;
+                    npcData.MaxMP *= 2;
+                    npcData.MaxSP *= 2;
+                    npcData.Att = (int)(npcData.Att * 1.5);
+                    npcData.MAtt = (int)(npcData.MAtt * 1.5);
+                    break;
+            }
+        }
+
+        if (npcData.HP == 0 || npcData.HP > npcData.MaxHP) npcData.HP = npcData.MaxHP;
+        if (npcData.MP == 0 || npcData.MP > npcData.MaxMP) npcData.MP = npcData.MaxMP;
+        if (npcData.SP == 0 || npcData.SP > npcData.MaxSP) npcData.SP = npcData.MaxSP;
     }
     public void AddNpcRls(int npcId, int val)
     {

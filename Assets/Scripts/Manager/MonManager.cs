@@ -24,7 +24,9 @@ public class MonManager : AutoSingleton<MonManager>
             int.Parse(stat[0]), int.Parse(stat[1]), int.Parse(stat[2]), int.Parse(stat[3]), int.Parse(stat[4]),
             int.Parse(stat[5]), int.Parse(stat[6]), int.Parse(stat[7]),
             mon.W, mon.H, mon.Rng, mon.SdwScr, mon.GgY, mon.Drop);
-            // mData.GainExp = GsManager.I.GetGainExp(mData.MaxHP, mData.SP, mData.MP, mData.STR, mData.AGI, mData.INT, mData.CHA, mData.LUK);
+            string[] trait = mon.Trait.Split('_');
+            for (int i = 0; i < trait.Length; i++)
+                mData.TraitList.Add(int.Parse(trait[i]));
             MonDataList[id] = mData;
         }
     }
