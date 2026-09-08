@@ -19,7 +19,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     private Camera cmr;
     private float moveSpd = 20f, zoomSpd = 10f; // 카메라 이동 속도, 줌 속도
     private float minZoom = 5f, maxZoom = 10f;  // 줌 범위
-    public static int intoPlace = 0, worldWorkId = 0, mOverObjUid = 0, mTraceObjUid = 0;
+    public static int intoPlace = 0, wWorkId = 0, mOverObjUid = 0, mTraceObjUid = 0, wMarkerId = 0;
     //도시 진입, 일 작업, 마우스 오버 몬스터, 추적 몬스터
     private Vector2 mapMin, mapMax;
 
@@ -287,7 +287,6 @@ public class WorldCore : AutoSingleton<WorldCore>
     {
         InitMovingPlayer();
         Presenter.Send("WorldMainUI", "ChangeGameSpd", "X0");
-
         if (PlayerManager.I.curPlace > 0)
         {
             int id = PlayerManager.I.curPlace;
@@ -299,12 +298,28 @@ public class WorldCore : AutoSingleton<WorldCore>
             StatePlayer(false);
             GsManager.I.SetCursor("default");
         }
-        else if (worldWorkId > 0)
+        else if (wWorkId > 0)
         {
             //토스트팝업
             UIManager.ShowPopup("WorkPop");
-            Presenter.Send("WorkPop", "SetWork", worldWorkId);
-            worldWorkId = 0;
+            Presenter.Send("WorkPop", "SetWork", wWorkId);
+            wWorkId = 0;
+        }
+        else if (wMarkerId > 0)
+        {
+            switch (wMkObj[wMarkerId].eventID)
+            {
+                case 999:
+                    WorldObjManager.I.TutoMon();
+                    UIManager.ShowPopup("BattleReadyPop");
+                    Presenter.Send("BattleReadyPop", "MonInfo", "1");
+                    break;
+                default:
+                    UIManager.ShowPopup("EventPop");
+                    Presenter.Send("EventPop", "SetEvent", new List<int> { wMarkerId, wMkObj[wMarkerId].eventID });
+                    break;
+            }
+            wMarkerId = 0;
         }
     }
     public Vector3Int GetPlayerCellPos()
@@ -479,7 +494,7 @@ public class WorldCore : AutoSingleton<WorldCore>
         obj.name = "Marker_" + eventID;
         var wm = obj.GetComponent<wMarker>();
         wm.SetMarkerData(uId, eventID, type, grade, pos, monList, isGQst);
-        wMkObj.Add(eventID, wm);
+        wMkObj.Add(uId, wm);
         WorldObjManager.I.AddWorldMarkerData(eventID, type, grade, pos, eventID, monList);
         wm.transform.position = pos;
     }

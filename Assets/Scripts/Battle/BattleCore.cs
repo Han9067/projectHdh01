@@ -495,7 +495,7 @@ public class BattleCore : AutoSingleton<BattleCore>
         player.SetObjLayer(mapH - ccy);
         objTurn.Add(new TurnData(1000, BtObjState.READY, BtObjType.PLAYER, BtFaction.ALLY, cpPos, 1, 1));
 
-        player.pData.PartyList.Add(1017); //테스트
+        // player.pData.PartyList.Add(1017); //테스트
         foreach (int nId in player.pData.PartyList)
         {
             var np = GetStartPos(cpPos.x, cpPos.y, 3);
@@ -525,7 +525,7 @@ public class BattleCore : AutoSingleton<BattleCore>
                 break;
             default:
                 // WorldObjManager.I.TestCreateMon(); //몬스터 테스트용
-                WorldObjManager.I.TestCreateNpc(); //적대 NPC 테스트용
+                // WorldObjManager.I.TestCreateNpc(); //적대 NPC 테스트용
                 mCnt = WorldObjManager.I.btMonList.Count;
                 nCnt = WorldObjManager.I.btNpcList.Count;
                 bossCnt = 0;
@@ -1362,6 +1362,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             TurnAction();
             return;
         }
+        float ct = Random.Range(0.2f, 0.25f);
         switch (ot.type)
         {
             case BtObjType.PLAYER:
@@ -1479,11 +1480,11 @@ public class BattleCore : AutoSingleton<BattleCore>
                         {
                             //추적 시작
                             ot.state = BtObjState.TRACK;
-                            TrackAi(ot, tIdx == 0 ? 0.3f : 0);
+                            TrackAi(ot, ct);
                         }
                         break;
                     case BtObjState.TRACK:
-                        TrackAi(ot, tIdx == 0 ? 0.3f : 0);
+                        TrackAi(ot, ct);
                         break;
                 }
                 break;
@@ -1520,11 +1521,11 @@ public class BattleCore : AutoSingleton<BattleCore>
                         {
                             //추적 시작
                             ot.state = BtObjState.TRACK;
-                            TrackAi(ot, tIdx == 0 ? 0.3f : 0);
+                            TrackAi(ot, ct);
                         }
                         break;
                     case BtObjState.TRACK:
-                        TrackAi(ot, tIdx == 0 ? 0.3f : 0);
+                        TrackAi(ot, ct);
                         break;
                 }
                 break;
@@ -1812,7 +1813,13 @@ public class BattleCore : AutoSingleton<BattleCore>
                 crtRate = nData[myId].crtRate;
                 hit = nData[myId].hit;
                 aniKey = attId == 0 ? GetMeleeAniKey(nData[myId].nData.EqSlot) : GetSkKey(attId);
-                ePos = GetEdgePos(myId, 1, 1, ang);
+                if (aniKey == "N_Att5" || aniKey == "N_Att6")
+                {
+                    ePos = tgPos;
+                    ang = nData[myId].GetObjDir() == 1f ? 0f : 180f;
+                }
+                else
+                    ePos = GetEdgePos(myId, 1, 1, ang);
                 break;
             default:
                 //Player
@@ -1825,7 +1832,13 @@ public class BattleCore : AutoSingleton<BattleCore>
                 if (attId < 52000)
                     att = attId == 0 ? att : (int)(att * BattleSkManager.GetSkAttVal(player.pData.SkList[attId], 601) * 0.01f);
                 aniKey = attId == 0 ? GetMeleeAniKey(player.pData.EqSlot) : GetSkKey(attId);
-                ePos = GetEdgePos(myId, 1, 1, ang);
+                if (aniKey == "N_Att5" || aniKey == "N_Att6")
+                {
+                    ePos = tgPos;
+                    ang = player.GetObjDir() == 1f ? 0f : 180f;
+                }
+                else
+                    ePos = GetEdgePos(myId, 1, 1, ang);
                 break;
         }
         int tgDef = 0, tgMDef = 0, tgEva = 0;
@@ -1934,10 +1947,6 @@ public class BattleCore : AutoSingleton<BattleCore>
                 break;
         }
     }
-    private string GetMeleeAniKey()
-    {
-        return GetMeleeAniKey(player.pData.EqSlot);
-    }
     private string GetMeleeAniKey(Dictionary<string, ItemData> eq)
     {
         ItemData hand1 = eq != null && eq.ContainsKey("Hand1") ? eq["Hand1"] : null;
@@ -1958,7 +1967,7 @@ public class BattleCore : AutoSingleton<BattleCore>
             case 17:
             case 18: return "N_Att1";
             case 19: return "N_Att5";
-            case 20: return "N_Att2";
+            case 20: return "N_Att6";
             default: return "N_Att1";
         }
     }

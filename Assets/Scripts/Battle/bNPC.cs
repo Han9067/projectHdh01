@@ -27,6 +27,8 @@ public class bNPC : MonoBehaviour
     public string nName;
     public float hp, maxHp, mp, maxMp, sp, maxSp;
     public int att, mAtt, def, mDef, crt, crtRate, hit, eva, gainExp, lv;
+    private List<PtType> headList = new List<PtType> { PtType.Face, PtType.Eyebrow, PtType.Eye1, PtType.Eye2, PtType.Ear, PtType.Nose,
+    PtType.Mouth, PtType.Beard, PtType.Hair1A, PtType.Hair1B, PtType.Hair2, PtType.EqHelmet1, PtType.EqHelmet2 };
     void Awake()
     {
         GsManager.I.SetObjParts(ptSpr, ptMain);
@@ -70,6 +72,12 @@ public class bNPC : MonoBehaviour
     public void SetObjDir(float dir)
     {
         bodyObj.transform.localScale = new Vector3(dir, 1, 1);
+        float x = dir > 0 ? 0f : -0.05f;
+        foreach (var pt in headList)
+        {
+            var tr = ptSpr[pt].transform;
+            tr.localPosition = new Vector3(x, tr.localPosition.y, 0);
+        }
     }
     public void OnJump(float dur)
     {

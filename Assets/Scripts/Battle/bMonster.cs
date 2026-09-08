@@ -143,6 +143,8 @@ public class bMonster : MonoBehaviour
     public void SetObjDir(float dir)
     {
         bodyObj.transform.localScale = new Vector3(dir, 1, 1);
+        if (isHuman)
+            faceSpr.transform.localPosition = new Vector3(dir > 0 ? 0f : -0.05f, faceSpr.transform.localPosition.y, 0);
     }
     public void OnJump(float dur)
     {

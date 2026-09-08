@@ -49,23 +49,13 @@ public class wMarker : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            WorldCore.I.StopPlayer();
-            // switch (mkType)
-            switch (eventID)
-            {
-                case 999:
-                    WorldObjManager.I.TutoMon();
-                    UIManager.ShowPopup("BattleReadyPop");
-                    Presenter.Send("BattleReadyPop", "MonInfo", "1");
-                    break;
-                default:
-                    UIManager.ShowPopup("EventPop");
-                    Presenter.Send("EventPop", "SetEvent", new List<int> { mkUid, eventID });
-                    break;
-            }
+            WorldCore.wMarkerId = mkUid;
         }
     }
-
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        WorldCore.wMarkerId = 0;
+    }
     private void OnMouseEnter()
     {
         if (CityEnterPop.isActive || EventPop.isActive || WorldMainUI.isExplore) return;

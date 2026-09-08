@@ -179,7 +179,7 @@ public class SelectPop : UIScreen
                 break;
             case "OnHunt":
                 WorldCore.I.SetMovePlayer();
-                WorldCore.worldWorkId = 101;
+                WorldCore.wWorkId = 101;
                 Close();
                 break;
             case "OnQuit":

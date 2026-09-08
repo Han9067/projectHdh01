@@ -4,6 +4,7 @@ using GB;
 using UnityEngine.Rendering;
 using DG.Tweening;
 using System.Linq;
+using UnityEditor.Rendering;
 public class bPlayer : MonoBehaviour
 {
     public int objId = 1000;
@@ -15,6 +16,8 @@ public class bPlayer : MonoBehaviour
     Tween pbt, hft; //pushBackTween, hitFlashTween
     [SerializeField] private SortingGroup sGrp;
     public BoxCollider2D bColl;
+    private List<PtType> headList = new List<PtType> { PtType.Face, PtType.Eyebrow, PtType.Eye1, PtType.Eye2, PtType.Ear, PtType.Nose,
+    PtType.Mouth, PtType.Beard, PtType.Hair1A, PtType.Hair1B, PtType.Hair2, PtType.EqHelmet1, PtType.EqHelmet2 };
     #region ==== Shd Effect ====
     private MaterialPropertyBlock pProp; //MaterialPropertyBlock
     private float curHitAmount; //현재 Hit Amount
@@ -38,6 +41,12 @@ public class bPlayer : MonoBehaviour
     public void SetObjDir(float dir)
     {
         bodyObj.transform.localScale = new Vector3(dir, 1, 1);
+        float x = dir > 0 ? 0f : -0.05f;
+        foreach (var pt in headList)
+        {
+            var tr = ptSpr[pt].transform;
+            tr.localPosition = new Vector3(x, tr.localPosition.y, 0);
+        }
     }
     public void OnJump(float dur)
     {

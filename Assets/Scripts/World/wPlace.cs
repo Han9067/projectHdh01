@@ -22,8 +22,7 @@ public class wPlace : MonoBehaviour
                     PlayerManager.I.curPlace = pcId;
                     break;
                 case 201:
-                    UIManager.ShowPopup("WorkPop");
-                    Presenter.Send("WorkPop", "SetWork", 201);
+                    WorldCore.wWorkId = 201;
                     break; //광산
                 case 801:
                     break; //관문

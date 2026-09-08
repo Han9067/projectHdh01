@@ -201,4 +201,28 @@ public class NpcManager : AutoSingleton<NpcManager>
         }
         return npcDataList;
     }
+    public void TalkNpc(int npcId)
+    {
+        bool IsShopNpc = npcId < 1000;
+        if (!NpcDataList[npcId].IsMeet)
+        {
+            //초면
+            NpcDataList[npcId].IsMeet = true;
+            NpcDataList[npcId].IsHi = true;
+            // UIManager.ShowPopup("TalkPop");
+            // Presenter.Send("TalkPop", "SetTalk", new TalkData("Rest", npcId));
+        }
+        else
+        {
+            //구면
+            if (!NpcDataList[npcId].IsHi)
+            {
+                NpcDataList[npcId].IsHi = true;
+            }
+            else
+            {
+
+            }
+        }
+    }
 }

@@ -5380,14 +5380,50 @@ MonoBehaviour:
             of our guards, and assist in subjugating the ogre?
           duplicatedKey: 0
       duplicatedKey: 0
-    - key: Talk_Test
+    - key: Talk_QstS_2001_1
       value:
         list:
         - key: 23
-          value: "\uC548\uB155\uD558\uC138\uC694"
+          value: "{0}! \uC9C0\uAE08 \uB300\uC7A5\uAC04\uC5D0 \uCCA0\uAD11\uC11D\uC774
+            \uBD80\uC871\uD574\uC11C \uADF8\uB7F0\uB370, \uAD6C\uD574\uB2E4 \uC8FC\uC2E4
+            \uC218 \uC788\uC744\uAE4C\uC694? \uBCF4\uB2F5\uC740 \uAF2D \uD558\uACA0\uC2B5\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
-          value: Hello
+          value: '{0}! We''re running low on iron ore at the forge. Could you bring
+            me some? I''ll make it worth your while.'
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstS_2001_Yes
+      value:
+        list:
+        - key: 23
+          value: "\uAC10\uC0AC\uD569\uB2C8\uB2E4. \uCCA0\uAD11\uC11D 10\uAC1C\uB9CC
+            \uBD80\uD0C1\uB4DC\uB9B4\uAC8C\uC694."
+          duplicatedKey: 0
+        - key: 10
+          value: Thank you! I just need 10 pieces of iron ore.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstS_2001_No
+      value:
+        list:
+        - key: 23
+          value: "\uADF8\uB7F0\uAC00\uC694... \uC5B4\uCA54 \uC218 \uC5C6\uC8E0."
+          duplicatedKey: 0
+        - key: 10
+          value: I see... Well, it can't be helped.
+          duplicatedKey: 0
+      duplicatedKey: 0
+    - key: Talk_QstS_2001_2
+      value:
+        list:
+        - key: 23
+          value: "\uAC10\uC0AC\uD569\uB2C8\uB2E4, {0}! \uB355\uBD84\uC5D0 \uAC71\uC815
+            \uC5C6\uC774 \uC77C\uC744 \uD560 \uC218 \uC788\uC744 \uAC83 \uAC19\uC544\uC694."
+          duplicatedKey: 0
+        - key: 10
+          value: Thank you, {0}! Thanks to you, I can get back to work without having
+            to worry about running out.
           duplicatedKey: 0
       duplicatedKey: 0
     - key: Talk_Guild_Hi_1_Meet_0
@@ -5420,8 +5456,8 @@ MonoBehaviour:
       value:
         list:
         - key: 23
-          value: "\uC5B4\uC11C \uC624\uC288. \uB098\uB294 \uB300\uC7A5\uC7A5\uC774
-            {0}(\uC774)\uB77C\uB124."
+          value: "\uC5B4\uC11C \uC624\uC138\uC694! \uC800\uB294 \uB300\uC7A5\uC7A5\uC774
+            {0}(\uC774)\uC785\uB2C8\uB2E4."
           duplicatedKey: 0
         - key: 10
           value: Welcome. I'm the blacksmith, {0}.

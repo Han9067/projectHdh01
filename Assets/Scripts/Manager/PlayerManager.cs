@@ -162,7 +162,7 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.IsView = true;
 
         Dictionary<int, int> att48002 = new Dictionary<int, int>() { { 21, 2 } };
-        ItemManager.I.CreateInvenItem(46041, -1, -1, 220, att48002); //양손검
+        ItemManager.I.CreateInvenItem(48002, -1, -1, 220, att48002); //양손검
         // ItemManager.I.CreateInvenItem(36001, -1, -1); //양손도끼
         // ItemManager.I.CreateInvenItem(40001, -1, -1); //양손둔기
         // ItemManager.I.CreateInvenItem(46001, -1, -1); //창
