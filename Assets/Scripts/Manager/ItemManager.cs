@@ -42,7 +42,7 @@ public class ItemManager : AutoSingleton<ItemManager>
     {
         foreach (var item in ItemTable.Datas)
         {
-            ItemDataList[item.ItemID] = CreateItemData(item.ItemID, item.Name, item.Type, item.Price, item.TraitKey, item.TraitVal, item.Grade, item.W, item.H, item.Res, 0);
+            ItemDataList[item.ItemID] = CreateItemData(item.ItemID, item.Name, item.Type, item.Price, item.TraitKey, item.TraitVal, item.Grade, item.W, item.H, item.Res, 1);
         }
     }
     private ItemData CreateItemData(int id, string name, int type, int price, string keys,

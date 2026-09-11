@@ -11,6 +11,7 @@ public class WorldMainUI : UIScreen
     private float wTime = 0, actTime, endActTime, actTick = 0;
     private int tDay = 0, wYear, wMonth, wDay;
     private bool isAct = false, isRest = false; //일하기, 휴식 상태 유무
+    public static bool isWorking { get; private set; } = false;
     #region 탐험 관련
     public static bool isExplore = false;
     private List<NodeObj> nodeObj = new List<NodeObj>();
@@ -29,6 +30,7 @@ public class WorldMainUI : UIScreen
         mGameObject["IngPop"].SetActive(false);
         mGameObject["ExplorePop"].SetActive(false);
         isExplore = false;
+        isWorking = false;
         pRt = pObj.GetComponent<RectTransform>();
         pObj.SetActive(false);
     }
@@ -301,6 +303,8 @@ public class WorldMainUI : UIScreen
     private void StartWork(int day)
     {
         isAct = true;
+        isWorking = true;
+        WorldCore.I.StopAllMonTrace();
         mTMPText["IngMent"].text = LocalizationManager.GetValue("Ing_Work");
         actTime = 0;
         endActTime = day * 40;
@@ -313,7 +317,7 @@ public class WorldMainUI : UIScreen
     }
     private void InitWork()
     {
-        isAct = false; actTime = 0; endActTime = 0;
+        isAct = false; isWorking = false; actTime = 0; endActTime = 0;
         StateAct(false);
         UIManager.ShowPopup("WorkPop");
         Presenter.Send("WorkPop", "EndWork");
@@ -348,15 +352,29 @@ public class WorldMainUI : UIScreen
     }
     private void SetTraceQst()
     {
-        mGameObject["QstBox"].SetActive(true);
         int qid = PlayerManager.I.pData.TraceQId;
+        if (qid == 0)
+        {
+            mGameObject["QstBox"].SetActive(false);
+            return;
+        }
+        mGameObject["QstBox"].SetActive(true);
         foreach (var v in PlayerManager.I.pData.MainQst)
         {
             if (qid == v.Qid)
             {
                 mTMPText["QstName"].text = LocalizationManager.GetValue(v.Name);
                 mTMPText["QstDesc"].text = v.Desc;
-                break;
+                return;
+            }
+        }
+        foreach (var v in PlayerManager.I.pData.SubQst)
+        {
+            if (qid == v.Qid)
+            {
+                mTMPText["QstName"].text = LocalizationManager.GetValue(v.Name);
+                mTMPText["QstDesc"].text = v.Desc;
+                return;
             }
         }
         foreach (var v in PlayerManager.I.pData.GuildQst)
@@ -365,7 +383,7 @@ public class WorldMainUI : UIScreen
             {
                 mTMPText["QstName"].text = LocalizationManager.GetValue(v.Name);
                 mTMPText["QstDesc"].text = v.Desc;
-                break;
+                return;
             }
         }
     }

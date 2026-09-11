@@ -105,7 +105,7 @@ public class SelectPop : UIScreen
                     GsManager.I.ShowTstMsg("Tst_NotCrown");
                     return;
                 }
-                if (PlayerManager.I.GetIvEmpty(selItem.W, selItem.H))
+                if (!PlayerManager.I.GetIvEmpty(selItem.W, selItem.H))
                 {
                     GsManager.I.ShowTstMsg("Tst_NotEmptyInven");
                     return;

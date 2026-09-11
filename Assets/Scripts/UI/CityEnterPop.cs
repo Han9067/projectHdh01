@@ -180,8 +180,11 @@ public class CityEnterPop : UIScreen
             btn.Value.gameObject.SetActive(false);
         foreach (var obj in mGameObject.Where(b => b.Key.StartsWith("DI_")))
             obj.Value.SetActive(false);
-        for (int i = 0; i < dotList[sId].Count; i++)
-            mGameObject[dotList[sId][i]].SetActive(true);
+        if (dotList.ContainsKey(sId))
+        {
+            for (int i = 0; i < dotList[sId].Count; i++)
+                mGameObject[dotList[sId][i]].SetActive(true);
+        }
         StateBaseInList();
         // 1 길드 2 여관 3 대장간 4 재단소 5 약재상 6 시장
         switch (sId)
@@ -252,6 +255,8 @@ public class CityEnterPop : UIScreen
             case "UpdateCityList":
                 InitAllDots();
                 UpdateInListPreset();
+                if (npcId > 0)
+                    mTMPText["RlsVal"].text = GetRlsState(NpcManager.I.NpcDataList[npcId].Rls);
                 break;
             case "StateVisiblePop":
                 StateVisiblePop(data.Get<int>());
@@ -390,11 +395,13 @@ public class CityEnterPop : UIScreen
         foreach (var obj in mGameObject.Where(b => b.Key.StartsWith("DO_")))
             obj.Value.SetActive(false);
         dotList.Clear();
-        int idx = 1;
+        tGQstList.Clear();
         foreach (var p in mButtons.Where(b => b.Key.StartsWith("GoTo")))
         {
             if (!p.Value.gameObject.activeSelf) continue;
-            dotList.Add(idx, new List<string>());
+            int type = GetShopTypeFromGoTo(p.Key);
+            if (type == 0) continue;
+            dotList[type] = new List<string>();
             switch (p.Key)
             {
                 case "GoToGuild":
@@ -410,14 +417,14 @@ public class CityEnterPop : UIScreen
                                     case 1:
                                     case 3:
                                     case 5:
-                                        if (!dotList[idx].Contains("DI_Talk"))
-                                            dotList[idx].Add("DI_Talk");
+                                        if (!dotList[type].Contains("DI_Talk"))
+                                            dotList[type].Add("DI_Talk");
                                         break;
                                 }
                                 break;
                         }
-                        if (q.State == 2 && !dotList[idx].Contains("DI_Quest"))
-                            dotList[idx].Add("DI_Quest");
+                        if (q.State == 2 && !dotList[type].Contains("DI_Quest"))
+                            dotList[type].Add("DI_Quest");
                     }
                     //길드
                     foreach (var q in PlayerManager.I.pData.GuildQst)
@@ -428,8 +435,8 @@ public class CityEnterPop : UIScreen
                                 if (q.State == 1 && q.CityId == cityId)
                                 {
                                     tGQstList.Add(q);
-                                    if (!dotList[idx].Contains("DI_Talk"))
-                                        dotList[idx].Add("DI_Talk");
+                                    if (!dotList[type].Contains("DI_Talk"))
+                                        dotList[type].Add("DI_Talk");
                                 }
                                 break;
                         }
@@ -438,6 +445,11 @@ public class CityEnterPop : UIScreen
                 case "GoToInn":
                     break;
                 case "GoToSmith":
+                    if (IsCitySmithNpc3() && (NeedOfferQstS2002() || CanCompleteQstS2002()))
+                    {
+                        if (!dotList[type].Contains("DI_Talk"))
+                            dotList[type].Add("DI_Talk");
+                    }
                     break;
                 case "GoToTailor":
                     break;
@@ -452,25 +464,59 @@ public class CityEnterPop : UIScreen
                 case "GoToSquare":
                     break;
             }
-            idx++;
+            if (dotList[type].Count > 0)
+                SetDoDot(p.Key);
         }
-        foreach (var d in dotList)
+    }
+    int GetShopTypeFromGoTo(string key)
+    {
+        switch (key)
         {
-            if (d.Value.Count > 0)
-            {
-                switch (d.Key)
-                {
-                    case 1: mGameObject["DO_Guild"].SetActive(true); break;
-                    case 2: mGameObject["DO_Inn"].SetActive(true); break;
-                    case 3: mGameObject["DO_Smith"].SetActive(true); break;
-                    case 4: mGameObject["DO_Tailor"].SetActive(true); break;
-                    case 5: mGameObject["DO_Apoth"].SetActive(true); break;
-                    case 6: mGameObject["DO_Market"].SetActive(true); break;
-                    case 7: mGameObject["DO_TG"].SetActive(true); break;
-                    case 8: mGameObject["DO_Arena"].SetActive(true); break;
-                }
-            }
+            case "GoToGuild": return 1;
+            case "GoToInn": return 2;
+            case "GoToSmith": return 3;
+            case "GoToTailor": return 4;
+            case "GoToApothecary": return 5;
+            case "GoToBook": return 6;
+            case "GoToMarket": return 7;
         }
+        return 0;
+    }
+    void SetDoDot(string goToKey)
+    {
+        switch (goToKey)
+        {
+            case "GoToGuild": mGameObject["DO_Guild"].SetActive(true); break;
+            case "GoToInn": mGameObject["DO_Inn"].SetActive(true); break;
+            case "GoToSmith": mGameObject["DO_Smith"].SetActive(true); break;
+            case "GoToTailor": mGameObject["DO_Tailor"].SetActive(true); break;
+            case "GoToApothecary": mGameObject["DO_Apoth"].SetActive(true); break;
+            case "GoToMarket": mGameObject["DO_Market"].SetActive(true); break;
+            case "GoToTG": mGameObject["DO_TG"].SetActive(true); break;
+            case "GoToArena": mGameObject["DO_Arena"].SetActive(true); break;
+        }
+    }
+    bool NeedOfferQstS2002()
+    {
+        if (cityId != 1) return false;
+        if (PlayerManager.I.pData.SubQstClear.Contains(2002)) return false;
+        if (PlayerManager.I.pData.SubQst.FindIndex(q => q.Qid == 2002) != -1) return false;
+        return true;
+    }
+    bool IsProgressQstS2002()
+    {
+        if (cityId != 1) return false;
+        return PlayerManager.I.pData.SubQst.FindIndex(q => q.Qid == 2002) != -1;
+    }
+    bool CanCompleteQstS2002()
+    {
+        if (!IsProgressQstS2002()) return false;
+        return PlayerManager.I.GetQstItemCnt(67001) >= 10;
+    }
+    bool IsCitySmithNpc3()
+    {
+        if (!shopIdList.ContainsKey(3)) return false;
+        return PlaceManager.I.GetShopData(shopIdList[3]).NpcId == 3;
     }
     #endregion
     #region 대화 관련
@@ -505,6 +551,15 @@ public class CityEnterPop : UIScreen
             case 2:
                 break;
             case 3:
+                if (npcId == 3)
+                {
+                    if (NeedOfferQstS2002())
+                        return new TalkData("Qst", npcId, 2002, 1);
+                    if (CanCompleteQstS2002())
+                        return new TalkData("Qst", npcId, 2002, 3);
+                    if (IsProgressQstS2002())
+                        return new TalkData("Qst", npcId, 2002, 2);
+                }
                 break;
         }
         if (priority.Count == 0)

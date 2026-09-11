@@ -632,6 +632,7 @@ public class WorldCore : AutoSingleton<WorldCore>
     }
     private void CheckAroundPlayer(wMon wm)
     {
+        if (WorldMainUI.isWorking) return;
         Vector3 diff = player.transform.position - wm.myPos;
         float sqr = diff.sqrMagnitude;
         wm.SetTrace(sqr < 6f && WorldObjManager.I.GetEqualAroundAreaID(worldMapTile.WorldToCell(wm.myPos), wm.areaID));
@@ -642,6 +643,20 @@ public class WorldCore : AutoSingleton<WorldCore>
             Vector3Int sc = worldMapTile.WorldToCell(wm.myPos);
             Vector3Int ec = worldMapTile.WorldToCell(player.transform.position);
             wm.path = GetWorldMovePath(sc, ec, player.transform.position);
+        }
+    }
+    public void StopAllMonTrace()
+    {
+        foreach (var mon in wMonObj)
+        {
+            if (!mon.Value.isTrace) continue;
+            mon.Value.SetTrace(false);
+            mon.Value.tgPos = SetWorldMonNextPos(mon.Value);
+            mon.Value.path = GetWorldMovePath(
+                worldMapTile.WorldToCell(mon.Value.myPos),
+                worldMapTile.WorldToCell(mon.Value.tgPos),
+                mon.Value.tgPos);
+            mon.Value.pathIdx = 0;
         }
     }
     private void CheckOutAreaMon(wMon wm)

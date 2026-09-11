@@ -304,6 +304,90 @@ public class PlayerManager : AutoSingleton<PlayerManager>
         pData.MainQst[n].Desc = LocalizationManager.GetValue($"{pData.MainQst[n].Name}_{pData.MainQst[n].Order}_Desc");
         Presenter.Send("WorldMainUI", "SetTraceQst");
     }
+    public void StartSubQst(int qid)
+    {
+        if (pData.SubQstClear.Contains(qid)) return;
+        if (pData.SubQst.FindIndex(q => q.Qid == qid) != -1) return;
+
+        string name = $"QstS_{qid}";
+        string descKey = $"{name}_Desc";
+        int qType = 2;
+        bool isTrace = true;
+        if (QuestManager.I.QuestData.ContainsKey(qid))
+        {
+            QuestData qData = QuestManager.I.QuestData[qid];
+            name = qData.Name;
+            qType = qData.Type;
+            isTrace = qData.IsTrace;
+            descKey = $"{name}_Desc";
+        }
+        switch (qid)
+        {
+            case 2002:
+                name = "QstS_Inn_IronOre";
+                descKey = "QstS_Smith_IronOre_Desc";
+                break;
+        }
+
+        pData.SubQst.Add(new QuestInstData(qid, WorldCore.intoPlace, qType, 0, name, isTrace));
+        int n = pData.SubQst.Count - 1;
+        pData.SubQst[n].SetQuestBase(LocalizationManager.GetValue(descKey), 200, 5000, 100);
+        pData.SubQst[n].State = 1;
+        pData.SubQst[n].Order = 1;
+        pData.SubQst[n].TgCnt = 10;
+        if (qid == 2002)
+            pData.SubQst[n].ItemId = 67001;
+        pData.TraceQId = qid;
+        Presenter.Send("WorldMainUI", "SetTraceQst");
+    }
+    public void ClearSubQst(int qid, int qType = 0)
+    {
+        int n = pData.SubQst.FindIndex(q => q.Qid == qid);
+        if (n < 0) return;
+
+        var q = pData.SubQst[n];
+        switch (qType)
+        {
+            case 0:
+                int itemId = GetSubQstItemId(qid);
+                RemoveQstItem(itemId, 10);
+                break; //아이템 주기
+            default:
+                break; //몬스터 처치 등
+        }
+
+        pData.Crown += 5000;
+        if (NpcManager.I.NpcDataList.ContainsKey(3))
+        {
+            NpcData npc = NpcManager.I.NpcDataList[3];
+            npc.Rls += 40;
+            GsManager.I.ShowTstMsg("Tst_AddRlsNpc", npc.Name, "40");
+        }
+
+        pData.SubQstClear.Add(qid);
+        pData.SubQst.RemoveAt(n);
+        if (pData.TraceQId == qid)
+            pData.TraceQId = 0;
+    }
+    void RemoveQstItem(int itemId, int cnt)
+    {
+        if (itemId == 0) return;
+        for (int i = pData.Inven.Count - 1; i >= 0 && cnt > 0; i--)
+        {
+            if (pData.Inven[i].ItemId != itemId) continue;
+            pData.Inven.RemoveAt(i);
+            cnt--;
+        }
+    }
+    int GetSubQstItemId(int qid)
+    {
+        switch (qid)
+        {
+            case 2002:
+                return 67001;
+        }
+        return 0;
+    }
     #endregion
     public void AddSkExp(int skId, int val)
     {

@@ -8,6 +8,7 @@ public class TalkPop : UIScreen
     [SerializeField] private RectTransform box;
     private List<GameObject> talkMentBtn = new List<GameObject>();
     private string talkKey = "";
+    private int talkNpcId = 0;
     private void Awake()
     {
         Regist();
@@ -40,6 +41,12 @@ public class TalkPop : UIScreen
                 //현재 대화를 종료하면서 그 이후에 발생해야하는 이벤트를 적용해줌
                 switch (talkKey)
                 {
+                    case "QstS_Smith_IronOre_2":
+                        PlayerManager.I.ClearSubQst(2002);
+                        Presenter.Send("CityEnterPop", "UpdateCityList");
+                        Presenter.Send("WorldMainUI", "SetTraceQst");
+                        Close();
+                        break;
                     default:
                         Close();
                         break;
@@ -55,6 +62,7 @@ public class TalkPop : UIScreen
                 TalkData talkData = data.Get<TalkData>();
                 int tType = 0;
                 string ment = "";
+                talkNpcId = talkData.NpcId;
                 NpcData npc = NpcManager.I.NpcDataList[talkData.NpcId];
                 string meetType = npc.IsMeet ? GsManager.I.GetTalkRlsType(npc.Rls) : "Meet";
                 // bool isMeet = false;
@@ -114,6 +122,25 @@ public class TalkPop : UIScreen
                                         break;
                                 }
                                 break;
+                            case 2002:
+                                switch (talkData.Order)
+                                {
+                                    case 1:
+                                        ment = string.Format(LocalizationManager.GetValue("Talk_QstS_Smith_IronOre_1"), PlayerManager.I.pData.Name);
+                                        SetMyAskPreset("QstS_Smith_IronOre");
+                                        tType = 2;
+                                        break;
+                                    case 2:
+                                        ment = string.Format(LocalizationManager.GetValue("Talk_QstS_Smith_IronOre_Tmi"), PlayerManager.I.pData.Name);
+                                        tType = 0;
+                                        break;
+                                    case 3:
+                                        ment = string.Format(LocalizationManager.GetValue("Talk_QstS_Smith_IronOre_2"), PlayerManager.I.pData.Name);
+                                        tType = 0;
+                                        talkKey = "QstS_Smith_IronOre_2";
+                                        break;
+                                }
+                                break;
                         }
                         break;
                 }
@@ -155,6 +182,14 @@ public class TalkPop : UIScreen
                         UIManager.ClosePopup("CityEnterPop");
                         WorldCore.I.CheckAllAreaWorldMon();
                         Close();
+                        break;
+                    case "QstS_Smith_IronOre_Yes":
+                        NextSoloChat("Talk_QstS_Smith_IronOre_Yes");
+                        PlayerManager.I.StartSubQst(2002);
+                        Presenter.Send("CityEnterPop", "UpdateCityList");
+                        break;
+                    case "QstS_Smith_IronOre_No":
+                        NextSoloChat("Talk_QstS_Smith_IronOre_No");
                         break;
                 }
                 break;
@@ -234,6 +269,12 @@ public class TalkPop : UIScreen
                 askKeyList.Add("QstM_Tuto_5");
                 askMentList.Add("Confirm");
                 break;
+            case "QstS_Smith_IronOre":
+                askKeyList.Add("QstS_Smith_IronOre_Yes");
+                askMentList.Add("Yes");
+                askKeyList.Add("QstS_Smith_IronOre_No");
+                askMentList.Add("No1");
+                break;
         }
         for (int i = 0; i < askKeyList.Count; i++)
         {
@@ -247,6 +288,11 @@ public class TalkPop : UIScreen
         InitChatBtn();
         mTMPText["OtMent"].text = LocalizationManager.GetValue(desc);
         SetMyAskPreset(key);
+    }
+    private void NextSoloChat(string desc)
+    {
+        InitChatBtn();
+        SetTalkType(0, talkNpcId, LocalizationManager.GetValue(desc));
     }
     private void InitChatBtn()
     {
